@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>星期日, 31 八月 2014 22:19:59 CST</lastBuildDate>
+        <lastBuildDate>星期日, 31 八月 2014 23:19:47 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -912,6 +912,15 @@ requirejs(['app'], function(app) {
 <h2>项目代码</h2>
 <p>上面的操作，都在这个项目中： <a href="https://github.com/freewind/grunt-bower-angular-demo">https://github.com/freewind/grunt-bower-angular-demo</a></p>
 <p>另外，关于requirejs/angularjs的结合使用，可以参看这个比较好的样板项目： <a href="https://github.com/tnajdek/angular-requirejs-seed">https://github.com/tnajdek/angular-requirejs-seed</a></p>
+<h2>一些评论</h2>
+<h3>guxiangguo</h3>
+<p>可以使用sbt-web，提供了很多支持前端处理的plugin。</p>
+<h3>laoweiyeah</h3>
+<p>why not yeoman?</p>
+<h4>我</h4>
+<p>刚看了一下yeoman，似乎它的最大特色是模板功能吧？我们是在一个已有的后端项目中添加前端框架，需要小心的控制每一步，以保证不破坏已有功能。</p>
+<h3>zackyang</h3>
+<p>一直不知道, 相对于uglify把js打包成一个文件而言, RequireJs在加载时到底是提升了性能还是降低了性能. 如果不使用uglify压缩, 我们有非常多的module, 分散的js文件可能超过100个.</p>
 ]]></description>
             </item>
 
@@ -2964,6 +2973,13 @@ trait Cat[A] {
 </li>
 </ul>
 <p>现在，是否可以看懂了？</p>
+<h2>一些评论</h2>
+<h3>Lambda47</h3>
+<p>&ldquo;一个泛型拥有的变化型位置的正负，跟它所在的变化型位置正好相反"这是怎么理解的？</p>
+<h4>我</h4>
+<p>这句话是翻译的，我觉得这样写可能更准确（如果没有理解错误的话）：一个泛型如果处于一个负的位置，那么它拥有的变化型位置要反转（即正变负，或负变正）；如果处于一个正的位置，则不变。可参考文章开始引用的那个Cat的例子理解</p>
+<h3>杨博</h3>
+<p>我处理逆变逆变一般是先用+A，如果编译器报错就改成-A，如果再报错就改成_ : A，再报错就用普通的A。</p>
 ]]></description>
             </item>
 
@@ -7576,6 +7592,39 @@ class ModuleA {
 <p>有同学说看不懂我在问什么。</p>
 <p>的确我也感觉不知道自己在问什么，因为这个问题产生于真实的项目，很多影响我思考的因素也许在本文外，但我还没有意识到。从一个复杂项目中，把一个问题以最简方式完整的剥离出来，本身就是一件很难的事吧。如果真的能把所有有关联的因素抽出来了，所有没有关联的因素都留下了，也许答案自然就出来了，不需要再问了。</p>
 <p>看来这个问题只能等我自己解决了。</p>
+<h2>一些评论</h2>
+<h3>杨博</h3>
+<p>你的同事对，你错。</p>
+<p>你用的技巧，耦合更低，如果基类要提供给第三方，让第三方自己实现派生类，那就很好。</p>
+<p>但这个例子是你们的内部测试代码，属于一个模块内部的实现，当然应该遵循“高内聚”而不是“低耦合”原则。那么你同事代码短，耦合重，都是优点。</p>
+<p>当然，如果你们部门决定把测试时常用模式提成一个框架，让所有测试代码遵守这个框架的限制。那么作为框架的设计，也许可以重新考虑你用的基类方式。</p>
+<h4>我</h4>
+<p>@杨博，谢谢你高质量的回复。你提到的几点，我想了一下，现在这个测试工具的确已经成了一个测试框架，由测试组的成员使用，不过仅仅是当前项目的测试组内部使用。他们在未来所写的所有测试代码，都要按同样的规则来写。</p>
+<p>另外我刚才又回想了一下，发现当时我这么设计还有一个原因：</p>
+<p>虽然会以excel表格的形式来定义一些测试，但同时还需要支持纯手写java代码的方式，来实现一些特殊的测试用例。</p>
+<p>这些测试用例通常只会对应某一个module，这样我就可以方便的直接实例化某个特定的类，如new ModuleADbChecker().check(…)，非常干净。如果用同事的方法，就会变成new DbChecker().check(“ModuleA”,…)，感觉调用了一个很大的方法，实际上只用到了其中很小的一块代码。</p>
+<p>这样分析的话，我认为我的粒度还是最合适的。多谢你的意见！</p>
+<h3>liusong1111</h3>
+<p>类多类少不重要，是否采用switch/case不重要;代码朴素很重要。你怎么也犯java系的通病了呢，”未来扩展”、”代码优美”，这些事在真正发生之前根本一点都不重要，一点都不应该考虑。面向对象，尤其是java系的面向对象，就是纸老虎，还不如手写utils静态方法接地气。</p>
+<p>你的方式合理。那个StorageService就是一个util</p>
+<h4>我</h4>
+<p>@liusong1111，哈哈，在现在的公司的大环境下，朴素不起来啊。这些天正在看设计模式、重构这些书，不自觉就想在工作里练练手。</p>
+<p>另外还有两个原因：</p>
+<p>一是这个项目的客户要对每一个完成的功能点签字，一旦上线再想修改就非常麻烦，所以只能趁上线前多想一点。</p>
+<p>二是我们来之前的代码，一方面到处是完全没用上的扩展点，另一方面是朴素的连单元测试都没法加的代码，已经让我们加了两个月的班。</p>
+<p>所以我们正在吸取教训，让现在写的代码方便测试，耦合度低一点儿。</p>
+<h3>AlsoTang</h3>
+<p>我也觉得你同事的方法或许比剩下两种方法更加能够抽出共性来。</p>
+<p>例子太小，怎么做都足够灵活。
+<br  />凡是能够用继承做的地方，用组合做其实都很容易。</p>
+<p>但在这个地方明显是 is-a 的关系嘛。</p>
+<p>这么说吧，如果以后 StorageService 提供了更丰富的功能的话，那么 UserStorageService 用不用跟进去实现？
+<br  />如果总是要跟进的话，那么就应该是继承的；如果不必跟进，只是简单利用 StorageService 的 save 和 get 接口的话，那么就组合。</p>
+<p>在这个地方来说，难道 UserStorageService 不是应该一直跟进 StorageService 的新功能的吗？</p>
+<h4>我</h4>
+<p>回答@AlsoTang的问题，在我们实际的使用中，发现是把UserStorageService当作一个窄化的接口来用的，即只会使用它里面定义的方法，而不会用到父类里的。所以我现在更肯定它用组合好一些，也许命名方面应该改改。</p>
+<h3>kou_zx</h3>
+<p>我觉得不用非得定死按行还是按列分粒度，我觉得对于一个checker，如果逻辑相似（比如你说的DirChecker）就写一个类里，逻辑差距比较大就按module分类</p>
 ]]></description>
             </item>
 
@@ -7631,6 +7680,15 @@ public class UserStorageService {
 <p>但是这两个好处是不是决定性的因素呢？如果<code>StorageService</code>中还提供了一些其它需要被调用的方法，或者我们根本不需要让<code>UserService</code>继承别的类，是不是这两种方案的优劣对比就不明显了呢？</p>
 <p>老猪说，判断是否该使用继承要看&#8221;is_a&#8221;，是否该用组合要看&#8221;has_a&#8221;。但<code>UserStorageService</code>与<code>StorageService</code>的关系，是&#8221;is_a&#8221;，还是&#8221;has_a&#8221;呢？我好像也没法确定。</p>
 <p>（注：本文本来有两个例子，由于内容增加，并且例子的差别较大，我分成了两篇）</p>
+<h2>一些评论</h2>
+<h3>杨博</h3>
+<p>两种做法都可以。但StorageService里的两个方法应该标上final关键字。</p>
+<h3>Steve Hsu</h3>
+<p>关于是否使用继承的问题, 可以从需要 instance 生成的时机点跟多线调用的方向来思考. 跟整个系统设计有很大的关联。</p>
+<p>如果基类只是用做一个接口应用而不存在壮态资讯，那就没有必要每次生成新的 instance， 但是仍需考虑多线程的调用冲突。</p>
+<p>如果基类存在了许多状态资讯，那就要看该类状态资讯是属于那一端的，比如说是 storage 的，而继承类是为了保留 user 端状态的，则因为状态属性不同，用组合较好。但如果继承类也是要留存 storage 状态，只是针对不同使用者，当然是使用继承较合适。如果没有保留状态则用接口或静态类去做，对于多线程，优化，除错等都有较大的好处。</p>
+<p>总之针对单一功能很难去判断该用何种方式，反之应该去回推系统设计时是否有做更为严谨与灵活的考虑。</p>
+<p>漏了instance生成时机，这比较难说明，简单来说组合或继承的写法对 vm 有着完全不同的意义。可以去看bytecode得知，两者对memory heap及stack等运用完全不同，在空间与效率的取舍中，还是要看整个系统架构的。</p>
 ]]></description>
             </item>
 
@@ -7769,6 +7827,16 @@ parser.parseArgument(myArgs);
 <p>Args4j还提供了更加丰富的参数定义及获取等功能，有兴趣的同学可自行google。</p>
 <hr />
 <p>对于程序员来说，wordpress怎么都不够好用，哪怕我这次还安装了一个markdown插件。看到代码块里多余的<code>&lt;code&gt;</code>和被错误转义的<code>&amp;lt;</code>了吗？</p>
+<h2>一些评论</h2>
+<h3>caofei</h3>
+<p>http://commons.apache.org/proper/commons-cli/</p>
+<p>支持各种类型</p>
+<p>Commons CLI supports different types of options:</p>
+<p>POSIX like options (ie. tar -zxvf foo.tar.gz)
+<br  />GNU like long options (ie. du –human-readable –max-depth=1)
+<br  />Java like properties (ie. java -Djava.awt.headless=true -Djava.net.useSystemProxies=true Foo)
+<br  />Short options with value attached (ie. gcc -O2 foo.c)
+<br  />long options with single hyphen (ie. ant -projecthelp)</p>
 ]]></description>
             </item>
 
@@ -7854,6 +7922,28 @@ parser.parseArgument(myArgs);
 </ol>
 <p>由于项目保密的原因，不方便贴出实际代码，不过在网上应该可以搜到很多maven与gradle代码的对比例子。我个人感觉因为有了gradle，groovy终于有了一个杀手级的项目。</p>
 <p>等在项目中有更多的gradle使用经验时，再来更新。</p>
+<h2>一些评论</h2>
+<h3>Ivolianer</h3>
+<ol>
+<li><p>pom.xml 太繁复
+<br  />不论用何种表现形式，关键的就是，公司名、项目名和版本号。
+<br  />用 Gradle 能少打包名？ 好吧，也许看着顺眼。</p>
+</li>
+<li><p>依赖冲突
+<br  />Maven 最大的问题应该就是个。
+<br  />虽然 Maven 有最近原则和第一生命原则来解决依赖冲突，但实际还是有问题。
+<br  />不过，既然 Gradle 用的还是 Maven 的仓库，那它在这方面有何建树？</p>
+</li>
+<li><p>本地Jar依赖
+<br  />某个版本的Maven不能引用本地架包，但现在可以用个 system scope 引入了。</p>
+</li>
+</ol>
+<p>在考虑用 gradle ，但觉得优点不大。</p>
+<h3>杨博</h3>
+<p>http://www.ac.net.blog.163.com/blog/static/13649056201111793412935/</p>
+<p>如果你的项目用到的所有底层技术都不用自己开发，都是“成熟解决方案”，那么Maven挺适合的。</p>
+<p>不过，任何软件存在的意义，就是为了解决前人没有解决的问题。</p>
+<p>如果你只用“成熟解决方案”，那么你的软件必定毫无存在的意义</p>
 ]]></description>
             </item>
 
@@ -8070,6 +8160,9 @@ object Hanoi extends App {
 <p>从这个例子可以看出，scala的类型系统很强大，而且implicit的作用要比我之前以为的大得多，它是我们操作scala类型的一种手段。</p>
 <p>最后要感谢老高的文章，希望老高多写一些这样的文章，并且把标题起得花哨一点：）</p>
 <p>最后还有点疑问，关于scala的类型系统，还有别的类似的例子吗？</p>
+<h2>一些评论</h2>
+<h3>Vincent Xu</h3>
+<p>Scala因为受限于擦拭法，做出来的还是有限。06年熊桑在C++里用类型系统做了个MarsRover，我用Haskell的类型系统做过简单的解释器。这都不是厉害的。老袁用C++类型系统做了电信产品的DSL，这是我知道的，最厉害的一个应用。</p>
 ]]></description>
             </item>
 
@@ -8137,7 +8230,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#x77;&#x65;&#x62;&#45;&#x75;&#105;&#45;&#x64;&#x65;&#x76;&#x40;&#x64;&#x61;&#x72;&#x74;&#x6c;&#97;&#110;&#x67;&#46;&#x6f;&#x72;&#103;">&#119;&#x65;&#98;&#45;&#117;&#x69;&#x2d;&#100;&#101;&#x76;&#64;&#100;&#97;&#114;&#116;&#108;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;:&#x77;&#x65;&#x62;&#x2d;&#117;i&#x2d;&#100;&#101;&#x76;&#64;&#100;&#x61;&#114;&#x74;&#108;&#x61;&#x6e;&#103;&#x2e;&#x6f;&#114;&#103;">&#119;&#101;&#98;&#x2d;&#x75;&#x69;&#x2d;&#100;e&#118;&#x40;&#100;&#97;&#114;&#116;&#108;&#97;&#110;&#103;&#46;&#111;&#114;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -8269,6 +8362,14 @@ dart2js index.html_bootstrap.dart -oindex.html_bootstrap.dart.js
 <p>我们在写代码的过程中，往往会遇到一些问题，而这些东西早已有了相应的解决方案，只是隐藏在lift的源代码里，没有文档、没有注释，就一个方法或者几行代码。我们只有读了它的源代码，并且推出了那些代码的作用，才知道该怎么去使用。</p>
 <p>我怀疑这是lift的作者故意这么做的，因为lift本身就是一个比较高端的框架，对使用者的要求很高。如果一个使用者没有阅读源代码的习惯和能力，也许就不应该成为lift的用户。</p>
 <p>我目前所感受到的东西都差不多写在这里了。Lift是一个很有特色的框架，但我想我不会在自己的项目中使用它。因为我很少会遇到lift最适合的那种类型的网站。如果是普通的多页面网站，我用play1搞定，如果是单页面网站，我会用angularjs来做，这两种都会比lift的开发效率高很多。</p>
+<h2>一些评论</h2>
+<h3>guxiangguo</h3>
+<p>但在另一种情况，使用mvc又方便一些，比如一些相同的小数据，分散在页面的各处。如果是mvc，直接传一个变量进去即可，而view-first，可能要在多个snippet中分别取一次。
+<br  />=>　可以用Menu.param只取一次</p>
+<p>Lift是一个很有特色的框架，但我想我不会在自己的项目中使用它。
+<br  />＝》恰恰相反，研究源代码是一种乐趣，自己的项目第一选择Lift。</p>
+<h3>coolwasp</h3>
+<p>年初，听从作者的建议，在用play1写一个网站，感觉就像在写php代码，比其他框架使用起来方便多了，我们模板是集成japid，前端kissy+jquery，感觉还不错。</p>
 ]]></description>
             </item>
 
@@ -9686,6 +9787,9 @@ jQuery("body").find(".debug button").click(function (event) {
 <h1>{debug 'dd10d46c35558468fbf206d8130cce0fd' /}</h1>
 <p>然后修改编辑器插件，让它找到文件后，能过搜索该字符串找到行数。</p>
 <p>很多编辑器都有uuid插件可生成并插入一个uuid，所以这操作起来也不是很麻烦。</p>
+<h2>一些评论</h2>
+<h3>green</h3>
+<p>谢谢风老大的分享，我也在rythm上做了些增强，现在也支持这个功能了：http://www.screenr.com/fJr7</p>
 ]]></description>
             </item>
 
@@ -10570,6 +10674,9 @@ $scope.$on("myevent", function(){});
 <p>我今天把我前段时间写的js代码全部转换成了haxe代码，并且运行完全正常，这给了我极大的信心。在转换过程中，发现haxe的语法跟js语法还是很像的，拷过来的代码只需要改少数几个地方（如增加类型）就行了，比较方便。</p>
 <p>我打算以后就用HaxeJs来写js代码，不过对于我来说，大部分功能还是在后端用java实现。我觉得用nodejs的人，更应该考虑一下这种静态解决方案，不论是HaxeJs或者TypeScript，都可以一试。毕竟服务端的代码往往比较多，需要经常重构，如果没有类型系统和编辑器的支持，会让人无从下手。</p>
 <p>最后再次强调，请根据自己的情况和需求选择合适的语言和技术。我的选择只适合我的情况，所以仅供参考。</p>
+<h2>一些评论</h2>
+<h3>zjcqoo</h3>
+<p>Typescript的编译器居然也是用Typescript写的。。。编译速度实在受不了</p>
 ]]></description>
             </item>
 
@@ -13614,6 +13721,10 @@ my code
 var html = marked.parser(marked.lexer(input));
 alert(html);
 </code></pre>
+<h2>一些评论</h2>
+<h3>weakish</h3>
+<p>var html = marked.parser(marked.lexer(input));</p>
+<p>好像直接marked(input)就可以</p>
 ]]></description>
             </item>
 
@@ -23028,6 +23139,13 @@ margin: 0em;
 <ol>
 <li>groovy 2.x新特性：<a href="http://fr.slideshare.net/glaforge/groovy-20-webinar">http://fr.slideshare.net/glaforge/groovy-20-webinar</a></li>
 </ol>
+<h2>一些评论</h2>
+<h3>steven0lisa</h3>
+<p>解决了：</p>
+<ol>
+<li>在插件目录下执行mvn package，使groovy脚本编译成class。</li>
+</ol>
+<p>2.将target目录下的play-groovy.jar复制到插件的lib目录下，没有目录的话自行新建。</p>
 ]]></description>
             </item>
 
@@ -23439,6 +23557,21 @@ margin: 0em;
 </code></pre>
 <p>}
 <br  />.csharpcode .lnum { color: #606060; }</style></p>
+<h2>一些评论</h2>
+<h3>green</h3>
+<p>顶版主，喜欢这样轻量的代码。play-app-base预定义了一些helper大家喜欢可以直接拿来用。参见：https://github.com/greenlaw110/play-app-base/tree/master/src/com/greenlaw110/utils</p>
+<p>补充一下，如果是所有的模版都打算使用这些helper的话，可以定义一个filter：</p>
+<p>public class HelperLoader extends Controller {
+<br  />@Before static void loadHelpers() {
+<br  />renderArgs.put(“h1″, …);
+<br  />renderArgs.put(“h2″, …);
+<br  />}
+<br  />}</p>
+<p>然后在其他Controller上用@With(HelperLoader.class)即可。</p>
+<p>如果用rythm模版引擎的话可以更简单一些：在app/rythm目录下创建一个文件__addon.src, 放入在模版中需要的helper即可：</p>
+<p>com.greenlaw110.utils.S s = com.greenlaw110.utils.S.instance;
+<br  />..</p>
+<p>不需要在任何地方声明@Before或者@With了</p>
 ]]></description>
             </item>
 
@@ -24861,6 +24994,10 @@ compute();
 <p>看来有时候找半天资料不如看一眼源代码。</p>
 <h2>四、注意事项</h2>
 <p>如前段所讲，我们在js代码中，一定要尽量避免如<code>while(true)</code>这样的循环，或者密集计算。如果一定要这么做，则应该想办法把它分解为可重要执行的小块，通过<code>process.nextTick</code>将它分散开，让所有的任务都有执行的机会。</p>
+<h2>一些评论</h2>
+<h3>squallssck</h3>
+<p>整个文章讲的的很好,可你的解释还是有点不清楚的地方:</p>
+<p>之所以先wait了两次,原因是async其实把那些进queue的任务都process.nextTick()了,就是说放到了下一次event queue的循环里,也就是说现在的任务队列里没有这些任务,也不执行这些任务.等到下次loop才会开始做进queue得任务.</p>
 ]]></description>
             </item>
 
@@ -25239,6 +25376,10 @@ inc.bind(null,8)
 <blockquote><p>add(a,b)</p>
 </blockquote>
 <p>只能绑定a，或者(a,b)，但不能只绑定b。</p>
+<h2>一些评论</h2>
+<h3>AlsoTang</h3>
+<p>https://gist.github.com/3745456</p>
+<p>这是一个更加准确的关于js中bind的示例。</p>
 ]]></description>
             </item>
 
@@ -29865,6 +30006,9 @@ System.out.println("Your code cost: " + (end-start) + "ms");
 <p><strong>九、使用其它语言的方案</strong></p>
 <p>如果以上所有的方法都不管用，则只能去尝试其它的高性能语言，比如c/c++。网络通常是这些语言的强项，肯定会有相应的解决方案。而且一旦使用这些语言，肯定会用到与操作系统相关的某些底层库，来进一步提高性能。如果走到这一步，那只有再好好研究相应的方法了。</p>
 <p>唐升华，加油啊!</p>
+<h2>一些评论</h2>
+<h3>htrmt</h3>
+<p>这件事，文中提到的方法都不是正解。使用任何一种通用工具的方法都不会比使用编译语言，甚至是原生编译型语言定制的程序来得高效。 曾做过一个与上面这个程序功能基本一致的应用，数据传输率达到理论速率的95%，性能瓶颈仅受限于硬件本身。</p>
 ]]></description>
             </item>
 
@@ -32233,6 +32377,18 @@ def print = println(&lt;span class="str"&gt;"hello world"&lt;/span&gt;)
 <p>函数式的风格写起来就是很爽，如行云流水一般。从java到scala，不仅仅是语法变了，更重要的是编程的风格，这个转变可不容易。</p>
 <p>我在stackoverflow上问了这个问题，请参见完整版：</p>
 <p><a href="http://stackoverflow.com/questions/5140465/how-to-optimize-this-simple-function-in-scala">http://stackoverflow.com/questions/5140465/how-to-optimize-this-simple-function-in-scala</a></p>
+<h2>一些评论</h2>
+<h3>htrmt</h3>
+<p>这个功能用C写很简单，而且近乎是最优化的代码</p>
+<pre><code class="c">char *Fun(char *str)
+{
+  for(;*str;++str)
+    if(‘b’ == *str)
+      *str = ‘*’;
+  if(‘c’ == *(str-1))
+    *(str-1) = ‘#’;
+}
+</code></pre>
 ]]></description>
             </item>
 
@@ -32964,6 +33120,12 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <br  /><p>这就是所谓的有得即有失。Play通过实现自己的ClassLoader，做到了修改源代码不用重启，大大提高了开发效率，让Play脱颖而出。但同时也导致与其它Java类库（涉及到ClassLoader的），与Play一起使用时，有可能因为ClassLoader的问题，无法正常运行。
 <br  /><p>比如我现在正打算使用guice，发现得去找一个play-guice的plugin。之前用Ebean，得写一个play-ebean的plugin。不知道Mybatis，是不是也需要一个plugin。
 <br  /><p>明明大家都是Java，却不能一块工作。现在我用play写网站时，一看到第三方的Java库，首先想到的就是“不知道是不是又得写个插件”，太麻烦了。</p>
+<h2>一些评论</h2>
+<h3>green</h3>
+<p>总的来说我不赞同这个观点。</p>
+<p>拿guice来说吧，给guice写plugin不是因为guice和play的class loader冲突，而是通常来讲guice并不是作为一个app的library来使用，而是有容器来初始化并调用。你可以直接在应用里面用guice，只是比较麻烦而已。另外guice模块也增强了一些特性，以更方便地在play app里面使用，比如允许注入到static member，这个原有的guice库是不能做到的。这也是仰仗play class loader的威力。</p>
+<p>同样的道理也适用于morphia模块，你可以直接用原生的morphia库，但是morphia模块提供了好些特性让你在play里面可以讲模版本身的功能发挥得淋漓尽致，甚至衍生出更好用的特性。</p>
+<p>要点在于play和Java传统的servlet是不同的系列，而很多在servlet容器里能直接使用的库，play需要用插件的形式来使用。另外因为有了app classloader，play往往能让库的使用更加方便，所以才会有插件加入，将本来的特性发挥更多。如果只是单纯的库，不需要容器来注入或者初始化，比方说commons-xxx之类的，应用大可放心地用，没有什么非得插件不可的说法。</p>
 ]]></description>
             </item>
 
