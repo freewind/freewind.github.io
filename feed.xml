@@ -5,7 +5,7 @@
         <description>Freewind's programming life</description>
         <link>http://freewind.github.io</link>
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>星期日, 31 八月 2014 16:40:57 CST</lastBuildDate>
+        <lastBuildDate>星期日, 31 八月 2014 17:02:51 CST</lastBuildDate>
         <language>zh-CN</language>
             <item>
                 <title>在scala中快速下载并保存某url的内容</title>
@@ -8075,7 +8075,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#119;&#101;&#98;&#x2d;&#117;&#x69;&#x2d;&#x64;&#101;&#x76;&#64;&#100;&#97;&#x72;&#116;&#108;&#97;&#x6e;&#103;&#46;&#x6f;&#114;&#x67;">&#x77;&#101;&#x62;&#45;&#117;&#105;&#x2d;&#x64;&#101;&#x76;&#x40;&#100;&#97;&#114;&#x74;&#108;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#58;&#119;&#x65;&#98;-&#x75;&#105;&#45;&#x64;&#101;&#x76;&#x40;&#x64;&#97;&#114;&#116;&#108;&#x61;&#110;&#103;&#46;&#x6f;&#x72;&#103;">&#x77;&#x65;&#98;&#45;&#x75;&#x69;&#x2d;&#x64;&#x65;&#118;&#x40;&#100;&#x61;&#x72;&#116;&#x6c;&#97;&#x6e;&#x67;&#x2e;&#111;&#114;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -9402,7 +9402,7 @@ JsRoutes.Directives.getGridOptions.get({
 <h3>要求</h3>
 <ol>
 <li>scala代码的长度<font color="#ff0000">不超过50个字符</font>，代码越简洁易读越好</li>
-<li>在群内应该严格遵守scala群规，参考<a href="http://freewind.me/blog/20130102/1493.html">http://freewind.me/blog/20130102/1493.html</a>，警告无效者T</li>
+<li>在群内应该严格遵守<a href="/posts/scala-group-rule">scala群规</a>，警告无效者T</li>
 <li>本群努力营造出一个良好的scala交流环境，需要你的支持</li>
 </ol>
 ]]></description>
