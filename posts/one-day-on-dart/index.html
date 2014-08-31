@@ -42,7 +42,7 @@
 </blockquote>
 <p>仅仅这样，还没什么让人激动的，因为javascript中不就是这么做的吗？</p>
 <p>别急，先介绍一下背景知识。Dart同时支持动静态类型。我们在开发时，可以打开静态类型检查，以帮助我们找到错误，在运行时，因为在客户端要运行于javascript之上，所以会以动态类型方式执行。首先看看利用JsonObject类来解析一个json字符串，注意编辑器的警告信息：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image31.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb31.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/945-1.png"><img src="/user_images/945-1.png" alt="image" title="image" /></a></p>
 <p>可以看到，解析为JsonObject后，可以直接以data.language这样的动态方式来调用它的字段。但是因为JsonObject本身没有那些字符，编译器会提示警告信息：它们不是JsonObject的成员变量。</p>
 <p>下面是激动人心的地方。我们可以定义一些类，继承于JsonObject：</p>
 <blockquote><p>interface LanguageWebsite extends JsonObject {</p>
@@ -56,7 +56,7 @@
 <p>}</p>
 </blockquote>
 <p>这里定义了两个类，它们继承于JsonObject，并且添加了相应的属性。然后。。。</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image32.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb32.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/945-3.png"><img src="/user_images/945-3.png" alt="image" title="image" /></a></p>
 <p>仔细地看上面一段代码，警告不见了。而且，我们居然可以把一个父类赋给一个子类！！</p>
 <p>之前得到的还是一个类似于map的JsonObject，而现在得到的一个与json中每个字段都有对应属性的类的对象。从json向对象的转换，以这样完美无可挑剔的方式完成了。可以想到，使用这种方式，与其它系统（如mongodb）交互，根本不需要额外的orm框架，直接在语言级别就搞定了！这可以大大简化不同层之间用于数据交换的代码，真是太好了。</p>
 <p>（这是dart类型系统的一个独特的设计，因为我还没有深入，这里只好一笔带过，有兴趣者自行研究。）</p>
@@ -73,13 +73,13 @@
 <h2>支持与示例</h2>
 <p>现在dart已经支持windows/linux/mac，在各种主流系统上运行。它同时提供了基于eclipse的编辑器dart editor，支持语法高亮、错误提示和方法补全（暂未提供代码格式化功能）。下载的dart editor中自带了一个叫dartium的浏览器，它就是chrome+dart vm，用于开发之用。</p>
 <p>打开dart editor，可以看到它提供了几个例子，其中第一个很炫。</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image33.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb33.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/945-5.png"><img src="/user_images/945-5.png" alt="image" title="image" /></a></p>
 <p>这是一个可显示时分秒的表，运行于dartium的浏览器上，其炫处在于，每一秒数字变化时，用不到的小球会被弹出来，像一粒粒玻璃球弹在墙壁上地上，不停跳动。球与球之间相碰时，也会有同样的动作。这里来个大点的截图：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image34.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb34.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/945-7.png"><img src="/user_images/945-7.png" alt="image" title="image" /></a></p>
 <p>这个程序运行于客户端，大约使用了500行dart代码，编译出来的js代码大约4473行（不包括vm）。</p>
 <h2>开发团队</h2>
 <p>这里来自slideshare.net上的某个幻灯片：<a href="http://www.slideshare.net/yinhm/dart-intro">http://www.slideshare.net/yinhm/dart-intro</a></p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image35.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb35.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/945-9.png"><img src="/user_images/945-9.png" alt="image" title="image" /></a></p>
 <p>可见团队阵容还是相当豪华的。</p>
 <h2>相关资源</h2>
 <ol>

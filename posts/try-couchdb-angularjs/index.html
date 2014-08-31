@@ -28,21 +28,21 @@
 <li><strong>angularjs</strong> 一个浏览器端的mvc框架，双向绑定、router、directive、filter、以及对测试的良好支持，深深打动了我，是让我尝试转向js平台的最直接原因2.  <strong>couchdb </strong>一个基于文档的Nosql数据库，提供了很多web友好的功能，基于erlang开发3.  <strong>nodejs</strong> 让js运行于服务器端，它打开了js走向服务器端的大门4.  <strong>npm</strong> Nodejs Package Manager，nodejs的包管理器，可以方便地安装管理第三方插件5.  <strong>express </strong>一个轻量级的web开发框架，目前在nodejs世界应该是最为人知的6.  <strong>kanso</strong> 一个couchdb工具，可以把我们编写的js/css/html等文件，打包后放入couchdb，实现couchdb+web server合体功能</li>
 </ol>
 <p>先看一下最终效果，再讲安装中遇到的问题及一些要点：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/846-1.png"><img src="/user_images/846-1.png" alt="image" title="image" /></a></p>
 <p>我也不知道naire这个词是什么意思，但估计这是一个“病人问卷调查”程序。首页显示一些调查问卷的名字，我们可以点击一个答题。这里点第一个：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image1.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/846-3.png"><img src="/user_images/846-3.png" alt="image" title="image" /></a></p>
 <p>点右边的Start开始，要先写资料及时间：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image2.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb2.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/846-5.png"><img src="/user_images/846-5.png" alt="image" title="image" /></a></p>
 <p>注意第一个空，有下划线表示可以填写（并且只能输入数字），中间还有横线隔开。这里用到了angularjs中的自定义directive组件的功能。下面是选择日期，看样子应该是jquery-ui的日期控件。</p>
 <p>填好后，右边出现Next按钮，点击它，开始答题：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image3.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb3.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/846-7.png"><img src="/user_images/846-7.png" alt="image" title="image" /></a></p>
 <p>对于每个问题，它下方都会有几个答案供选。直接点击其中一个，出现Next，进入下一题：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image4.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb4.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/846-9.png"><img src="/user_images/846-9.png" alt="image" title="image" /></a></p>
 <p>全部答完后，出现汇总页，可查看并修改答案：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image5.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb5.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/846-11.png"><img src="/user_images/846-11.png" alt="image" title="image" /></a></p>
 <p>注意此处，第一行的数据，与后面几个明显不同。如果是使用传统数据库，它们应该在不同的表中，而couchdb中是怎么处理的呢？（下回分解）</p>
 <p>确认无误后，点击右上角的submit，提交过去：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image6.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb6.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/846-13.png"><img src="/user_images/846-13.png" alt="image" title="image" /></a></p>
 <p>再点左边的按钮，回到了首页。</p>
 <p>整体流程清楚了，其中“下一题”的流程，以及不同结构问答的处理（如有的是选择，有的是填空，答案个数不同），是亮点，值得好好研究。</p>
 <p><strong>安装要点记录</strong></p>

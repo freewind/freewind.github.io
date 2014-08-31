@@ -59,7 +59,7 @@ String str4 = "1927-12-31 23:54:09";&amp;nbsp;
 <p>在这份追加信息出现仅仅两分钟之后，StackOverflow站上的问答狂人Jon Skeet<a href="http://stackoverflow.com/questions/6841333/why-is-subtracting-these-two-times-in-1927-giving-a-strange-result/6841479#6841479">给出了如下答复</a>——</p>
 <blockquote><p>这是因为上海的时区在12月31日发生了变化。</p>
 <p>请看<a href="http://www.timeanddate.com/worldclock/clockchange.html?n=237&amp;year=1927">这里</a>。（网页截图如下）</p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/09/image20.png"><img src="http://freewind.me/wp-content/uploads/2011/09/image_thumb20.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/349-1.png"><img src="/user_images/349-1.png" alt="image" title="image" /></a></p>
 <p><em>（1928年1月1日0点0分，当地时间由<a href="http://baike.baidu.com/view/2553310.htm">地方平时（Local Mean Time）</a>改为北京时间/中国标准时间）</em></p>
 <p>简单地说，在1927年末的最后那一个午夜，时钟被往回拨了5分52秒。所以“1927-12-31 23:54:08”这一秒，事实上，发生了两次，而看起来在计算当地时间时，Java将其视为了后面那一个时间点，于是就产生了这一差别。</p>
 <p>这正是时区世界的奇妙与不可思议啊。</p>

@@ -164,7 +164,7 @@ compute();
 <blockquote><p>In this model, instead of calling compute() recursively, we use process.nextTick() to delay the execution of compute() till the next tick of the event loop</p>
 </blockquote>
 <p>有的同学认为它是说“把某任务放在当前任务的下一个”，有的认为是放在队列的最尾，争轮不休。最后老雷同志贴上了nodejs的源代码，解决了这个问题：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image30.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb30.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/926-1.png"><img src="/user_images/926-1.png" alt="image" title="image" /></a></p>
 <p>从这几行代码中，我们可以看出很多信息：</p>
 <ol>
 <li>nextTick的确是把某任务放在队列的最后（<code>array.push</code>)2.  nodejs在执行任务时，会一次性把队列中所有任务都拿出来，依次执行3.  如果全部顺利完成，则删除刚才取出的所有任务，等待下一次执行4.  如果中途出错，则删除已经完成的任务和出错的任务，等待下次执行5.  如果第一个就出错，则throw error</li>

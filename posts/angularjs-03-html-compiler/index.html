@@ -82,10 +82,10 @@ angular.module('drag', []).
 <p>任意一个元素添加了<code>draggable</code>属性后，就有了新的行为。这种方式的美妙之处在于，我们教会了浏览器新的技能，扩展了它所支持词汇，对于熟悉HTML的人来说，这种方式非常自然。</p>
 <h3>理解view</h3>
 <p>市面上有很多模板系统。大多数是把一些静态的文本模板与数据组合起来，产生一个新的文本。然后，把它通过<code>innerHTML</code>放入到一个元素中。</p>
-<p><a href="http://freewind.me/wp-content/uploads/2013/01/image1.png"><img src="http://freewind.me/wp-content/uploads/2013/01/image_thumb1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1225-1.png"><img src="/user_images/1225-1.png" alt="image" title="image" /></a></p>
 <p>这表明数据一旦有变化，就必须重新跟模板结合产生新结果，再次通过<code>innerHTML</code>放入到DOM中。但这么做有很多地方比较麻烦：读取用户输入，与数据结合，覆盖用户输入，管理更新过程，缺乏表达行为的方式等。</p>
 <p>Angular不同。Angular通过directives来使用DOM，而不是字符串模板。它的结果是一个将linking函数，将与scope model结合起来产生实时动态的view。view和scope model的绑定是透明的，开发者无须参与即可更新view。因为不需要使用<code>innerHTML</code>，所以不会因为替换数据而丢失用户的输入。还有，angular的directive不仅包含文本绑定，还提供了有与行为相关的结构。（这点难翻）</p>
-<p><a href="http://freewind.me/wp-content/uploads/2013/01/image2.png"><img src="http://freewind.me/wp-content/uploads/2013/01/image_thumb2.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1225-3.png"><img src="/user_images/1225-3.png" alt="image" title="image" /></a></p>
 <p>Angular的做法可以产生稳定的DOM。绑定到model示例上的DOM元素，在绑定期间不会改变。这意味着，代码可以持有元素，在上面注册事件处理器，但不必担心在模板数据合并时，这些引用会被破坏。</p>
 
 </div>

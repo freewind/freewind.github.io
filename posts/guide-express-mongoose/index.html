@@ -53,7 +53,7 @@
 <p>如果没有提示错误，说明启动成功。</p>
 <p>打开浏览器，访问：<a href="http://localhost:3000">http://localhost:3000</a></p>
 <p>显示如下：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image21.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb21.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/891-1.png"><img src="/user_images/891-1.png" alt="image" title="image" /></a></p>
 <h2>三、定义Models</h2>
 <p>创建一个models.js，用于定义程序中使用的model（主要是Schema）。内容如下：
 
@@ -111,9 +111,9 @@ res.send('Data inited');
 </blockquote>
 <p>接着定义/init，为了演示方便起见，这里使用http get，可直接在浏览器中访问该url。如果在真实程序中，应该使用app.post('/init', &hellip;)</p>
 <p>打开浏览器，访问：<a href="http://localhost:3000/init">http://localhost:3000/init</a></p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image22.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb22.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/891-3.png"><img src="/user_images/891-3.png" alt="image" title="image" /></a></p>
 <p>提示数据已经初始化。使用mongodb的控制台，查询结果如下：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image23.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb23.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/891-5.png"><img src="/user_images/891-5.png" alt="image" title="image" /></a></p>
 <p>看到数据的确已经插入到mongodb中了。</p>
 <h2>五、/users</h2>
 <p>接着实现/users，查询User数据，并以json格式返回到浏览器端。代码很简单，如下：</p>
@@ -125,7 +125,7 @@ res.send('Data inited');
 <p>});</p>
 </blockquote>
 <p>打开浏览器，访问<a href="http://localhost:3000/users">http://localhost:3000/users</a></p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image24.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb24.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/891-7.png"><img src="/user_images/891-7.png" alt="image" title="image" /></a></p>
 <p>果然看到json数据过来了。</p>
 <p>但看看这段代码，里面有两个嵌套。如果数据再复杂一些的话，可能嵌套更多，就不易读了。能不能想办法让它简化一点呢？</p>
 <p>下面就该express-mongoose出场了。</p>
@@ -141,13 +141,13 @@ res.send('Data inited');
 </blockquote>
 <p>看这里，直接用res.send就直接发送了，不用传回调函数了，代码简单了很多。</p>
 <p>重启app.js，再访问：<a href="http://localhost:3000/users">http://localhost:3000/users</a>，截图如下：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image25.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb25.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/891-9.png"><img src="/user_images/891-9.png" alt="image" title="image" /></a></p>
 <p>果然效果一样。</p>
 <p>如果去掉express-mongoose，会是什么效果呢？让我们先去掉：</p>
 <blockquote><p>require('express-mongoose');</p>
 </blockquote>
 <p>再访问：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image26.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb26.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/891-11.png"><img src="/user_images/891-11.png" alt="image" title="image" /></a></p>
 <p>现在返回的就是User.find()这个query的值，而不是查询结果。</p>
 <p>今天就到这里，以后将慢慢加入更多的功能。</p>
 

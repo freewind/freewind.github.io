@@ -54,13 +54,13 @@ public void init() {
 </code></pre>
 <p></servlet-mapping></p>
 <p>然后在浏览器中访问 <a href="http://localhost:8080/myapp">http://localhost:8080/myapp</a> 即可看到这样的内容：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/01/image1.png"><img src="http://freewind.me/wp-content/uploads/2012/01/image_thumb1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/697-1.png"><img src="/user_images/697-1.png" alt="image" title="image" /></a></p>
 <p><strong>二、修改后代码后如何生效</strong></p>
 <p>我以debug方式运行tomcat，按说只要没有修改类结构，所做的修改应该能马上热部署。</p>
 <p>但奇怪的是，我修改了java代码中一个Label上的文本后，刷新页面，却没有看到任何变化。打开一个新的浏览器访问该页面，却可以看到修改后的内容。这是怎么回事？在vaadin论坛上看到不少人问这个问题，终于弄明白，原来vaadin把很多东西都保存在session中，包括页面上的这些组件的内容等。当修改代码后，虽然后台代码变了，但是保存在session中的内容并没有变，所以只能在新窗口中看到修改变化。</p>
 <p>对于这种情况，除了重启tomcat外，还可以：</p>
 <ol>
-<li>在原url后加上?restartApplication，回车即可2.  在原url后加上?debug，可以打开如下的调试窗口，点击其中的"Restart app"按钮即可<a href="http://freewind.me/wp-content/uploads/2012/01/image2.png"><img src="http://freewind.me/wp-content/uploads/2012/01/image_thumb2.png" alt="image" title="image" /></a></li>
+<li>在原url后加上?restartApplication，回车即可2.  在原url后加上?debug，可以打开如下的调试窗口，点击其中的"Restart app"按钮即可<a href="/user_images/697-3.png"><img src="/user_images/697-3.png" alt="image" title="image" /></a></li>
 </ol>
 <p>虽然有些不方便，但考虑到vaadin必须以某种方式实现stateful，也只能这样了。好在第二种方法还可以接受，因为那个窗口可以一直存在，不用每次都输入?deubg。</p>
 <p><strong>三、如何分开前后台</strong></p>
@@ -95,11 +95,11 @@ public void init() {
 </code></pre>
 <p></servlet-mapping></p>
 <p>重启tomcat后访问：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/01/image3.png"><img src="http://freewind.me/wp-content/uploads/2012/01/image_thumb3.png" alt="image" title="image" /></a></p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/01/image4.png"><img src="http://freewind.me/wp-content/uploads/2012/01/image_thumb4.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/697-5.png"><img src="/user_images/697-5.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/697-7.png"><img src="/user_images/697-7.png" alt="image" title="image" /></a></p>
 <p>注意url的变化。</p>
 <p>需要注意的是，一定要保证该路径/VAADIN会被vaadin处理。先看一下firebug的记录：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/01/image5.png"><img src="http://freewind.me/wp-content/uploads/2012/01/image_thumb5.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/697-9.png"><img src="/user_images/697-9.png" alt="image" title="image" /></a></p>
 <p>原来vaadin去取那些组件资源时，要访问/VAADIN。所以如果在web.xml中，没有把根目录映射到某个继承于com.vaadin.Application的类时，需要增加类似于下面这样的映射关系：</p>
 <p><servlet-mapping></p>
 <pre><code>&lt;servlet-name&gt;AdminApplication&lt;/servlet-name&gt;    
@@ -107,7 +107,7 @@ public void init() {
 </code></pre>
 <p></servlet-mapping></p>
 <p><strong>四、最简单的页面需要下载多少K资源</strong></p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/01/image6.png"><img src="http://freewind.me/wp-content/uploads/2012/01/image_thumb6.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/697-11.png"><img src="/user_images/697-11.png" alt="image" title="image" /></a></p>
 <p>对于一个最简单的页面，需要下载800多K的资源。其中样式表144.5K，而js文件为686.4K，个头还不小。所以只能用于管理后台。</p>
 <p><strong>五、如何与其它框架结合</strong></p>
 <p>如前所说，vaadin这样的大个头只适合做管理后台，对于前台，还得要用传统的css方案解决。这样必然需要使用另一种框架与vaadin结合。</p>

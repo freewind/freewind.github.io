@@ -130,7 +130,7 @@ callback(n+1);
 <p><a href="https://github.com/olegp/common-node">https://github.com/olegp/common-node</a></p>
 <p>Common node基于node-fibers，提供了同步风格的代码，但在内部利用了纤程，不会阻塞主线程。既可以使用同步风格的代码，又不会影响性能，看起来很不错。</p>
 <p>这里有一个性能对比图，可见common-node的同步风格，对于性能的影响还是很小的：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/05/image29.png"><img src="http://freewind.me/wp-content/uploads/2012/05/image_thumb29.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/912-1.png"><img src="/user_images/912-1.png" alt="image" title="image" /></a></p>
 <p>common-node的定位应该与node是相同的，但在编程风格上正好相反，它提倡使用“同步”。也因此，对于已有的异步api的模块，它不能很好地直接使用，需要专门为它提供一个修改版。从README中可以看到，目前已经有一些项目支持common-node。可惜相比nodejs庞大的模块库来说，还是可怜了，所以common-node的发展前景还是有些不明朗。</p>
 <p>当支持它的模块更多一些之后，也许会有更多人来尝试它的。</p>
 <h2><strike>Fibrous</strike></h2>

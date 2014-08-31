@@ -20,18 +20,18 @@
 <p>然而在java中不可能，因为它没有多行文本。scala中直接支持xml语法，但在其中嵌入scala代码时不是很方便，格式化时也会把xml格式弄得很糟。</p>
 <p>而Xtend的内置的模板很好用，充分考虑到这些情况，所以我尝试使用xtend直接写view层。</p>
 <p>首先看在基类Layout.xtend中定义的main()方法，它定义了整体结构。</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/04/image.png"><img src="http://freewind.me/wp-content/uploads/2012/04/image_thumb.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/779-1.png"><img src="/user_images/779-1.png" alt="image" title="image" /></a></p>
 <p>其中的headImports，是定义同文件中另一个方法：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/04/image1.png"><img src="http://freewind.me/wp-content/uploads/2012/04/image_thumb1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/779-3.png"><img src="/user_images/779-3.png" alt="image" title="image" /></a></p>
 <p>子类中如果想填充body部分，可如下：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/04/image2.png"><img src="http://freewind.me/wp-content/uploads/2012/04/image_thumb2.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/779-5.png"><img src="/user_images/779-5.png" alt="image" title="image" /></a></p>
 <p>注意，调用main方法时，最后一个参数使用了闭包语法，方便把大块内容单独放置。</p>
 <p>代码中有很多被«»包围的代码，它是嵌入的xtend代码。</p>
 <p>整体来说，一眼看去，还比较清楚。</p>
 <p>换用Amateras HTML editor打开Layout.xtend，有惊喜：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/04/image3.png"><img src="http://freewind.me/wp-content/uploads/2012/04/image_thumb3.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/779-7.png"><img src="/user_images/779-7.png" alt="image" title="image" /></a></p>
 <p>html代码高亮，看起来更有感觉了。此时在内部输入html代码，甚至还有提示！</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/04/image4.png"><img src="http://freewind.me/wp-content/uploads/2012/04/image_thumb4.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/779-9.png"><img src="/user_images/779-9.png" alt="image" title="image" /></a></p>
 <p>可惜不是每段html用它打开都是这样，如果字符串中的html内容较少的话，可能连语法高亮都没有。</p>
 <p>提了个request: <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=377382">https://bugs.eclipse.org/bugs/show_bug.cgi?id=377382</a>，希望能在editor中增加html/json/xml等的高亮显示，不知何时会实现。</p>
 <p>这是花了两天时间搞出来的示例：<a href="https://github.com/freewind/webtend" title="https://github.com/freewind/webtend">https://github.com/freewind/webtend</a></p>

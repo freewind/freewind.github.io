@@ -50,7 +50,7 @@
 <blockquote><p>～$ play new yabe</p>
 </blockquote>
 <p>它会提示你输入应用全名。输入:<strong>Yet Another Blog Engine</strong>.</p>
-<p><a href="http://freewind.me/wp-content/uploads/2013/01/image8.png"><img src="http://freewind.me/wp-content/uploads/2013/01/image_thumb8.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1294-1.png"><img src="/user_images/1294-1.png" alt="image" title="image" /></a></p>
 <p><strong>play new</strong> 命令创建了一个目录<strong>yabe/</strong>，同时生成一系列文件和目录，重要的几个文件如下:</p>
 <p><strong>app/</strong> 包含了应用程序的核心，由模型(models)，控制器(controllers)和视图(views) 3个目录组成。当然，这里可包含其他Java包.这里是<strong>.java</strong>文件正确的放置目录.</p>
 <p><strong>conf/</strong> 包含了应用程序的所有配置文件,其中三个特殊的文件，主配置文件<strong>application.conf</strong>,<strong>routes</strong>路由定义文件，用于国际化的<strong>messages</strong>文件。</p>
@@ -67,7 +67,7 @@
 <h4>运行程序</h4>
 <p>我们现在测试一下刚才刚创建的Play应用.跳到命令行，进入到刚创建的<strong>yabe/</strong>目录下，并输入<strong>play run</strong>。Play将载入这个应用，并启动一个端口为9000的web服务器.</p>
 <p>现在你可以在浏览器中输入<a href="http://localhost:9000">http://localhost:9000</a>查看这个应用.一个新的Play应用会有一个标准的欢迎界面去告诉你，你的应用创建成功了.</p>
-<p><a href="http://freewind.me/wp-content/uploads/2013/01/image9.png"><img src="http://freewind.me/wp-content/uploads/2013/01/image_thumb9.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1294-3.png"><img src="/user_images/1294-3.png" alt="image" title="image" /></a></p>
 <p>现在让我们看看这个新的应用是如何做到展示这个页面的.</p>
 <p>这个应用的主要入口在<strong>conf/routes</strong>文件中定义，包括了所有可以被访问的URLs.打开这个自动生成的routes文件，你可以看到第一个'route'：</p>
 <pre><code>GET        /            Application.index
@@ -135,7 +135,7 @@ public class Application extends Controller {
 
 然后在浏览器中重新刷新页面.你可以发现Play已经检测到变化并重新载入了程序控制器.因为你制造了一个错误，所以你得到一个编译错误.
 
-[![image](http://freewind.me/wp-content/uploads/2013/01/image_thumb10.png "image")](http://freewind.me/wp-content/uploads/2013/01/image10.png)
+[![image](/user_images/1294-5.png "image")](/user_images/1294-5.png)
 
 
 

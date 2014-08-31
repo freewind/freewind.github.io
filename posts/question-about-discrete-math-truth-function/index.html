@@ -19,7 +19,7 @@
 <p>对于这个概念，我想了几个小时终于基本想通（可能还不正确），先记在这里，怕又忘了。n元真值函数的定义不贴，只贴我的理解。</p>
 <p>最难理解的地方在于：n个命题变项，可以构成2<sup>2</sup>n个真值函数。为什么有2<sup>2</sup>n个？</p>
 <p>还有它给出来的表，</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/12/image.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1134-1.png"><img src="/user_images/1134-1.png" alt="image" title="image" /></a></p>
 <p>也不太理解。里面的F0/F1等等，到底指什么？</p>
 <p>当我想通这个问题时，脑海中冒出一句话：数学就是不断的抽象，在抽象的基础上进一步抽象。</p>
 <p>现在先不管F函数，先看前面讲的比较好理解的极小项（极大项）的概念。</p>
@@ -39,16 +39,16 @@
 <p>这样就把无限变为了有限。</p>
 <p>然后为了方便研究这“有限个主范式”，提出n元真值函数的定义F。F是个黑盒子，它只管内容，只看输入和输出。</p>
 <p>以2元真值函数为例：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/12/image1.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb1.png" alt="image" title="image" /></a></p>
-<p>它有2<sup>2</sup>2，即16个真值函数，分别定义为：<a href="http://freewind.me/wp-content/uploads/2012/12/image2.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb2.png" alt="image" title="image" /></a><a href="http://freewind.me/wp-content/uploads/2012/12/image3.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb3.png" alt="image" title="image" /></a>，这些函数到底是什么样子的呢？</p>
+<p><a href="/user_images/1134-3.png"><img src="/user_images/1134-3.png" alt="image" title="image" /></a></p>
+<p>它有2<sup>2</sup>2，即16个真值函数，分别定义为：<a href="/user_images/1134-5.png"><img src="/user_images/1134-5.png" alt="image" title="image" /></a><a href="/user_images/1134-7.png"><img src="/user_images/1134-7.png" alt="image" title="image" /></a>，这些函数到底是什么样子的呢？</p>
 <p>每一个真值函数，都对应着无数的命题，只要它们的输入和输出满足这个条件：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/12/image4.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb4.png" alt="image" title="image" /></a></p>
-<p>则都可以以<a href="http://freewind.me/wp-content/uploads/2012/12/image5.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb5.png" alt="image" title="image" /></a>代之。观察它，可以发现，不论输入是什么，值总为0，是一个矛盾式。故所有的由2个变项组成的矛盾式都与它等值。</p>
-<p>再看<a href="http://freewind.me/wp-content/uploads/2012/12/image6.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb6.png" alt="image" title="image" /></a>，它可以有很多形式，比如：</p>
+<p><a href="/user_images/1134-9.png"><img src="/user_images/1134-9.png" alt="image" title="image" /></a></p>
+<p>则都可以以<a href="/user_images/1134-11.png"><img src="/user_images/1134-11.png" alt="image" title="image" /></a>代之。观察它，可以发现，不论输入是什么，值总为0，是一个矛盾式。故所有的由2个变项组成的矛盾式都与它等值。</p>
+<p>再看<a href="/user_images/1134-13.png"><img src="/user_images/1134-13.png" alt="image" title="image" /></a>，它可以有很多形式，比如：</p>
 <blockquote><p>p -> q  <=> (┐p ∨ q) <=> ┐(p ∧ ┐q) <=> (┐p ∧ ┐q) ∨ (┐p ∧ q) ∨ ( p ∧ q ) <=> &hellip;</p>
 </blockquote>
 <p>这些不同的命题，它们虽然形式万千，但输入与输出都满足这个条件：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2012/12/image7.png"><img src="http://freewind.me/wp-content/uploads/2012/12/image_thumb7.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1134-15.png"><img src="/user_images/1134-15.png" alt="image" title="image" /></a></p>
 <p>如果用最小项来表示，是这样的：</p>
 <blockquote><p><font style="background-color: #ffffff">m1 ∨ m3 ∨ m4</font></p>
 </blockquote>

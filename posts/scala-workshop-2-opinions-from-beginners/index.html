@@ -16,7 +16,7 @@
 <div>
     <hr />
 <p>这是一篇为公司内部”scala热情workshop”活动准备的文章，面向Scala初学者，目的在于帮助大家能尽早就建立起对Scala的整体认识，少走弯路。当然由于水平有限，有些地方可能不准确，不过如果能促进大家多思考多求证，也算达到了目的。</p>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/182.png" alt="" /></p>
+<p><img src="/user_images/2704-0.png" alt="" /></p>
 <p>我最开始接触Scala是2010年初，到现在竟然已经过了4年半了。想到自己现在的scala水平，还处于入门后刚有点感觉的状态，感觉十分的惭愧。这四年多，一直断断续续的学习，中间多次放弃又多次拿起，就像是一本厚书，每次都是从头看了几十页便放下，多次之后，看到的还是前几十页。</p>
 <p>我之前的学习完全是自学，靠自己摸索，在没有人指导的情况下，走了很多弯路。其中最大的阻碍，有两点：</p>
 <ol>
@@ -24,7 +24,7 @@
 <li>对scala的定位和认识不清楚，常常在错误的方向上努力直到最后撞墙，而一些重要的知识却总在回避，导致学习过程特别的痛苦</li>
 </ol>
 <p>所以我想把其中一些重要的东西记录下来，让和我一样正在学习scala的同学能多一些思考，少走一些弯路。</p>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/966.png" alt="" /></p>
+<p><img src="/user_images/2704-1.png" alt="" /></p>
 <p>刚接触Scala的同学，看到的基本上都是一些宣传性的文章，也因此对它有一些不太正确的观点。</p>
 <div class="se-section-delimiter"></div>
 <h2>Scala很简单，Scala=Java+语法糖</h2>
@@ -43,7 +43,7 @@
 <li>implicit</li>
 </ol>
 <p>看起来，学习Scala就像爬楼梯一样，哪有什么学习曲线？</p>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/571.png" alt="" /><img src="undefined" alt="" /></p>
+<p><img src="/user_images/2704-2.png" alt="" /><img src="undefined" alt="" /></p>
 <p>当我们基本掌握上面那些知识点之后，也许一些基本的Scala开发还能勉强胜任，但是我们很快就会发现很多别人写的Scala代码我们看不懂，别人讨论的Scala知识我们也看不懂，我们只是在把Scala当Java用。为什么？</p>
 <p>因为那些真正让Scala具有吸引力、有难度的地方不在上面。比如：</p>
 <ol>
@@ -53,10 +53,10 @@
 </ol>
 <p>也许是因为那些书面向的都是初学者，在这些方面都讲得比较简略，点到即止。此时如果看&lt;&lt;Scala in Depth&gt;&gt;这本书，基本上很难看得下去。</p>
 <p>当我们决定把这些都学会的时候，会惊讶的发现，难度变成了这样：</p>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/475.png" alt="" /></p>
+<p><img src="/user_images/2704-3.png" alt="" /></p>
 <p>因为我们会发现，自己缺少了太多的背景知识，需要先补很多东西，甚至学一门别的函数式语言之后，才能回来学Scala。</p>
 <h2>Groovy创始人曾经说过：如果Scala早点出来，我就不会搞groovy了</h2>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/607.png" alt="" /></p>
+<p><img src="/user_images/2704-4.png" alt="" /></p>
 <p>不太清楚Groovy的创始人在什么场合说了这句开玩笑的话，但有些人就信以为真，经常在群里喊：都来学Scala吧，还学什么groovy啊，你没听说那谁都这么说了。</p>
 <p>然而对这两种语言有所了解的人都知道，这两门语言就没什么可比性。</p>
 <p>Scala是一门静态类型，结合了面向对象和函数式的，拥有强大的类型系统的语言。而Groovy是一门同时提供了动态类型和静态类型，基本兼容Java语法的语言。</p>
@@ -68,7 +68,7 @@
 <p>然而这些库在scala中，要么用起来非常别扭，要么有一些奇怪的问题。而Scala原生的库，比如squeryl，slick等，都有“多利用类型系统，少做魔术”的追求，所以用起来总是不那么好用。</p>
 <p>再举一个playframework的例子。曾经的playframework1是java版的，现在的playframework2用scala重写了，虽然名字相同，但是两者的风格有很大不同。play1有很多魔术，但是代码简洁、开发效率极高；而play2 typesafe了，对于普通网站的开发，它的开发效率大大降低了。</p>
 <h2>Scala和Java互操作很简单</h2>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/330.png" alt="" /></p>
+<p><img src="/user_images/2704-5.png" alt="" /></p>
 <p>Scala运行于JVM上，可以与Java互操作。我们甚至在同一个项目中，可以既有Java代码，又有scala代码。这是不是意味着，我们可以让项目中的一部分代码使用Java实现，另一部分使用Scala？</p>
 <p>在理论上是可以的，并且在实际中，有的时候我们不得不这样。但是混用的过程还是比较痛苦的：</p>
 <ol>
@@ -82,13 +82,13 @@
 <p>Java里有一些很好的库想在scala使用，人们通常都会先写一个wrapper，在外面包上一层scala接口。但是如果包的不好，用起来也是非常麻烦，不如不用，比如: <a href="http://scalafx.io">http://scalafx.io</a></p>
 <div class="se-section-delimiter"></div>
 <h2>Java程序员学习Scala最容易</h2>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/635.png" alt="" /></p>
+<p><img src="/user_images/2704-6.png" alt="" /></p>
 <p>初看起来Scala的语法跟Java比较像，对于Java程序员比较友好，所以很多人认为Java程序员学习Scala最容易。然而对于Java程序员来说，如果以前没有接触过函数式编程，对于类型系统了解不多的话，到后期会面临巨大的压力，因为有太多与函数式及类型系统相关的概念需要学习，而这往往不是短期内就能掌握的。甚至有可能为了学习scala而中途专门去学习另一门函数式语言（如haskell, lisp等），掌握了那些概念后，再回来看scala。</p>
 <p>Scala是一门过程式与函数式结合的语言，Scala代码中，过程式的代码经常与函数式代码混在一起，所以利用它来学习，常常会让人迷惑。而且在scala资料中，专门讲函数式知识的并不多。而像Haskell这样的纯函数式语言，几乎所有的资料都会讲到函数式编程里的各种概念，更加利于学习。</p>
 <p>所以Scala对于从函数式语言的程序员来说，可能学习曲线更小一些。</p>
 <div class="se-section-delimiter"></div>
 <h2>函数式很简单</h2>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/212.png" alt="" /></p>
+<p><img src="/user_images/2704-7.png" alt="" /></p>
 <p>对于像我这样的Java程序员来说，函数式编程是一个很神秘的话题。从前以为，像Java/C这样的过程式语言的编程方式，就是全部，想不出除此之外还能有什么编程方式。所以对于“函数式”，我们往往通过一两个简单的定义会想像，然后得到“函数式编程”很简单的结论。</p>
 <p>比如，关于函数式编程，有人说它有两个重要的特点：</p>
 <ol>
@@ -102,7 +102,7 @@
 <p>（这一块要等我掌握了一门函数式语言之后再来补充）</p>
 <div class="se-section-delimiter"></div>
 <h2>Scala的DSL很强大</h2>
-<p><img src="http://freewind.me/wp-content/uploads/2014/06/454.png" alt="" /></p>
+<p><img src="/user_images/2704-8.png" alt="" /></p>
 <p>由于Scala强大的类型系统和它的语法支持，我们可以设计出强大的类型安全的DSL。</p>
 <p>比如像scalatest这样的库，可以让我们这样写：</p>
 <pre><code>list should have length 3

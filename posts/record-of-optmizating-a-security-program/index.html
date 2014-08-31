@@ -84,10 +84,10 @@
 <p>如果修改MDF的设置，让它保存最近400000条呢？这样就不需要从数据库中读了（因为当时信息总量为30多万条）。</p>
 <p>测试结果为<strong><font color="#ff0000">7MB/s</font></strong>左右。虽然比读数据库好一些，但还是没有用完带宽，为什么？</p>
 <p>使用jvisualvm监测，发现的确没有从数据库读取数据。另外，发现在发送信息的过程中，很多与Message类相关的方法被调用了很多次，如下图：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/10/image8.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb8.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/495-1.png"><img src="/user_images/495-1.png" alt="image" title="image" /></a></p>
 <p>这些方法是否可以简化？直接把信息简化为二进制数组放在内存中，而不要使用一些InnerBytes之类给它套上？</p>
 <p>另外，在线程图页面，也发现了不少“阻塞”的线程：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/10/image9.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb9.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/495-3.png"><img src="/user_images/495-3.png" alt="image" title="image" /></a></p>
 <p>虽然可以相信图中这么多红色是因为jvisualvm的Profiler抽样监测加大了阻塞的机率，但可以推测，在高并发状态下阻塞情况也会比较容易发生。可能正是因为它而导致发送速度变慢。现在从内存列表中取数据时，的确有一些synchronized操作。</p>
 <p>我们需要先修改代码，把所有数据放入内存之后，再优化这里的synchronized。</p>
 <p>至此，需要对MDF进行比较大的修改，才能继续测，一时半会儿改不完。改天再继续测。</p>

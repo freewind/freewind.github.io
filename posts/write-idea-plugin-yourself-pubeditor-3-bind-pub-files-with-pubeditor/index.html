@@ -29,7 +29,7 @@
 <p>当我们将某种类型的文件识别为一种语言时，Idea可以让我们为它提供一个自定义的图标。这个图标将会显示在文件树中文件名节点的左边，以及编辑器标题的左边。</p>
 <p>文件大小为16&#215;16，格式为png。</p>
 <p>我使用一个<a href="http://www.uupoop.com/">在线版photoshop</a>，生成了下面这个图标:</p>
-<p><img src="http://freewind.me/wp-content/uploads/2014/04/pub.png" alt="pub" /></p>
+<p><img src="/user_images/2509-0.png" alt="pub" /></p>
 <p>取名为<code>pub_file.png</code></p>
 <h2>自定义Language</h2>
 <p>这个PubEditor实际上就是一个小型的自定义语言插件。对于这类插件，我们需要定义一个Language子类：</p>
@@ -79,13 +79,13 @@ object PubFileType extends PubFileType
 
 其中的`getDescription`，会在关联某种文件时，显示在列表中：
 
-![QQ20140407-27](http://freewind.me/wp-content/uploads/2014/04/QQ20140407-27.png)
+![QQ20140407-27](/user_images/2509-1.png)
 
 而`getDefaultExtension`是说默认把哪种后缀名的文件与该插件关联起来。由于我们需要对`pubspec.yaml`这个完整的文件名，而不是某个后缀名进行关联，所以我只好把它留空。
 
 `getIcon`会让我们提供一个自定义的图标供使用：
 
-![QQ20140407-28](http://freewind.me/wp-content/uploads/2014/04/QQ20140407-28.png)
+![QQ20140407-28](/user_images/2509-2.png)
 
 而`getName`我也不知道有什么用，可能是用来标识这种类型的文件，就叫`Pub`吧。
 
@@ -125,7 +125,7 @@ class PubFileTypeFactory extends FileTypeFactory {
 
 运行效果如下图。当我创建了一个`pubspec.yaml`文件时，IDEA立刻识别出来，并显示了我们自定义的图标。而创建了其它的文件，如`abc.yaml`，则关联上了其它的编辑器：
 
-![QQ20140407-29](http://freewind.me/wp-content/uploads/2014/04/QQ20140407-29.png)
+![QQ20140407-29](/user_images/2509-3.png)
 
 ## 源代码
 

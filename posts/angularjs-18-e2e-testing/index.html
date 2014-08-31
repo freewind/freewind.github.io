@@ -19,7 +19,7 @@
 <p>为了解决这个问题，我们创建了Angular Scenario Runner来模拟用户与程序的交互，来帮助我们检查Angular程序的健康状况。</p>
 <h3>概览</h3>
 <p>你使用JavaScript来写情景测试，描述在一个确定的状态下给定一个确定的交互，你的程序如何反应。一个情景包含了一个或多个<code>it(..)</code>块（你可以把它们想像你的程序要满足的需求），由<strong>命令</strong>和<strong>预期</strong>组成。命令用来指挥Runner让程序做一些操作（比如转到某个页面，或者点击一个按钮），而预期用来指挥Runner验证程序状态（如某个字段的值，或者当前的URL）。如果验证出错，runner把当前的<code>it</code>块标记为"failed"并继续运行下一个。情景脚本还可以有<strong>beforeEach</strong>和<strong>afterEach</strong>块，它们会在每一个<code>it</code>块之前或之后运行，不管测试过程中有没有失败。</p>
-<p><a href="http://freewind.me/wp-content/uploads/2013/01/image5.png"><img src="http://freewind.me/wp-content/uploads/2013/01/image_thumb5.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1246-1.png"><img src="/user_images/1246-1.png" alt="image" title="image" /></a></p>
 <p>作为对上面元素的补充，情景脚本还可以包含一些工具函数，用来减少<code>it</code>块中的重复代码。</p>
 <p>这里是一个简单的情景脚本的示例：</p>
 <pre><code>describe('Buzz Client', function() {

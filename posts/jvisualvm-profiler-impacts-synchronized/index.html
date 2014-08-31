@@ -40,7 +40,7 @@
 <p>}</p>
 </blockquote>
 <p>jvisualvm在开启了Profiler之后的线程图如下：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/10/image10.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb10.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/534-1.png"><img src="/user_images/534-1.png" alt="image" title="image" /></a></p>
 <p>此处的Thread-7和Thread-6就是工作线程，可以看出，全为绿色，表示正常运行。</p>
 <p>二、<strong>有synchronized的多线程程序，不开Profiler</strong></p>
 <blockquote><p>public class SynTest {</p>
@@ -65,16 +65,16 @@
 <p>}</p>
 </blockquote>
 <p>没开Profiler时的线程状态：</p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/10/image11.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb11.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/534-3.png"><img src="/user_images/534-3.png" alt="image" title="image" /></a></p>
 <p>三、<strong>有synchronized的多线程程序，开Profiler</strong></p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/10/image12.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb12.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/534-5.png"><img src="/user_images/534-5.png" alt="image" title="image" /></a></p>
 <p>与二对比，可以看到仍然有阻塞现象，但并无“加剧”表现。</p>
 <p>注：此处测试比较麻烦，因为当程序运行时，jvisualvm反应很慢，一次简单测试要等十五分钟以上，甚至一直卡住无反应。</p>
 <p><strong>四、拿MDF程序测试，不开Profiler</strong></p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/10/image13.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb13.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/534-7.png"><img src="/user_images/534-7.png" alt="image" title="image" /></a></p>
 <p>可以看到完全没有阻塞。</p>
 <p><strong>五、开Profiler</strong></p>
-<p><a href="http://freewind.me/wp-content/uploads/2011/10/image14.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb14.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/534-9.png"><img src="/user_images/534-9.png" alt="image" title="image" /></a></p>
 <p>可以看到，的确有阻塞现象发生。说明jvivualvm的确可加剧阻塞的产生。而在第二步第三步的测试中，都出现了阻塞，可能是因为代码写得比较容易产生阻塞，所以在平时状态下也会出现。</p>
 <p>但是如何修改代码，才能模拟出MDF的这种状态不太容易，所以不继续深究。因为已经可以得出结论：<strong>jvisualvm不会无中生有产生阻塞，但会加剧阻塞的产生</strong>。</p>
 
