@@ -10,11 +10,13 @@
 <body>
 
 <h1>
-    Nodejs的单线程与异步的初步理解
+    (2014-08-31) Nodejs的单线程与异步的初步理解
 </h1>
+
 <div>
     <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
 </div>
+
 
 <div>
     <hr />
@@ -181,6 +183,7 @@ compute();
 <p>之所以先wait了两次,原因是async其实把那些进queue的任务都process.nextTick()了,就是说放到了下一次event queue的循环里,也就是说现在的任务队列里没有这些任务,也不执行这些任务.等到下次loop才会开始做进queue得任务.</p>
 
 </div>
+
 <div id="disqus_thread"></div>
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
@@ -196,6 +199,7 @@ compute();
 </script>
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
 
 </body>
 <script type="text/javascript">
