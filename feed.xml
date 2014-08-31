@@ -12,10 +12,35 @@
 <atom:link href="" rel="self" type="application/rss+xml" />
 <link>http://freewind.github.io</link>
 <description></description>
-<lastBuildDate>星期日, 31 八月 2014 12:46:02 CST</lastBuildDate>
+<lastBuildDate>星期日, 31 八月 2014 14:50:17 CST</lastBuildDate>
 <language>zh-CN</language>
 <sy:updatePeriod>hourly</sy:updatePeriod>
 <sy:updateFrequency>1</sy:updateFrequency>
+
+<item>
+<title>在mac上连接postgresql出现”/tmp/.s.PGSQL.5432″错误，无法连接</title>
+<link>http://freewind.github.io/post/cannot-connect-to-postgresql-tmp-s-pgsql-5432</link>
+<comments></comments>
+<pubDate>星期日, 31 八月 2014 13:59:16 CST</pubDate>
+<dc:creator><![CDATA[Freewind]]></dc:creator>
+<category><![CDATA[未分类]]></category>
+<guid isPermaLink="false"></guid>
+<description><![CDATA[在mac上连接postgresql出现”/tmp/.s.PGSQL.5432″错误，无法连接]]></description>
+<content:encoded><![CDATA[<hr />
+<p>在mac上使用<code>psql</code>命令连接postgresql，出现以下错误：</p>
+<pre><code>$&gt; psql
+psql: could not connect to server: Too many levels of symbolic links
+Is the server running locally and accepting
+connections on Unix domain socket “/tmp/.s.PGSQL.5432″?
+</code></pre>
+<p>反复搜索，卸载了又装，都解决不了问题，但是通过图形工具pgAdmin连接又一切正常。</p>
+<p>最后找到了这个解决办法：</p>
+<pre><code>export PGHOST=localhost
+</code></pre>
+<p>就一切正常了。</p>
+<p>可以把它加入到<code>~/.bashrc</code>中</p>
+]]></content:encoded>
+</item>
 
 <item>
 <title>前端培训(1)</title>
@@ -8195,7 +8220,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#105;&#108;t&#x6f;&#x3a;&#x77;&#x65;&#x62;&#45;&#x75;&#105;&#x2d;&#x64;&#x65;&#x76;&#64;&#x64;&#97;&#x72;&#116;&#x6c;&#97;&#x6e;&#103;&#46;&#x6f;&#114;&#103;">&#x77;e&#x62;&#45;&#117;&#x69;&#45;&#100;&#x65;&#118;&#64;&#100;&#97;r&#116;&#x6c;&#97;&#110;&#x67;&#46;&#111;&#x72;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#58;&#119;&#x65;&#x62;&#45;&#117;&#x69;&#45;&#100;&#x65;&#x76;&#x40;&#100;&#97;&#x72;&#116;&#108;&#97;&#x6e;&#103;&#x2e;&#111;&#x72;&#x67;">&#x77;&#x65;&#x62;&#45;&#117;&#x69;&#45;&#x64;&#x65;&#x76;&#x40;&#100;&#x61;&#x72;&#116;&#108;&#97;&#110;&#x67;&#x2e;&#111;&#114;&#x67;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
