@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>11. 使用第三方库整合数据库存取层</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    11. 使用第三方库整合数据库存取层
+</h1>
+
+<div>
+    <hr />
+<p>(本文译者是爱国者)</p>
+<h3>Integrating with other database libraries</h3>
+<p>你可以在Play中使用任何第三方<strong>SQL</strong>数据库存取依赖库, 并且很方便地从<code>play.api.db.DB</code>工具类中获得<code>Connection</code>或<code>Datasource</code>。</p>
+<h4>整合ScalaQuery</h4>
+<p>这里可以整合任何需要JDBC数据源的数据存取层依赖库，比如整合[[ScalaQuery |<a href="https://github.com/szeiger/scala-query">https://github.com/szeiger/scala-query</a>]]:</p>
+<pre><code>import play.api.db._
+import play.api.Play.current
+
+import org.scalaquery.ql._
+import org.scalaquery.ql.TypeMapper._
+import org.scalaquery.ql.extended.{ExtendedTable =&gt; Table}
+
+import org.scalaquery.ql.extended.H2Driver.Implicit._ 
+
+import org.scalaquery.session._
+
+object Task extends Table[(Long, String, Date, Boolean)]("tasks") {
+
+  lazy val database = Database.forDataSource(DB.getDataSource())
+
+  def id = column[Long]("id", O PrimaryKey, O AutoInc)
+  def name = column[String]("name", O NotNull)
+  def dueDate = column[Date]("due_date")
+  def done = column[Boolean]("done")
+  def * = id ~ name ~ dueDate ~ done
+
+  def findAll = database.withSession { implicit db:Session =&gt;
+      (for(t &lt;- this) yield t.id ~ t.name).list
+  }
+
+}
+
+#### 通过JNDI暴露数据源
+
+有些库需要从JNDI获取`Datasource`. 你可以通过在`conf/application.conf`添加如下的配置把Play托管的数据源通过JNDI的形式暴露出来
+
+db.default.driver=org.h2.Driver
+db.default.url="jdbc:h2:mem:play"
+db.default.jndiName=DefaultDS
+</code></pre>
+<p>原文：<a href="https://github.com/playframework/Play20/wiki/ScalaDatabaseOthers">https://github.com/playframework/Play20/wiki/ScalaDatabaseOthers</a></p>
+
+</div>
+</body>
+</html>

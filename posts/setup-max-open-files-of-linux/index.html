@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>设置linux的”最大打开文件数量</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    设置linux的”最大打开文件数量
+</h1>
+
+<div>
+    <hr />
+<p>通过<code>ulimit -n</code>可以看到linux&#8221;最大打开文件数量&#8221;的默认值是<code>1024</code>。对于一些程序，如web服务，太小不够用。由于建立SOCKET会占用一个系统句柄，效果类似于打开了一个文件。LINUX默认的最大文件打开个数是1024（可能不同内核版本不一样），所以如果并发太多连接时就会报错。</p>
+<p><span id="more-351"></span>
+<br  /><p>可通过下面几个步骤修改：</p>
+<ol>
+<li><p>vi /etc/pam.d/login</p>
+<p>添加:</p>
+<pre><code>session required /lib/security/pam_limits.so
+</code></pre>
+</li>
+</ol>
+<p>注意看这个文件的注释</p>
+<ol>
+<li><p><code>vi /etc/security/limits.conf</code></p>
+<p>在最后添加：</p>
+</li>
+<li><ul>
+<li>nofile 819200</li>
+<li><ul>
+<li>nproc 819200</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><code>*</code>表示所有用户，如果想仅设置某一个用户，则换成其登录名，如<code>www</code>。</p>
+<pre><code>设置的数值与硬件配置有关，别设置太大了。
+</code></pre>
+<ol>
+<li><p><code>vi /etc/sysctl.conf</code></p>
+<p>在最后添加：</p>
+<pre><code>fs.file-max = 819200
+</code></pre>
+</li>
+</ol>
+<p>然后启用：</p>
+<pre><code>```
+</code></pre>
+<p>sysctl -p</p>
+<pre><code>4.  查看 `ulimit -a`，注意其中的`-n`那一行
+
+    设置：
+
+    ```
+ulimit -n 819200
+</code></pre>
+<ol>
+<li><p><code>echo 819200 &gt; /proc/sys/fs/file-max</code></p>
+<p>查看:</p>
+<pre><code>cat /proc/sys/fs/file-max 
+</code></pre>
+</li>
+</ol>
+
+</div>
+</body>
+</html>

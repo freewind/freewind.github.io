@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Siena</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    Siena
+</h1>
+
+<div>
+    <hr />
+<p><a href="http://www.sienaproject.com/index.html">http://www.sienaproject.com/index.html</a></p>
+<p>这个需要翻墙才能看到，一个技术网站也被我们伟大的长城防火墙给和谐了，真让人郁闷。</p>
+<p>Siena也是一个设计非常简单的ORM，而且很有自己的特色。可以说，它是目前我看到的里面最好的那个（如果ActiveObjects不用接口和getter/setter的话，两个就并列第一了）。</p>
+<p>它的灵感来源于Google App Engine Python Datastore API，看一个查询的例子：</p>
+<p>List<Employee> someEmployees = Employee.all()</p>
+<p>.filter(&#8220;firstName&#8221;, &#8220;Mark&#8221;)</p>
+<p>.order(&#8220;-lastName&#8221;)</p>
+<p>.fetch(10);<span id="more-98"></span></p>
+<p>相当的简洁明快。再和它的实体类的定义：</p>
+<p>@Table(&#8220;employees&#8221;)</p>
+<p>public class Employee extends Model {</p>
+<p>@Id(Generator.AUTO_INCREMENT)</p>
+<p>public Long id;</p>
+<p>@Column(&#8220;first_name&#8221;)</p>
+<p>@Max(200) @NotNull</p>
+<p>public String firstName;</p>
+<p>@Column(&#8220;last_name&#8221;)</p>
+<p>@Max(200) @NotNull</p>
+<p>public String lastName;</p>
+<p>@Column(&#8220;contact_info&#8221;)</p>
+<p>public Json contactInfo;</p>
+<p>@Column(&#8220;boss&#8221;) @Index(&#8220;boss_index&#8221;)</p>
+<p>public Employee boss;</p>
+<p>@Filter(&#8220;boss&#8221;)</p>
+<p>public Query<Employee> employees;</p>
+<p>public static void main(String[] args) {</p>
+<p>Employee e = new Employee();</p>
+<p>e.firstName = &#8220;John&#8221;;</p>
+<p>e.lastName = &#8220;Smith&#8221;;</p>
+<p>e.contactInfo = map()</p>
+<p>.put(&#8220;email&#8221;, &#8220;<a href="mailto:john.smith@example.com">john.smith@example.com</a>&#8220;)</p>
+<p>.put(&#8220;telephone&#8221;, list(&#8220;xxx&#8221;, &#8220;yyy&#8221;));</p>
+<p>e.insert();</p>
+<p>System.out.println(e.contactInfo);</p>
+<p>}</p>
+<p>public static Query<Employee> all() {</p>
+<p>return Model.all(Employee.class);</p>
+<p>}</p>
+<p>}</p>
+<p>类似于play中的JPA，也是很好理解和接受的。</p>
+<p>它有这么几个优点：</p>
+<ol>
+<li><p>设计简单，好学好用</p>
+</li>
+<li><p>不光支持常见的数据库，还支持Google App Engine datastore和Amazon's SimpleDB</p>
+</li>
+<li><p>如果你某些字段的结构比较复杂，可以把它变成json保存在一个字段里，非常方便</p>
+</li>
+</ol>
+<p>准备好好研究一下这个项目。它当前的版本才0.7.x，看起来还不太成熟</p>
+
+</div>
+</body>
+</html>

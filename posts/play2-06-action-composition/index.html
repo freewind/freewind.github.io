@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>06. Action 的组合</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    06. Action 的组合
+</h1>
+
+<div>
+    <hr />
+<p>(本文译者是爱国者)</p>
+<h3>Action 的组合</h3>
+<p>这章介绍几种定义action功能的方法。</p>
+<h4>基本的Action组合</h4>
+<p>假设我们需要记录每次action的调用，那么首先需要定义一个生成<code>Action</code>对象的辅助函数, 并且在该函数中记录action的调用。</p>
+<pre><code>def LoggingAction(f: Request[AnyContent] =&gt; Result): Action[AnyContent] = {
+  Action { request =&gt;
+    Logger.info("Calling action")
+    f(request)
+  }
+}
+
+然后使用刚定义的`LoggigAction`
+
+def index = LoggingAction { request =&gt;
+  Ok("Hello World")    
+}
+
+修改一下上述的`LogginAction`，使其能被指定一个正文解析器:
+
+def LoggingAction[A](bp: BodyParser[A])(f: Request[A] =&gt; Result): Action[A] = {
+  Action(bp) { request =&gt;
+    Logger.info("Calling action")
+    f(request)
+  }
+}
+
+def index = LoggingAction(parse.text) { request =&gt;
+  Ok("Hello World")    
+}
+
+#### 包装现有的action
+
+面使用包装模式给原生的`Action`添加额外功能：
+
+case class Logging[A](action: Action[A]) extends Action[A] {
+
+  def apply(request: Request[A]): Result = {
+    Logger.info("Calling action")
+    action(request)
+  }
+
+  lazy val parser = action.parser
+}
+
+然后这样使用：
+
+def index = Logging { 
+  Action { 
+    Ok("Hello World")
+  }
+}
+
+你仍然可以指定body parser：
+
+def index = Logging { 
+  Action(parse.text) { 
+    Ok("Hello World")
+  }
+}
+&gt; 另一种等价的写法：
+</code></pre>
+<blockquote><pre><code>def Logging[A](action: Action[A]): Action[A] = {
+  Action(action.parser) { request =&gt;
+    Logger.info("Calling action")
+    action(request)
+  }
+}
+
+#### 更复杂的例子
+
+让我们看看一个更复杂但普通的权限验证的例子。这个例子中，我们需要使用包装过的body parser进行权限验证，并且向action代码块传递一个经过权限验证的user,并且。
+
+def Authenticated[A](action: User =&gt; Action[A]): Action[A] = {
+
+  // Let's define a helper function to retrieve a User
+  def getUser(request: RequestHeader): Option[User] = {
+    request.session.get("user").flatMap(u =&gt; User.find(u))
+  }
+
+  // Wrap the original BodyParser with authentication
+  val authenticatedBodyParser = parse.using { request =&gt;
+    getUser(request).map(u =&gt; action(u).parser).getOrElse {
+      parse.error(Unauthorized)
+    }          
+  }
+
+  // Now let's define the new Action
+  Action(authenticatedBodyParser) { request =&gt;
+    getUser(request).map(u =&gt; action(u)(request)).getOrElse {
+      Unauthorized
+    }
+  }
+
+}
+
+然后在controller中这样使用：
+
+def index = Authenticated { user =&gt;
+  Action { request =&gt;
+    Ok("Hello " + user.name)      
+  }
+}
+</code></pre>
+<p><strong>注意:</strong> 在<code>play.api.mvc.Security.Authenticated</code>中已经有<code>Authenticated</code>的更好实现。这里的例子做了简化</p>
+<pre><code>#### 另一种创建Authenticated Action的方式
+
+让我们看看如何在既不包装整个action也不authenticating the body parser的情况下改写上面的例子
+
+def Authenticated(f: (User, Request[AnyContent]) =&gt; Result) = {
+  Action { request =&gt;
+    request.session.get("user").flatMap(u =&gt; User.find(u)).map { user =&gt;
+      f(user, request)
+    }.getOrElse(Unauthorized)      
+  }
+}
+
+def index = Authenticated { (user, request) =&gt;
+   Ok("Hello " + user.name)    
+}
+
+这个例子存在的问题是无法将`request`声明为`implicit`. 可以采用curry的风格解决:
+
+def Authenticated(f: User =&gt; Request[AnyContent] =&gt; Result) = {
+  Action { request =&gt;
+    request.session.get("user").flatMap(u =&gt; User.find(u)).map { user =&gt;
+      f(user)(request)
+    }.getOrElse(Unauthorized)     
+  }
+}
+
+def index = Authenticated { user =&gt; implicit request =&gt;
+   Ok("Hello " + user.name)    
+}
+
+另一种（也许更简单的）方法是定义一个`Request`的子类`AuthenticatedRequest`，这样我们就可以将两个参数合成一个参数：
+
+case class AuthenticatedRequest(
+  val user: User, request: Request[AnyContent]
+) extends WrappedRequest(request)
+
+def Authenticated(f: AuthenticatedRequest =&gt; Result) = {
+  Action { request =&gt;
+    request.session.get("user").flatMap(u =&gt; User.find(u)).map { user =&gt;
+      f(AuthenticatedRequest(user, request))
+    }.getOrElse(Unauthorized)            
+  }
+}
+
+def index = Authenticated { implicit request =&gt;
+   Ok("Hello " + request.user.name)    
+}
+
+对`Authenticated`函数重构一下，使其能指定BodyParser
+
+case class AuthenticatedRequest[A](
+  val user: User, request: Request[A]
+) extends WrappedRequest(request)
+
+def Authenticated[A](p: BodyParser[A])(f: AuthenticatedRequest[A] =&gt; Result) = {
+  Action(p) { request =&gt;
+    request.session.get("user").flatMap(u =&gt; User.find(u)).map { user =&gt;
+      f(AuthenticatedRequest(user, request))
+    }.getOrElse(Unauthorized)      
+  }
+}
+
+// Overloaded method to use the default body parser
+import play.api.mvc.BodyParsers._
+def Authenticated(f: AuthenticatedRequest[AnyContent] =&gt; Result): Action[AnyContent]  = {
+  Authenticated(parse.anyContent)(f)
+}
+</code></pre>
+</blockquote>
+<p>原文：<a href="https://github.com/playframework/Play20/wiki/ScalaActionsComposition">https://github.com/playframework/Play20/wiki/ScalaActionsComposition</a></p>
+
+</div>
+</body>
+</html>

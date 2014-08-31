@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在Java中得到程序使用的内存，以及JVM的总内存</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    在Java中得到程序使用的内存，以及JVM的总内存
+</h1>
+
+<div>
+    <hr />
+<p><p>参见<code>java.lang.Runtime</code>类</p>
+<pre><code>System.out.println("Max:" + Runtime.getRuntime().maxMemory());
+System.out.println("Total:" + Runtime.getRuntime().totalMemory());
+System.out.println("Free:" + Runtime.getRuntime().freeMemory());
+</code></pre>
+
+</div>
+</body>
+</html>

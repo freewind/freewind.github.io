@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>23. 创建Angular的过滤器</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    23. 创建Angular的过滤器
+</h1>
+
+<div>
+    <hr />
+<p><a href="http://docs.angularjs.org/guide/dev_guide.templates.filters.creating_filters"> <br  />http://docs.angularjs.org/guide/dev_guide.templates.filters.creating_filters</a></p>
+<p>创建你自己的filter非常简单：只需要向你的module中注册一个新的filter factory函数即可。在factory中返回一个函数，它的第一个参数是输入的值，后面其它的参数，是在调用该filter时可向它传入的其它参数。</p>
+<p>（anguljarjs中最简单的就是这个filter了）</p>
+<p>下面定义了一个filter，可以把一段文本内容颠倒。同时它还能接受一个“将文本转为大写”的参数。</p>
+<h4>源代码</h4>
+<p><strong>index.html</strong></p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html ng-app="MyReverseModule"&gt;
+  &lt;head&gt;
+    &lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div ng-controller="Ctrl"&gt;
+      &lt;input ng-model="greeting" type="greeting"&gt;&lt;br&gt;
+      No filter: {{greeting}}&lt;br&gt;
+      Reverse: {{greeting|reverse}}&lt;br&gt;
+      Reverse + uppercase: {{greeting|reverse:true}}&lt;br&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+**script.js**
+
+angular.module('MyReverseModule', []).
+  filter('reverse', function() {
+    return function(input, uppercase) {
+      var out = "";
+      for (var i = 0; i &lt; input.length; i++) {
+        out = input.charAt(i) + out;
+      }
+      // conditional based on optional argument
+      if (uppercase) {
+        out = out.toUpperCase();
+      }
+      return out;
+    }
+  });
+
+function Ctrl($scope) {
+  $scope.greeting = 'hello';
+}
+
+**End to end test**
+
+it('should reverse greeting', function() {
+  expect(binding('greeting|reverse')).toEqual('olleh');
+  input('greeting').enter('ABC');
+  expect(binding('greeting|reverse')).toEqual('CBA');
+});
+</code></pre>
+<p>jsfiddle demo</p>
+
+</div>
+</body>
+</html>

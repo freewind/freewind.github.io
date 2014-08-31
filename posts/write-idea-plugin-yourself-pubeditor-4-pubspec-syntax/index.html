@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>自己动手写IDEA plugin – PubEditor (4) pubspec.yaml文件语法</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    自己动手写IDEA plugin – PubEditor (4) pubspec.yaml文件语法
+</h1>
+
+<div>
+    <hr />
+<p>pubspec.yaml在本质上是一个YAML文件，所以它的语法遵守YAML的规定。但同时它的内容又比较简单，因为它规定了哪些配置项是有效的，其它的都会被自动忽略。</p>
+<p>全部有效选项如下：</p>
+<pre><code>name: newtify
+version: 1.2.3
+description: &gt;
+  Have you been turned into a newt?  Would you like to be?
+  This package can help: it has all of the
+  newt-transmogrification functionality you've been looking
+  for.
+author: Nathan Weizenbaum &lt;nweiz@google.com&gt;
+homepage: http://newtify.dartlang.org
+documentation: http://docs.newtify.com
+dependencies:
+  efts: '&gt;=2.0.4 &lt;3.0.0'
+  transmogrify: '&gt;=0.4.0 &lt;1.0.0'
+dev_dependencies:
+  unittest: '&gt;=0.6.0'
+dependency_overrides:
+  transmogrify:
+    path: ../transmogrify_patch/
+</code></pre>
+<p>其中只有<code>name</code>项是在所有情况下都必须的，<code>version</code>和<code>description</code>只有当要发布时才是必须的，其它的都是可选的。除它们以外的内容都会被忽略。</p>
+<p>上面是一个简化的模板，实际上很多选项还有更复杂的用法。更详细的内容，请参考官方文档：<a href="https://www.dartlang.org/tools/pub/pubspec.html">https://www.dartlang.org/tools/pub/pubspec.html</a></p>
+<p>我原以为IDEA中有可直接使用的YAML插件，但是发现竟然没有！而YAML语法实际上还有比较复杂的，对于我这次的任务来说，提供完整的YAML支持有点不太现实，所以我打算仅仅按pubspec.yaml的定义来实现部分YAML功能。</p>
+
+</div>
+</body>
+</html>

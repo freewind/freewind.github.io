@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>sbt设置全局idea插件</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    sbt设置全局idea插件
+</h1>
+
+<div>
+    <hr />
+<p>sbt本身不支持生成IDEA项目，但是对于我们来说，几乎每一个sbt项目，都需要生成相应的IDEA项目。</p>
+<p>我们可以在项目中的plugins文件中添加，更方便的做法是在全局添加，这样拿到一个sbt项目，什么都不用动就能生成IDEA项目了。</p>
+<p>在用户目录下的全局插件文件<code>~/.sbt/0.13/plugins/build.sbt</code>中添加：</p>
+<pre><code>resolvers ++= Seq(
+    "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
+)
+
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
+
+
+这样在任意一个sbt项目中，我们都可以运行：
+
+sbt gen-idea
+</code></pre>
+<p>生成相应的IDEA文件。</p>
+
+</div>
+</body>
+</html>

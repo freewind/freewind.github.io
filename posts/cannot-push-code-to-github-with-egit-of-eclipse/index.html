@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eclipse的egit插件，无法向github上传代码？</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    Eclipse的egit插件，无法向github上传代码？
+</h1>
+
+<div>
+    <hr />
+<p>今天使用eclipse时，遇到一个奇怪的问题。我首先通过命令行，导入了一个具有读写权限的项目：</p>
+<blockquote><p><font style="background-color: #ffffff">git clone <a href="mailto:git@github.com:linqing/ebb.git">git@github.com:linqing/ebb.git</a></font></p>
+</blockquote>
+<p>然后在它的基础上创建了一个eclipse项目。修改了代码之后，通过eclipse的egit插件提交，总是提示Auth fail，试遍了所有密码都一样。仔细检查了egit相关的配置，都没有发现问题。</p>
+<p>可是通过命令行是没有问题的，这是怎么回事？</p>
+<p>好在有万能的stackoverflow，经过搜索，发现了这个问题，看来不只我一个人遇到：</p>
+<blockquote><p><a href="http://stackoverflow.com/questions/3601805/auth-problem-with-egit-and-github">http://stackoverflow.com/questions/3601805/auth-problem-with-egit-and-github</a></p>
+</blockquote>
+<p><span id="more-578"></span>
+<br  /><p>原来，通过ssh向github提交时，需要配置密钥文件，但这个选项却没有放在egit中，而是在&rdquo;<em><strong>Window > Preferences > Network Connections > SSH2&rdquo;</strong>这个偏僻的角落里。</em></p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/11/image10.png"><img src="http://freewind.me/wp-content/uploads/2011/11/image_thumb10.png" alt="image" title="image" /></a></p>
+<p>关键在于这个ssh2 home，之前的值是另一个目录，里面没有密钥文件。</p>
+<p>看看那个目录里有什么？</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/11/image11.png"><img src="http://freewind.me/wp-content/uploads/2011/11/image_thumb11.png" alt="image" title="image" /></a></p>
+<p>关键就在于id_rsa这个文件，这是私钥。在Key Management中，将它导入：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/11/image12.png"><img src="http://freewind.me/wp-content/uploads/2011/11/image_thumb12.png" alt="image" title="image" /></a></p>
+<p>然后再试试提交，成功。</p>
+
+</div>
+</body>
+</html>

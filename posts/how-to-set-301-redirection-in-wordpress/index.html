@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WordPress 设置301转向</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    WordPress 设置301转向
+</h1>
+
+<div>
+    <hr />
+<p>按照以往惯例，网站以www开头，比如<a href="http://www.freewind.me">www.freewind.me</a>。但是现在的流行又是，不要二级域名，直接freewind.me。问题来了：搜索引擎可能会把<a href="http://www.freewind.me">www.freewind.me</a>和freewind.me当作两个不同的网站，分别计算权重。</p>
+<p>最好的作法就是选定其中的一个作为主域名，另一个设成301转向过来。</p>
+<p>在Wordpress中，怎么设？</p>
+<p><span id="more-149"></span>
+<br  /><p>首先要在域名管理面板中，将freewind.me与<a href="http://www.freewind.me">www.freewind.me</a>都指向网站所在的ip，如图：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/09/image4.png"><img src="http://freewind.me/wp-content/uploads/2011/09/image_thumb4.png" alt="image" title="image" /></a></p>
+<p>如果你新设了域名A记录，需要等一段时间才能生效。</p>
+<p>然后找到虚拟主机上的.htaccess文件，其位置如下：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/09/image5.png"><img src="http://freewind.me/wp-content/uploads/2011/09/image_thumb5.png" alt="image" title="image" /></a></p>
+<p>如果没有自行创建。在文件中增加以下内容：</p>
+<pre><code>Options +FollowSymLinks
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^www\.freewind\.me
+RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
+</code></pre>
+<p>然后测试：curl <a href="http://www.freewind.me">http://www.freewind.me</a> -I，得到：</p>
+<blockquote><p>HTTP/1.1 301 Moved Permanently
+<br  />Date: Tue, 13 Sep 2011 05:59:51 GMT
+<br  />Server: Apache/2
+<br  />X-Powered-By: PHP/5.2.17
+<br  />X-Pingback: <a href="http://freewind.me/xmlrpc.php">http://freewind.me/xmlrpc.php</a>
+<br  />Location: <a href="http://freewind.me/">http://freewind.me/</a>
+<br  />Vary: Accept-Encoding,User-Agent
+<br  />Content-Type: text/html; charset=UTF-8</p>
+</blockquote>
+<p>果然已经成了301，完工。</p>
+
+</div>
+</body>
+</html>

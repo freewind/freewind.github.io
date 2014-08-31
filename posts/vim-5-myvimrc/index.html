@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>vim 5. 使用启动配置文件</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    vim 5. 使用启动配置文件
+</h1>
+
+<div>
+    <hr />
+<p>我们可以把需要的配置写在vim的配置文件中，这样，当vim启动时，它就会自动变成我们设置好的样子，不需要我们再次设置。怎么做呢？</p>
+<p>在vim的安装目录下，有一个文件叫<code>_vimrc</code></p>
+<p>它没有后缀，是一个文本文件，有一些我目前还不怎么懂也不需要去懂的内容。它就是vim默认的启动文件。</p>
+<p>在它的同级目录下，我新建了一个文件叫：<code>myvimrc.vim</code></p>
+<p>专门放我的配置，然后在_vimrc中加入一行代码指向它：</p>
+<pre><code>source $VIMRUNTIME/../myvimrc.vim
+</code></pre>
+<p>我的myvimrc.vim文件的内容，现在是这样子的：</p>
+<p>&#8221; 不要菜单</p>
+<pre><code>set go=
+</code></pre>
+<p>&#8221; 使用evening配色</p>
+<pre><code>colo evening
+</code></pre>
+<p>&#8221; 显示行号</p>
+<pre><code>set nu
+</code></pre>
+<p>&#8221; 使用Megatops ProCoder字体</p>
+<pre><code>set guifont=Megatops_ProCoder_1.0:h10
+</code></pre>
+<p>&#8221; 下面是一个插件Taglist的快捷键，按F8就可以快速打开和关闭tag列表</p>
+<pre><code>nnoremap &lt;silent&gt; &lt;F8&gt; :TlistToggle&lt;CR&gt;
+</code></pre>
+
+</div>
+</body>
+</html>

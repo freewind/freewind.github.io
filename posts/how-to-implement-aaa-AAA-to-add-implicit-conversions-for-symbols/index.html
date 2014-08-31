@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>怎样实现 ‘aaa := &quot;AAA&quot;，即为符号增加函数并隐式转换</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    怎样实现 ‘aaa := &quot;AAA&quot;，即为符号增加函数并隐式转换
+</h1>
+
+<div>
+    <hr />
+<p>我们在写web应用时，经常会在controller中写如此的代码：</p>
+<pre><code>context("aaa")="AAA"
+</code></pre>
+<p><p>这个aaa就是将传给view层的变量。</p>
+<p>能否用一种更简化的写法达到同样的效率？可以利用scala中的符号（Symbol），写成：</p>
+<pre><code>'aaa := &amp;#8220;AAA&amp;#8221;
+</code></pre>
+<p>需要做两件事：</p>
+<ol>
+<li>隐式转换</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp; 创建一个symbol的wrapper类，将对符号的操作，转换到它身上。</p>
+<p>2.在wrapper类中，定义:=方法</p>
+<p>代码如下：</p>
+<pre><code class="scala">implicit def symbolWrapper(s: Symbol) = new SymbolHelper(s)
+
+var map = Map()
+
+class SymbolHelper(s: Symbol) {
+    def :=(value:String) {
+        map += (s.name -&gt; value)
+    }
+}
+
+object testSymbol {
+    def main(args : Array[String]) : Unit = {
+        'a := "AAA"
+        'b := "BBB"
+        println(map)
+    }
+}
+</code></pre>
+
+</div>
+</body>
+</html>

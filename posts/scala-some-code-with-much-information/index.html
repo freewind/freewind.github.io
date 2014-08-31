@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>解析一句信息量很大的代码</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    解析一句信息量很大的代码
+</h1>
+
+<div>
+    <hr />
+<p>在scalatra的RichRequest类中，发现了一句信息量很大的代码，值得分析。代码如下：</p>
+<pre><code>import scala.collection.{Map =&gt; CMap}
+
+case class RichRequest(r: HttpServletRequest) extends AttributesMap {
+
+  def multiCookies: CMap[String, Seq[String]] =
+    Option(r.getCookies).getOrElse(Array()).toSeq.
+      groupBy { _.getName }.
+      transform { case(k, v) =&gt; v map { _.getValue }}.
+      withDefaultValue(Seq.empty)
+}
+</code></pre>
+<p>其中r.getCookies()将返回一个Cookie[].</p>
+<p><span id="more-174"></span>
+<br  /><p>multiCookies的作用，是把request的cookies转换成一个Map[String,Seq[String]]，其中key为cookie的name，值为cookie的value的序列。因为可能有多个同名的cookie，所以是个序列。另外，如果请求的cookie不存在，返回一个空序列。</p>
+<pre><code>Option(r.getCookies) // -&gt; 把cookies变成一个Option，方便后面的操作
+  .getOrElse(Array()) // -&gt; 得到cokkies，如果为空，得到一个空数组
+  .toSeq // -&gt; 把数组变成序列，方便后面操作
+  .groupBy { _.getName } // 按name，将序列中的元素分组，得到一个Map[String, Seq[Cookie]]
+  .transform { case(k,v) =&gt; v map { _.getValue } // -&gt; 得到一个新Map，key为原key，值变成原值的value
+  .withDefaultValue(Seq.empty) // -&gt; 设定对于不存在的key，返回一个Seq.empty
+</code></pre>
+
+</div>
+</body>
+</html>

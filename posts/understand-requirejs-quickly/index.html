@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>快速理解RequireJs</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    快速理解RequireJs
+</h1>
+
+<div>
+    <hr />
+<p>RequireJs已经流行很久了，我们在项目中也打算使用它。它提供了以下功能：</p>
+<ol>
+<li>声明不同js文件之间的依赖</li>
+<li>可以按需、并行、延时载入js库</li>
+<li>可以让我们的代码以模块化的方式组织</li>
+</ol>
+<p>初看起来并不复杂。</p>
+<h2>在html中引入requirejs</h2>
+<p>在HTML中，添加这样的<code>&lt;script&gt;</code>标签：</p>
+<pre><code>&lt;script src="/path/to/require.js" data-main="/path/to/app/config.js"&gt;&lt;/script&gt;
+</code></pre>
+<p>通常使用requirejs的话，我们只需要导入requirejs即可，不需要显式导入其它的js库，因为这个工作会交给requirejs来做。</p>
+<p>属性<code>data-main</code>是告诉requirejs：你下载完以后，马上去载入真正的入口文件。它一般用来对requirejs进行配置，并且载入真正的程序模块。</p>
+<h2>在config.js中配置requirejs</h2>
+<p><code>config.js</code>中通常用来做两件事：</p>
+<ol>
+<li>配置requirejs 比如项目中用到哪些模块，文件路径是什么</li>
+<li>载入程序主模块</li>
+</ol>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    app: 'app'
+  }
+});
+
+requirejs(['app'], function(app) {
+  app.hello();
+});
+</code></pre>
+<p>在<code>paths</code>中，我们声明了一个名为<code>app</code>的模块，以及它对应的js文件地址。在最理想的情况下，<code>app.js</code>的内容，应该使用requirejs的方式来定义模块：</p>
+<pre><code class="js">define([], function() {
+  return {
+    hello: function() {
+      alert("hello, app~");
+    }
+  }
+});
+</code></pre>
+<p>这里的<code>define</code>是requirejs提供的函数。requirejs一共提供了两个全局变量：</p>
+<ol>
+<li>requirejs/require: 用来配置requirejs及载入入口模块。如果其中一个命名被其它库使用了，我们可以用另一个</li>
+<li>define: 定义一个模块</li>
+</ol>
+<p>另外还可以把<code>require</code>当作依赖的模块，然后调用它的方法：</p>
+<pre><code class="js">define(["require"], function(require) {
+    var cssUrl = require.toUrl("./style.css");
+});
+</code></pre>
+<h2>依赖一个不使用requirejs方式的库</h2>
+<p>前面的代码是理想的情况，即依赖的js文件，里面用了<code>define(...)</code>这样的方式来组织代码的。如果没用这种方式，会出现什么情况？</p>
+<p>比如这个<code>hello.js</code>:</p>
+<pre><code class="js">function hello() {
+  alert("hello, world~");
+}
+</code></pre>
+<p>它就按最普通的方式定义了一个函数，我们能在requirejs里使用它吗？</p>
+<p>先看下面不能正确工作的代码：</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    hello: 'hello'
+  }
+});
+
+requirejs(['hello'], function(hello) {
+  hello();
+});
+</code></pre>
+<p>这段代码会报错，提示：</p>
+<pre><code>Uncaught TypeError: undefined is not a function 
+</code></pre>
+<p>原因是最后调用<code>hello()</code>的时候，这个<code>hello</code>是个<code>undefined</code>. 这说明，虽然我们依赖了一个js库（它会被载入），但requirejs无法从中拿到代表它的对象注入进来供我们使用。</p>
+<p>在这种情况下，我们要使用<code>shim</code>，将某个依赖中的某个全局变量暴露给requirejs，当作这个模块本身的引用。</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    hello: 'hello'
+  },
+  shim: {
+    hello: { exports: 'hello' }
+  }
+});
+
+requirejs(['hello'], function(hello) {
+  hello();
+});
+</code></pre>
+<p>再运行就正常了。</p>
+<p>上面代码<code>exports: 'hello'</code>中的<code>hello</code>，是我们在<code>hello.js</code>中定义的<code>hello</code>函数。当我们使用<code>function hello() {}</code>的方式定义一个函数的时候，它就是全局可用的。如果我们选择了把它<code>export</code>给requirejs，那当我们的代码依赖于<code>hello</code>模块的时候，就可以拿到这个<code>hello</code>函数的引用了。</p>
+<p>所以：<code>exports</code>可以把某个非requirejs方式的代码中的某一个全局变量暴露出去，当作该模块以引用。</p>
+<h3>暴露多个变量：init</h3>
+<p>但如果我要同时暴露多个全局变量呢？比如，<code>hello.js</code>的定义其实是这样的：</p>
+<pre><code class="js">function hello() {
+  alert("hello, world~");
+}
+function hello2() {
+  alert("hello, world, again~");
+}
+</code></pre>
+<p>它定义了两个函数，而我两个都想要。</p>
+<p>这时就不能再用<code>exports</code>了，必须换成<code>init</code>函数：</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    hello: 'hello'
+  },
+  shim: {
+    hello: {
+      init: function() {
+        return {
+          hello: hello,
+          hello2: hello2
+        }
+      }
+    }
+  }
+});
+
+requirejs(['hello'], function(hello) {
+  hello.hello1();
+  hello.hello2();
+});
+</code></pre>
+<p>当<code>exports</code>与<code>init</code>同时存在的时候，<code>exports</code>将被忽略。</p>
+<h2>无主的与有主的模块</h2>
+<p>我遇到了一个折腾我不少时间的问题：为什么我只能使用<code>jquery</code>来依赖jquery, 而不能用其它的名字？</p>
+<p>比如下面这段代码：</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    myjquery: 'lib/jquery/jquery'
+  }
+});
+
+requirejs(['myjquery'], function(jq) {
+  alert(jq);
+});
+</code></pre>
+<p>它会提示我：</p>
+<pre><code>jq is undefined
+</code></pre>
+<p>但我仅仅改个名字：</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    jquery: 'lib/jquery/jquery'
+  }
+});
+
+requirejs(['jquery'], function(jq) {
+  alert(jq);
+});
+</code></pre>
+<p>就一切正常了，能打印出<code>jq</code>相应的对象了。</p>
+<p>为什么？我始终没搞清楚问题在哪儿。</p>
+<h3>有主的模块</h3>
+<p>经常研究，发现原来在jquery中已经定义了：</p>
+<pre><code>define('jquery', [], function() { ... });
+</code></pre>
+<p>它这里的<code>define</code>跟我们前面看到的<code>app.js</code>不同，在于它多了第一个参数<code>'jquery'</code>，表示给当前这个模块起了名字<code>jquery</code>，它已经是有主的了，只能属于<code>jquery</code>.</p>
+<p>所以当我们使用另一个名字：</p>
+<pre><code>myjquery: 'lib/jquery/jquery'
+</code></pre>
+<p>去引用这个库的时候，它会发现，在<code>jquery.js</code>里声明的模块名<code>jquery</code>与我自己使用的模块名<code>myjquery</code>不能，便不会把它赋给<code>myjquery</code>，所以<code>myjquery</code>的值是<code>undefined</code>。</p>
+<p>所以我们在使用一个第三方的时候，一定要注意它是否声明了一个确定的模块名。</p>
+<h3>无主的模块</h3>
+<p>如果我们不指明模块名，就像这样：</p>
+<pre><code class="js">define([...], function() {
+  ...
+});
+</code></pre>
+<p>那么它就是无主的模块。我们可以在<code>requirejs.config</code>里，使用任意一个模块名来引用它。这样的话，就让我们的命名非常自由，大部分的模块就是无主的。</p>
+<h3>为什么有的有主，有的无主</h3>
+<p>可以看到，无主的模块使用起来非常自由，为什么某些库（jquery, underscore）要把自己声明为有主的呢？</p>
+<p>按某些说法，这么做是出于性能的考虑。因为像<code>jquery</code>, <code>underscore</code>这样的基础库，经常被其它的库依赖。如果声明为无主的，那么其它的库很可能起不同的模块名，这样当我们使用它们时，就可能会多次载入jquery/underscore。</p>
+<p>而把它们声明为有主的，那么所有的模块只能使用同一个名字引用它们，这样系统就只会载入它们一次。</p>
+<h3>挖墙角</h3>
+<p>对于有主的模块，我们还有一种方式可以挖墙角：不把它们当作满足requirejs规范的模块，而当作普通js库，然后在<code>shim</code>中导出它们定义的全局变量。</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    myjquery: 'lib/jquery/jquery'
+  },
+  shim: {
+    myjquery: { exports: 'jQuery' }
+  }
+});
+
+requirejs(['myjquery'], function(jq) {
+  alert(jq);
+});
+</code></pre>
+<p>这样通过暴露<code>jQuery</code>这个全局变量给<code>myjquery</code>，我们就能正常的使用它了。</p>
+<p>不过我们完全没有必要这么挖墙角，因为对于我们来说，似乎没有任何好处。</p>
+<h2>如何完全不让jquery污染全局的$</h2>
+<p>在前面引用jquery的这几种方式中，我们虽然可以以模块的方式拿到jquery模块的引用，但是还是可以在任何地方使用全局变量<code>jQuery</code>和<code>$</code>。有没有办法让jquery完全不污染这两个变量？</p>
+<h3>在init中调用noConflict (无效)</h3>
+<p>首先尝试一种最简单但是不工作的方式：</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    jquery: 'lib/jquery/jquery'
+  },
+  shim: {
+    jquery: {
+      init: function() {
+        return jQuery.noConflict(true);
+      }
+    }
+  }
+});
+
+requirejs(['jquery'], function(jq) {
+  alert($);
+});
+</code></pre>
+<p>这样是不工作的，还是会弹出来一个非<code>undefined</code>的值。其原因是，一旦requirejs为模块名<code>jquery</code>找到了属于它的模块，它就会忽略<code>shim</code>中相应的内容。也就是说，下面这段代码完全没有执行：</p>
+<pre><code>jquery: {
+  init: function() {
+    return jQuery.noConflict(true);
+  }
+}
+</code></pre>
+<h3>使用另一个名字</h3>
+<p>如果我们使用挖墙角的方式来使用jquery，如下：</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    myjquery: 'lib/jquery/jquery'
+  },
+  shim: {
+    myjquery: {
+      init: function() {
+        return jQuery.noConflict(true);
+      }
+    }
+  }
+});
+
+requirejs(['myjquery'], function(jq) {
+  alert($);
+});
+</code></pre>
+<p>这样的确有效，这时弹出来的就是一个<code>undefined</code>。但是这样做的问题是，如果我们引用的某个第三方库还是使用<code>jquery</code>来引用jquery，那么就会报“找不到模块”的错了。</p>
+<p>我们要么得手动修改第三方模块的代码，要么再为它们提供一个<code>jquery</code>模块。但是使用后者的话，全局变量<code>$</code>可能又重新被污染了。</p>
+<h3>使用map</h3>
+<p>如果我们有办法能让在继续使用<code>jquery</code>这个模块名的同时，有机会调用<code>jQuery.noConflict(true)</code>就好了。</p>
+<p>我们可以再定义一个模块，仅仅为了执行这句代码：</p>
+<p><strong>jquery-private.js</strong></p>
+<pre><code class="js">define(['jquery'], function(jq) {
+  return jQuery.noConflict(true);
+});
+</code></pre>
+<p>然后在入口处先调用它:</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    jquery: 'lib/jquery/jquery',
+    'jquery-private': 'jquery-private'
+  }
+});
+
+requirejs(['jquery-private', 'jquery'], function() {
+  alert($);
+});
+</code></pre>
+<p>这样的确可行，但是还是会有问题： 我们必须小心的确保<code>jquery-private</code>永远是第一个被依赖，这样它才有机会尽早调用<code>jQuery.noConflict(true)</code>清除全局变量<code>$</code>和<code>jQuery</code>。这种保证只能靠人，非常不可靠。</p>
+<p>我们这时可以引入<code>map</code>配置，一劳永逸地解决这样问题：</p>
+<pre><code class="js">requirejs.config({
+  baseUrl: '/public/js',
+  paths: {
+    jquery: 'lib/jquery/jquery',
+    'jquery-private': 'jquery-private'
+  },
+  map: {
+    '*': { 'jquery': 'jquery-private'},
+    'jquery-private': { 'jquery': 'jquery'}
+  }
+});
+
+requirejs(['jquery'], function(jq) {
+  alert($);
+});
+</code></pre>
+<p>这样做，就解决了前面的问题：在除了jquery-private之外的任何依赖中，还可以直接使用<code>jqurey</code>这个模块名，并且总是被替换为对<code>jquery-private</code>的依赖，使得它最先被执行。</p>
+
+</div>
+</body>
+</html>

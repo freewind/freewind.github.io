@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Play1中自定义helper类的技巧</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    Play1中自定义helper类的技巧
+</h1>
+
+<div>
+    <hr />
+<p>大家都知道，Play1的模板使用了groovy作为模板语言，并且不允许在模板中直接创建方法。这个限制非常不方便，因为我们经常需要在在页面中创建一些临时使用的工具方法。</p>
+<p>Play给出了两种方案：</p>
+<ol>
+<li>定义自己的JavaExtensions类</li>
+<li>在模板中以全路径方式调用方法，如"org.apache.commons.StringUtils.trimToEmpty(mystr)&rdquo;</li>
+</ol>
+<p>这两种方法都不够轻量，这里介绍一种更方便的方法：在action中创建一个匿名的工具类实例，传给模板</p>
+<p><pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">static</span> <span class="kwrd">void</span> show() {</p>
+<pre><code>Object h = &lt;span class="kwrd"&gt;new&lt;/span&gt; Object() {
+    &lt;span class="kwrd"&gt;public&lt;/span&gt; String trimToEmpty(Object obj) {
+        &lt;span class="kwrd"&gt;if&lt;/span&gt;(obj==&lt;span class="kwrd"&gt;null&lt;/span&gt;) &lt;span class="kwrd"&gt;return&lt;/span&gt; &lt;span class="str"&gt;""&lt;/span&gt;;
+        &lt;span class="kwrd"&gt;return&lt;/span&gt; obj.toString();
+    }
+}
+render(h);
+</code></pre>
+<p>}<style type="text /css">.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }
+<br  /></style>```</p>
+<p>在模板中就可以这样使用：</p>
+<p><pre class="csharpcode"><h1>Hello, ${h.trimToEmpty(name)};</h1><style type="text /css">.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }
+<br  /></style>```</p>
+<p>对于临时使用的工具方法，这种方式非常适合。如果想在本controller范围或全局范围使用，只需要在合适的地方，创建一个action，使用play.mvc.Before，把它事先放入renderArgs中即可。</p>
+<p><pre class="csharpcode">@Before
+<br  /><span class="kwrd">static</span> <span class="kwrd">void</span> prepareHelper() {</p>
+<pre><code>Helper helper = &lt;span class="kwrd"&gt;new&lt;/span&gt; Helper();
+renderArgs.put(&lt;span class="str"&gt;"h"&lt;/span&gt;, helper");
+</code></pre>
+<p>}```
+<br  /><style type="text /css">
+<br  />.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style></p>
+
+</div>
+</body>
+</html>

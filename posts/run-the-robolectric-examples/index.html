@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Robolectric例子跑通</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    Robolectric例子跑通
+</h1>
+
+<div>
+    <hr />
+<p>Robolectric: <a href="http://pivotal.github.com/robolectric/">http://pivotal.github.com/robolectric/</a></p>
+<p>Android测试太慢了，每次发布再加上从头点起，最快也要1分钟才能开始手动测试，非常浪费时间。</p>
+<p>今天把这个跑通了，很简单，在junit中跑测试非常快，几秒钟就测完。</p>
+<p>使用方法不像官网上写的那么误导人，不需要maven，直接把robolectric-1.2-20120910.162821-126-jar-with-dependencies.jar和junit-xxx.jar拷到项目中，并且把它们两个上移到依赖的最上方即可。</p>
+<p>然后像下面写测试即可：</p>
+<p><div class="mycode"></p>
+<p>import android.app.Activity;
+<br  />import android.widget.Button;
+<br  />import android.widget.TextView;
+<br  />import com.example.MyActivity;
+<br  />import com.example.R;
+<br  />import com.xtremelabs.robolectric.RobolectricTestRunner;
+<br  />import org.junit.Before;
+<br  />import org.junit.Test;
+<br  />import org.junit.runner.RunWith;</p>
+<p>import static org.hamcrest.core.IsEqual.equalTo;
+<br  />import static org.junit.Assert.assertThat;</p>
+<p>@RunWith(RobolectricTestRunner.class)
+<br  />public class MyActivityTest {</p>
+<pre><code>private MyActivity activity;      
+private Button pressMeButton;      
+private TextView results;
+
+@Before     
+public void setUp() throws Exception {      
+    activity = new MyActivity();      
+    activity.onCreate(null);      
+    pressMeButton = (Button) activity.findViewById(R.id.press_me_button);      
+    results = (TextView) activity.findViewById(R.id.results_text_view);      
+}
+
+@Test     
+public void shouldUpdateResultsWhenButtonIsClicked() throws Exception {      
+    pressMeButton.performClick();      
+    String resultsText = results.getText().toString();      
+    assertThat(resultsText, equalTo("Testing Android Rocks!"));      
+}      
+</code></pre>
+<p>}</p>
+<p></p></div></p>
+<p>目前只跑了它最基本的例子，没问题，不知道测复杂的功能时会怎么样。我现在在用ormlite写一些数据库测试的代码，这些东西要手动测的话麻烦死，希望能用这个测。等这两天写了测试后再过反馈过来。</p>
+<p>原理：Android上的vm跟电脑上的jvm不是一回事，按说是不能通用的。Robolectric是通过一些shadow类，模拟android的功能，拦截我们代码对于底层的调用，然后使用它提供的方法响应。这要才能做到在jvm上测android功能。</p>
+<p>据说它实现了大部分android的功能，也就是说，还有一部分没有实现，目前还不知道是哪些。希望我用到的都实现了。</p>
+
+</div>
+</body>
+</html>

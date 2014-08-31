@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>05. Http正文解析器</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    05. Http正文解析器
+</h1>
+
+<div>
+    <hr />
+<p>(本文译者是爱国者)</p>
+<h4>什么是Http正文解析器（Http Body Parser）</h4>
+<p>我们知道Http的PUT请求和POST请求能包含正文（或叫主体）. Http正文能携带任何信息，通过<code>Content-Type</code>标明正文的类型。Play使用正文解析器（<strong>Body parser</strong>）将Http正文转换成某种Scala类型的数据。</p>
+<p>一个Http正文解析器用<code>play.api.mvc.BodyParser[A]</code>表示，它将接收到的字节流转换成类型为A的目标对象.</p>
+<p>然而，http正文可能很大， 如果等所有的正文内容传输完再一次性放到内存进行解析，这样的做法是不高效的。 某些目标对象，比如字符串和文件，完全可以一边接收字节流一边进行构建。</p>
+<p>另外，在开始解析正文之前，<strong>Http正文解析器</strong>可以获取请求头的内容，从而可以对正文先执行一些检查. 比如客户端上传的文件是否过大，正文类型（Content-Type)是否符合要求等等。</p>
+<blockquote><p><strong>注意</strong>：你可以将<code>BodyParser[A]</code>看成<code>Iteratee[Array[Byte], A]</code>，但准确来说应该要看成<code>Iteratee[Array[Byte], Either[Result,A]]</code>。这样设计的目的在于，当无法正确解析Http正文时可以直接返回诸如<code>400 BAD_REQUEST</code>,<code>412 PRECONDITION_FAILED</code>或者<code>413 REQUEST_ENTITY_TOO_LARGE</code>等响应。想了解更多流式处理的内容，请点击 [[这里 | Iteratees]]</p>
+</blockquote>
+<p>完成Http正文的解析之后会返回一个类型为<code>A</code>的对象并保存在<code>request</code>对象里，然后执行<code>Action</code>函数</p>
+<h4>关于Actions</h4>
+<p>前面提到，<code>Action</code>是一个<code>Request =&gt; Result</code>的函数，但不完全正确。我们先来看看<code>Action</code>特质的定义：</p>
+<pre><code>trait Action[A] extends (Request[A] =&gt; Result) {
+  def parser: BodyParser[A]
+}
+
+首先我们看到`Request`带有一个泛型`A`,并在`Action`中定义了一个象函数`parser`，`parser`的返回类型是`BodyParser[A]`
+
+我们再来看看`Request`特质的定义：
+
+trait Request[+A] extends RequestHeader {
+  def body: A
+}
+
+这里的`A`类型就是Http正文解析后的类型。我们定义任何我们想要的类型，常见的有`String`,`NodeSeq`,`Array[Byte]`,`JsonValue`和`java.io.File`等，只要提供相应的body parser
+
+总的来说，`Action[A]`使用`BodyParser[A]`将Http正文解析成类型为`A`的对象，然后创建`Request[A]`对象并传递给action代码块
+
+#### 默认的Http正文解析器
+
+如果不指定Http正文解析器，那么Play会使用一个将Http正文解析成`play.api.mvc.AnyContent`的默认解析器(`play.api.mvc.BodyParsers.parser`)。这个解析器会根据`Content-Type`的值决定解析成那种类型的对象；
+</code></pre>
+<ul>
+<li><p><strong>text/plain</strong>: <code>String</code></p>
+</li>
+<li><p><strong>application/json</strong>: <code>JsValue</code></p>
+</li>
+<li><p><strong>text/xml</strong>: <code>NodeSeq</code></p>
+</li>
+<li><p><strong>application/form-url-encoded</strong>: <code>Map[String, Seq[String]]</code></p>
+</li>
+<li><p><strong>multipart/form-data</strong>: <code>MultipartFormData[TemporaryFile]</code></p>
+</li>
+<li><p>any other content type: <code>RawBuffer</code></p>
+<p>例子：</p>
+<p>def save = Action { request =>
+<br  />val body: AnyContent = request.body
+<br  />val textBody: Option[String] = body.asText</p>
+<p>// Expecting text body
+<br  />textBody.map { text =></p>
+<pre><code>Ok("Got: " + text)
+</code></pre>
+<p>}.getOrElse {</p>
+<pre><code>BadRequest("Expecting text/plain request body")  
+</code></pre>
+<p>}
+<br  />}</p>
+<h4>指定一个解析器</h4>
+<p>如果<code>Content-Type</code>的值是<code>text/plain</code>，可以使用<code>parser.text</code>将正文解析成<code>java.lang.String</code></p>
+<p>def save = Action(parse.text) { request =>
+<br  />Ok(&ldquo;Got: " + request.body)
+<br  />}</p>
+<p>你是否注意到这段代码的简洁性？ 实际上，如果在解析过程中发生错误或正文无法解析，那么<code>parse.text</code>会直接返回<code>400 BAD_REQUEST</code>的响应，因此我们无需在action代码块中对解析后的<code>request.body</code>进行检验。</p>
+<p>上面的代码可以改成：</p>
+<p>def save = Action(parse.tolerantText) { request =>
+<br  />Ok(&ldquo;Got: " + request.body)
+<br  />}</p>
+<p>所不同的是，<code>parser.tolerantText</code>不会检查<code>Content-Type</code>的值，它只是简单地把Http正文转换成<code>java.lang.String</code></p>
+<blockquote><p><strong>提示:</strong> 每一种body parser都有相应的<code>tolerant</code>版本</p>
+</blockquote>
+<p>下面的例子将Http正文解析成一个文件</p>
+<p>def save = Action(parse.file(to = new File(&ldquo;/tmp/upload&rdquo;))) { request =>
+<br  />Ok(&ldquo;Saved the request content to " + request.body)
+<br  />}</p>
+<h4>组合正文解析器</h4>
+<p>现在编写一个自定义的正文解析器。这个正文解析器从session中提取用户名, 并为每个用户生成一个唯一的文件。</p>
+<p>val storeInUserFile = parse.using { request =>
+<br  />request.session.get(&ldquo;username&rdquo;).map { user =></p>
+<pre><code>file(to = new File("/tmp/" + user + ".upload"))
+</code></pre>
+<p>}.getOrElse {</p>
+<pre><code>error(Unauthorized("You don't have the right to upload here"))
+</code></pre>
+<p>}
+<br  />}</p>
+<p>def save = Action(storeInUserFile) { request =>
+<br  />Ok(&ldquo;Saved the request content to " + request.body)
+<br  />}</p>
+<blockquote><p><strong>注意:</strong> 这里我们没有真正实现自己的正文解析器，只是组合现有的正文解析器。一般来说，Play提供的正文解析器能满足大部分应用场景。后面的章节会介绍如何编写自己的正文解析器</p>
+</blockquote>
+<h4>最大内容长度</h4>
+<p>对于针对文本的正文解析器，比如<strong>text</strong>,<strong>json</strong>,<strong>xml</strong>或者<strong>formUrlEncoded</strong>, Play会使用一个阀值来限制正文的最大长度。因为这几种解析器会将Http正文全部放到内存进行解析。Play将Http正文的最大长度默认地被限制为100KB,你可以在修改该阀值。请看下面的例子：</p>
+<p>// 只接受不大于10KB的文本
+<br  />def save = Action(parse.text(maxLength = 1024 * 10)) { request =>
+<br  />Ok(&ldquo;Got: " + text)
+<br  />}</p>
+<blockquote><p><strong>提示:</strong> 可以在<code>application.conf</code>配置文件中指定Http文本的最大长度:</p>
+<pre><code>`parsers.text.maxLength=128K`
+</code></pre>
+</blockquote>
+<p>或者使用<code>maxLength</code>函数；</p>
+<p>// Accept only 10KB of data.
+<br  />def save = Action(maxLength(1024 * 10, parser = storeInUserFile)) { request =>
+<br  />Ok(&ldquo;Saved the request content to " + request.body)
+<br  />}</p>
+</li>
+</ul>
+<p>原文：<a href="https://github.com/playframework/Play20/wiki/ScalaBodyParsers">https://github.com/playframework/Play20/wiki/ScalaBodyParsers</a></p>
+
+</div>
+</body>
+</html>

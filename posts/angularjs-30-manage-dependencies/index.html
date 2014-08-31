@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>30. 管理服务依赖</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    30. 管理服务依赖
+</h1>
+
+<div>
+    <hr />
+<p>Anguar允许service声明其它services作为构建自己实例的依赖。</p>
+<p>为了声明依赖，你需要在工厂函数的签名中指定它们，使用<code>$inject</code>属性以service名称数组的方式，或使用数组标记的方式来声明。其中<code>$inject</code>属性声明可以被丢弃（参看<strong>推断<code>$inject</code></strong>），不过要注意这目前还是一个实验性的功能。</p>
+<ul>
+<li><p>使用数组标记</p>
+<pre><code>function myModuleCfgFn($provide) {
+</code></pre>
+<p>$provide.factory('myService', ['dep1', 'dep2', function(dep1, dep2) {}]);
+<br  />}</p>
+</li>
+<li><p>使用$inject属性：
+<br  />function myModuleCfgFn($provide) {
+<br  />var myServiceFactory = function(dep1, dep2) {};
+<br  />myServiceFactory.$inject = ['dep1', 'dep2'];
+<br  />$provide.factory('myService', myServiceFactory);
+<br  />}</p>
+</li>
+<li><p>使用DI推断（与代码压缩不兼容）
+<br  />function myModuleCfgFn($provide) {
+<br  />$provide.factory('myService', function(dep1, dep2) {});
+<br  />}</p>
+<p>下面这个例子中，自定义了两个service，一个依赖于另一个，还依赖Anguar中提供的其它service:</p>
+<p>/**</p>
+<ul>
+<li><p>batchLog service allows for messages to be queued in memory and flushed</p>
+</li>
+<li><p>to the console.log every 50 seconds.
+<br  />*</p>
+</li>
+<li><p>@param {<em>} message Message to be logged.
+<br  /></em>/
+<br  />function batchLogModule($provide){
+<br  />$provide.factory('batchLog', ['$timeout', '$log', function($timeout, $log) {
+<br  />var messageQueue = [];</p>
+<p>function log() {</p>
+<pre><code>if (messageQueue.length) {
+  $log('batchLog messages: ', messageQueue);
+  messageQueue = [];
+}
+$timeout(log, 50000);
+</code></pre>
+<p>}</p>
+<p>// start periodic checking
+<br  />log();</p>
+<p>return function(message) {</p>
+<pre><code>messageQueue.push(message);
+</code></pre>
+<p>}
+<br  />}]);</p>
+<p>/**</p>
+<ul>
+<li>routeTemplateMonitor monitors each $route change and logs the current</li>
+<li>template via the batchLog service.
+<br  />*/
+<br  />$provide.factory('routeTemplateMonitor',<pre><code>    ['$route', 'batchLog', '$rootScope',
+</code></pre>
+function($route,   batchLog,   $rootScope) {
+<br  />$rootScope.$on('$routeChangeSuccess', function() {
+<br  />batchLog($route.current ? $route.current.template : null);
+<br  />});
+<br  />}]);
+<br  />}</li>
+</ul>
+<p>// get the main service to kick of the application
+<br  />angular.injector([batchLogModule]).get('routeTemplateMonitor');</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>本例中需要注意的：</p>
+<ul>
+<li><p><code>batchLog</code> service依赖于内置的<code>$timeout</code>和<code>$log</code> services，它允许信息以批处理方式写进<code>console.log</code>中</p>
+</li>
+<li><p><code>routeTemplateMonitor</code> service依赖于内置的<code>$route</code> service，和自定义的<code>batchLog</code> service</p>
+</li>
+<li><p>这两个services都使用了array notation方式来声明依赖。注意数组中的字符串顺序非常重要，它们与最后传给工厂方法中的service的顺序相同。与“依赖推断”不同，那个是根据参数名来推断的，顺序不重要。</p>
+</li>
+</ul>
+<h4>相关api</h4>
+<ul>
+<li><code>ng</code></li>
+<li><code>injector</code></li>
+</ul>
+
+</div>
+</body>
+</html>

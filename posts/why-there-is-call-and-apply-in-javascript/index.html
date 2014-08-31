@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Javascript中，为什么既有call又有apply</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    Javascript中，为什么既有call又有apply
+</h1>
+
+<div>
+    <hr />
+<p>Javascript中，每个函数都有这两个方法，<code>call</code>和<code>apply</code>，它们之间的区别很小：call中参数是直接写的，而apply中要放在一个数组（或跟数组很像但不同数组的对象）里。</p>
+<p>有关两者区别的更详细资料，请参考：<a href="http://stackoverflow.com/questions/1986896/what-is-the-difference-between-call-and-apply">http://stackoverflow.com/questions/1986896/what-is-the-difference-between-call-and-apply</a></p>
+<p>这里举个例子：</p>
+<blockquote><p>function hello(name, message) {
+<br  />alert(name + ': ' + message);
+<br  />};
+<br  />hello.call(null, 'Freewind', 'call');
+<br  />hello.apply(null, ['Freewind', 'apply']);​​</p>
+</blockquote>
+<p>运行的结果是一模一样的。</p>
+<p>问题来了：<strong>既然两者之间的差别这么小，为什么要同时提供这两个函数？一个不够用吗？</strong></p>
+<p>答案是：<strong>apply是为arguments而生的。</strong></p>
+<p>arguments是函数中预定义的一个变量，它表示实际传递给该函数的参数。它不是数组，但是跟数组很像。看这个例子：</p>
+<blockquote><p>function f(a,b,c) {
+<br  />alert(arguments.length + &ldquo;: " + join(arguments));
+<br  />}
+<br  />function join(args) {
+<br  />var s = &#8221;;
+<br  />for(i in args) {
+<br  />s += args[i] + ' ';
+<br  />}
+<br  />return s;
+<br  />}
+<br  />f(10);
+<br  />f(10,20);
+<br  />f(10,20,30);
+<br  />f(10,20,30,40);
+<br  />​</p>
+</blockquote>
+<p>可见，arguments中的确保存了全部传入的参数，不管实际传入的参数是多还是少。</p>
+<p>如果我们想在一个函数中，把所有传入的参数，原封不动的转给另一个函数，只能靠apply了。如果你用call，就必须显式地把参数一个个写上去，但这是不可能的，因为你根本不能确定调用者到底传了多少个参数过来。</p>
+<blockquote><p>function f1(a,b,c) { f2.apply(null, arguments); }
+<br  />function f2(a,b,c,d) { alert(a+','+b+','+c+','+d);}
+<br  />f1('11&#8242;,'22&#8242;,'33&#8242;,'44&#8242;);​​​​​</p>
+</blockquote>
+<p>那我们只要apply就够了，为什么还要call呢？答案是，call写起来更简洁明了。当参数确定时，使用call写起来更快更顺手（不用写那一对中括号了）。</p>
+<p>以上是我浅显的理解，欢迎补充</p>
+
+</div>
+</body>
+</html>

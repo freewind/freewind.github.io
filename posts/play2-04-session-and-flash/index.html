@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>04. Session的Flash使用</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    04. Session的Flash使用
+</h1>
+
+<div>
+    <hr />
+<p>(本文译者是爱国者)</p>
+<h4>Session和Flash的区别</h4>
+<p>如果你需要在几个Http请求之间保持数据，你可以将他们保存在Session或Flash内. 两者的区别是，保存在Session中的数据在整个用户会话的过程中一直有效，而保存在Flash中数据只在下一次请求中有效。</p>
+<p>需要注意的是，Session和Flash中的数据都不是保存在服务器端的，而是通过cookie机制在几个Http请求之间来回传递。因此保存在Session或Flash中的数据量不宜过大，最好控制在4KB以内，并且只能保存字符串值。</p>
+<p>当然，这些保存在cookie中的数据是经过数字签名的，因此你不需要担心数据被篡改.</p>
+<blockquote><p>译者：敏感数据尽量保存在服务器缓存或加密后传输</p>
+</blockquote>
+<p>Session不应该被当做缓存来使用（尽管你可以这么做）。如果你需要缓存某些数据，并且这些数据要跟Session绑定，你可以这样做：使用Play内置的缓存机制将需要缓存的数据保存起来，然后在Session中只保留一个和该缓存数据块关联的ID。</p>
+<blockquote><p>Session中的数据不会超时失效，除非用户终止会话（比如浏览器关闭了）。会话终止后，session会被销毁。如果你需要给Session中某些数据设置超时的阀值，你可以为它们添加一个时间戳，然后在每次读取数据之前和当前时间进行对比.</p>
+</blockquote>
+<h4>从Session中读取数据</h4>
+<p>要从session中读取数据，首先你要从Http的请求对象（<code>play.api.mvc.Request</code>）获得一个Session对象（<code>play.api.mvc.Session</code>）. Session对象提供了数据读取操作函数；</p>
+<pre><code>def index = Action { request =&gt;
+  request.session.get("connected").map { user =&gt;
+    Ok("Hello " + user)
+  }.getOrElse {
+    Unauthorized("Oops, you are not connected")
+  }
+}
+
+如果`request`被声明为隐式参数，那么Session对象会自动从`request`获得。
+
+def index = Action { implicit request =&gt;
+  session.get("connected").map { user =&gt;
+    Ok("Hello " + user)
+  }.getOrElse {
+    Unauthorized("Oops, you are not connected")
+  }
+}
+
+想了解scala的隐式转换机制，请参阅：
+
+#### 将数据保存在Session
+
+`play.api.mvc.SimpleResult`对象提供了`withSession`函数设置session。
+
+Ok("Welcome!").withSession(
+  "connected" -&gt; "user@gmail.com"
+)
+
+如果只是希望往session中添加数据，请使用下面的方法：
+
+Ok("Hello World!").withSession(
+  session + ("saidHello" -&gt; "yes")
+)
+
+如果想从session删除某些数据，可以这样做
+
+Ok("Theme reset!").withSession(
+  session - "theme"
+)
+
+#### 丢弃整个session
+
+Ok("Bye").withNewSession
+
+#### Flash对象的使用
+
+Flash的使用方法和Session一样，但有两点不同：
+</code></pre>
+<ul>
+<li><p>保存在Flash中的数据只对下一次请求有效*   Flash也是通过cookie机制实现的，但Play不会对Flash中的数据进行数字签名。因此客户端可以修改Flash中的数据</p>
+<blockquote><p><strong>重要提示:</strong> Flash对象应该只用于非Ajax应用中来传输成功或失败的信息, 因为ajax应用的请求是异步的。</p>
+</blockquote>
+<p>下面是使用flash的例子：</p>
+<p>def index = Action { implicit request =>
+<br  />Ok {</p>
+<pre><code>flash.get("success").getOrElse("Welcome!")
+</code></pre>
+<p>}
+<br  />}</p>
+<p>def save = Action {
+<br  />Redirect(&ldquo;/home&rdquo;).flashing(</p>
+<pre><code>"success" -&gt; "The item has been created"
+</code></pre>
+<p>)
+<br  />}</p>
+<p>如果需要在views中获取Flash中的数据，那么将flash声明为implicit</p>
+<p>@()(implicit flash: Flash)
+<br  />&hellip;
+<br  />@flash.get(&ldquo;success&rdquo;).getOrElse(&ldquo;noooz&rdquo;)
+<br  />&hellip;</p>
+<p>如果出现'<em>could not find implicit value for parameter flash: play.api.mvc.Flash</em>'的错误，那是因为你没有在Action的闭包中奖request声明为implicit. 请将<code>request =&gt;</code>改成<code>implicit request =&gt;</code></p>
+<p>def index() = Action {
+<br  />implicit request =></p>
+<pre><code>Ok(views.html.Application.index())
+</code></pre>
+<p>}</p>
+</li>
+</ul>
+<p>原文：<a href="https://github.com/playframework/Play20/wiki/ScalaSessionFlash">https://github.com/playframework/Play20/wiki/ScalaSessionFlash</a></p>
+
+</div>
+</body>
+</html>

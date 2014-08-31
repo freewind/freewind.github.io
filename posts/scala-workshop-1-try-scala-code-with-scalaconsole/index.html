@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scala热情workshop(1). 安装快速尝试scala代码的工具: scalaconsole</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    Scala热情workshop(1). 安装快速尝试scala代码的工具: scalaconsole
+</h1>
+
+<div>
+    <hr />
+<h2>Scala Console</h2>
+<p>为了快速尝试一段代码，我们有scala repl, eclipse, idea可用，但是在某些情况下，它们都不够好用。</p>
+<p>而scala console这个工具，为scala-repl提供了图形界面，代码高亮等支持，十分方便，实乃居家必备。</p>
+<h3>快速运行代码</h3>
+<p>上个主界面图：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2014/06/2638699.png"><img src="http://freewind.me/wp-content/uploads/2014/06/2638699.png" alt="2638699" /></a></p>
+<p>左边是编辑区，可以贴scala代码，它提供了高亮、行号等。按”Cmd+R”后，将会在右边内嵌的一个scala-repl中显示结果。</p>
+<h3>快速添加依赖</h3>
+<p>这是一个非常有用的功能。有时候我们尝试一些库的功能，那会相当麻烦，通常我会这么做：</p>
+<p>写一个build.sbt文件，在里面写上所有的依赖，然后<code>sbt idea</code>生成，再打开idea写代码。</p>
+<p>但是有了scalaconsole，就很简单了：点击菜单中的Dependencies选项，将会出现如下界面</p>
+<p><a href="http://freewind.me/wp-content/uploads/2014/06/487403.png"><img src="http://freewind.me/wp-content/uploads/2014/06/487403.png" alt="487403" /></a></p>
+<p>我们输入关键字，双击右边列表中某个版本，它就会加到下面的列表中。点击OK后，它就会开始下载<img src="http://freewind.me/wp-content/uploads/2014/06/9596797.png" alt="9596797" /></p>
+<p>期间有半分钟左右没有输出变化，需要耐心等一下。完成后我们就可以直接用了：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2014/06/1042034.png"><img src="http://freewind.me/wp-content/uploads/2014/06/1042034.png" alt="1042034" /></a></p>
+<h3>发布到gist</h3>
+<p>如果想与其它人讨论或者分享你的代码，可以点击菜单中的Post Anonymous Gist或者Post Gist with Account，快速发布。</p>
+<h2>项目信息</h2>
+<p>项目作者：老猪，”无水scala群（231809997）“的群主，是一件严肃而热情的技术高手。公司网站 <a href="http://gtan.com">http://gtan.com</a></p>
+<p>项目地址：<a href="http://git.oschina.net/43284683/scalaconsole">http://git.oschina.net/43284683/scalaconsole</a></p>
+<h3>下载安装</h3>
+<p>下载地址：<a href="http://git.oschina.net/43284683/scalaconsole/attach_files">http://git.oschina.net/43284683/scalaconsole/attach_files</a></p>
+<p>ScalaConsole-assembly-2.0.0-M5.jar，大约25M左右</p>
+<p>这个文件已经打包了所有需要的文件，你只需要运行：<code>java -jar ScalaConsole-assembly-$VERSION.jar</code>即可</p>
+<p>注意：由于scalaconsole使用了最新版的JavaFX，你需要安装jdk1.8才能正常运行。</p>
+<h3>启动脚本</h3>
+<p>你可以手动建立一个scalaconsole.sh，内容如下：</p>
+<pre><code>/path/to/jdk1.8/java -jar ~/dev/scala/ScalaConsole-assembly-2.0.0-M2.jar
+</code></pre>
+<p>然后把它加入到path中，就可以快速启动scalconsole了</p>
+
+</div>
+</body>
+</html>

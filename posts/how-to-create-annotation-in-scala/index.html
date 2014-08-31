@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在scala中，如何创建annotation</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    在scala中，如何创建annotation
+</h1>
+
+<div>
+    <hr />
+<p>在开发scalaeye的过程中，我想定义一些annotation，让用户以注解方式自定义route。所以，要先创建annotation。</p>
+<p>发现scala.annotation包下，有一些已经定义好的annotation，看源代码，形如：</p>
+<pre><code>class MyAnno extends StaticAnnotation
+</code></pre>
+<p>于是我也这样定义了一些annotation，并且加到代码中，编译也能通过。</p>
+<p>但是，通过class.getAnnotations或method.getAnnotations时，发现找不到这些annotation的信息。</p>
+<p><span id="more-189"></span>
+<br  /><p>@唐说，在scala中定义的annotation，仅仅用于scala的编译。如果我们想在程序中使用，只能先在java下定义annotation，然后在scala中调用。</p>
+<p>经过测试，发现只有这种方式可行，所以又定义了一些java下的annotation，如：</p>
+<pre><code>@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface any {
+    public String value() default "";
+}
+</code></pre>
+<p>然后在scala中调用，即可用，也可得到，完成了预期的功能。可惜纯scala框架的愿望没了，还是得有java代码才行。</p>
+
+</div>
+</body>
+</html>

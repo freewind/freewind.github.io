@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>如何让linux开机就运行某个groovy脚本</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    如何让linux开机就运行某个groovy脚本
+</h1>
+
+<div>
+    <hr />
+<p>看起来这是一个比较简单的问题，但我这么多年硬是不会。今天校友网又挂了，老师又给我留言，让我及时解决。</p>
+<p>于是花了几个小时，用groovy写了一个脚本，其作用就是每隔一分钟访问一次首页，如果连不上或者内容不对，就会依次检查数据库及网站服务，在需要的时候重启。只要把这个脚本跑起来，就不用担心了。</p>
+<p>不过如何让服务器重启后这个脚本也能自动运行呢？经过半天的摸索和十来次的重启，终于试验成功。</p>
+<p>首先，要装上groovy，并在/usr/local/bin下，把groovy链过去：</p>
+<blockquote><p><font style="background-color: #ffffff">cd /usr/local/bin</font></p>
+<p><font style="background-color: #ffffff">ln -s ~/dev/groovy/bin/groovy groovy</font></p>
+</blockquote>
+<p>我的监控脚本位于：</p>
+<blockquote><p><font style="background-color: #ffffff">/www/monitor.groovy</font></p>
+</blockquote>
+<p>然后在/etc/init.d下建立一个web_monitor的文件，内容如下：</p>
+<blockquote><p><font style="background-color: #ffffff">#!/bin/sh</font></p>
+<p><font style="background-color: #ffffff">#chkconfig:2345 80 05</font></p>
+<p><font style="background-color: #ffffff">PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin</font></p>
+<p><font style="background-color: #ffffff">groovy /www/monitor.groovy</font></p>
+</blockquote>
+<p>这个文件大有文章。</p>
+<ol>
+<li>第一行表示使用sh来调用该脚本</li>
+<li>第二行用于chkconfig命令，设置了一些参数，这里有点复杂我也不太懂，不过大多数情况照这个写就可以了。</li>
+<li>第三行非常重要，我十几次重启都是因为它。如果不加上这个path，下面的groovy命令就找不到，自然就没有办法启动成功了</li>
+<li>最后一行调用我那个监控脚本</li>
+</ol>
+<p>然后要把这个文件加到启动列表里：</p>
+<blockquote><p><font style="background-color: #ffffff">chmod +x web_monitor</font></p>
+<p><font style="background-color: #ffffff">chkconfig -add web_monitor</font></p>
+<p><font style="background-color: #ffffff">chkconfig -list web_monitor</font></p>
+</blockquote>
+<p>如果没有意外，就行了。然后reboot，看看它有没有运行成功</p>
+
+</div>
+</body>
+</html>

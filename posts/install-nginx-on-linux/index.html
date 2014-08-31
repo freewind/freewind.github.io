@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在linux上安装nginx</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    在linux上安装nginx
+</h1>
+
+<div>
+    <hr />
+<p>nginx是一个高性能的web server，它还有一个非常好用的功能叫反向代理。考虑到这种情况：我在一台服务器上，要用tomcat跑java程序，还要运行php程序，80端口只有一个，怎么办给谁好呢？使用nginx就可以方便地解决这个问题：让nginx监听80，其它程序各自监听自己的端口，然后在nginx内部配置反向代理，指向它们即可。对于用户的访问，我们可以在nginx通过判断域名或者请求的内容，进行不同的转发，让各请求达到正确的目的地。</p>
+<p>下面是在linux安装nginx的步骤：</p>
+<p><span id="more-336"></span>
+<br  /><p><strong>下载</strong></p>
+<p>从官网上下载新版本，这里以0.8.45为例：</p>
+<pre><code>wget [http://www.nginx.org/download/nginx-0.8.45.tar.gz](http://www.nginx.org/download/nginx-0.8.45.tar.gz)
+</code></pre>
+<p>安装：</p>
+<pre><code>./configure
+make &amp;&amp; make install
+</code></pre>
+<p>nginx将安装到/usr/local/nginx下</p>
+<p><strong>建立管理脚本</strong></p>
+<p>为了方便管理nginx，我们将建立/etc/init.d/nginx，定义一些如start/stop/status/restart等任务，方便管理。</p>
+<pre><code>vim /etc/init.d/nginx
+</code></pre>
+<p>输入以下内容：</p>
+<pre><code class="bash">#!/bin/sh 
+# 
+# nginx - &lt;span class="kwrd"&gt;this&lt;/span&gt; script starts and stops the nginx daemin 
+# 
+# chkconfig:   - 85 15 
+# description:  Nginx &lt;span class="kwrd"&gt;is&lt;/span&gt; an HTTP(S) server, HTTP(S) reverse \ 
+#               proxy and IMAP/POP3 proxy server 
+# processname: nginx 
+# config:      /usr/local/nginx/conf/nginx.conf 
+# pidfile:     /usr/local/nginx/logs/nginx.pid 
+
+# Source function library. 
+. /etc/rc.d/init.d/functions 
+
+# Source networking configuration. 
+. /etc/sysconfig/network 
+
+# Check that networking &lt;span class="kwrd"&gt;is&lt;/span&gt; up. 
+[ &lt;span class="str"&gt;"$NETWORKING"&lt;/span&gt; = &lt;span class="str"&gt;"no"&lt;/span&gt; ] &amp;&amp; exit 0 
+
+nginx=&lt;span class="str"&gt;"/usr/local/sbin/nginx"&lt;/span&gt; 
+prog=$(basename $nginx) 
+
+NGINX_CONF_FILE=&lt;span class="str"&gt;"/usr/local/nginx/conf/nginx.conf"&lt;/span&gt; 
+
+lockfile=/var/&lt;span class="kwrd"&gt;lock&lt;/span&gt;/subsys/nginx 
+
+start() { 
+    [ -x $nginx ] || exit 5 
+    [ -f $NGINX_CONF_FILE ] || exit 6 
+    echo -n $&lt;span class="str"&gt;"Starting $prog: "&lt;/span&gt; 
+    daemon $nginx -c $NGINX_CONF_FILE 
+    retval=$? 
+    echo 
+    [ $retval -eq 0 ] &amp;&amp; touch $lockfile 
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; $retval 
+} 
+
+stop() { 
+    echo -n $&lt;span class="str"&gt;"Stopping $prog: "&lt;/span&gt; 
+    killproc $prog -QUIT 
+    retval=$? 
+    echo 
+    [ $retval -eq 0 ] &amp;&amp; rm -f $lockfile 
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; $retval 
+} 
+
+restart() { 
+    configtest || &lt;span class="kwrd"&gt;return&lt;/span&gt; $? 
+    stop 
+    start 
+} 
+
+reload() { 
+    configtest || &lt;span class="kwrd"&gt;return&lt;/span&gt; $? 
+    echo -n $&lt;span class="str"&gt;"Reloading $prog: "&lt;/span&gt; 
+    killproc $nginx -HUP 
+    RETVAL=$? 
+    echo 
+} 
+
+force_reload() { 
+    restart 
+} 
+
+configtest() { 
+  $nginx -t -c $NGINX_CONF_FILE 
+} 
+
+rh_status() { 
+    status $prog 
+} 
+
+rh_status_q() { 
+    rh_status &gt;/dev/&lt;span class="kwrd"&gt;null&lt;/span&gt; 2&gt;&amp;1 
+} 
+
+&lt;span class="kwrd"&gt;case&lt;/span&gt; &lt;span class="str"&gt;"$1"&lt;/span&gt; &lt;span class="kwrd"&gt;in&lt;/span&gt; 
+    start) 
+        rh_status_q &amp;&amp; exit 0 
+        $1 
+        ;; 
+    stop) 
+        rh_status_q || exit 0 
+        $1 
+        ;; 
+    restart|configtest) 
+        $1 
+        ;; 
+    reload) 
+        rh_status_q || exit 7 
+        $1 
+        ;; 
+    force-reload) 
+        force_reload 
+        ;; 
+    status) 
+        rh_status 
+        ;; 
+    condrestart|&lt;span class="kwrd"&gt;try&lt;/span&gt;-restart) 
+        rh_status_q || exit 0 
+            ;; 
+    *) 
+        echo $&lt;span class="str"&gt;"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"&lt;/span&gt; 
+        exit 2
+esac
+</code></pre>
+<p>其中这一句</p>
+<pre><code>nginx="/usr/local/sbin/nginx"
+</code></pre>
+<p>需要根据你的安装的情况来选择nginx执行文件的路径。</p>
+<p>然后给它加上运行权限:</p>
+<pre><code>chmod +x /etc/init.d/nginx
+</code></pre>
+<p>通过这个脚本，我们可以方便的管理nginx，如：</p>
+<pre><code>/etc/init.d/nginx start|stop|status|restart|reload|force_reload|configtest|rh_status|rh_status_q
+</code></pre>
+<p>这时我们先检查一下这个脚本和nginx的配置文件有没有问题：</p>
+<pre><code>/etc/init.d/nginx configtest
+</code></pre>
+<p>如果输出全部为successful，说明没有问题。</p>
+<p><strong>设为开机启动</strong></p>
+<pre><code>/sbin/chkconfig nginx on
+</code></pre>
+<p>检查一下：</p>
+<pre><code>/sbin/chkconfig --list nginx 
+nginx   0:off   1:off   2:on    3:on    4:on    5:on    6:off
+</code></pre>
+<p>下次重启时，nginx将自动运行</p>
+<p><strong>修改配置，每个配置文件定义一个虚拟主机</strong></p>
+<p>默认情况下，nginx提供了一个/usr/local/nginx/conf/nginx.conf这个配置文件。如果我们把所有的配置都写在这个文件中，不易管理，所以打算为每一个虚拟主机弄一个单独的配置文件，然后在nginx.conf把它们包含进去。</p>
+<pre><code>cd /usr/local/nginx/conf 
+mkdir conf.d
+</code></pre>
+<p>这个conf.d用来放置单独的虚拟主机配置。</p>
+<p>修改nginx.conf，在http节点中增加下面这行：</p>
+<pre><code>include /usr/local/nginx/conf/conf.d/*.conf;
+</code></pre>
+<p>注意最后的分号。</p>
+<p>同时把里面的server节点内容全部注释掉。</p>
+<p>在/conf.d/下新建default_server.conf，内容如下：</p>
+<pre><code>server { 
+    listen       80 default_server; 
+    server_name  localhost; 
+
+    location / { 
+        root   html; 
+        index  index.html index.htm; 
+    } 
+
+    error_page   500 502 503 504  /50x.html; 
+    location = /50x.html { 
+        root   html; 
+    } 
+}
+</code></pre>
+<p>这个配置用于当找不到与请求的url相对应的信息时。</p>
+<p>为abc.com建立/conf.d/abc.dom.conf，内容如下：</p>
+<pre><code>upstream abc.com { 
+    server 127.0.0.1:3000; 
+    server 127.0.0.1:3001; 
+    server 127.0.0.1:3002; 
+    } 
+
+server { 
+    listen   80; 
+    server_name www.abc.com; 
+    rewrite ^/(.*) http:&lt;span class="rem"&gt;//abc.com permanent; &lt;/span&gt;
+       } 
+
+server { 
+    listen   80; 
+    server_name abc.com; 
+
+    access_log /home/www/abc.com/log/access.log; 
+    error_log /home/www/abc.com/log/error.log; 
+
+    root   /home/www/abc.com/site/; 
+    index  index.html; 
+
+    location / { 
+          proxy_set_header  X-Real-IP  $remote_addr; 
+          proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for; 
+          proxy_set_header Host $http_host; 
+          proxy_redirect off; 
+
+          &lt;span class="kwrd"&gt;if&lt;/span&gt; (-f $request_filename/index.html) { 
+               rewrite (.*) $1/index.html &lt;span class="kwrd"&gt;break&lt;/span&gt;; 
+          } 
+
+          &lt;span class="kwrd"&gt;if&lt;/span&gt; (-f $request_filename.html) { 
+               rewrite (.*) $1.html &lt;span class="kwrd"&gt;break&lt;/span&gt;; 
+          } 
+
+          &lt;span class="kwrd"&gt;if&lt;/span&gt; (!-f $request_filename) { 
+               proxy_pass http:&lt;span class="rem"&gt;//abc.com; &lt;/span&gt;
+               &lt;span class="kwrd"&gt;break&lt;/span&gt;; 
+          } 
+    } 
+}
+</code></pre>
+<p>配置内容还是比较容易看懂的。从中可以看出，首先通过upstream定义了thin的几个服务端口（转发目标），下面是把对于abc.com和<a href="http://www.abc.com">www.abc.com</a>的请求，转发给那几个端口。</p>
+<p>对于def.com，可以生成一个conf.d/def.com.conf，把上面的内容复制进去，修改目标端口和相关的域名及路径。</p>
+<p>然后使用</p>
+<pre><code>/etc/init.d/nginx configtest
+</code></pre>
+<p>看看有没有错。</p>
+<p><strong>启动nginx</strong></p>
+<pre><code>/etc/init.d/nginx start
+</code></pre>
+<p>然后打开浏览器，访问http://www.abc.com和<a href="http://www.def.com">http://www.def.com</a>，正常情况下应该能成功打开对应的网站。如果不行，请检查：</p>
+<ol>
+<li>域名是否指向了正确的ip
+<br  /><li><a href="http://ip:80">http://ip:80</a>能不能访问。如果打不开，说明nginx没有启动成功
+<br  /><li><a href="http://ip:3000">http://ip:3000</a>能不能访问。如果不能，说明thin没有启动成功
+<br  /><li>如果都能访问，说明nginx关于虚拟主机的配置有问题，仔细检查路径和名字</li>
+</ol>
+<p>大功告成！</p>
+
+</div>
+</body>
+</html>

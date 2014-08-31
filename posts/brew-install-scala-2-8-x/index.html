@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>使用brew安装scala 2.8.x</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    使用brew安装scala 2.8.x
+</h1>
+
+<div>
+    <hr />
+<p>有时候我们需要使用旧版本的scala，比如2.8.x，但是brew只支持2.9.x以后的。</p>
+<p>我们可以自己动手创建一个<code>scala.rb</code>，来支持brew:</p>
+<pre><code>require 'formula'
+
+class Scala &lt; Formula
+  homepage 'http://www.scala-lang.org/'
+  url 'http://www.scala-lang.org/files/archive/scala-2.8.2.final.tgz'
+  # 如果已经下载到本地，则
+  # url 'file:/Users/freewind/Downloads/scala-2.8.2.final.tgz'
+  version '2.8.2'
+
+  def install
+    rm_f Dir["bin/*.bat"]
+    doc.install Dir['doc/*']
+    man1.install Dir['man/man1/*']
+    libexec.install Dir['*']
+    bin.install_symlink Dir["#{libexec}/bin/*"]
+  end
+end
+
+
+然后：
+
+brew install scala.rb --with-docs
+
+
+查看本地通过brew安装了的scala版本：
+
+brew info scala
+
+
+切换到某个特定版本：
+
+brew switch scala 2.8.2
+</code></pre>
+
+</div>
+</body>
+</html>

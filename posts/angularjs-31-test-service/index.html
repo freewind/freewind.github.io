@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>31. 测试Angular的服务</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    31. 测试Angular的服务
+</h1>
+
+<div>
+    <hr />
+<p>下面是对<code>创建Angular Services</code>一节中的示例的单元测试。测试中使用Jasmine spy(mock)来代替真实浏览器的<code>alert</code>.</p>
+<pre><code>var mock, notify;
+
+beforeEach(function() {
+  mock = {alert: jasmine.createSpy()};
+
+  module(function($provide) {
+    $provide.value('$window', mock);
+  });
+
+  inject(function($injector) {
+    notify = $injector.get('notify');
+  });
+});
+
+it('should not alert first two notifications', function() {
+  notify('one');
+  notify('two');
+
+  expect(mock.alert).not.toHaveBeenCalled();
+});
+
+it('should alert all after third notification', function() {
+  notify('one');
+  notify('two');
+  notify('three');
+
+  expect(mock.alert).toHaveBeenCalledWith("one\ntwo\nthree");
+});
+
+it('should clear messages after alert', function() {
+  notify('one');
+  notify('two');
+  notify('third');
+  notify('more');
+  notify('two');
+  notify('third');
+
+  expect(mock.alert.callCount).toEqual(2);
+  expect(mock.alert.mostRecentCall.args).toEqual(["more\ntwo\nthird"]);
+});
+</code></pre>
+<h4>相关API</h4>
+<ul>
+<li><code>ng</code></li>
+</ul>
+
+</div>
+</body>
+</html>

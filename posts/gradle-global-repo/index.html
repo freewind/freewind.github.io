@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gradle设置全局仓库</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    Gradle设置全局仓库
+</h1>
+
+<div>
+    <hr />
+<p>&nbsp;</p>
+<p><span style="font-size: 14px; line-height: 1.5em;">在用户目录下创建</span><code>~/.gradle/init.gradle</code><span style="font-size: 14px; line-height: 1.5em;">，内容如下:</span></p>
+<pre><code>allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+          name 'oschina'
+          url "http://maven.oschina.net/content/groups/public/"
+        }
+        maven {
+          url "http://localhost:8081/nexus/content/groups/public/"
+        }
+    }
+}
+</code></pre>
+<p>把想要先访问的库放在前面。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</div>
+</body>
+</html>

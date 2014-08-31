@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>如何快速删除postgresql数据库所有的表</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    如何快速删除postgresql数据库所有的表
+</h1>
+
+<div>
+    <hr />
+<p>在postgesql中建立一个函数：</p>
+<blockquote><p>CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
+<br  />DECLARE</p>
+<pre><code>statements CURSOR FOR      
+    SELECT tablename FROM pg_tables      
+    WHERE tableowner = username AND schemaname = 'public';      
+</code></pre>
+<p>BEGIN</p>
+<pre><code>FOR stmt IN statements LOOP      
+    EXECUTE 'TRUNCATE TABLE ' || quote_ident(stmt.tablename) || ' CASCADE;';      
+END LOOP;      
+</code></pre>
+<p>END;
+<br  />$$ LANGUAGE plpgsql;</p>
+</blockquote>
+<p>然后调用：</p>
+<blockquote><p><font style="background-color: #ffffff">select truncate_tables('username')</font></p>
+</blockquote>
+<p>即可。</p>
+<p>可以在单元测试中使用这个方法用于初始化，很方便</p>
+
+</div>
+</body>
+</html>

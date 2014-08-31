@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>使用Python实现“信息更新上传工具”(2)</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    使用Python实现“信息更新上传工具”(2)
+</h1>
+
+<div>
+    <hr />
+<h2>1. Python 2 vs. Python 3</h2>
+<p>首先要到python.org上下载python，遇到一个难题：下载Python2还是Python3? 
+
+两者之间的语法有不同，不能兼容。经过简单地搜索，决定使用python2，原因很简单：很多python库只支持python2.x，而python的威力就体现在它强大的库上。
+
+马上又遇到一个新的选择：是下载32位还是64位？我用的win7是64位的。最后决定还是下载32位的，因为有一些库只支持32位。
+
+最后下载了python2.x的最新版2.7.2
+
+</p>
+<h2>2. 编辑器</h2>
+<p>鉴于idea用得比较舒服，自然想在idea下写python。但是安装完python插件后，发现它依赖的某几个插件没有提供了，意味着我们不能继续在idea的社区版里使用python了。只好转用Intellij提供的PyCharm，话说这一点Intenllij做的有点不厚道，为了自己的商业产品阉割社区版的功能。</p>
+<p>PyCharm也还算好用，基本功能都有了，但在方法提示上，似乎还有所欠缺。</p>
+<p><div></p>
+<h2>3. Python +Tkinter</h2>
+<p></p></div></p>
+<p>Python中自带了Tkinter这个GUI库。Tkinter是对TCL/TK提供的GUI库的包装，用起来相当简单，但是功能比较弱，界面一般。</p>
+<p>看个Hello,world:</p>
+<p><a href="http://freewind.me/wp-content/uploads/2012/02/image.png"><img src="http://freewind.me/wp-content/uploads/2012/02/image_thumb.png" alt="image" title="image" /></a></p>
+<p>其代码相当简单：</p>
+<blockquote><p>from Tkinter import *</p>
+<p>root = Tk()
+<br  />label = Label(root, text=&ldquo;Hello, world!&ldquo;)
+<br  />label.pack()
+<br  />root.mainloop()</p>
+</blockquote>
+<p>我本想就使用Tkinter来做，但是很快发现它提供的组件比较少，比如<a href="http://stackoverflow.com/questions/9348264/can-tkinter-created-an-application-with-tables">Table等，还需要第三方的库</a>，考虑到以后不要重新返工，还是使用其它的比较靠谱。</p>
+<p><div></p>
+<h2>4. Python + QT</h2>
+<p></p></div></p>
+<p>QT功能强大，文档非富，还有大公司支持，非常值得一试。它还提供了一个LGPL的License比较好。关于Python的binding，有一个老牌的PyQT，可惜是GPL+商业授权，只好放弃。好在QT自己也提供了一个新的LGPL的binding，叫PySide，它的API与PyQt相似，甚至可直接把PyQt的示例拿过来用。看了一下它提供的例子，效果非常满意：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2012/02/image1.png"><img src="http://freewind.me/wp-content/uploads/2012/02/image_thumb1.png" alt="image" title="image" /></a></p>
+<p>没错，写的是PyQt Examples，但是实际上是在PySide下运行，里面的例子效果很不错。我需要的Table在这里：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2012/02/image2.png"><img src="http://freewind.me/wp-content/uploads/2012/02/image_thumb2.png" alt="image" title="image" /></a></p>
+<p>这里是一个PySide的Hello,world:</p>
+<blockquote><p>import sys
+<br  />import PySide
+<br  />from PySide.QtCore import *
+<br  />from PySide .QtGui import *</p>
+<p>app = QApplication(sys.argv)
+<br  />label = QLabel(&ldquo;Hello, world&rdquo;)
+<br  />label.show()</p>
+<p>app.exec_()
+<br  />sys.exit()</p>
+</blockquote>
+<p>可以看出代码非常简单，跟Tkinter很像，很喜欢。</p>
+<p>现在唯一担心的就是，将Python+PySide+QT打包之后的绿色版软件体积有多大，光那个Qt的dll好像就8M多。这个等这两天试验一下，如果体积太大的话，就改用Python+wxWidgets吧。</p>
+<h2>5. Python + wxWidgets</h2>
+<p>这个binding叫wxpython，官网是<a href="http://wxpython.org">http://wxpython.org</a>，它跟wxWidgets一样，也有LGPL的授权。</p>
+<p>代码也比较简单，看下面这个Hello, world:</p>
+<blockquote><p>import wx</p>
+<p>app = wx.App(False)
+<br  />frame = wx.Frame(None, wx.ID_ANY, &ldquo;Hello World&rdquo;)
+<br  />frame.Show(True)
+<br  />app.MainLoop()</p>
+</blockquote>
+<p>让我十分不习惯的是方法名是大写的，感觉很别扭。wxWidgets与QT比较相似，但是没有那么好的运气被大公司收购，所以还是先尝试QT吧。</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>如何使用match来检查一个对象的类</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    如何使用match来检查一个对象的类
+</h1>
+
+<div>
+    <hr />
+<pre><code>class checkType(cls: AnyRef) {
+   cls match {
+        case _:String =&gt; println("is a string")
+        case _:Date =&gt; println("is a date")
+        case _ =&gt; println("others")
+   }
+}
+</code></pre>
+<p><span id="more-187"></span>
+<br  /><p>但对于泛型集合，无法断定其具体类型</p>
+<pre><code>var obj : List[Int] = List(1)
+val obj2 = List(1.2)
+def typeCheck(obj: AnyRef) = obj match{
+    case _:Array[Int] =&gt;　println("Array[int]");
+    case _ : List[Int] =&gt; println("List[Int]")
+    case _ =&gt; println("println other type");
+}
+typeCheck(obj) // 输出List[Int]
+typeCheck(obj2) // 输出List[Int]
+</code></pre>
+<p>因为scala和java一样，在运行时把泛型的类型去掉了。
+<br  />但数组例外</p>
+<pre><code>typeCheck(obj.toArray) // 输出Array[Int]
+typeCheck(obj2.toArray) // 输出 println other type
+</code></pre>
+
+</div>
+</body>
+</html>

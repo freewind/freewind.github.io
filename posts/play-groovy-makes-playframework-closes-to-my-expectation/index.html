@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>play-groovy:离期望的playframework更近一步</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    play-groovy:离期望的playframework更近一步
+</h1>
+
+<div>
+    <hr />
+<p>这里所说的playframework是指play1，而不是play2。另外，本文中不考虑scala。</p>
+<p>Play1是一个很有创造力的java web框架，在很多方面离我的期待都很接近了。它通过各种字节码增强技术，大大简化了各种操作，使用起来让人感觉非常舒适。</p>
+<p>但它有一个无法克服的问题：必须使用java语言。这在很多时候都不太方便，比如缺少多行文本，字符串表达式，闭包等等，另外想在代码中直接拼json也很麻烦。</p>
+<p>为了解决这些问题，曾经我尝试过xtend，因为它在eclipse的帮助下，直接生成java源代码，与play集成在理论上没问题。我们可以在其它的目录中写xtend代码，让java源文件生成到app目录下，让play直接读取，这样就不需要额外写xtend的插件了。可惜由于xtend的不成熟，以及生成的java代码与其它库的习惯不同（field前加了一个下划线），使用起来各种不方便。虽然我很看好xtend即将推出的active annotation功能，但在目前的情况下，基本上是无法使用的。</p>
+<p>昨天突然看到了一个插件，可以让play支持groovy：<a href="https://github.com/marekpiechut/play-groovy">https://github.com/marekpiechut/play-groovy</a></p>
+<p>该插件实现了groovy的编译器，并且处理好了hot-reload，使用起来跟java的感觉一致。目前只支持groovy 1.8，还不支持groovy 2.x</p>
+<p>经过我的简单尝试，感觉比较满意：hot-reload, 出错报告，与java代码共存，ebean插件等，都运行良好。也许深入使用后，还会发现其它的一些问题，不过目前来说，感觉很满意。</p>
+<p>我并没有专门去学习groovy语言，而是完全把它当作java来用，因为对于java的绝大部分语法，groovy都直接支持。看看我的groovy代码，基本上跟java一模一样：</p>
+<p><pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">class</span> Application extends Controller {</p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; index() {
+    List&lt;Question&gt; questions = Question.find.all();
+    render(questions)
+}
+
+&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; askQuestion() {
+    render()
+}
+
+&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; createQuestion(String title, String content) {
+    Question question = &lt;span class="kwrd"&gt;new&lt;/span&gt; Question()
+    question.title = title
+    question.content = content
+    question.save()
+    index()
+}
+</code></pre>
+<p>}```
+<br  /><style type="text /css"></p>
+<p>.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style>
+<br  /><p>但我又可以在需要的时候，使用那些java没有提供的功能，比如：</p>
+<p><pre class="csharpcode">    <span class="kwrd">public</span> <span class="kwrd">static</span> <span class="kwrd">void</span> text() {</p>
+<pre><code>    renderText(&lt;span class="str"&gt;''&lt;/span&gt;&lt;span class="str"&gt;'Hello, this
+                is multi-line
+                text'&lt;/span&gt;&lt;span class="str"&gt;''&lt;/span&gt;)
+}
+
+&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; strExpression() {
+    String name = &lt;span class="str"&gt;"Freewind"&lt;/span&gt;
+    renderText(&lt;span class="str"&gt;"Hello, this is ${name}"&lt;/span&gt;)
+}
+
+&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; html() {
+    renderHtml(&lt;span class="str"&gt;''&lt;/span&gt;&lt;span class="str"&gt;'&lt;h1&gt;hello,html&lt;/h1&gt;'&lt;/span&gt;&lt;span class="str"&gt;''&lt;/span&gt;)
+}
+
+&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; smallJson() {
+    def res = [hello: &lt;span class="str"&gt;'world'&lt;/span&gt;,
+            iam: &lt;span class="str"&gt;'freewind'&lt;/span&gt;]
+    renderJSON(res)
+}```
+</code></pre>
+<p><style type="text /css"></p>
+<p>.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style>
+<br  /><style type="text /css">
+<br  /><p>.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style>
+<br  /><p>还有我特别想要的拼复杂的json功能（如果前台使用一些js mvc框架，需要从后台取大量json数据）</p>
+<p><pre class="csharpcode">    <span class="kwrd">public</span> <span class="kwrd">static</span> <span class="kwrd">void</span> json() {</p>
+<pre><code>    def builder = &lt;span class="kwrd"&gt;new&lt;/span&gt; groovy.json.JsonBuilder()
+    def root = builder.people {
+        person {
+            firstName &lt;span class="str"&gt;'Guillame'&lt;/span&gt;
+            lastName &lt;span class="str"&gt;'Laforge'&lt;/span&gt;
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (1 == 0) {
+                address {
+                    city &lt;span class="str"&gt;'Paris'&lt;/span&gt;
+                    country &lt;span class="str"&gt;'France'&lt;/span&gt;
+                    zip 12345
+                }
+            }
+            married &lt;span class="kwrd"&gt;true&lt;/span&gt;
+            &lt;span class="rem"&gt;// a list of values&lt;/span&gt;
+            conferences &lt;span class="str"&gt;'JavaOne'&lt;/span&gt;, &lt;span class="str"&gt;'Gr8conf'&lt;/span&gt;
+        }
+    }
+    renderJSON(builder.toString())
+}```
+</code></pre>
+<p><style type="text /css"></p>
+<p>.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style>
+<br  /><p>这个json builder的语法，是不是很简洁？里面甚至还可以有业务逻辑。</p>
+<p>对于闭包之类的功能，可以在需要用的时候再去查文档。而上面这些简单而有用的功能，只需要看几眼文档就可以了，几乎没有学习成本。在编辑器的帮助下，如果我们按java的思路来写代码，错误检查、方法提示等功能，都可以运行的很好。</p>
+<p>我觉得这是一种很划算的做法：用很小很小的学习成本，带来较大的便利。在通常的情况下，尽量使用java语法，但当某些时候觉得特别不方便时，再看看groovy中有没有提供什么语法糖，能简化我们的代码，让代码看起来更整洁。</p>
+<p>写到这里，也许大家心里都有一个疑问：<strong>性能</strong>。</p>
+<p>groovy是一种动态语言，性能要比java差很多。但我觉得这不是个大问题，毕竟groovy那边有个grails，这么多年不是运行的好好的吗？如果还是不放心，还有一个好消息：groovy 2.x同时支持静态类型。只需要在代码中增加一个@TypeChecked注解，就可以将静态调用按静态方式编译代码，几乎跟java的性能一样。等该插件支持groovy 2.x时，就可以放心地使用了。</p>
+<p>等熟悉groovy后，还可以利用它的一些其它特性，进一步精简我们的代码。</p>
+<p>我觉得这个插件特别适合于那些喜欢play，不满java与scala的朋友使用。相比scala，groovy不论是学习成本还是一java之间的结合都要好得多。目前该插件还比较简单，版本号仅为0.1，可以预见在实际使用过程中会遇到一些问题，希望有兴趣的朋友可以一些完善它。</p>
+<p>参考资料：</p>
+<ol>
+<li>groovy 2.x新特性：<a href="http://fr.slideshare.net/glaforge/groovy-20-webinar">http://fr.slideshare.net/glaforge/groovy-20-webinar</a></li>
+</ol>
+
+</div>
+</body>
+</html>

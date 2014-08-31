@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>sudo的path问题</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    sudo的path问题
+</h1>
+
+<div>
+    <hr />
+<p>我在fedora上安装完node后，接着安装npm，使用了以下命令：</p>
+<pre><code>curl [http://npmjs.org/install.sh](http://npmjs.org/install.sh) | sudo sh
+</code></pre>
+<p>却出现以下错误：</p>
+<blockquote><p>npm cannot be installed without nodejs.
+<br  />Install node first, and then try again.</p>
+<p>Maybe node is installed, but not in the PATH?
+<br  />Note that running as sudo can change envs.</p>
+</blockquote>
+<p>我当前正运行于一个普通用户下，输入node，正常运行。又用su -切换成root，运行node，也正常运行。但在普通用户下执行：</p>
+<pre><code>sudo node
+</code></pre>
+<p>却提示：sudo: node: command not found</p>
+<p>这可是非常奇怪！</p>
+<p><span id="more-451"></span>
+<br  /><p>在群里提出这个问题后，有前辈提示说，让我把PATH打印出来。</p>
+<pre><code>$ echo $PATH
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/freewind/bin
+$ sudo echo $PATH
+/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/freewind/bin
+</code></pre>
+<p>这两个看起来是一样的，应该不会出问题的啊</p>
+<p>再试试which</p>
+<pre><code>$ which node
+/usr/local/bin/node
+$ sudo which node
+which :  no node in (/sbin:/bin:/usr/sbin:/usr/bin)
+</code></pre>
+<p>可以看到，此时搜索的PATH变少了，找不到node了。怎么回事？</p>
+<p>在万能的stackoverflow上，搜索到了一个同样的问题：<a href="http://stackoverflow.com/questions/257616/sudo-changes-path-why">http://stackoverflow.com/questions/257616/sudo-changes-path-why</a></p>
+<p>里面说sudo可能因为安全上的原因，不会使用修改过的PATH。好在下面的回答中，给出了一个可行的方案：</p>
+<pre><code>alias sudo='sudo env PATH=$PATH'
+</code></pre>
+<p>按这种方式，我把命令改为：</p>
+<pre><code>curl http://npmjs.org/install.sh | sudo env PATH=$PATH sh
+</code></pre>
+<p>这样就完全没问题了。</p>
+
+</div>
+</body>
+</html>

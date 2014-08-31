@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>一个函数的优化（从命令式到函数式）</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    一个函数的优化（从命令式到函数式）
+</h1>
+
+<div>
+    <hr />
+<p>我想写一个函数，功能很简单，如下：把一个字符串里的b改为*，把结尾的c改为#。代码如下：</p>
+<pre><code class="scala">object Main {
+    def fix(text: String) = {
+        val s = text.replace("b", "*")
+        if (s.endsWith("c")) {
+            s.stripSuffix("c") + ("#")
+        } else s
+    }
+    def main(args: Array[String]) {
+        println(fix("abbbbccc")) // -&gt; a***cc#
+    }
+}
+</code></pre>
+<p>可以看出，还是在用java的方式来写，总觉得不够scala。应该怎么优化呢？</p>
+<p>首先，要转变思想，多使用正则表达式：</p>
+<pre><code class="scala">def fix(s: String) = s.replace('b', '*').replaceAll("c$", "#")
+</code></pre>
+<p>一行就搞定。</p>
+<p>如果我们不想定义那个变量<code>s</code>，希望使用链式风格，可以使用Some，如下：</p>
+<pre><code class="scala">def fix(s: String) = Some(s.replace('b', '*')).map(s =&gt; if(s.endsWith("c")) s.init + "#" else s).get
+</code></pre>
+<p>还是一行。</p>
+<p>最后，我们还有一个match可用：</p>
+<pre><code class="scala">text.replace("b", "*") match {
+   case t if t.endsWith("c") =&gt; t.stripSuffix("c") + "#"
+   case t =&gt; t
+}
+</code></pre>
+<p>函数式的风格写起来就是很爽，如行云流水一般。从java到scala，不仅仅是语法变了，更重要的是编程的风格，这个转变可不容易。</p>
+<p>我在stackoverflow上问了这个问题，请参见完整版：</p>
+<p><a href="http://stackoverflow.com/questions/5140465/how-to-optimize-this-simple-function-in-scala">http://stackoverflow.com/questions/5140465/how-to-optimize-this-simple-function-in-scala</a></p>
+
+</div>
+</body>
+</html>

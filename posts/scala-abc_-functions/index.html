@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>形如abc_=的函数，有什么用？</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    形如abc_=的函数，有什么用？
+</h1>
+
+<div>
+    <hr />
+<p><pre class="csharpcode"><span class="kwrd">class</span> A {</p>
+<pre><code>&lt;span class="kwrd"&gt;private&lt;/span&gt; var _a = &lt;span class="str"&gt;""&lt;/span&gt;
+def a = _a
+def a_=(newValue:String) { _a = newValue }
+</code></pre>
+<p>}```
+<br  /><p>其中的a<em>=函数，是方便我们赋值，见下例：
+<br  /><pre class="csharpcode">val a = <span class="kwrd">new</span> A
+<br  />a.a <span class="rem">// -> &ldquo;&ldquo;</span>
+<br  />a.a = <span class="str">&ldquo;x&rdquo;</span> <span class="rem">// invoke a</em>=</span>
+<br  />a.a <span class="rem">// -> &ldquo;x&rdquo;</span></p>
+<pre><code>&lt;p&gt;如果不是需要在赋值或取值的时候需要做一些转换的操作，一般没有必要这样做。事实上，scala已经把所有的属性隐藏起来了。
+
+例如：
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;class&lt;/span&gt; A{
+    var id: Int = _
+}```
+&lt;p&gt;看上去我们定义了一个公开的属性id,实际上属性id是被隐藏起来的（private可见），这里只是定义了两个方法
+&lt;pre class="csharpcode"&gt;def id : Int
+def id_=(v: Int)```
+</code></pre>
+
+</div>
+</body>
+</html>

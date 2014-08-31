@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>&quot;val s:BigInt = 3333333333333333 为什么编译出错&quot;</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    &quot;val s:BigInt = 3333333333333333 为什么编译出错&quot;
+</h1>
+
+<div>
+    <hr />
+<p><p>val s:BigInt = 3333333333333333 为什么编译出错，不是说scala中，会自动把超长的整数变为BigInt吗？
+<br  /><p>在stackoverflow上有人提了这个问题，也有回答：
+<br  /><p><a href="http://stackoverflow.com/questions/1689414/java-scala-biginteger-pasting">http://stackoverflow.com/questions/1689414/java-scala-biginteger-pasting</a>
+<br  /><p>简单点说，就是如果在编码中手动写一个超长的int，还是要用java中的方式：
+<br  /><pre class="csharpcode">val s:BigInt = BigInt(<span class="str">&ldquo;3333333333333333333333333&rdquo;</span>)```</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>24. 使用Angular的过滤器</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    24. 使用Angular的过滤器
+</h1>
+
+<div>
+    <hr />
+<p>Filter可以作为任意的Scope求值中的一部分，不过它最主要是用来在模板中格式化表达式：</p>
+<pre><code>{{ expression | filter }}
+
+Filters通常把数据转为新的类型，在这个过程中对它进行格式化。Filter也可以被串连起来，还可以传入可选的参数。
+
+你可以像这样串连起filters:
+
+{{ expression | filter1 | filter2 }}
+
+你也可以把以冒号分隔的参数传到filter中，比如下例中，“以２位小数显示数字123”：
+
+123 | number:2
+</code></pre>
+<p>这里还有一些例子用来演示filter用法：</p>
+<ul>
+<li>无filter: <code>{{1234.5678}}</code> => <code>1234.5678</code></li>
+<li>数字filter: <code>{{1234.5678|number}}</code> => <code>1,234.57</code>. 注意格式化之后的数字中，有一个逗号*   使用带参数的filter: <code>{{1234.5678|number:5}}</code> => <code>1,234.56780</code>. Filters可以带参数，且参数可选，它们使用冒号分隔。在本例中5即为传给number这个filter的参数，表示显示5位小数。</li>
+</ul>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>16. 理解Anguar中的控制器组件</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    16. 理解Anguar中的控制器组件
+</h1>
+
+<div>
+    <hr />
+<p>在Anguar中，一个controller是一个JavaScript函数（类），用来创建angular的scope实例（除了根scope外）。当你或angular通过<code>scope.$new</code> API来创建一个子scope对象时，可以选择是否将一个controller作为参数传入。这表示让Angular把该controller与新创建的scope关联起来，以增加它的行为。</p>
+<p>使用controller可以：</p>
+<ul>
+<li>设置一个scope对象的初始状态*   为scope对象增加行为</li>
+</ul>
+<h3>设置scope对象的初始状态</h3>
+<p>通常当你创建了一个应用程序时，你需要给angular的scope设置初始状态。</p>
+<p>Angular将一个controller的构造函数应用(apply，跟Javascript的<code>Fuction#apply</code>意思相同)到一个新创建的angular的scope对象上，用于给它设置初始状态。这表示angular从来不会创建controller的实例（比如<code>new MyController</code>）。构造函数永远只被应用到已经存在的scope对象上。</p>
+<p>你可以通过创建model属性来初始化一个scope。例如：</p>
+<pre><code>function GreetingCtrl($scope) {
+ $scope.greeting = 'Hola!';
+}
+
+`GreetingCtrl`这个controller创建了一个`greeting`的model，它可以在模板中被引用。
+
+### 为scope对象添加行为
+
+Angular中的行为表现为scope上的方法属性，它们可在模板中被调用。行为与model交互，并可修改model。
+
+如`model`章节所说，所有赋给scope的对象都被当作model属性。所有赋给scope的函数也都在模板中可用，并且可使用angular表达式，或者`ng`事件处理器（如`ngClick`）调用。
+
+### 正确使用Controller
+
+通常来说，一个controller中不要做太多事情。它通常只应该包含一个view所需要的业务逻辑。
+
+让controller瘦身的常用方法是把不属于controller的代码提出来，做成services，然后在controller中通过依赖注入的方式调用它们。这在**依赖注入**一章探讨过。
+
+不要用controller来做：
+</code></pre>
+<ul>
+<li><p>任何DOM操作 - controller只应该包含业务逻辑。DOM操作属于展示逻辑，难以被测试。Angular提供了数据绑定的功能来自动维护DOM。如果你需要操作DOM，把相关代码放在directive中<em>   对输入进行格式化 - 使用Angular的form controls代替</em>   输出过滤 - 使用Anguar的filters代替<em>   在controller间运行无状态或有状态的代码 - 使用angular的services来代替</em>   初始化或管理其它组件的生命周期（例如，创建service实例）</p>
+<h3>将controller与scope对象关联</h3>
+<p>你可以使用<code>scope.$new</code>来显式将controllers与scope关联，或者用<code>ngController</code>这个directive来隐式创建，或者使用<code>$route</code> service。</p>
+<h4>Controller构造器和方法示例</h4>
+<p>为了演示Anguar中controller组件是如何工作的，我们来创建一个简单的包含以下组件的程序：</p>
+</li>
+<li><p>一个拥有两个按钮和一个简单信息的模板<em>   一个名为<code>spice</code>由字符串组成的model</em>   一个拥有两个函数的controller，它给<code>spice</code>赋值</p>
+<p>在我们的模板中的信息包含对<code>spice</code> model的绑定，默认值为<code>very</code>。按下不同的按钮，<code>spice</code> model的值可能被设为<code>chili</code>或<code>jalapeño</code>，且该信息将自动由数据绑定功能更新。</p>
+<h3>一个香辣(Spicy)的controller示例</h3>
+<p><body ng-controller="SpicyCtrl">
+<br  /><button ng-click="chiliSpicy()">Chili</button>
+<br  /><button ng-click="jalapenoSpicy()">Jalapeño</button></p>
+ <p>The food is {{spice}} spicy!</p>
+<p></body></p>
+<p>function SpicyCtrl($scope) {
+<br  />$scope.spice = 'very';
+<br  />$scope.chiliSpicy = function() {
+<br  />$scope.spice = 'chili';
+<br  />}
+<br  />$scope.jalapenoSpicy = function() {
+<br  />$scope.spice = 'jalapeño';
+<br  />}
+<br  />}</p>
+<p>上面的例子中，需要注意以下几点：</p>
+</li>
+<li><p><code>ngController</code>这个directive用来隐式创建一个scope，并且这个scope将由<code>SpicyCtrl</code> 这个controller管理<em>   <code>SpicyCtrl</code>只是一个普通的JavaScript函数。这里有一个（可选的）命名约定，即单词首字母大写，且以<code>Ctrl</code>或<code>Controller</code>结尾</em>   向<code>$scope</code>的属性赋值以创建或更新相应的model<em>   Controller中的方法可通过直接赋值的方式创建 （比如<code>chiliSpicy</code>或<code>jalapenoSpicy</code>方法）</em>   两个controller方法在模板中都可用（对于<code>body</code>及它的子元素）*   注意：以前的Anguar版本（1.0RC前），允许我们使用<code>this</code>替换<code>$scope</code>来<code>$scope</code>的方法，但现在不允许了。现在只能在$scope上的方法定义中使用<code>this</code>来指代<code>$scope</code>，在其它地方不行。 -注意： 以前的Anguar版本（1.0RC前），自动把controller的prototype方法加到scope中。但现在不允许了。现在所有的方法都只能手动向$scope添加。</p>
+<p>controller中的方法也可以有参数，见下例（对前面例子的修改）：</p>
+<h3>拥有参数的controller中的方法</h3>
+<p><body ng-controller="SpicyCtrl">
+<br  /><input ng-model="customSpice" value="wasabi">
+<br  /><button ng-click="spicy('chili')">Chili</button>
+<br  /><button ng-click="spicy(customSpice)">Custom spice</button></p>
+ <p>The food is {{spice}} spicy!</p>
+<p></body></p>
+<p>function SpicyCtrl($scope) {
+<br  />$scope.spice = 'very';
+<br  />$scope.spicy = function(spice) {
+<br  />$scope.spice = spice;
+<br  />}
+<br  />}</p>
+<p>注意<code>SpicyCtrl</code>这个controller只定义一个方法，叫<code>spicy</code>，它有一个参数叫<code>spice</code>。在模板中，调用可以调用这个方法，并在第一个按钮中传入一个参数<code>chili</code>，在第二个按钮中传入一个参数<code>spice</code>。</p>
+<h4>Controller的继承</h4>
+<p>Controller的继承基于<code>scope</code>的继承。让我们看个例子：</p>
+<p><body ng-controller="MainCtrl"></p>
+ <p>Good {{timeOfDay}}, {{name}}!</p>
+<p><div ng-controller="ChildCtrl"></p>
+   <p>Good {{timeOfDay}}, {{name}}!</p>
+   <p ng-controller="BabyCtrl">Good {{timeOfDay}}, {{name}}!</p>
+<p></body></p>
+<p>function MainCtrl($scope) {
+<br  />$scope.timeOfDay = 'morning';
+<br  />$scope.name = 'Nikki';
+<br  />}</p>
+<p>function ChildCtrl($scope) {
+<br  />$scope.name = 'Mattie';
+<br  />}</p>
+<p>function BabyCtrl($scope) {
+<br  />$scope.timeOfDay = 'evening';
+<br  />$scope.name = 'Gingerbreak Baby';
+<br  />}</p>
+<p>注意，我们在模板中嵌套了三个<code>ngController</code>指令。这个模板将会产生4个scope：</p>
+</li>
+<li><p>root scope<em>   <code>MainCtrl</code> scope, 包含<code>timeOfDay</code>和<code>name</code>这两个models</em>   <code>ChildCtrl</code> scope, 它继承了<code>timeOfDay</code>，但遮盖了上层的<code>name</code></p>
+</li>
+<li><p><code>BabyCtrl</code> scope, 它遮盖了<code>MainCtrl</code>中的<code>timeOfDay</code>和<code>ChildCtrl</code>中的<code>name</code></p>
+<p>Controller间的继承原理，与model相同。所以在我们之间的例子中，所有的model都可以被返回字符串的controller方法代替。</p>
+<p>注意：两个controller间的原型继承并不会像人们期待的那样工作，就像我们在前面提过的一样，controller并不会由angular实例化，它们只是被应用到scope对象上了。</p>
+<h4>测试Controllers</h4>
+<p>虽然 我们有很多方法来测试一个controller，但最方便的还是像下面这样，通过注入<code>$rootScope</code>和<code>$controller</code></p>
+<p>Controller Function:</p>
+<p>function myController($scope) {
+<br  />$scope.spices = [{&ldquo;name&rdquo;:&ldquo;pasilla&rdquo;, &ldquo;spiciness&rdquo;:&ldquo;mild&rdquo;},</p>
+<pre><code>              {"name":"jalapeno", "spiceiness":"hot hot hot!"},
+              {"name":"habanero", "spiceness":"LAVA HOT!!"}];
+</code></pre>
+<p>$scope.spice = &ldquo;habanero&rdquo;;
+<br  />}</p>
+<p>Controller Test:</p>
+<p>describe('myController function', function() {</p>
+<p>describe('myController', function() {</p>
+<pre><code>var scope;
+
+beforeEach(inject(function($rootScope, $controller) {
+  scope = $rootScope.$new();
+  var ctrl = $controller(myController, {$scope: scope});
+}));
+
+it('should create "spices" model with 3 spices', function() {
+  expect(scope.spices.length).toBe(3);
+});
+
+it('should set the default value of spice', function() {
+  expect(scope.spice).toBe('habanero');
+});
+</code></pre>
+<p>});
+<br  />});</p>
+<p>如果你想要测试一个嵌套的controller，需要在你的test中，创建与DOM已经存在的scope相同的继承层次。</p>
+<p>describe('state', function() {</p>
+<pre><code>var mainScope, childScope, babyScope;
+
+beforeEach(inject(function($rootScope, $controller) {
+    mainScope = $rootScope.$new();
+    var mainCtrl = $controller(MainCtrl, {$scope: mainScope});
+    childScope = mainScope.$new();
+    var childCtrl = $controller(ChildCtrl, {$scope: childScope});
+    babyScope = $rootScope.$new();
+    var babyCtrl = $controller(BabyCtrl, {$scope: babyScope});
+}));
+
+it('should have over and selected', function() {
+    expect(mainScope.timeOfDay).toBe('morning');
+    expect(mainScope.name).toBe('Nikki');
+    expect(childScope.timeOfDay).toBe('morning');
+    expect(childScope.name).toBe('Mattie');
+    expect(babyScope.timeOfDay).toBe('evening');
+    expect(babyScope.name).toBe('Gingerbreak Baby');
+});
+</code></pre>
+<p>});</p>
+</li>
+</ul>
+
+</div>
+</body>
+</html>

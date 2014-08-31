@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3.2 Common use cases</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    3.2 Common use cases
+</h1>
+
+<div>
+    <hr />
+<p>(本文译者是辉)</p>
+<h4>常见的模板使用方式</h4>
+<p>模板，功能比较简单，你可以安装你的想法组合。下面是几个一些常见的场景的例子.</p>
+<h4>Layout</h4>
+<p>我们来声明一个模板: views/main.scala.html ,把它作为一个主布局模板。</p>
+<pre><code>@(title: String)(content: Html)
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;@title&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;section class="content"&gt;@content&lt;/section&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+你可以看到，这个模板有两个参数：一个标题和HTML内容块。现在，我们可以从另一个views/Application/index.scala.html 模板，使用它：
+
+@main(title = "Home") {
+
+  &lt;h1&gt;Home page&lt;/h1&gt;
+
+}
+
+注意: 你可以采用两种方式来传参数 @main(title = "Home") 或者 @main("Home").
+
+比如，有时你在第二页需要一个侧栏或面包屑的具体内容块。你可以声明一个额外的参数：
+
+@(title: String)(sidebar: Html)(content: Html)
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;@title&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;section class="content"&gt;@content&lt;/section&gt;
+    &lt;section class="sidebar"&gt;@sidebar&lt;/section&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+在我们的“index”的模板使用，如下：
+
+@main("Home") {
+  &lt;h1&gt;Sidebar&lt;/h1&gt;
+
+} {
+  &lt;h1&gt;Home page&lt;/h1&gt;
+
+}
+
+另外，我们可以单独的声明：
+
+@sidebar = {
+  &lt;h1&gt;Sidebar&lt;/h1&gt;
+}
+
+@main("Home")(sidebar) {
+  &lt;h1&gt;Home page&lt;/h1&gt;
+
+}
+
+#### Tags &lt;标签&gt;(它们只是一些scala方法)
+
+我们在views/tags/notice.scala.html 中建立以个tag来显示一个消息
+
+@(level: String = "error")(body: (String) =&gt; Html)
+
+@level match {
+
+  case "success" =&gt; {
+    &lt;p class="success"&gt;
+      @body("green")
+    &lt;/p&gt;
+  }
+
+  case "warning" =&gt; {
+    &lt;p class="warning"&gt;
+      @body("orange")
+    &lt;/p&gt;
+  }
+
+  case "error" =&gt; {
+    &lt;p class="error"&gt;
+      @body("red")
+    &lt;/p&gt;
+  }
+
+}
+
+现在让我们在另一个模板中使用它：
+
+@import tags._
+
+@notice("error") { color =&gt;
+  Oops, something is &lt;span style="color:@color"&gt;wrong&lt;/span&gt;
+}
+
+#### Includes(包括？)
+
+在这里没有什么特别。你可以调用任何其他你喜欢的模板（或实际定义的其他任何功能）：
+
+&lt;h1&gt;Home&lt;/h1&gt;
+
+&lt;div id="side"&gt;
+  @common.sideBar()
+&lt;/div&gt;
+
+#### 其他Scripts或Css的定义
+
+在scala模板中定义其他Scripts或css(和play1.x一样),你可以这样来定义：
+
+@(title: String, scripts: Html = Html(""))(content: Html)
+
+&lt;!DOCTYPE html&gt;
+
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;@title&lt;/title&gt;
+        &lt;link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")"&gt;
+        &lt;link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")"&gt;
+        &lt;script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"&gt;&lt;/script&gt;
+        @scripts
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class="navbar navbar-fixed-top"&gt;
+            &lt;div class="navbar-inner"&gt;
+                &lt;div class="container"&gt;
+                    &lt;a class="brand" href="#"&gt;Movies&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="container"&gt;
+            @content
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+
+在扩展模板中，需要添加一个额外的脚本：
+
+@scripts = {
+    &lt;script type="text/javascript"&gt;alert("hello !");&lt;/script&gt;
+}
+
+@main("Title",scripts){
+
+   Html content here ...
+
+}
+
+在扩展模板，也可不必添加额外的脚本，就像：
+
+@main("Title"){
+
+   Html content here ...
+
+}
+</code></pre>
+
+</div>
+</body>
+</html>

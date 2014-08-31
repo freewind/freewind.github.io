@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>使用Python实现“信息更新上传工具”(5) — Python+PySide打包成绿色版</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    使用Python实现“信息更新上传工具”(5) — Python+PySide打包成绿色版
+</h1>
+
+<div>
+    <hr />
+<p>使用PySide写了一个简单的GUI程序，可以在安装了python和QT的环境中正常运行，那么，能否把它打包成绿色版，在没有安装python和qt的环境中运行呢？如果可以，文件一共有多少呢？</p>
+<p>经过尝试，终于成功，文件大小为23.2M，列表如下：</p>
+<blockquote><p>PySide.QtCore.pyd
+<br  />PySide.QtGui.pyd
+<br  />QtCore4.dll
+<br  />QtGui4.dll
+<br  />_hashlib.pyd
+<br  />bz2.pyd
+<br  />library.zip
+<br  />main.exe
+<br  />pyside-python2.7.dll
+<br  />python27.dll
+<br  />select.pyd
+<br  />shiboken-python2.7.dll
+<br  />unicodedata.pyd
+<br  />w9xpopen.exe</p>
+</blockquote>
+<p>里面的main.exe是我写的main.py转换后的文件，其它的，python27.dll是python库，QtGui4.dll和QtCore4.dll是Qt4里的库，PySide.QtCore.pyd和PySide.QtGui.pyd是PySide的库，还有其它的一些，总之，现在可以在一台普通的winxp上运行了。效果如下图：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2012/02/image12.png"><img src="http://freewind.me/wp-content/uploads/2012/02/image_thumb12.png" alt="image" title="image" /></a></p>
+<p>虽然功能还比较简单，而且后来还有一个黑色的cmd窗口，但是起码证明这种方式是可行的。而且把它们打成一个zip包之后，大小不到10M，也在可以接受的范围内。</p>
+<p>非常开心：）</p>
+<h2>打包方法</h2>
+<p>忘了说，使用的是一个叫py2exe的程序搞定的，官网：<a href="http://www.py2exe.org/">http://www.py2exe.org/</a></p>
+<p>用法见：<a href="http://www.py2exe.org/">http://www.py2exe.org/</a></p>
+<ol>
+<li><p>首先保证所写的python程序可以正常执行</p>
+</li>
+<li><p>安装py2exe</p>
+</li>
+<li><p>写一个setup.py文件，放到要打包的程序的同级，内容如下：</p>
+</li>
+</ol>
+<blockquote><p>from distutils.core import setup
+<br  />import py2exe</p>
+<p>setup(console=['hello.py'])</p>
+</blockquote>
+<p>其中的hello.py就是要打包的文件</p>
+<ol>
+<li>执行</li>
+</ol>
+<blockquote><p><font style="background-color: #ffffff">python setup.py py2exe</font></p>
+</blockquote>
+<p>期间如果提示说找不到msvcp90.dll这个文件，可以从别处找一个，放到python27/DLLs目录下</p>
+<ol>
+<li><p>如果一切正常，则会在当前目录下生成一个dist目录，里面包含了所有需要的文件</p>
+</li>
+<li><p>把dist目录拷贝到一台没有安装python/qt的电脑上，看是否能正常运行</p>
+</li>
+</ol>
+
+</div>
+</body>
+</html>

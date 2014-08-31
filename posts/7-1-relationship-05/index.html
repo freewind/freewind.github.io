@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>7.1 关系及其性质 05</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    7.1 关系及其性质 05
+</h1>
+
+<div>
+    <hr />
+<h2>问题</h2>
+<p><a href="http://freewind.me/wp-content/uploads/2013/01/image82.png"><img src="http://freewind.me/wp-content/uploads/2013/01/image_thumb82.png" alt="image" title="image" /></a></p>
+<h2>解答</h2>
+<h3>a)</h3>
+<p>关键在于“每个”两字，可以理解为“所有”。</p>
+<ul>
+<li>是<strong>自反</strong>的，因为访问了a的人也同时访问了a<em>   不是</em><em>对称</em><em>的，因为不是每一个访问了b的人，都会访问a</em>   不是<strong>反对称</strong>的，因为访问了(a,b)的人，有可能访问(b,a)，也有可能不访问(b,a)<em>   是</em><em>传递</em>*的，因为如果所有访问了a的人都访问了b，所有访问了b的人都访问了c，则所有访问了a的人都访问了c</li>
+</ul>
+<h3>b)</h3>
+<ul>
+<li><font color="#000000">不是<strong>自反</strong>的，因为如果一个网页a上有链接，则a与a有公共链接，显然(a,a)不属于R</font><em>   是</em><em>对称</em><em>的，因为a与b没有公共链接的话，则b与a必然没有公共链接</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，因为(a,b)没有公共链接，(b,a)也没有公共链接，但是(a,a)有公共链接</li>
+</ul>
+<h3>c)</h3>
+<ul>
+<li><font color="#000000"><strike>是<strong>自反</strong>的，因为若a与b上至少有一条公共链接，则a与b上都至少有一条链接。a与a之间，也至少有一条公共链接，属于R </strike>如果某个网页a上没有链接，则“a与a至少有一条公共链接”不成立，则(a,a)不属于R，所以不是自反的。我之前误解了“自反”的概念。</font><em>   是</em><em>对称</em><em>的，若a与b上至少有一条公共链接，则b与a上至少有一条公共链接</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，若(a,b)和(b,c)都属于R，但a与b的公共链接跟b与c的公共链接不相同，(a,c)有可能不属于R</li>
+</ul>
+<h3>d)</h3>
+<ul>
+<li><strike><font color="#000000">是<strong>自反</strong>的，若存在一个网页包含了到a与b的链接，则该网页包含到a与a的链接，即(a,a)属于R</font></strike>对于“所有网页来说”，对于某一个网页a来说，可能不存在一个网页包含了到它的链接，则(a,a)不存于R，所以不是自反的。我之前理解错了“自反”的定义。<em>   是</em><em>对称</em><em>的，若存在一个网页包含了到a与b的链接，则必然包含了到b与a的链接，即(b,a)属于R</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，可能有一个网页包含了到a与b的链接，另一个网页包含了到b与c的链接，但没有网页包含到a与c的链接。</li>
+</ul>
+
+</div>
+</body>
+</html>

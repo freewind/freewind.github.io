@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在linux上安装postgresql详解</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    在linux上安装postgresql详解
+</h1>
+
+<div>
+    <hr />
+<p><strong>下载及安装</strong></p>
+<p>进入源代码下载页面:</p>
+<blockquote><p><a href="http://www.postgresql.org/ftp/source/">http://www.postgresql.org/ftp/source/</a></p>
+</blockquote>
+<p>我选择的是v8.4.8:</p>
+<blockquote><p>wget <a href="http://wwwmaster.postgresql.org/redir/418/h/source/v8.4.8/postgresql-8.4.8.tar.gz" title="http://wwwmaster.postgresql.org/redir/418/h/source/v8.4.8/postgresql-8.4.8.tar.gz">http://wwwmaster.postgresql.org/redir/418/h/source/v8.4.8/postgresql-8.4.8.tar.gz</a></p>
+</blockquote>
+<p>解压</p>
+<blockquote><p>tar xzvf postgresql-8.4.8.tar.gz</p>
+</blockquote>
+<p>使用默认参数configure</p>
+<blockquote><p>cd postgresql-8.4.8
+<br  />./configure</p>
+</blockquote>
+<p><span id="more-515"></span>
+<br  /><p>如果提示找不到readline，但readline已经安装，说明缺少了readline-devel。其它错误类似。</p>
+<blockquote><p>yum install readline-devel</p>
+</blockquote>
+<p>编译安装，过程漫长</p>
+<blockquote><p>make &amp;&amp; make install</p>
+</blockquote>
+<p>自动安装到了/usr/local/pgsql下。</p>
+<p><strong>增加postgresql专用用户</strong></p>
+<p>posgresql为安全考虑，不允许以root用户运行，必须为它建立对应的用户和组</p>
+<blockquote><p>useradd postgres</p>
+</blockquote>
+<p>将自动建立对应的组(postgres)</p>
+<p>为其配置环境变量：</p>
+<blockquote><p>vim ~postgres/.bash_profile</p>
+</blockquote>
+<p>在最后加上</p>
+<blockquote><p>PGLIB=/usr/local/pgsql/lib
+<br  />PGDATA=$HOME/data
+<br  />PATH=$PATH:/usr/local/pgsql/bin
+<br  />MANPATH=$MANPATH:/usr/local/pgsql/man
+<br  />export PGLIB PGDATA PATH MANPATH</p>
+</blockquote>
+<p><strong>建立数据目录</strong></p>
+<p>先切换用户</p>
+<blockquote><p>su – postgres</p>
+</blockquote>
+<p>建立数据目录</p>
+<blockquote><p>mkdir data</p>
+</blockquote>
+<p>初始化目录数据</p>
+<blockquote><p>cd data
+<br  />initdb</p>
+</blockquote>
+<p>将出现如下图：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb.png" alt="image" title="image" /></a></p>
+<p>启动postgresql</p>
+<blockquote><p>posgtres -D /home/postgres/data</p>
+</blockquote>
+<p>如果出现类似下面的提示，就说明安装成功</p>
+<blockquote><p>LOG:  database system was shut down at 2011-10-28 08:22:40 CST
+<br  />LOG:  database system is ready to accept connections
+<br  />LOG:  autovacuum launcher started</p>
+</blockquote>
+<p>按ctrl+c停止，使用以下命令，以后台服务方式启动</p>
+<blockquote><p>pg_ctl start</p>
+</blockquote>
+<p>会出现一些提示信息。按回车，将出现命令提示符。</p>
+<p><strong>使用命令行连接数据库</strong></p>
+<p>创建数据库mydb</p>
+<blockquote><p><p>$createdb mydb</p>
+</blockquote>
+<p>连接数据库</p>
+<blockquote><p>$psql mydb</p>
+</blockquote>
+<p>操作数据库</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image1.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb1.png" alt="image" title="image" /></a></p>
+<p>说明现在的数据库可以正常运行。</p>
+<p><strong>允许远程连接</strong></p>
+<p>postgresql因为安全方面的考虑，默认情况下只接受本机的连接。为了管理的方便，我们需要开通远程连接。</p>
+<p>修改data/postgresql.conf，增加：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image2.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb2.png" alt="image" title="image" /></a></p>
+<p>修改监听端口：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image3.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb3.png" alt="image" title="image" /></a></p>
+<p>修改data/pg_hba.conf，增加md5那一行：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image4.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb4.png" alt="image" title="image" /></a></p>
+<p>然后重启posgtres。</p>
+<p>修改配置后马上生效不重启：</p>
+<blockquote><p>pg_ctl reload</p>
+</blockquote>
+<p><strong>给postgres设置密码</strong></p>
+<p>默认情况下，postgresql数据库中的超级用户postgres密码为空，导致无法远程登录。我们必须先给它设个密码：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image5.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb5.png" alt="image" title="image" /></a></p>
+<p>这样，postgres的密码也是postgres了。</p>
+<p><strong>在windows上安装管理程序</strong></p>
+<p>下载地址：</p>
+<blockquote><p><a href="http://get.enterprisedb.com/postgresql/postgresql-8.4.8-1-windows-binaries.zip">http://get.enterprisedb.com/postgresql/postgresql-8.4.8-1-windows-binaries.zip</a></p>
+</blockquote>
+<p>下载后解压，运行其中的pgAdmin III程序，如图：</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image6.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb6.png" alt="image" title="image" /></a></p>
+<p>确定后，如果没错误，就会连上。</p>
+<p><a href="http://freewind.me/wp-content/uploads/2011/10/image7.png"><img src="http://freewind.me/wp-content/uploads/2011/10/image_thumb7.png" alt="image" title="image" /></a></p>
+<p>把postgres服务设为自动启动
+<br  />进入postgresql的源代码解压目录</p>
+<blockquote><p>cp contrib/start-scripts/linux /etc/init.d/postgresql
+<br  />chmod a+x /etc/init.d/postgresql
+<br  />chkconfig –add /etc/init.d/postgresql</p>
+</blockquote>
+<p>好了。</p>
+<p><strong>在postgresql中创建用户，并设置数据库</strong></p>
+<blockquote><p>create database ttt owner ttt;</p>
+</blockquote>
+<p>这样就设置了一个数据库叫ttt，并且它的拥有者是一个叫ttt的用户。</p>
+
+</div>
+</body>
+</html>

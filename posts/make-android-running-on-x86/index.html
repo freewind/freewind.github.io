@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在x86上运行的android</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    在x86上运行的android
+</h1>
+
+<div>
+    <hr />
+<p><a href="http://android-x86.org">http://android-x86.org</a></p>
+<p>Android的emulator太慢了，因为它是arm架构的。android-x86项目是在x86上运行android，速度比较快，可用来代替emulator测试android程序。</p>
+<p>直接使用virtualbox建一个虚拟机，下载它的iso安装即可。</p>
+<p>参考这篇文章： <a href="http://be-evil.org/create-an-x86-emulator-based-height-performance-android-develop-environment.html">http://be-evil.org/create-an-x86-emulator-based-height-performance-android-develop-environment.html</a></p>
+<p>注意：上面这篇文章下载的是2.x，有点老了，我们下载最新的4.0的epc那款，如果选别的，可能安装不了。</p>
+<p>关于ip，跑起来后按alt+F1进行console, 运行：</p>
+<div class="mycode">netcfg eth0 up     
+netcfg eth0 dhcp      </div>
+<p>然后</p>
+<p><div class="mycode"></p>
+<p>netcfg</p>
+<p></p></div></p>
+<p>可查看到分配的ip。</p>
+<p>我把它跑起来了，速度非常快，可惜的是鼠标控制很不方便，需要不断的按right-ctrl跳出。而且我要模拟的是800&#215;1280的屏幕，我的显示度显示不下，调整时更加麻烦。我把一个显示器竖着，旋转显示方向后，可以完全显示了，可惜在这种情况下，鼠标完全无法控制，甚至想解个锁都解不了。</p>
+<p>真可惜。</p>
+
+</div>
+</body>
+</html>

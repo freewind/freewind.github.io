@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AutoHotkey小试</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    AutoHotkey小试
+</h1>
+
+<div>
+    <hr />
+<p>今天尝试了一下auto hotkey这个工具，可以方便地定义一些快捷键，实现某些方便操作。</p>
+<p>比如在xtend中，它用了两个奇怪的符号«»在文本中引用xtend代码。它们在xtend的编辑器中很好输入，直接按ctrl+shift+,即可。但在其它地方怎么输呢？</p>
+<p>方法是这样的，按alt+171和alt+187，够麻烦的。</p>
+<p>所以我定义了一个auto hotkey的脚本，来实现同样功能。</p>
+<blockquote><p>^+,::
+<br  />sendinput, «»
+<br  />sendinput, {Left}
+<br  />return</p>
+<p>^+.::
+<br  />sendinput, »
+<br  />return</p>
+</blockquote>
+<p>另外，还想实现这个功能：当我在eclipse中按了ctrl+s时，会自动刷新浏览器。思路时，先找到firefox/chrome/ie等，激活它们的窗口，发送刷新命令，然后再切回到eclipse。</p>
+<p>代码如下：</p>
+<blockquote><p>$^s::                                       ; only capture actual keystrokes
+<br  />SetTitleMatchMode, 2                        ; match anywhere in the title
+<br  />IfWinActive, Eclipse                        ; find Sublime Text
+<br  />{</p>
+<pre><code>Send ^s                                 ; send save command       
+IfWinExist, Mozilla Firefox             ; find firefox       
+{       
+    WinActivate                         ; use the window found above       
+    Send ^r                             ; send browser refresh       
+    WinActivate, Eclipse                ; get back to Sublime Text       
+}       
+IfWinExist, Google Chrome               ; find Chrome       
+{       
+    WinActivate                         ; use the window found above       
+    Send ^r                             ; send browser refresh       
+    WinActivate, Eclipse                ; get back to Sublime Text       
+}       
+IfWinExist, Internet Explorer            ; find IE       
+{       
+    WinActivate                         ; use the window found above       
+    Send ^r                             ; send browser refresh       
+    WinActivate, Eclipse                ; get back to Sublime Text       
+}       
+</code></pre>
+<p>}
+<br  />else
+<br  />{</p>
+<pre><code>Send ^s                                 ; send save command       
+</code></pre>
+<p>}
+<br  />return</p>
+</blockquote>
+<p><font color="#666666"></font>
+</p>
+
+</div>
+</body>
+</html>

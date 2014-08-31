@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在scala中，如何取得一个函数的参数名</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    在scala中，如何取得一个函数的参数名
+</h1>
+
+<div>
+    <hr />
+<p>问题很简单，定义了一个函数，怎样才能取得参数名？</p>
+<pre><code>class User {
+    def insert(name:String, age: Int) {}
+ }
+</code></pre>
+<p>在scala中，有没有办法得到这个函数的参数名name和age呢？</p>
+<p><span id="more-172"></span>
+<br  /><p>因为scala在很多地方受制于java，先让我们看看在java中怎么解决。java的反射，可以得到类名，函数名，参数类型，就是得不到参数的名。曾经在jdk6.0时打算加入，后来因为时间不足放弃，而现在java7.0也没打算加入，可能是考虑到代码的兼容。在java中，不外乎是两种做法：</p>
+<ol>
+<li>在编译时，使用一些(ant或mvn的）插件，扫描源代码，将这些信息加入到生成的字节码中，然后再用一些库读取。</li>
+<li>在编译时，打开编译器的-g开关，让生成的字节码中包含有参数名等信息，再用库读取。</li>
+</ol>
+<p>Paranamer这个库就是按第2种方式做的，见：<a href="http://paranamer.codehaus.org/">http://paranamer.codehaus.org/</a></p>
+<p>在scala中，按说也可以这么做。但是我尝试了几次，却都没有成功。scalac的-g参数，后面还有5个可选值，分别是none,source,vars,line,notailcall，我都试了，可是使用paranamer，都什么也没得到，看来scala的编译器跟java的做法还不一样。是不是就没有办法做到了？</p>
+<p>最后，在stackoverflow上，有一个高手给我介绍了他写的一个工具，叫scalaj-reflect，可以做到。见：</p>
+<p><a href="http://stackoverflow.com/questions/5191726/is-it-possible-to-get-the-parameter-names-of-a-method-in-scala">http://stackoverflow.com/questions/5191726/is-it-possible-to-get-the-parameter-names-of-a-method-in-scala</a></p>
+<p>通过这一段代码：</p>
+<pre><code>import scalaj.reflect._
+for {
+  clazz &lt;- Mirror.ofClass[UsersController].toSeq
+  method &lt;- clazz.allDefs.find(_.name == "insert").toSeq
+  params &lt;- method.flatParams
+} yield params
+</code></pre>
+<p>就可以成功得到insert函数的参数值了。</p>
+<p>其项目位于：<a href="https://github.com/scalaj/scalaj-reflect">https://github.com/scalaj/scalaj-reflect</a></p>
+<p>需要手动编译，得到jar。</p>
+<p>这么高难的，scala都能解决。</p>
+<p>经过后来在实际项目中使用，发现如果一个类的结构比较复杂，比如函数中有内部类或者闭包，可能读取错误。所以如果要使用这个功能，一定要注意测试。</p>
+
+</div>
+</body>
+</html>
