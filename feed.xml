@@ -5,8 +5,28 @@
         <description>Freewind's programming life</description>
         <link>http://freewind.github.io</link>
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>星期日, 31 八月 2014 16:02:12 CST</lastBuildDate>
+        <lastBuildDate>星期日, 31 八月 2014 16:26:37 CST</lastBuildDate>
         <language>zh-CN</language>
+            <item>
+                <title>在scala中快速下载并保存某url的内容</title>
+                <description><![CDATA[<hr />
+<p>在Java中获取某个url的内容并把它保存到本地，是一件非常繁琐的事情。</p>
+<p>而在scala的标准库中，它提供了一种很简洁的api：s</p>
+<pre><code class="scala">import scala.sys.process._
+
+new URL("http://google.com") #&gt; new File("/tmp/google.html") !!
+</code></pre>
+<p>在新的scala版本中，上面的代码会有警告，可以写成这样：</p>
+<pre><code class="scala">(new URL("http://google.com") #&gt; new File("/tmp/google.html")).!!
+</code></pre>
+]]></description>
+                <pubDate>星期日, 31 八月 2014 16:20:07 CST</pubDate>
+                <link>http://freewind.github.io/post/download-and-save-url-content-to-local</link>
+                <guid isPermaLink="false">2750</guid>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+            </item>
+
             <item>
                 <title>在mac上连接postgresql出现”/tmp/.s.PGSQL.5432″错误，无法连接</title>
                 <description><![CDATA[<hr />
@@ -8055,7 +8075,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#101;&#98;&#45;&#x75;&#105;&#x2d;&#100;&#x65;&#x76;&#64;d&#x61;&#x72;&#116;&#108;&#97;&#110;&#103;&#x2e;&#x6f;&#x72;&#103;">&#119;e&#98;&#x2d;&#x75;&#105;&#45;&#x64;&#101;&#118;&#x40;&#x64;&#97;&#114;&#x74;&#108;&#97;n&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;i&#x6c;&#x74;&#x6f;&#x3a;&#119;&#x65;b&#x2d;&#x75;&#105;&#45;&#x64;&#101;&#x76;&#64;&#100;a&#x72;&#x74;&#x6c;&#97;&#x6e;&#103;&#46;&#x6f;&#114;&#x67;">&#x77;&#101;&#x62;&#x2d;&#x75;&#105;&#45;&#x64;&#101;&#x76;&#x40;&#x64;&#97;&#114;t&#108;&#97;&#110;&#103;&#46;&#x6f;&#114;&#x67;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
