@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>星期一, 01 九月 2014 15:03:10 CST</lastBuildDate>
+        <lastBuildDate>星期一, 01 九月 2014 17:58:54 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -8278,7 +8278,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#58;&#119;&#x65;&#98;&#45;&#117;&#x69;&#45;&#100;&#x65;&#118;&#64;&#x64;&#97;&#x72;&#x74;&#x6c;&#97;&#x6e;&#x67;.&#x6f;&#114;&#103;">&#x77;&#x65;&#x62;&#x2d;&#117;&#x69;&#45;&#x64;&#101;&#118;&#x40;&#100;&#97;&#x72;&#x74;la&#110;&#x67;&#x2e;o&#114;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;a&#105;&#x6c;&#x74;&#111;&#58;&#x77;&#x65;&#x62;&#45;&#117;&#x69;&#x2d;&#100;&#101;&#x76;&#x40;&#x64;&#97;&#x72;&#x74;&#108;&#97;&#x6e;&#103;&#x2e;&#x6f;&#114;&#x67;">&#x77;&#101;&#x62;&#x2d;&#x75;&#x69;&#x2d;&#100;&#101;&#118;&#x40;&#100;&#97;&#x72;&#x74;&#x6c;&#x61;&#x6e;&#103;&#x2e;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -10916,67 +10916,44 @@ class Ctrl {
             </item>
 
             <item>
-                <title>7.1 关系及其性质 56</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-56</link>
-                <pubDate>星期二, 08 一月 2013 22:04:26 CST</pubDate>
+                <title>7.1 关系及其性质 50</title>
+                <link>http://freewind.github.io/posts/7-1-relationship-50</link>
+                <pubDate>星期二, 08 一月 2013 21:02:32 CST</pubDate>
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1996</guid>
+                <guid isPermaLink="false">1984</guid>
                 <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1996-1.png"><img src="/user_images/1996-1.png" alt="image" title="image" /></a></p>
-<h2>答案</h2>
-<p><a href="/user_images/1996-3.png"><img src="/user_images/1996-3.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>此题留着以后证。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 57</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-57</link>
-                <pubDate>星期二, 08 一月 2013 22:02:07 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1993</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1993-1.png"><img src="/user_images/1993-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>不一定是。</p>
-<p>假设集合A={1,3}，关系R={(3,1),(1,3)}，显然它是反自反的，但<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" />={(1,1),(3,3)}是自反的</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 55</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-55</link>
-                <pubDate>星期二, 08 一月 2013 21:51:40 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1990</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1990-1.png"><img src="/user_images/1990-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>用数学归纳法来证明。</p>
-<p>当n=1时，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E1%7D%20%3D%20R" alt="{R^1} = R" />，显然成立。</p>
-<p>假设<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D" alt="{R^n}" />是自反的，则对于所有的<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=a%20%5Cin%20R" alt="a \in R" />都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Ca%29%20%5Cin%20%7BR%5En%7D" alt="(a,a) \in {R^n}" />且<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Ca%29%20%5Cin%20R" alt="(a,a) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Ca%29%20%5Cin%20%7BR%5En%7D%20%5Ccirc%20R%20%3D%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="(a,a) \in {R^n} \circ R = {R^{n + 1}}" />。</p>
-<p>所以对所有的正整数，<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D" alt="{R^n}" />都是自反的。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 54</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-54</link>
-                <pubDate>星期二, 08 一月 2013 21:25:50 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1987</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
+<h2>题目 50</h2>
+<p><a href="/user_images/1984-1.png"><img src="/user_images/1984-1.png" alt="image" title="image" /></a></p>
+<h2>解答 50</h2>
+<p>由“反对称”的定义可知，题目只是“反对称”的定义的另一种表达方式</p>
+<hr />
+<h2>题目 51</h2>
+<p><a href="/user_images/1975-1.png"><img src="/user_images/1975-1.png" alt="image" title="image" /></a></p>
+<h2>解答 51</h2>
+<p>如果R是自反的，则对于A的所有元素x，都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />。由于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />是R的逆关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(x,x) \in {R^{ - 1}}" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />是自反的。</p>
+<p>如果<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />是自反的，则对于A的所有元素x，都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(x,x) \in {R^{ - 1}}" />。由于R是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />的逆关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以R是自反的。</p>
+<hr />
+<h2>题目 52</h2>
+<p><a href="/user_images/1978-1.png"><img src="/user_images/1978-1.png" alt="image" title="image" /></a></p>
+<h2>解答 52</h2>
+<p>因为R是集合A上的自反关系，所以对于A中的每一个元素x都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />。由于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />是R的补关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cnotin%20%5Coverline%20R%20" alt="(x,x) \notin \overline R " />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />是反自反的。</p>
+<p>反过来，因为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />是反自反的，所以对于A中的每一个元素x都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cnotin%20%5Coverline%20R%20" alt="(x,x) \notin \overline R " />。由于R是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />的补关系，所以有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以R是自反的。</p>
+<hr />
+<h2>题目 53</h2>
+<p><a href="/user_images/1981-1.png"><img src="/user_images/1981-1.png" alt="image" title="image" /></a></p>
+<h2>解答 53</h2>
+<p>使用数学归纳法。</p>
+<p>当n=1时，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E1%7D%7B%5Crm%7B%20%3D%20%7D%7DR" alt="{R^1}{\rm{ = }}R" />。</p>
+<p>对于任意正整数，因为R是传递的，由定理1，可知<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7Bn%20%2B%201%7D%7D%20%5Csubseteq%20R" alt="{R^{n + 1}} \subseteq R" />。</p>
+<p>要证<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Csubseteq%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="R \subseteq {R^{n + 1}}" />。由归纳假设<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D%7B%5Crm%7B%20%3D%20%7D%7DR" alt="{R^n}{\rm{ = }}R" />，可知<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7Bn%20%2B%201%7D%7D%20%3D%20%7BR%5En%7D%20%5Ccirc%20R%20%3D%20R%20%5Ccirc%20R" alt="{R^{n + 1}} = {R^n} \circ R = R \circ R" />。</p>
+<p>取<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，因为R是自反的，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Cb%29%20%5Cin%20R" alt="(b,b) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R%20%5Ccirc%20R" alt="(a,b) \in R \circ R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="(a,b) \in {R^{n + 1}}" />，从而<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Csubseteq%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="R \subseteq {R^{n + 1}}" />。</p>
+<p>所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="R = {R^{n + 1}}" />。</p>
+<p>综上所述，对于所有的正整数，都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D%7B%5Crm%7B%20%3D%20%7D%7DR" alt="{R^n}{\rm{ = }}R" /></p>
+<hr />
+<h2>题目 54</h2>
 <p><a href="/user_images/1987-1.png"><img src="/user_images/1987-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 54</h2>
 <p>设题目中的集合为A</p>
 <h3>a)</h3>
 <p>除了(2,3)和(4,5)，包含<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中所有其它元素。</p>
@@ -10986,230 +10963,27 @@ class Ctrl {
 <p>包含<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中全部元素</p>
 <h3>d)</h3>
 <p>包含<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中全部元素</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 50</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-50</link>
-                <pubDate>星期二, 08 一月 2013 21:02:32 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1984</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1984-1.png"><img src="/user_images/1984-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>由“反对称”的定义可知，题目只是“反对称”的定义的另一种表达方式</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 53</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-53</link>
-                <pubDate>星期二, 08 一月 2013 20:51:50 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1981</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1981-1.png"><img src="/user_images/1981-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>使用数学归纳法。</p>
-<p>当n=1时，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E1%7D%7B%5Crm%7B%20%3D%20%7D%7DR" alt="{R^1}{\rm{ = }}R" />。</p>
-<p>对于任意正整数，因为R是传递的，由定理1，可知<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7Bn%20%2B%201%7D%7D%20%5Csubseteq%20R" alt="{R^{n + 1}} \subseteq R" />。</p>
-<p>要证<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Csubseteq%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="R \subseteq {R^{n + 1}}" />。由归纳假设<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D%7B%5Crm%7B%20%3D%20%7D%7DR" alt="{R^n}{\rm{ = }}R" />，可知<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7Bn%20%2B%201%7D%7D%20%3D%20%7BR%5En%7D%20%5Ccirc%20R%20%3D%20R%20%5Ccirc%20R" alt="{R^{n + 1}} = {R^n} \circ R = R \circ R" />。</p>
-<p>取<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，因为R是自反的，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Cb%29%20%5Cin%20R" alt="(b,b) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R%20%5Ccirc%20R" alt="(a,b) \in R \circ R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="(a,b) \in {R^{n + 1}}" />，从而<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Csubseteq%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="R \subseteq {R^{n + 1}}" />。</p>
-<p>所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="R = {R^{n + 1}}" />。</p>
-<p>综上所述，对于所有的正整数，都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D%7B%5Crm%7B%20%3D%20%7D%7DR" alt="{R^n}{\rm{ = }}R" /></p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 52</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-52</link>
-                <pubDate>星期二, 08 一月 2013 20:32:47 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1978</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1978-1.png"><img src="/user_images/1978-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>因为R是集合A上的自反关系，所以对于A中的每一个元素x都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />。由于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />是R的补关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cnotin%20%5Coverline%20R%20" alt="(x,x) \notin \overline R " />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />是反自反的。</p>
-<p>反过来，因为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />是反自反的，所以对于A中的每一个元素x都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cnotin%20%5Coverline%20R%20" alt="(x,x) \notin \overline R " />。由于R是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Coverline%20R%20" alt="\overline R " />的补关系，所以有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以R是自反的。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 51</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-51</link>
-                <pubDate>星期二, 08 一月 2013 20:29:40 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1975</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1975-1.png"><img src="/user_images/1975-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>如果R是自反的，则对于A的所有元素x，都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />。由于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />是R的逆关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(x,x) \in {R^{ - 1}}" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />是自反的。</p>
-<p>如果<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />是自反的，则对于A的所有元素x，都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(x,x) \in {R^{ - 1}}" />。由于R是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />的逆关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以R是自反的。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 49</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-49</link>
-                <pubDate>星期二, 08 一月 2013 20:19:07 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1971</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1971-1.png"><img src="/user_images/1971-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>若R是对称的，则对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20R" alt="(b,a) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(a,b) \in {R^{ - 1}}" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Csubseteq%20%7BR%5E%7B%20-%201%7D%7D" alt="R \subseteq {R^{ - 1}}" />。类似的，由于R是对称的，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />也是对称的，可以求出<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D%20%5Csubseteq%20R" alt="{R^{ - 1}} \subseteq R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7B%20-%201%7D%7D" alt="R = {R^{ - 1}}" />。</p>
-<p>对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(b,a) \in {R^{ - 1}}" />。如果<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7B%20-%201%7D%7D" alt="R = {R^{ - 1}}" />，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20R" alt="(b,a) \in R" />。所以R是对称的。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 48</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-48</link>
-                <pubDate>星期二, 08 一月 2013 16:43:13 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1950</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1950-1.png"><img src="/user_images/1950-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<ul>
-<li>因为R是A上的自反关系，所以R包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Ccup%20S" alt="R \cup S" />包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以它是自反的。</li>
-<li>因为R和S都是A上的自反关系，所以R和S都包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Ccap%20S" alt="R \cap S" />是自反的</li>
-<li>因为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Coplus%20S" alt="R \oplus S" />不包含它们的交集，所以不包含(x,x)，所以它是反自反的。</li>
-<li>因为R-S不包含它们的交集，所以不包含(x,x)，所以它是反自反的。</li>
-<li>因为R和S都是A上的自反关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=S%20%5Ccirc%20R" alt="S \circ R" />也包含所有的<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以它也是自反的。</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 47</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-47</link>
-                <pubDate>星期二, 08 一月 2013 16:35:14 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1947</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1947-1.png"><img src="/user_images/1947-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>有问题的地方在于这一句“取元素<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=b%20%5Cin%20A" alt="b \in A" />，使得<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />”。因为对于A上的任意一个点，可能并不存在一个b使<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 46</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-46</link>
-                <pubDate>星期二, 08 一月 2013 16:28:40 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1944</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1944-1.png"><img src="/user_images/1944-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a)</h3>
-<p>当n=1时，集合上的关系总数为2个：空集和{{1,1}}，这两个都是传递的，所以有2个传递关系</p>
-<h3>b)</h3>
-<p>用图的方式说明方便一些。一个图上有两个点a和b，如下：</p>
-<p><a href="/user_images/1944-3.png"><img src="/user_images/1944-3.png" alt="image" title="image" /></a></p>
-<p>可以分为三种情况考虑：</p>
-<ol>
-<li>A与B之间没有边。此时不论A与B上有没有环，都是传递的，所以4种2.  A与B之间有单边。从A到B或者从B到A，不论A与B上有没有环，都是传递的，所以有2&#215;4=8种。3.  A与B之间有双边。此时只有A与B都有环，才是传递的，有1种。</li>
-</ol>
-<p>共有13种。</p>
-<h3>c)</h3>
-<p>如下图，有三个点A,B,C：</p>
-<p><a href="/user_images/1944-5.png"><img src="/user_images/1944-5.png" alt="image" title="image" /></a></p>
-<p>分多种情况考虑：</p>
-<ol>
-<li>没有任何边。此时不论这三点上有没有环，都是传递的，所以有2x2x2共8种。      2.  有一条单边。共有6种单边，此时不论三点有没有环，都是传递的，有6&#215;8=48种。3.  有一条双边。有3种双边。当两点间有双边时，此两点上都必须有环，另一点上有没有环都行。所以共有3&#215;2=6种。4.  有两条单边。共有12种情况。其中有6种情况类似于(a,b),(b,c)，这时不论点上有没有环，都不是传递的。另外6种情况，不论点上有没有环，都是传递的。所以共有6&#215;8=48种。5.  有两边双边。此时不论点上有没有环，都不是传递的。6.  有一条单边一条双边。此时不可能传递。</li>
-<li>有三条单边。共有8种情况。回路有2种，此时不是传递的。其它情况有6种，不论点上有没有环，都是传递的。所以共有6&#215;8=48种。8.  有三条双边。此时只有三点上都有环，才是传递的，共有1种情况。9.  有一条单边，两条双边。都不是传递的。</li>
-<li>有一条双边，两条单边。分12种情况。其中当两条单边顺次相连（如(a,b),(b,c)），不论点上有没有环，都不是传递的，少了一半。其它6情况，双边的两点必须有环，另一点有没有环都一样传递。所以共6&#215;2=12种。</li>
-</ol>
-<p>综上，共有171种。</p>
-<p>不用程序来做会死人。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 45</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-45</link>
-                <pubDate>星期二, 08 一月 2013 15:26:50 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1937</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1937-1.png"><img src="/user_images/1937-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a)</h3>
-<p>在一个对称的集合中，(a,b)和(b,a)总是成对出现，所以我们可以把它们当成一类，只考虑(a,b)出现的次数。</p>
-<p>设集合为A，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中的元素共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D" alt="{n^2}" />个。其中(a,a)这样的有n个，(a,b)且a不等于b这样的元素有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个。因为对于每一个(a,b)，<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />都有一个(b,a)，如果我们只考虑其中一种，则有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2" alt="({n^2} - n)/2" />个。再加上(a,a)这样的，一共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2%20%2B%20n" alt="({n^2} - n)/2 + n" />个元素需要考虑。</p>
-<p>所以在A上，对称的关系的总个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%20%2B%20n%7D%7D" alt="{2^{({n^2} - n)/2 + n}}" />个。</p>
-<h3>b)</h3>
-<p>将<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中的元素分为两类考虑，一类是全等关系<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />中的元素，一类是(a,b)和(b,a)，其中a不等于b。</p>
-<p>对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，它可以出现，可以不出现，所以有两种情况。</p>
-<p>对于每对(a,b)与(b,a)，它们至多出现一个，所以有三种情况。</p>
-<p>综合起来，一共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5En%7D%7B3%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D" alt="{2^n}{3^{({n^2} - n)/2}}" />个。</p>
-<h3>c)</h3>
-<p>非对称中不能出现(a,a)这样的元素，所以可考虑的元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29" alt="({n^2} - n)" />个。其中每对(a,b)与(b,a)中，每次至多只能出现其中一个，所以有3种情况。这样就有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B3%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D" alt="{3^{({n^2} - n)/2}}" />个</p>
-<h3>d)</h3>
-<p>反自反关系中，不能出现(a,a)这样的元素，所以需考虑的元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个，关系总个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D" alt="{2^{{n^2} - n}}" />个</p>
-<h3>e)</h3>
-<p>先不考虑(a,a)这样的元素，剩下的每两个(a,b)与(b,a)看作一组，则有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2" alt="({n^2} - n)/2" />个元素需要考虑。它们的关系总个数为</p>
-<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B_%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D%7D" alt="{2^{_{({n^2} - n)/2}}}" />个。然后在每个关系里加上<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，即满足要求。所以共<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B_%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D%7D" alt="{2^{_{({n^2} - n)/2}}}" />个。</p>
-<h3>f)</h3>
-<p>先不考虑<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，则元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个，关系个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D" alt="{2^{{n^2} - n}}" />个。然后再考虑<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />中的元素，除去全选和全不选的情况，配合前面的关系，就能满足题意。所以共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D%20%5Ctimes%20%28%7B2%5En%7D%20-%202%29%7B%5Crm%7B%20%3D%20%7D%7D%7B%7B%5Crm%7B2%7D%7D%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%7Bn%5E2%7D%20-%20n%20%2B%201%7D%7D" alt="{2^{{n^2} - n}} \times ({2^n} - 2){\rm{ = }}{{\rm{2}}^{{n^2}}} - {2^{{n^2} - n + 1}}" />个关系。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 44</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-44</link>
-                <pubDate>星期二, 08 一月 2013 11:55:40 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1933</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1933-1.png"><img src="/user_images/1933-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>a) S上共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D" alt="{2^{{n^2}}}" />个关系。因为对于S上的关系来说，(a,b)有一半的机会出现，所以包含(a,b)的关系共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%201%7D%7D" alt="{2^{{n^2} - 1}}" />个。</p>
-<p>b) 同上，共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%201%7D%7D" alt="{2^{{n^2} - 1}}" />个</p>
-<p>c) 满足题意的关系，可看作是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28S%20-%20%5C%7B%20a%5C%7D%20%29%20%5Ctimes%20S" alt="(S - \{ a\} ) \times S" />，故共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%28n%20-%201%29n%7D%7D" alt="{2^{(n - 1)n}}" />个关系</p>
-<p>d) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%28n%20-%201%29n%7D%7D" alt="{2^{{n^2}}} - {2^{(n - 1)n}}" />个</p>
-<p>e) 满足题意的关系，可看作是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28S%20-%20%5C%7B%20a%5C%7D%20%29%20%5Ctimes%20%28S%20-%20%5C%7B%20b%5C%7D%20%29" alt="(S - \{ a\} ) \times (S - \{ b\} )" />，故共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B%7B%28n%20-%201%29%7D%5E2%7D%7D%7D" alt="{2^{{{(n - 1)}^2}}}" />个关系</p>
-<p>f) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%7B%7B%28n%20-%201%29%7D%5E2%7D%7D%7D" alt="{2^{{n^2}}} - {2^{{{(n - 1)}^2}}}" /></p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 43</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-43</link>
-                <pubDate>星期一, 07 一月 2013 22:37:39 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1928</guid>
-                <description><![CDATA[<hr />
-<p>{%raw %}</p>
-<h2>题目</h2>
-<p><a href="/user_images/1928-1.png"><img src="/user_images/1928-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>a) 共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B4%5E2%7D%7D%7D" alt="{2^{{4^2}}}" />=65536个</p>
-<p>b) 共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B4%5E2%7D%20-%201%7D%7D%20%3D%20%7B2%5E%7B15%7D%7D" alt="{2^{{4^2} - 1}} = {2^{15}}" />=32768个</p>
+<hr />
+<h2>题目 55</h2>
+<p><a href="/user_images/1990-1.png"><img src="/user_images/1990-1.png" alt="image" title="image" /></a></p>
+<h2>解答 55</h2>
+<p>用数学归纳法来证明。</p>
+<p>当n=1时，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E1%7D%20%3D%20R" alt="{R^1} = R" />，显然成立。</p>
+<p>假设<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D" alt="{R^n}" />是自反的，则对于所有的<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=a%20%5Cin%20R" alt="a \in R" />都有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Ca%29%20%5Cin%20%7BR%5En%7D" alt="(a,a) \in {R^n}" />且<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Ca%29%20%5Cin%20R" alt="(a,a) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Ca%29%20%5Cin%20%7BR%5En%7D%20%5Ccirc%20R%20%3D%20%7BR%5E%7Bn%20%2B%201%7D%7D" alt="(a,a) \in {R^n} \circ R = {R^{n + 1}}" />。</p>
+<p>所以对所有的正整数，<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D" alt="{R^n}" />都是自反的。</p>
+<hr />
+<h2>题目 56</h2>
+<p><a href="/user_images/1996-1.png"><img src="/user_images/1996-1.png" alt="image" title="image" /></a></p>
+<h2>答案 56</h2>
+<p><a href="/user_images/1996-3.png"><img src="/user_images/1996-3.png" alt="image" title="image" /></a></p>
+<h2>解答 56</h2>
+<p>此题留着以后证。</p>
+<hr />
+<h2>题目 57</h2>
+<p><a href="/user_images/1993-1.png"><img src="/user_images/1993-1.png" alt="image" title="image" /></a></p>
+<h2>解答 57</h2>
+<p>不一定是。</p>
+<p>假设集合A={1,3}，关系R={(3,1),(1,3)}，显然它是反自反的，但<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" />={(1,1),(3,3)}是自反的</p>
 ]]></description>
             </item>
 
@@ -11221,11 +10995,11 @@ class Ctrl {
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">1920</guid>
                 <description><![CDATA[<hr />
-<h2>题目</h2>
+<h2>题目 40-42</h2>
 <p><a href="/user_images/1920-1.png"><img src="/user_images/1920-1.png" alt="image" title="image" /></a></p>
 <p><a href="/user_images/1920-3.png"><img src="/user_images/1920-3.png" alt="image" title="image" /></a></p>
 <p><a href="/user_images/1920-5.png"><img src="/user_images/1920-5.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 40-42</h2>
 <h3>40</h3>
 <p>A = { 0, 1 }</p>
 <p>则 A x A = { (0,0), (0,1), (1,0), (1,1) }</p>
@@ -11265,174 +11039,91 @@ class Ctrl {
 
 传递的：1,2,3,4,5,7,8,9,10,12,14,15,16
 </p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 39</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-39</link>
-                <pubDate>星期一, 07 一月 2013 22:07:26 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1917</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1917-1.png"><img src="/user_images/1917-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<hr />
+<h2>题目 43</h2>
+<p><a href="/user_images/1928-1.png"><img src="/user_images/1928-1.png" alt="image" title="image" /></a></p>
+<h2>解答 43</h2>
+<p>a) 共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B4%5E2%7D%7D%7D" alt="{2^{{4^2}}}" />=65536个</p>
+<p>b) 共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B4%5E2%7D%20-%201%7D%7D%20%3D%20%7B2%5E%7B15%7D%7D" alt="{2^{{4^2} - 1}} = {2^{15}}" />=32768个</p>
+<hr />
+<h2>题目 44</h2>
+<p><a href="/user_images/1933-1.png"><img src="/user_images/1933-1.png" alt="image" title="image" /></a></p>
+<h2>解答 44</h2>
+<p>a) S上共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D" alt="{2^{{n^2}}}" />个关系。因为对于S上的关系来说，(a,b)有一半的机会出现，所以包含(a,b)的关系共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%201%7D%7D" alt="{2^{{n^2} - 1}}" />个。</p>
+<p>b) 同上，共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%201%7D%7D" alt="{2^{{n^2} - 1}}" />个</p>
+<p>c) 满足题意的关系，可看作是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28S%20-%20%5C%7B%20a%5C%7D%20%29%20%5Ctimes%20S" alt="(S - \{ a\} ) \times S" />，故共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%28n%20-%201%29n%7D%7D" alt="{2^{(n - 1)n}}" />个关系</p>
+<p>d) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%28n%20-%201%29n%7D%7D" alt="{2^{{n^2}}} - {2^{(n - 1)n}}" />个</p>
+<p>e) 满足题意的关系，可看作是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28S%20-%20%5C%7B%20a%5C%7D%20%29%20%5Ctimes%20%28S%20-%20%5C%7B%20b%5C%7D%20%29" alt="(S - \{ a\} ) \times (S - \{ b\} )" />，故共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B%7B%28n%20-%201%29%7D%5E2%7D%7D%7D" alt="{2^{{{(n - 1)}^2}}}" />个关系</p>
+<p>f) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%7B%7B%28n%20-%201%29%7D%5E2%7D%7D%7D" alt="{2^{{n^2}}} - {2^{{{(n - 1)}^2}}}" /></p>
+<hr />
+<h2>题目 45</h2>
+<p><a href="/user_images/1937-1.png"><img src="/user_images/1937-1.png" alt="image" title="image" /></a></p>
+<h2>解答 45</h2>
+<h3>a)</h3>
+<p>在一个对称的集合中，(a,b)和(b,a)总是成对出现，所以我们可以把它们当成一类，只考虑(a,b)出现的次数。</p>
+<p>设集合为A，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中的元素共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D" alt="{n^2}" />个。其中(a,a)这样的有n个，(a,b)且a不等于b这样的元素有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个。因为对于每一个(a,b)，<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />都有一个(b,a)，如果我们只考虑其中一种，则有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2" alt="({n^2} - n)/2" />个。再加上(a,a)这样的，一共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2%20%2B%20n" alt="({n^2} - n)/2 + n" />个元素需要考虑。</p>
+<p>所以在A上，对称的关系的总个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%20%2B%20n%7D%7D" alt="{2^{({n^2} - n)/2 + n}}" />个。</p>
+<h3>b)</h3>
+<p>将<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中的元素分为两类考虑，一类是全等关系<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />中的元素，一类是(a,b)和(b,a)，其中a不等于b。</p>
+<p>对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，它可以出现，可以不出现，所以有两种情况。</p>
+<p>对于每对(a,b)与(b,a)，它们至多出现一个，所以有三种情况。</p>
+<p>综合起来，一共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5En%7D%7B3%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D" alt="{2^n}{3^{({n^2} - n)/2}}" />个。</p>
+<h3>c)</h3>
+<p>非对称中不能出现(a,a)这样的元素，所以可考虑的元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29" alt="({n^2} - n)" />个。其中每对(a,b)与(b,a)中，每次至多只能出现其中一个，所以有3种情况。这样就有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B3%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D" alt="{3^{({n^2} - n)/2}}" />个</p>
+<h3>d)</h3>
+<p>反自反关系中，不能出现(a,a)这样的元素，所以需考虑的元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个，关系总个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D" alt="{2^{{n^2} - n}}" />个</p>
+<h3>e)</h3>
+<p>先不考虑(a,a)这样的元素，剩下的每两个(a,b)与(b,a)看作一组，则有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2" alt="({n^2} - n)/2" />个元素需要考虑。它们的关系总个数为</p>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B_%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D%7D" alt="{2^{_{({n^2} - n)/2}}}" />个。然后在每个关系里加上<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，即满足要求。所以共<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B_%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D%7D" alt="{2^{_{({n^2} - n)/2}}}" />个。</p>
+<h3>f)</h3>
+<p>先不考虑<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，则元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个，关系个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D" alt="{2^{{n^2} - n}}" />个。然后再考虑<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />中的元素，除去全选和全不选的情况，配合前面的关系，就能满足题意。所以共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D%20%5Ctimes%20%28%7B2%5En%7D%20-%202%29%7B%5Crm%7B%20%3D%20%7D%7D%7B%7B%5Crm%7B2%7D%7D%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%7Bn%5E2%7D%20-%20n%20%2B%201%7D%7D" alt="{2^{{n^2} - n}} \times ({2^n} - 2){\rm{ = }}{{\rm{2}}^{{n^2}}} - {2^{{n^2} - n + 1}}" />个关系。</p>
+<hr />
+<h2>题目 46</h2>
+<p><a href="/user_images/1944-1.png"><img src="/user_images/1944-1.png" alt="image" title="image" /></a></p>
+<h2>解答 46</h2>
+<h3>a)</h3>
+<p>当n=1时，集合上的关系总数为2个：空集和{{1,1}}，这两个都是传递的，所以有2个传递关系</p>
+<h3>b)</h3>
+<p>用图的方式说明方便一些。一个图上有两个点a和b，如下：</p>
+<p><a href="/user_images/1944-3.png"><img src="/user_images/1944-3.png" alt="image" title="image" /></a></p>
+<p>可以分为三种情况考虑：</p>
+<ol>
+<li>A与B之间没有边。此时不论A与B上有没有环，都是传递的，所以4种2.  A与B之间有单边。从A到B或者从B到A，不论A与B上有没有环，都是传递的，所以有2&#215;4=8种。3.  A与B之间有双边。此时只有A与B都有环，才是传递的，有1种。</li>
+</ol>
+<p>共有13种。</p>
+<h3>c)</h3>
+<p>如下图，有三个点A,B,C：</p>
+<p><a href="/user_images/1944-5.png"><img src="/user_images/1944-5.png" alt="image" title="image" /></a></p>
+<p>分多种情况考虑：</p>
+<ol>
+<li>没有任何边。此时不论这三点上有没有环，都是传递的，所以有2x2x2共8种。      2.  有一条单边。共有6种单边，此时不论三点有没有环，都是传递的，有6&#215;8=48种。3.  有一条双边。有3种双边。当两点间有双边时，此两点上都必须有环，另一点上有没有环都行。所以共有3&#215;2=6种。4.  有两条单边。共有12种情况。其中有6种情况类似于(a,b),(b,c)，这时不论点上有没有环，都不是传递的。另外6种情况，不论点上有没有环，都是传递的。所以共有6&#215;8=48种。5.  有两边双边。此时不论点上有没有环，都不是传递的。6.  有一条单边一条双边。此时不可能传递。</li>
+<li>有三条单边。共有8种情况。回路有2种，此时不是传递的。其它情况有6种，不论点上有没有环，都是传递的。所以共有6&#215;8=48种。8.  有三条双边。此时只有三点上都有环，才是传递的，共有1种情况。9.  有一条单边，两条双边。都不是传递的。</li>
+<li>有一条双边，两条单边。分12种情况。其中当两条单边顺次相连（如(a,b),(b,c)），不论点上有没有环，都不是传递的，少了一半。其它6情况，双边的两点必须有环，另一点有没有环都一样传递。所以共6&#215;2=12种。</li>
+</ol>
+<p>综上，共有171种。</p>
+<p>不用程序来做会死人。</p>
+<hr />
+<h2>题目 47</h2>
+<p><a href="/user_images/1947-1.png"><img src="/user_images/1947-1.png" alt="image" title="image" /></a></p>
+<h2>解答 47</h2>
+<p>有问题的地方在于这一句“取元素<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=b%20%5Cin%20A" alt="b \in A" />，使得<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />”。因为对于A上的任意一个点，可能并不存在一个b使<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />。</p>
+<hr />
+<h2>题目 48</h2>
+<p><a href="/user_images/1950-1.png"><img src="/user_images/1950-1.png" alt="image" title="image" /></a></p>
+<h2>解答 48</h2>
 <ul>
-<li>a) a与b是模3同余或模4同余</li>
-<li>b) a与b模12同余</li>
-<li>c) a与b模3同余但不模12同余</li>
-<li>d) a与b模4同余但不模12同余</li>
-<li>e) a与b模3同余或模4同余，但不模12同余</li>
+<li>因为R是A上的自反关系，所以R包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Ccup%20S" alt="R \cup S" />包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以它是自反的。</li>
+<li>因为R和S都是A上的自反关系，所以R和S都包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Ccap%20S" alt="R \cap S" />是自反的</li>
+<li>因为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Coplus%20S" alt="R \oplus S" />不包含它们的交集，所以不包含(x,x)，所以它是反自反的。</li>
+<li>因为R-S不包含它们的交集，所以不包含(x,x)，所以它是反自反的。</li>
+<li>因为R和S都是A上的自反关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=S%20%5Ccirc%20R" alt="S \circ R" />也包含所有的<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以它也是自反的。</li>
 </ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 38</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-38</link>
-                <pubDate>星期一, 07 一月 2013 22:03:36 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1911</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1911-1.png"><img src="/user_images/1911-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>注意是在正整数集上，所以不用考虑0的问题。</p>
-<ul>
-<li>a) {(a,b) | a整除b或者b整除a }</li>
-<li>b) {(a,a) | a=b }注：原答案为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=a%20%3D%20%20%5Cpm%20b" alt="a =  \pm b" />或a不等于0。由于是在正整数集上，所以可简化为我的答案。</li>
-<li>c) {(a,b) | a整除b，但a不等于b }</li>
-<li>d) {(a,b) | a是b的倍数，但a不等于b}*   e) {(a,b) | a整除b或者b整除a，且a不等于b }</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 37</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-37</link>
-                <pubDate>星期一, 07 一月 2013 21:53:23 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1905</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1905-1.png"><img src="/user_images/1905-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>若(a,b)在<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" />中，则存在一个<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=c%20%5Cin%20R" alt="c \in R" />，使用a是c的导师，且c是b的导师。</p>
-<p>若(a,b)在<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D" alt="{R^n}" />中，则存在一个n+1的序列，其头为a，尾为b，其中每一个都是下一个的导师</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 36</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-36</link>
-                <pubDate>星期一, 07 一月 2013 21:46:28 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1902</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1902-1.png"><img src="/user_images/1902-1.png" alt="image" title="image" /></a></p>
-<p>注：双亲关系是指，a是b的父母</p>
-<p>中文题目有问题，英文为：</p>
-<p>Let R be the parent relation on the set of all people (see Example 21). When is an ordered pair in the relation <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" /> ?</p>
-<p>最后应该问：在什么情况下，<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" />里有有序对？</p>
-<h2>解答</h2>
-<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" />，三次双亲关系。我们要找一个人a，它有子女b，b有子女c，c有子女d，则(a,d)属于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" />，d应该叫a祖爷爷、祖奶奶了。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 35</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-35</link>
-                <pubDate>星期一, 07 一月 2013 21:35:13 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1899</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><img src="/user_images/1899-0.png" alt="image" /></p>
-<p><a href="/user_images/1899-2.png"><img src="/user_images/1899-2.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<ul>
-<li>a) R1</li>
-<li>b) R2</li>
-<li>c) R3</li>
-<li>d) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-<li>e) R3</li>
-<li>f) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-<li>g) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-<li>h) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 33</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-33</link>
-                <pubDate>星期一, 07 一月 2013 21:33:35 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1896</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><img src="/user_images/1896-0.png" alt="image" /></p>
-<p><a href="/user_images/1896-2.png"><img src="/user_images/1896-2.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<ul>
-<li>a) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-<li>b) R6</li>
-<li>c) R3</li>
-<li>d) R3</li>
-<li>e) 空集*   f) R1</li>
-<li>g) R4</li>
-<li>h) R4</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 34</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-34</link>
-                <pubDate>星期一, 07 一月 2013 21:33:10 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1893</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><img src="/user_images/1893-0.png" alt="image" /></p>
-<p><a href="/user_images/1893-2.png"><img src="/user_images/1893-2.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<ul>
-<li>a) R1<em>   b) R1</em>   c) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" />*   d) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-<li>e) R1</li>
-<li>f) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-<li>g) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
-<li>h) R3</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 32</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-32</link>
-                <pubDate>星期一, 07 一月 2013 21:27:33 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1890</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1890-1.png"><img src="/user_images/1890-1.png" alt="image" title="image" /></a></p>
-<p><a href="/user_images/1890-3.png"><img src="/user_images/1890-3.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<ul>
-<li>a) R6</li>
-<li>b) R2</li>
-<li>c) R5<em>   d) 空集</em>   e) 空集<em>   f) R5</em>   g) R6*   h) R6</li>
-</ul>
+<hr />
+<h2>题目 49</h2>
+<p><a href="/user_images/1971-1.png"><img src="/user_images/1971-1.png" alt="image" title="image" /></a></p>
+<h2>解答 49</h2>
+<p>若R是对称的，则对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20R" alt="(b,a) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(a,b) \in {R^{ - 1}}" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Csubseteq%20%7BR%5E%7B%20-%201%7D%7D" alt="R \subseteq {R^{ - 1}}" />。类似的，由于R是对称的，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />也是对称的，可以求出<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D%20%5Csubseteq%20R" alt="{R^{ - 1}} \subseteq R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7B%20-%201%7D%7D" alt="R = {R^{ - 1}}" />。</p>
+<p>对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(b,a) \in {R^{ - 1}}" />。如果<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7B%20-%201%7D%7D" alt="R = {R^{ - 1}}" />，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20R" alt="(b,a) \in R" />。所以R是对称的。</p>
 ]]></description>
             </item>
 
@@ -11444,140 +11135,101 @@ class Ctrl {
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">1885</guid>
                 <description><![CDATA[<hr />
-<h2>问题</h2>
+<h2>问题 31</h2>
 <p><a href="/user_images/1885-1.png"><img src="/user_images/1885-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 31</h2>
 <p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=S%20%5Ccirc%20R" alt="S \circ R" /></p>
 <p>{ (a,b) | a是b的父母，且b有一个兄弟姐妹 }</p>
 <p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Ccirc%20S" alt="R \circ S" /></p>
 <p>{ (a,b) |  a是b的姑姑舅舅 }</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 30</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-30</link>
-                <pubDate>星期一, 07 一月 2013 21:11:28 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1882</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1882-1.png"><img src="/user_images/1882-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>{ (1,1), (1,2), (2,1), (2,2) }</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 29</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-29</link>
-                <pubDate>星期一, 07 一月 2013 21:09:07 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1878</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1878-1.png"><img src="/user_images/1878-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<hr />
+<h2>问题 32</h2>
+<p><a href="/user_images/1890-1.png"><img src="/user_images/1890-1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1890-3.png"><img src="/user_images/1890-3.png" alt="image" title="image" /></a></p>
+<h2>解答 32</h2>
 <ul>
-<li>a)  { (a,b) | 学生a需要或已经读过书b}</li>
-<li>b) { (a,b) | 学生a需要并且读过书b}</li>
-<li>c) { (a,b) | 学生a需要书b但没读过，或者读过书b但不需要}</li>
-<li>d) { (a,b) | 学生a需要书b但没读过}</li>
-<li>e) { (a,b) | 学生a读过书b，但不需要 }</li>
+<li>a) R6</li>
+<li>b) R2</li>
+<li>c) R5<em>   d) 空集</em>   e) 空集<em>   f) R5</em>   g) R6*   h) R6</li>
 </ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 28</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-28</link>
-                <pubDate>星期一, 07 一月 2013 20:55:15 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1870</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1870-1.png"><img src="/user_images/1870-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a)</h3>
-<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR_1%7D%20%5Ccup%20%7BR_2%7D%20%3D%20%7BR_2%7D" alt="{R_1} \cup {R_2} = {R_2}" /></p>
-<h3>b)</h3>
-<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR_1%7D%20%5Ccap%20%7BR_2%7D%20%3D%20%7BR_1%7D" alt="{R_1} \cap {R_2} = {R_1}" /></p>
-<h3>c)</h3>
-<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cemptyset%20" alt="\emptyset " /></p>
-<h3>d)</h3>
-<p>{(1,1), (2,1), (2,2), (3,1), (3,2), (3,3)}</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 27</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-27</link>
-                <pubDate>星期一, 07 一月 2013 20:49:22 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1867</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1867-1.png"><img src="/user_images/1867-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>没有学函数，暂时不回答</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 26</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-26</link>
-                <pubDate>星期一, 07 一月 2013 20:48:04 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1863</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1863-1.png"><img src="/user_images/1863-1.png" alt="image" title="image" /></a></p>
-<h2>答案</h2>
-<h3>a)</h3>
-<p>因为R显然是对称的，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />=R</p>
-<h3>b)</h3>
-<p>若<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20%5Coverline%20R%20" alt="(a,b) \in \overline R " />，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cnotin%20R" alt="(a,b) \notin R" />，即a与b不相邻</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 25</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-25</link>
-                <pubDate>星期一, 07 一月 2013 20:46:13 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1859</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1859-1.png"><img src="/user_images/1859-1.png" alt="image" title="image" /></a></p>
-<h2>答案</h2>
-<h3>a)</h3>
-<p>{ (a,b) | b整除a }</p>
-<h3>b)</h3>
-<p>{ (a,b) | a不能整除b}</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 24</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-24</link>
-                <pubDate>星期一, 07 一月 2013 20:36:10 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1855</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1855-1.png"><img src="/user_images/1855-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a)</h3>
-<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D%20%3D%20%5C%7B%20%28a%2Cb%29%7C%28b%2Ca%29%20%5Cin%20R%5C%7D%20%20%3D%20%5C%7B%20%28a%2Cb%29%7Ca%20%3E%20b%5C%7D%20" alt="{R^{ - 1}} = \{ (a,b)|(b,a) \in R\}  = \{ (a,b)|a &gt; b\} " /></p>
-<h3>b)</h3>
-<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cbar%20R%20%3D%20%5C%7B%20%28a%2Cb%29%7C%28b%2Ca%29%20%5Cnotin%20R%5C%7D%20%20%3D%20%5C%7B%20%28a%2Cb%29%7Ca%20%5Cge%20b%5C%7D%20" alt="\bar R = \{ (a,b)|(b,a) \notin R\}  = \{ (a,b)|a \ge b\} " /></p>
+<hr />
+<h2>问题 33</h2>
+<p><img src="/user_images/1896-0.png" alt="image" /></p>
+<p><a href="/user_images/1896-2.png"><img src="/user_images/1896-2.png" alt="image" title="image" /></a></p>
+<h2>解答 33</h2>
+<ul>
+<li>a) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+<li>b) R6</li>
+<li>c) R3</li>
+<li>d) R3</li>
+<li>e) 空集*   f) R1</li>
+<li>g) R4</li>
+<li>h) R4</li>
+</ul>
+<hr />
+<h2>问题 34</h2>
+<p><img src="/user_images/1893-0.png" alt="image" /></p>
+<p><a href="/user_images/1893-2.png"><img src="/user_images/1893-2.png" alt="image" title="image" /></a></p>
+<h2>解答 34</h2>
+<ul>
+<li>a) R1<em>   b) R1</em>   c) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" />*   d) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+<li>e) R1</li>
+<li>f) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+<li>g) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+<li>h) R3</li>
+</ul>
+<hr />
+<h2>问题 35</h2>
+<p><img src="/user_images/1899-0.png" alt="image" /></p>
+<p><a href="/user_images/1899-2.png"><img src="/user_images/1899-2.png" alt="image" title="image" /></a></p>
+<h2>解答 35</h2>
+<ul>
+<li>a) R1</li>
+<li>b) R2</li>
+<li>c) R3</li>
+<li>d) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+<li>e) R3</li>
+<li>f) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+<li>g) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+<li>h) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" /></li>
+</ul>
+<hr />
+<h2>题目 36</h2>
+<p><a href="/user_images/1902-1.png"><img src="/user_images/1902-1.png" alt="image" title="image" /></a></p>
+<p>注：双亲关系是指，a是b的父母</p>
+<p>中文题目有问题，英文为：</p>
+<p>Let R be the parent relation on the set of all people (see Example 21). When is an ordered pair in the relation <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" /> ?</p>
+<p>最后应该问：在什么情况下，<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" />里有有序对？</p>
+<h2>解答 36</h2>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" />，三次双亲关系。我们要找一个人a，它有子女b，b有子女c，c有子女d，则(a,d)属于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E3%7D" alt="{R^3}" />，d应该叫a祖爷爷、祖奶奶了。</p>
+<hr />
+<h2>题目 37</h2>
+<p><a href="/user_images/1905-1.png"><img src="/user_images/1905-1.png" alt="image" title="image" /></a></p>
+<h2>解答 37</h2>
+<p>若(a,b)在<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" />中，则存在一个<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=c%20%5Cin%20R" alt="c \in R" />，使用a是c的导师，且c是b的导师。</p>
+<p>若(a,b)在<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5En%7D" alt="{R^n}" />中，则存在一个n+1的序列，其头为a，尾为b，其中每一个都是下一个的导师</p>
+<hr />
+<h2>问题 38</h2>
+<p><a href="/user_images/1911-1.png"><img src="/user_images/1911-1.png" alt="image" title="image" /></a></p>
+<h2>解答 38</h2>
+<p>注意是在正整数集上，所以不用考虑0的问题。</p>
+<ul>
+<li>a) {(a,b) | a整除b或者b整除a }</li>
+<li>b) {(a,a) | a=b }注：原答案为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=a%20%3D%20%20%5Cpm%20b" alt="a =  \pm b" />或a不等于0。由于是在正整数集上，所以可简化为我的答案。</li>
+<li>c) {(a,b) | a整除b，但a不等于b }</li>
+<li>d) {(a,b) | a是b的倍数，但a不等于b}*   e) {(a,b) | a整除b或者b整除a，且a不等于b }</li>
+</ul>
+<hr />
+<h2>题目 39</h2>
+<p><a href="/user_images/1917-1.png"><img src="/user_images/1917-1.png" alt="image" title="image" /></a></p>
+<h2>解答 39</h2>
+<ul>
+<li>a) a与b是模3同余或模4同余</li>
+<li>b) a与b模12同余</li>
+<li>c) a与b模3同余但不模12同余</li>
+<li>d) a与b模4同余但不模12同余</li>
+<li>e) a与b模3同余或模4同余，但不模12同余</li>
+</ul>
 ]]></description>
             </item>
 
@@ -11936,24 +11588,6 @@ dot -Tpng -o 1.png 1.txt
             </item>
 
             <item>
-                <title>7.1 关系及其性质 14</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-14</link>
-                <pubDate>星期六, 05 一月 2013 22:55:35 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1730</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1730-1.png"><img src="/user_images/1730-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>反自反的定义</h3>
-<p>如果对于每个$a \in R$，有$(a,a) \notin R$，那么集合A上的关系R是反自反的，即如果没有A中的元素与自己有关系，关系R就是反自反的。</p>
-<h3>量词</h3>
-<p>$ \forall x ((x,x) \notin R)$</p>
-]]></description>
-            </item>
-
-            <item>
                 <title>7.1 关系及其性质 21</title>
                 <link>http://freewind.github.io/posts/7-1-relationship-21</link>
                 <pubDate>星期六, 05 一月 2013 22:54:38 CST</pubDate>
@@ -11961,74 +11595,109 @@ dot -Tpng -o 1.png 1.txt
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">1727</guid>
                 <description><![CDATA[<hr />
-<h2>问题</h2>
+<h2>问题 21</h2>
 <p><a href="/user_images/1727-1.png"><img src="/user_images/1727-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 21</h2>
 <p>$ \forall x \forall y((x,y) \in R \to (y,x) \notin R) $</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 22</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-22</link>
-                <pubDate>星期六, 05 一月 2013 22:54:23 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1724</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
+<hr />
+<h2>问题 22</h2>
 <p><a href="/user_images/1724-1.png"><img src="/user_images/1724-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 22</h2>
 <p>一般用于比较的关系，如“A比B高”，“A比B跑得快”等，满足非自反关系。注意，比较中不可以包含“相等”关系，“A比B高或者跟B一般高”不是非对称。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 23</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-23</link>
-                <pubDate>星期六, 05 一月 2013 22:54:10 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1721</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
+<hr />
+<h2>问题 23</h2>
 <p><a href="/user_images/1721-1.png"><img src="/user_images/1721-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 23</h2>
 <p>$A \times B$产生的集合中，共有 m*n 个元素。使用这些元素中的任意个组成的集合，都是满足题意的关系，所以一共有 ${2^{mn}}$个不同的关系。</p>
+<hr />
+<h2>题目 24</h2>
+<p><a href="/user_images/1855-1.png"><img src="/user_images/1855-1.png" alt="image" title="image" /></a></p>
+<h2>解答 24</h2>
+<h3>a)</h3>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D%20%3D%20%5C%7B%20%28a%2Cb%29%7C%28b%2Ca%29%20%5Cin%20R%5C%7D%20%20%3D%20%5C%7B%20%28a%2Cb%29%7Ca%20%3E%20b%5C%7D%20" alt="{R^{ - 1}} = \{ (a,b)|(b,a) \in R\}  = \{ (a,b)|a &gt; b\} " /></p>
+<h3>b)</h3>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cbar%20R%20%3D%20%5C%7B%20%28a%2Cb%29%7C%28b%2Ca%29%20%5Cnotin%20R%5C%7D%20%20%3D%20%5C%7B%20%28a%2Cb%29%7Ca%20%5Cge%20b%5C%7D%20" alt="\bar R = \{ (a,b)|(b,a) \notin R\}  = \{ (a,b)|a \ge b\} " /></p>
+<hr />
+<h2>问题 25</h2>
+<p><a href="/user_images/1859-1.png"><img src="/user_images/1859-1.png" alt="image" title="image" /></a></p>
+<h2>答案 25</h2>
+<h3>a)</h3>
+<p>{ (a,b) | b整除a }</p>
+<h3>b)</h3>
+<p>{ (a,b) | a不能整除b}</p>
+<hr />
+<h2>问题 26</h2>
+<p><a href="/user_images/1863-1.png"><img src="/user_images/1863-1.png" alt="image" title="image" /></a></p>
+<h2>答案 26</h2>
+<h3>a)</h3>
+<p>因为R显然是对称的，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />=R</p>
+<h3>b)</h3>
+<p>若<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20%5Coverline%20R%20" alt="(a,b) \in \overline R " />，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cnotin%20R" alt="(a,b) \notin R" />，即a与b不相邻</p>
+<hr />
+<h2>问题 27</h2>
+<p><a href="/user_images/1867-1.png"><img src="/user_images/1867-1.png" alt="image" title="image" /></a></p>
+<h2>解答 27</h2>
+<p>没有学函数，暂时不回答</p>
+<hr />
+<h2>问题 28</h2>
+<p><a href="/user_images/1870-1.png"><img src="/user_images/1870-1.png" alt="image" title="image" /></a></p>
+<h2>解答 28</h2>
+<h3>a)</h3>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR_1%7D%20%5Ccup%20%7BR_2%7D%20%3D%20%7BR_2%7D" alt="{R_1} \cup {R_2} = {R_2}" /></p>
+<h3>b)</h3>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR_1%7D%20%5Ccap%20%7BR_2%7D%20%3D%20%7BR_1%7D" alt="{R_1} \cap {R_2} = {R_1}" /></p>
+<h3>c)</h3>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cemptyset%20" alt="\emptyset " /></p>
+<h3>d)</h3>
+<p>{(1,1), (2,1), (2,2), (3,1), (3,2), (3,3)}</p>
+<hr />
+<h2>问题 29</h2>
+<p><a href="/user_images/1878-1.png"><img src="/user_images/1878-1.png" alt="image" title="image" /></a></p>
+<h2>解答 29</h2>
+<ul>
+<li>a)  { (a,b) | 学生a需要或已经读过书b}</li>
+<li>b) { (a,b) | 学生a需要并且读过书b}</li>
+<li>c) { (a,b) | 学生a需要书b但没读过，或者读过书b但不需要}</li>
+<li>d) { (a,b) | 学生a需要书b但没读过}</li>
+<li>e) { (a,b) | 学生a读过书b，但不需要 }</li>
+</ul>
+<hr />
+<h2>问题 30</h2>
+<p><a href="/user_images/1882-1.png"><img src="/user_images/1882-1.png" alt="image" title="image" /></a></p>
+<h2>解答 30</h2>
+<p>{ (1,1), (1,2), (2,1), (2,2) }</p>
 ]]></description>
             </item>
 
             <item>
-                <title>7.1 关系及其性质 20</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-20</link>
-                <pubDate>星期六, 05 一月 2013 22:52:52 CST</pubDate>
+                <title>7.1 关系及其性质 13</title>
+                <link>http://freewind.github.io/posts/7-1-relationship-13</link>
+                <pubDate>星期六, 05 一月 2013 22:50:49 CST</pubDate>
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1718</guid>
+                <guid isPermaLink="false">1707</guid>
                 <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1718-1.png"><img src="/user_images/1718-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>非对称的关系一定是反对称的。反对称的关系不一定是非对称的。</p>
-<p>非对称的定义：<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cforall%20x%5Cforall%20y%28%28x%2Cy%29%20%5Cin%20R%20%5Cto%20%28y%2Cx%29%20%5Cnotin%20R%29" alt="\forall x\forall y((x,y) \in R \to (y,x) \notin R)" /></p>
-<p>反对称的定义：<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cforall%20x%5Cforall%20y%28%28x%2Cy%29%20%5Cin%20R%20%5Cwedge%20%28y%2Cx%29%20%5Cin%20R%20%5Cto%20x%20%3D%20y%29" alt="\forall x\forall y((x,y) \in R \wedge (y,x) \in R \to x = y)" /></p>
-<p>如果一个关系是非对称的，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cy%29%20%5Cin%20R%20%5Cwedge%20%28y%2Cx%29%20%5Cin%20R" alt="(x,y) \in R \wedge (y,x) \in R" />为false。则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cy%29%20%5Cin%20R%20%5Cwedge%20%28y%2Cx%29%20%5Cin%20R%20%5Cto%20x%20%3D%20y" alt="(x,y) \in R \wedge (y,x) \in R \to x = y" />的前件为假，故命题为真。所以它也是“反对称的”。</p>
-<p>但反过来，一个关系是反对称的，则(x,x)可以存在关系中，而它不满足非对称的定义，所以不是非对称的。实际上，一个关系是非对称时，当且仅当它即是反对称又是反自反。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 16-19</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-16-19</link>
-                <pubDate>星期六, 05 一月 2013 22:52:26 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1715</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
+<h2>问题 13</h2>
+<p><a href="/user_images/1707-1.png"><img src="/user_images/1707-1.png" alt="image" title="image" /></a></p>
+<h2>解答 13</h2>
+<p>可能，比如对于集合A={1,2}，则关系R={(1,1)}，即不是自反的，也不是反自反的。</p>
+<hr />
+<h2>问题 14</h2>
+<p><a href="/user_images/1730-1.png"><img src="/user_images/1730-1.png" alt="image" title="image" /></a></p>
+<h2>解答 14</h2>
+<h3>反自反的定义</h3>
+<p>如果对于每个$a \in R$，有$(a,a) \notin R$，那么集合A上的关系R是反自反的，即如果没有A中的元素与自己有关系，关系R就是反自反的。</p>
+<h3>量词</h3>
+<p>$ \forall x ((x,x) \notin R)$</p>
+<hr />
+<h2>问题 15</h2>
+<p><a href="/user_images/1710-1.png"><img src="/user_images/1710-1.png" alt="image" title="image" /></a></p>
+<h2>解答 15</h2>
+<p>一般用于比较的关系，如“A比B高”，“A比B跑得快”等，满足反自反关系。另外，比较中可以包含“相等”关系，“A比B高或者跟B一般高”。</p>
+<h2>问题 16 ~ 19</h2>
 <p><a href="/user_images/1715-1.png"><img src="/user_images/1715-1.png" alt="image" title="image" /></a></p>
 <p><a href="/user_images/1715-3.png"><img src="/user_images/1715-3.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 16 ~ 19</h2>
 <p>“非对称(<strong>asymmetric</strong>)”与“反对称(<strong>irreflexive</strong>)”有区别。“反对称”中可以存在(x,x)，但非对称中不能。</p>
 <h3>16.</h3>
 <p><a href="/user_images/1715-5.png"><img src="/user_images/1715-5.png" alt="image" title="image" /></a></p>
@@ -12043,312 +11712,53 @@ dot -Tpng -o 1.png 1.txt
 <h3>19.</h3>
 <p><a href="/user_images/1715-11.png"><img src="/user_images/1715-11.png" alt="image" title="image" /></a></p>
 <p>全都不是“非对称”。</p>
+<hr />
+<h2>问题 20</h2>
+<p><a href="/user_images/1718-1.png"><img src="/user_images/1718-1.png" alt="image" title="image" /></a></p>
+<h2>解答 20</h2>
+<p>非对称的关系一定是反对称的。反对称的关系不一定是非对称的。</p>
+<p>非对称的定义：<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cforall%20x%5Cforall%20y%28%28x%2Cy%29%20%5Cin%20R%20%5Cto%20%28y%2Cx%29%20%5Cnotin%20R%29" alt="\forall x\forall y((x,y) \in R \to (y,x) \notin R)" /></p>
+<p>反对称的定义：<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cforall%20x%5Cforall%20y%28%28x%2Cy%29%20%5Cin%20R%20%5Cwedge%20%28y%2Cx%29%20%5Cin%20R%20%5Cto%20x%20%3D%20y%29" alt="\forall x\forall y((x,y) \in R \wedge (y,x) \in R \to x = y)" /></p>
+<p>如果一个关系是非对称的，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cy%29%20%5Cin%20R%20%5Cwedge%20%28y%2Cx%29%20%5Cin%20R" alt="(x,y) \in R \wedge (y,x) \in R" />为false。则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cy%29%20%5Cin%20R%20%5Cwedge%20%28y%2Cx%29%20%5Cin%20R%20%5Cto%20x%20%3D%20y" alt="(x,y) \in R \wedge (y,x) \in R \to x = y" />的前件为假，故命题为真。所以它也是“反对称的”。</p>
+<p>但反过来，一个关系是反对称的，则(x,x)可以存在关系中，而它不满足非对称的定义，所以不是非对称的。实际上，一个关系是非对称时，当且仅当它即是反对称又是反自反。</p>
 ]]></description>
             </item>
 
             <item>
-                <title>7.1 关系及其性质 15</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-15</link>
-                <pubDate>星期六, 05 一月 2013 22:51:38 CST</pubDate>
+                <title>7.1 关系及其性质 01</title>
+                <link>http://freewind.github.io/posts/7-1-relationship-01</link>
+                <pubDate>星期六, 05 一月 2013 22:43:36 CST</pubDate>
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1710</guid>
+                <guid isPermaLink="false">1678</guid>
                 <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1710-1.png"><img src="/user_images/1710-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>一般用于比较的关系，如“A比B高”，“A比B跑得快”等，满足反自反关系。另外，比较中可以包含“相等”关系，“A比B高或者跟B一般高”。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 13</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-13</link>
-                <pubDate>星期六, 05 一月 2013 22:50:49 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1707</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1707-1.png"><img src="/user_images/1707-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>可能，比如对于集合A={1,2}，则关系R={(1,1)}，即不是自反的，也不是反自反的。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 09-12</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-09-12</link>
-                <pubDate>星期六, 05 一月 2013 22:50:36 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1704</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1704-1.png"><img src="/user_images/1704-1.png" alt="image" title="image" /></a></p>
-<p><a href="/user_images/1704-3.png"><img src="/user_images/1704-3.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<p>反自反比较好判断。只有当矩阵主对角线上全部为假时，即关系中不存在(a,a)这样的元素时，关系才是反自反的。</p>
-<h3>9.</h3>
-<p><img src="/user_images/1704-4.png" alt="image" title="image" /></p>
-<p>其中，c、d、f是反自反的。</p>
-<h3>10</h3>
-<p><img src="/user_images/1704-5.png" alt="image" title="image" /></p>
-<p>其中，a是反自反的。</p>
-<h3>11</h3>
-<p><img src="/user_images/1704-6.png" alt="image" title="image" /></p>
-<p>四个都不是反自反的。</p>
-<ul>
-<li>a) 因为访问了某个网页a的人，当然也访问了网页a。所以不是反自反的。</li>
-<li>b) 若网页a上没有链接，则a与a上没有公共链接，属于R。所以不是反自反的。</li>
-<li>c) 如果网页a上有链接，则a和a上至少有一条公共链接，属于R。所以不是反自反的。</li>
-<li>d) 如果存在一个Web包含了到a的链接，则它包含了到a和a的链接，(a,a)属于R。所以不是反自反的。</li>
-</ul>
-<h3>12</h3>
-<p><img src="/user_images/1704-7.png" alt="image" title="image" /></p>
-<p>全部都不是反自反的。</p>
-<ul>
-<li>因为(0,0)属于R，所以不是反自反的</li>
-<li>因为(0,0)属于R，所以不是反自反的</li>
-<li>因为(0,0)属于R，所以不是反自反的</li>
-<li>因为(0,0)属于R，所以不是反自反的</li>
-<li>因为(0,0)属于R，所以不是反自反的</li>
-<li>因为(0,0)属于R，所以不是反自反的</li>
-<li>因为(1,1)属于R，所以不是反自反的</li>
-<li>因为(1,1)属于R，所以不是反自反的</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 08</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-08</link>
-                <pubDate>星期六, 05 一月 2013 22:49:51 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1701</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1701-1.png"><img src="/user_images/1701-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a)</h3>
-<p>如果一个关系既是对称的，又是反对称的，只有一种可能：如果有对称点，则对称点在矩阵的主对角线上。</p>
-<p>假设集合A为{1,2,3,4}，则{(1,1),(2,2),(3,3),(4,4)}的任一子集都是对称和反对称的。</p>
-<h3>b)</h3>
-<p>关系中既包含不相等的对称点，又包含没有对称点的点。</p>
-<p>假设集合A为{1,2,3,4}，则{(1,1),(2,1),(1,2),(2,3)}，既不是对称的，也不是反对称的。</p>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 07</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-07</link>
-                <pubDate>星期六, 05 一月 2013 22:48:51 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1696</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1696-1.png"><img src="/user_images/1696-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a) x≠y</h3>
-<ul>
-<li>(1,1)∉R，所以不是自反的<em>   则x不等于y，则y不等于x，所以是对称的</em>   因为(2,3)和(3,2)都属于R，所以不是反对称的*   因为(2,3)和(3,2)都属于R，但(2,2)不属于R，所以不是传递的</li>
-</ul>
-<h3>b) xy≥1</h3>
-<ul>
-<li><font color="#000000"><strike>显然R的域中不包含0，则x<em>x大于等于1，则(x,x)属于R，所以是自反的</strike>0是整数，但(0,0)不满足xy≥1，所以(0,0)∈R，所以不是自反的</font></em>   若xy大于等于1，则yx大于等于1，所以是对称的<em>   因为(1,2)和(2,1)都属于R，所以不是反对称的</em>   若xy大于等于1，且x,y都为整数，则x和y同号并且绝对值最小为1。若(x,y)和(y,z)都属于R，则x与y同号，y与z同号，所以x和z同号且最小值为1，所以x*z大于等于1，所以(x,z)也属于R。所以是传递的。</li>
-</ul>
-<p>在做这个题的时候，我开始认为它是自反的，怎么都想不明白。后来在stackoverflow上网友的帮助下，才明白我对自反的概念理解错了。</p>
-<p>自反的概念：A relation R on a set A is called reflexive if (a, a) ∈ R for every element a ∈ A，即对集合中<strong>所有的元素</strong>都有(a,a)属于R。</p>
-<p>我之前理解成了，对于属于R的域中的每一个元素a都有(a,a)属于R。</p>
-<p>这是提问：<a href="http://math.stackexchange.com/questions/271638/reloation-r-is-xy1-and-xz-and-yz-is-r-reflexive">http://math.stackexchange.com/questions/271638/reloation-r-is-xy1-and-xz-and-yz-is-r-reflexive</a></p>
-<p>从提问到得到答案只花了2分钟，太靠谱了！</p>
-<h3>c) x=y+1或x=y-1</h3>
-<ul>
-<li>(1,1)不属于R，所以不是自反的<em>   若(x,y)属于R，则x=y+1或y-1。则y=x-1或x+1，所以(y,x)也属于R。所以是对称的</em>   因为(2,1)和(1,2)都属于R，所以不是反自反的*   因为(2,1)和(1,2)都属于R，但(2,2)不属于R，所以不是传递的</li>
-</ul>
-<h3>d) x≡y(mod 7)</h3>
-<ul>
-<li>因为x与x模7同余，所以是自反的<em>   因为x与y模7同余，所以y与x模7同余，所以是对称的</em>   因为(0,7)和(7,0)属于R，所以不是反对称的*   若(x,y)和(y,z)都属于R，则x=7k+y,y=7m+z，所以x=7(k+m)+z，所以x与z模7同余，所以是传递的</li>
-</ul>
-<h3>e) x是y的倍数</h3>
-<ul>
-<li>因为x是x的倍数，所以是自反的<em>   因为(2,1)属于R，但(1,2)不属于R，所以不是对称的</em>   因为(1,-1)和(-1,1)都属于R，所以不是反自反的<em>   若(x,y)和(y,z)都属于R，则x=k</em>y,y=m<em>z，所以x=k</em>m*z，所以(x,z)也属于R，所以是传递的</li>
-</ul>
-<h3>f) x与y都是负的，或者都是非负的</h3>
-<ul>
-<li>显然(x,x)属于R，所以是自反的<em>   如果(x,y)属于R，则x与y都是负数，或者都是非负数，所以yx也满足R，所以是对称的</em>   因为(2,3)和(3,2)满足R，所以不是反对称的*   若(x,y)和(y,z)都属于R，则x、y、z都是负数，或者都是非负数，所以xz也满足R，所以是传递的</li>
-</ul>
-<h3>g) x=y^2</h3>
-<ul>
-<li>(4,4)不属于R，所以不是自反的<em>   (4,2)属于R，但(2,4)不属于R，所以不是对称的</em>   若x是y的平方，且y是x的平方，则只能是x=y，所以是反对称的*   (8,4)与(4,2)都属于R，但(8,2)不属于R，所以不是传递的</li>
-</ul>
-<h3>h) x≥y^2</h3>
-<ul>
-<li>(4,4)不属于R，所以不是自反的<em>   (4,2)属于R，但(2,4)不属于R，所以不是对称的</em>   若(x,y)和(y,x)都属于R，则x≥y<em>y≥x</em>x<em>x</em>x，又因为x为整数，所以x=0或1，则y=x。所以是反对称的<em>   若(x,y)和(y,z)都属于R，则x≥y</em>y≥z<em>z</em>z<em>z≥z</em>z，所以(x,z)也属于R，所以是传递的</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 06</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-06</link>
-                <pubDate>星期六, 05 一月 2013 22:48:19 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1693</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1693-1.png"><img src="/user_images/1693-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a) x+y=0</h3>
-<ul>
-<li>(1,1)∉R，所以不是自反的<em>   因为x+y=0，所以y+x=0，即(y,x)∈R，所以是对称的</em>   因为存在对称点(x,y)，且x≠y，所以R不是反对称的*   因为(1,-1)∈R，(-1,1)∈R，但(1,1)∉R，所以不是传递的</li>
-</ul>
-<h3>b) x=±y</h3>
-<ul>
-<li>因为(x,x)满足x=±y，所以是自反的<em>   因为x=±y，所以y=±x，所以(y,x)∈R，所以是对称的</em>   因为存在对称点(x,y)，且x≠y，所以R不是反对称的*   若(x,y)∈R且(y,z)∈R，因为x=±y=±z，所以(x,z)∈R，所以是传递的</li>
-</ul>
-<h3>c) x-y是有理数</h3>
-<ul>
-<li>因为x-x=0是有理数，所以(x,x)∈R，所以R是自反的<em>   如果x-y是有理数，则y-x=-(x-y)也是有理数，所以是对称的</em>   因为存在对称点(x,y)，且x≠y，所以R不是反对称的*   如果(x,y)∈R且(y,z)∈R，则x-y和y-z都是有理数，则它们的和(x-y+y-z)=x-z也是有理数，所以是传递的</li>
-</ul>
-<h3>d) x=2y</h3>
-<ul>
-<li>(1,1)∉R，所以不是自反的<em>   因为(4,2)∈R，但(2,4)∉R，所以不是对称的</em>   若(x,y)∈R，则x=2y，则y=x/2。如果要让(y,x)∈R，则x/2=2x，只能x=0，则y=x=0。所以不是反对称的*   若(x,y)∈R且(y,z)∈R，则x=2y=4z，所以(x,z)∉R。所以不是传递的。</li>
-</ul>
-<h3>e) xy≥0</h3>
-<ul>
-<li>因为x<em>x≥0，所以(x,x)∈R，所以是自反的</em>   若(x,y)∈R，则yx=xy≥0，所以是对称的<em>   因为(2,3)和(3,2)都属于R，所以R不是反对称的</em>   因为(2,0)和(0,-1)属于R，但(2,-1)不属于R，所以不是传递的</li>
-</ul>
-<h3>f) xy=0</h3>
-<ul>
-<li>(1,1)不属于R，所以不是自反的<em>   若(x,y)属于R，即xy=0，则yx=0，即(y,x)也属于R，所以是对称的</em>   因为(4,0)和(0,4)都属于R，所以不是反对称的*   因为(4,0)和(0,4)都属于R，但(4,4)不属于R，所以R不是传递的</li>
-</ul>
-<h3>g) x=1</h3>
-<ul>
-<li>(2,2)不属于R，所以不是自反的<em>   (1,2)属于R，但(2,1)不属于R，所以不是对称的</em>   若(x,y)和(y,x)都属于R，则x=y=1，所以是反对称的*   若(x,y)和(y,z)都属于R，则x=y=z=1，所以R是传递的</li>
-</ul>
-<h3>h) x=1或y=1</h3>
-<ul>
-<li>(2,2)不属于R，所以不是自反的<em>   若(x,y)属于R，则x=1，所以(y,x)属于R，所以是对称的</em>   因为(1,2)和(2,1)都属于R，所以不是反对称的*   因为(3,1)和(1,2)都属于R，但(3,2)不属于R，所以不是传递的</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 05</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-05</link>
-                <pubDate>星期六, 05 一月 2013 22:47:35 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1690</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1690-1.png"><img src="/user_images/1690-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a)</h3>
-<p>关键在于“每个”两字，可以理解为“所有”。</p>
-<ul>
-<li>是<strong>自反</strong>的，因为访问了a的人也同时访问了a<em>   不是</em><em>对称</em><em>的，因为不是每一个访问了b的人，都会访问a</em>   不是<strong>反对称</strong>的，因为访问了(a,b)的人，有可能访问(b,a)，也有可能不访问(b,a)<em>   是</em><em>传递</em>*的，因为如果所有访问了a的人都访问了b，所有访问了b的人都访问了c，则所有访问了a的人都访问了c</li>
-</ul>
-<h3>b)</h3>
-<ul>
-<li><font color="#000000">不是<strong>自反</strong>的，因为如果一个网页a上有链接，则a与a有公共链接，显然(a,a)不属于R</font><em>   是</em><em>对称</em><em>的，因为a与b没有公共链接的话，则b与a必然没有公共链接</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，因为(a,b)没有公共链接，(b,a)也没有公共链接，但是(a,a)有公共链接</li>
-</ul>
-<h3>c)</h3>
-<ul>
-<li><font color="#000000"><strike>是<strong>自反</strong>的，因为若a与b上至少有一条公共链接，则a与b上都至少有一条链接。a与a之间，也至少有一条公共链接，属于R </strike>如果某个网页a上没有链接，则“a与a至少有一条公共链接”不成立，则(a,a)不属于R，所以不是自反的。我之前误解了“自反”的概念。</font><em>   是</em><em>对称</em><em>的，若a与b上至少有一条公共链接，则b与a上至少有一条公共链接</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，若(a,b)和(b,c)都属于R，但a与b的公共链接跟b与c的公共链接不相同，(a,c)有可能不属于R</li>
-</ul>
-<h3>d)</h3>
-<ul>
-<li><strike><font color="#000000">是<strong>自反</strong>的，若存在一个网页包含了到a与b的链接，则该网页包含到a与a的链接，即(a,a)属于R</font></strike>对于“所有网页来说”，对于某一个网页a来说，可能不存在一个网页包含了到它的链接，则(a,a)不存于R，所以不是自反的。我之前理解错了“自反”的定义。<em>   是</em><em>对称</em><em>的，若存在一个网页包含了到a与b的链接，则必然包含了到b与a的链接，即(b,a)属于R</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，可能有一个网页包含了到a与b的链接，另一个网页包含了到b与c的链接，但没有网页包含到a与c的链接。</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 04</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-04</link>
-                <pubDate>星期六, 05 一月 2013 22:47:09 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1687</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1687-1.png"><img src="/user_images/1687-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a) a比b高</h3>
-<ul>
-<li>是“反对称”，“传递”*   不是“自反”，“对称”</li>
-</ul>
-<h3>b) a和b生在同一天</h3>
-<ul>
-<li>是“自反”，“对称”，“传递”*   不是“反对称”</li>
-</ul>
-<h3>c) a和b同名</h3>
-<ul>
-<li>是“自反”，“对称”，“传递”*   不是“反对称”</li>
-</ul>
-<h3>d) a和b有共同的祖父母</h3>
-<ul>
-<li>是“自反”，“对称”，“传递”*   不是“反对称”</li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 03</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-03</link>
-                <pubDate>星期六, 05 一月 2013 22:46:48 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1684</guid>
-                <description><![CDATA[<hr />
-<h2>问题</h2>
-<p><a href="/user_images/1684-1.png"><img src="/user_images/1684-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a)</h3>
-<ul>
-<li><strong>自反</strong><em>   不是</em><em>对称</em><em>：有(2,4)，没有(4,2)</em>   不是<strong>反对称</strong>：因为存在对称点(2,3),(3,2)<em>   </em><em>传递</em>*</li>
-</ul>
-<h3>b)</h3>
-<ul>
-<li><strong>自反</strong><em>   </em><em>对称</em><strong>   不是</strong>反对称*<em>:因为存在对称点(1,2)与(2,1)</em>   <strong>传递</strong></li>
-</ul>
-<h3>c)</h3>
-<ul>
-<li>不是<strong>自反</strong>:缺少(1,1),(2,2),(3,3)和(4.4)<em>   </em><em>对称</em><strong>   不是</strong>反对称*<em>:因为存在对称点(2,4)和(4,2)</em>   不是<strong>传递</strong>:存在(2,4)和(4,2)，但不存在(2,2)及(4,4) <!&ndash;EndFragment&ndash;></li>
-</ul>
-<h3>d)</h3>
-<ul>
-<li>不是<strong>自反</strong>:缺少(1,1),(2,2),(3,3),(4,4)<em>   不是</em><em>对称</em><em>:有(1,2)，但没有(2,1)</em>   <strong>反对称</strong><em>   不是</em><em>传递</em>*:有(1,2)和(2,3)，但没有(1,3) <!&ndash;EndFragment&ndash;></li>
-</ul>
-<h3>e)</h3>
-<ul>
-<li><strong>自反</strong><em>   </em><em>对称</em><strong>   </strong>反对称*<strong>   </strong>传递** <!&ndash;EndFragment&ndash;></li>
-</ul>
-<h3>f)</h3>
-<ul>
-<li>不是<strong>自反</strong>:缺少(1,1)、(2,2)、(3,3)、(4,4)<em>   不是</em><em>对称</em><em>:有(1,4)，但没有(4,1)</em>   不是<strong>反对称</strong>:存在对称点(1,3)和(3,1)<em>   不是</em><em>传递</em>*:有(1,3)和(3,1)，但没有(1,1) <!&ndash;EndFragment&ndash;></li>
-</ul>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 02</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-02</link>
-                <pubDate>星期六, 05 一月 2013 22:45:50 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1681</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
+<h2>题目 01</h2>
+<p><a href="/user_images/1678-1.png"><img src="/user_images/1678-1.png" alt="image" title="image" /></a></p>
+<h2>解答 01</h2>
+<h3>a) a等于b</h3>
+<p>{ (0,0), (1,1), (2,2), (3,3) }</p>
+<h3>b) a与b的和为4</h3>
+<p>{ (1,3), (2,2), (3,1), (4,0) }</p>
+<h3>c) a大于b</h3>
+<p>{ (1,0), (2,0), (2,1), (3,0), (3,1), (3,2), (4,0), (4,1), (4,2), (4,3) }</p>
+<h3>d) a整除b</h3>
+<p>a不可为0，b可为0.</p>
+<p>{ (1,0), (1,1), (1,2), (1,3), (2,0), (2,2), (3,0), (4,0) }</p>
+<h3>e) a与b的最大公约数为1</h3>
+<p>gcd: greatest common divisor，最大公约数</p>
+<p>定义：如果有一个自然数a能被自然数b整除，则称a为b的倍数，b为a的约数。几个自然数公有的约数，叫做这几个自然数的公约数。公约数中最大的一个公约数，称为这几个自然数的最大公约数。</p>
+<p>在离散数学中，“自然数”包括0和正整数。</p>
+<p>0与1的最大公约数为1。因为1的最大约数为1，它又能整除0。</p>
+<p>{ (0,1), (1,0), (1,1), (1,2), (1,3), (2,1), (2,3), (3,1), (3,2), (4,1), (4,3) }</p>
+<h3>f) a与b的最小公倍数为2</h3>
+<p>lcm: Least Common Multiple，最小公倍数</p>
+<p>{ (1,2), (2,1), (2,2) }</p>
+<hr />
+<h2>题目 02</h2>
 <p><a href="/user_images/1681-1.png"><img src="/user_images/1681-1.png" alt="image" title="image" /></a></p>
 <h3>例4是什么样的</h3>
 <p><a href="/user_images/1681-3.png"><img src="/user_images/1681-3.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
+<h2>解答 02</h2>
 <h3>a) 集合表示法</h3>
 <p>{ (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (2,2), (2,4), (2,6), (3,3), (3,6), (4,4), (5,5), (6,6)  }</p>
 <h3>b) 图表示法</h3>
@@ -12422,38 +11832,196 @@ dot -Tpng -o 1.png 1.txt
 </tr>
 </tbody>
 </table>
-]]></description>
-            </item>
-
-            <item>
-                <title>7.1 关系及其性质 01</title>
-                <link>http://freewind.github.io/posts/7-1-relationship-01</link>
-                <pubDate>星期六, 05 一月 2013 22:43:36 CST</pubDate>
-                <dc:creator><![CDATA[Freewind]]></dc:creator>
-                <category><![CDATA[未分类]]></category>
-                <guid isPermaLink="false">1678</guid>
-                <description><![CDATA[<hr />
-<h2>题目</h2>
-<p><a href="/user_images/1678-1.png"><img src="/user_images/1678-1.png" alt="image" title="image" /></a></p>
-<h2>解答</h2>
-<h3>a) a等于b</h3>
-<p>{ (0,0), (1,1), (2,2), (3,3) }</p>
-<h3>b) a与b的和为4</h3>
-<p>{ (1,3), (2,2), (3,1), (4,0) }</p>
-<h3>c) a大于b</h3>
-<p>{ (1,0), (2,0), (2,1), (3,0), (3,1), (3,2), (4,0), (4,1), (4,2), (4,3) }</p>
-<h3>d) a整除b</h3>
-<p>a不可为0，b可为0.</p>
-<p>{ (1,0), (1,1), (1,2), (1,3), (2,0), (2,2), (3,0), (4,0) }</p>
-<h3>e) a与b的最大公约数为1</h3>
-<p>gcd: greatest common divisor，最大公约数</p>
-<p>定义：如果有一个自然数a能被自然数b整除，则称a为b的倍数，b为a的约数。几个自然数公有的约数，叫做这几个自然数的公约数。公约数中最大的一个公约数，称为这几个自然数的最大公约数。</p>
-<p>在离散数学中，“自然数”包括0和正整数。</p>
-<p>0与1的最大公约数为1。因为1的最大约数为1，它又能整除0。</p>
-<p>{ (0,1), (1,0), (1,1), (1,2), (1,3), (2,1), (2,3), (3,1), (3,2), (4,1), (4,3) }</p>
-<h3>f) a与b的最小公倍数为2</h3>
-<p>lcm: Least Common Multiple，最小公倍数</p>
-<p>{ (1,2), (2,1), (2,2) }</p>
+<hr />
+<h2>问题 03</h2>
+<p><a href="/user_images/1684-1.png"><img src="/user_images/1684-1.png" alt="image" title="image" /></a></p>
+<h2>解答 03</h2>
+<h3>a)</h3>
+<ul>
+<li><strong>自反</strong><em>   不是</em><em>对称</em><em>：有(2,4)，没有(4,2)</em>   不是<strong>反对称</strong>：因为存在对称点(2,3),(3,2)<em>   </em><em>传递</em>*</li>
+</ul>
+<h3>b)</h3>
+<ul>
+<li><strong>自反</strong><em>   </em><em>对称</em><strong>   不是</strong>反对称*<em>:因为存在对称点(1,2)与(2,1)</em>   <strong>传递</strong></li>
+</ul>
+<h3>c)</h3>
+<ul>
+<li>不是<strong>自反</strong>:缺少(1,1),(2,2),(3,3)和(4.4)<em>   </em><em>对称</em><strong>   不是</strong>反对称*<em>:因为存在对称点(2,4)和(4,2)</em>   不是<strong>传递</strong>:存在(2,4)和(4,2)，但不存在(2,2)及(4,4)</li>
+</ul>
+<h3>d)</h3>
+<ul>
+<li>不是<strong>自反</strong>:缺少(1,1),(2,2),(3,3),(4,4)<em>   不是</em><em>对称</em><em>:有(1,2)，但没有(2,1)</em>   <strong>反对称</strong><em>   不是</em><em>传递</em>*:有(1,2)和(2,3)，但没有(1,3)</li>
+</ul>
+<h3>e)</h3>
+<ul>
+<li><strong>自反</strong><em>   </em><em>对称</em><strong>   </strong>反对称*<strong>   </strong>传递**</li>
+</ul>
+<h3>f)</h3>
+<ul>
+<li>不是<strong>自反</strong>:缺少(1,1)、(2,2)、(3,3)、(4,4)<em>   不是</em><em>对称</em><em>:有(1,4)，但没有(4,1)</em>   不是<strong>反对称</strong>:存在对称点(1,3)和(3,1)<em>   不是</em><em>传递</em>*:有(1,3)和(3,1)，但没有(1,1)</li>
+</ul>
+<hr />
+<h2>问题 04</h2>
+<p><a href="/user_images/1687-1.png"><img src="/user_images/1687-1.png" alt="image" title="image" /></a></p>
+<h2>解答 04</h2>
+<h3>a) a比b高</h3>
+<ul>
+<li>是“反对称”，“传递”*   不是“自反”，“对称”</li>
+</ul>
+<h3>b) a和b生在同一天</h3>
+<ul>
+<li>是“自反”，“对称”，“传递”*   不是“反对称”</li>
+</ul>
+<h3>c) a和b同名</h3>
+<ul>
+<li>是“自反”，“对称”，“传递”*   不是“反对称”</li>
+</ul>
+<h3>d) a和b有共同的祖父母</h3>
+<ul>
+<li>是“自反”，“对称”，“传递”*   不是“反对称”</li>
+</ul>
+<hr />
+<h2>问题 05</h2>
+<p><a href="/user_images/1690-1.png"><img src="/user_images/1690-1.png" alt="image" title="image" /></a></p>
+<h2>解答 05</h2>
+<h3>a)</h3>
+<p>关键在于“每个”两字，可以理解为“所有”。</p>
+<ul>
+<li>是<strong>自反</strong>的，因为访问了a的人也同时访问了a<em>   不是</em><em>对称</em><em>的，因为不是每一个访问了b的人，都会访问a</em>   不是<strong>反对称</strong>的，因为访问了(a,b)的人，有可能访问(b,a)，也有可能不访问(b,a)<em>   是</em><em>传递</em>*的，因为如果所有访问了a的人都访问了b，所有访问了b的人都访问了c，则所有访问了a的人都访问了c</li>
+</ul>
+<h3>b)</h3>
+<ul>
+<li><font color="#000000">不是<strong>自反</strong>的，因为如果一个网页a上有链接，则a与a有公共链接，显然(a,a)不属于R</font><em>   是</em><em>对称</em><em>的，因为a与b没有公共链接的话，则b与a必然没有公共链接</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，因为(a,b)没有公共链接，(b,a)也没有公共链接，但是(a,a)有公共链接</li>
+</ul>
+<h3>c)</h3>
+<ul>
+<li><font color="#000000"><strike>是<strong>自反</strong>的，因为若a与b上至少有一条公共链接，则a与b上都至少有一条链接。a与a之间，也至少有一条公共链接，属于R </strike>如果某个网页a上没有链接，则“a与a至少有一条公共链接”不成立，则(a,a)不属于R，所以不是自反的。我之前误解了“自反”的概念。</font><em>   是</em><em>对称</em><em>的，若a与b上至少有一条公共链接，则b与a上至少有一条公共链接</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，若(a,b)和(b,c)都属于R，但a与b的公共链接跟b与c的公共链接不相同，(a,c)有可能不属于R</li>
+</ul>
+<h3>d)</h3>
+<ul>
+<li><strike><font color="#000000">是<strong>自反</strong>的，若存在一个网页包含了到a与b的链接，则该网页包含到a与a的链接，即(a,a)属于R</font></strike>对于“所有网页来说”，对于某一个网页a来说，可能不存在一个网页包含了到它的链接，则(a,a)不存于R，所以不是自反的。我之前理解错了“自反”的定义。<em>   是</em><em>对称</em><em>的，若存在一个网页包含了到a与b的链接，则必然包含了到b与a的链接，即(b,a)属于R</em>   不是<strong>反对称</strong>的<em>   不是</em><em>传递</em>*的，可能有一个网页包含了到a与b的链接，另一个网页包含了到b与c的链接，但没有网页包含到a与c的链接。</li>
+</ul>
+<hr />
+<h2>问题 06</h2>
+<p><a href="/user_images/1693-1.png"><img src="/user_images/1693-1.png" alt="image" title="image" /></a></p>
+<h2>解答 06</h2>
+<h3>a) x+y=0</h3>
+<ul>
+<li>(1,1)∉R，所以不是自反的<em>   因为x+y=0，所以y+x=0，即(y,x)∈R，所以是对称的</em>   因为存在对称点(x,y)，且x≠y，所以R不是反对称的*   因为(1,-1)∈R，(-1,1)∈R，但(1,1)∉R，所以不是传递的</li>
+</ul>
+<h3>b) x=±y</h3>
+<ul>
+<li>因为(x,x)满足x=±y，所以是自反的<em>   因为x=±y，所以y=±x，所以(y,x)∈R，所以是对称的</em>   因为存在对称点(x,y)，且x≠y，所以R不是反对称的*   若(x,y)∈R且(y,z)∈R，因为x=±y=±z，所以(x,z)∈R，所以是传递的</li>
+</ul>
+<h3>c) x-y是有理数</h3>
+<ul>
+<li>因为x-x=0是有理数，所以(x,x)∈R，所以R是自反的<em>   如果x-y是有理数，则y-x=-(x-y)也是有理数，所以是对称的</em>   因为存在对称点(x,y)，且x≠y，所以R不是反对称的*   如果(x,y)∈R且(y,z)∈R，则x-y和y-z都是有理数，则它们的和(x-y+y-z)=x-z也是有理数，所以是传递的</li>
+</ul>
+<h3>d) x=2y</h3>
+<ul>
+<li>(1,1)∉R，所以不是自反的<em>   因为(4,2)∈R，但(2,4)∉R，所以不是对称的</em>   若(x,y)∈R，则x=2y，则y=x/2。如果要让(y,x)∈R，则x/2=2x，只能x=0，则y=x=0。所以不是反对称的*   若(x,y)∈R且(y,z)∈R，则x=2y=4z，所以(x,z)∉R。所以不是传递的。</li>
+</ul>
+<h3>e) xy≥0</h3>
+<ul>
+<li>因为x<em>x≥0，所以(x,x)∈R，所以是自反的</em>   若(x,y)∈R，则yx=xy≥0，所以是对称的<em>   因为(2,3)和(3,2)都属于R，所以R不是反对称的</em>   因为(2,0)和(0,-1)属于R，但(2,-1)不属于R，所以不是传递的</li>
+</ul>
+<h3>f) xy=0</h3>
+<ul>
+<li><p>(1,1)不属于R，所以不是自反的<em>   若(x,y)属于R，即xy=0，则yx=0，即(y,x)也属于R，所以是对称的</em>   因为(4,0)和(0,4)都属于R，所以不是反对称的*   因为(4,0)和(0,4)都属于R，但(4,4)不属于R，所以R不是传递的</p>
+<h3>g) x=1</h3>
+</li>
+<li><p>(2,2)不属于R，所以不是自反的<em>   (1,2)属于R，但(2,1)不属于R，所以不是对称的</em>   若(x,y)和(y,x)都属于R，则x=y=1，所以是反对称的*   若(x,y)和(y,z)都属于R，则x=y=z=1，所以R是传递的</p>
+</li>
+</ul>
+<h3>h) x=1或y=1</h3>
+<ul>
+<li>(2,2)不属于R，所以不是自反的<em>   若(x,y)属于R，则x=1，所以(y,x)属于R，所以是对称的</em>   因为(1,2)和(2,1)都属于R，所以不是反对称的*   因为(3,1)和(1,2)都属于R，但(3,2)不属于R，所以不是传递的</li>
+</ul>
+<hr />
+<h2>题目 07</h2>
+<p><a href="/user_images/1696-1.png"><img src="/user_images/1696-1.png" alt="image" title="image" /></a></p>
+<h2>解答 08</h2>
+<h3>a) x≠y</h3>
+<ul>
+<li>(1,1)∉R，所以不是自反的<em>   则x不等于y，则y不等于x，所以是对称的</em>   因为(2,3)和(3,2)都属于R，所以不是反对称的*   因为(2,3)和(3,2)都属于R，但(2,2)不属于R，所以不是传递的</li>
+</ul>
+<h3>b) xy≥1</h3>
+<ul>
+<li><font color="#000000"><strike>显然R的域中不包含0，则x<em>x大于等于1，则(x,x)属于R，所以是自反的</strike>0是整数，但(0,0)不满足xy≥1，所以(0,0)∈R，所以不是自反的</font></em>   若xy大于等于1，则yx大于等于1，所以是对称的<em>   因为(1,2)和(2,1)都属于R，所以不是反对称的</em>   若xy大于等于1，且x,y都为整数，则x和y同号并且绝对值最小为1。若(x,y)和(y,z)都属于R，则x与y同号，y与z同号，所以x和z同号且最小值为1，所以x*z大于等于1，所以(x,z)也属于R。所以是传递的。</li>
+</ul>
+<p>在做这个题的时候，我开始认为它是自反的，怎么都想不明白。后来在stackoverflow上网友的帮助下，才明白我对自反的概念理解错了。</p>
+<p>自反的概念：A relation R on a set A is called reflexive if (a, a) ∈ R for every element a ∈ A，即对集合中<strong>所有的元素</strong>都有(a,a)属于R。</p>
+<p>我之前理解成了，对于属于R的域中的每一个元素a都有(a,a)属于R。</p>
+<p>这是提问：<a href="http://math.stackexchange.com/questions/271638/reloation-r-is-xy1-and-xz-and-yz-is-r-reflexive">http://math.stackexchange.com/questions/271638/reloation-r-is-xy1-and-xz-and-yz-is-r-reflexive</a></p>
+<p>从提问到得到答案只花了2分钟，太靠谱了！</p>
+<h3>c) x=y+1或x=y-1</h3>
+<ul>
+<li>(1,1)不属于R，所以不是自反的<em>   若(x,y)属于R，则x=y+1或y-1。则y=x-1或x+1，所以(y,x)也属于R。所以是对称的</em>   因为(2,1)和(1,2)都属于R，所以不是反自反的*   因为(2,1)和(1,2)都属于R，但(2,2)不属于R，所以不是传递的</li>
+</ul>
+<h3>d) x≡y(mod 7)</h3>
+<ul>
+<li>因为x与x模7同余，所以是自反的<em>   因为x与y模7同余，所以y与x模7同余，所以是对称的</em>   因为(0,7)和(7,0)属于R，所以不是反对称的*   若(x,y)和(y,z)都属于R，则x=7k+y,y=7m+z，所以x=7(k+m)+z，所以x与z模7同余，所以是传递的</li>
+</ul>
+<h3>e) x是y的倍数</h3>
+<ul>
+<li>因为x是x的倍数，所以是自反的<em>   因为(2,1)属于R，但(1,2)不属于R，所以不是对称的</em>   因为(1,-1)和(-1,1)都属于R，所以不是反自反的<em>   若(x,y)和(y,z)都属于R，则x=k</em>y,y=m<em>z，所以x=k</em>m*z，所以(x,z)也属于R，所以是传递的</li>
+</ul>
+<h3>f) x与y都是负的，或者都是非负的</h3>
+<ul>
+<li>显然(x,x)属于R，所以是自反的<em>   如果(x,y)属于R，则x与y都是负数，或者都是非负数，所以yx也满足R，所以是对称的</em>   因为(2,3)和(3,2)满足R，所以不是反对称的*   若(x,y)和(y,z)都属于R，则x、y、z都是负数，或者都是非负数，所以xz也满足R，所以是传递的</li>
+</ul>
+<h3>g) x=y^2</h3>
+<ul>
+<li>(4,4)不属于R，所以不是自反的<em>   (4,2)属于R，但(2,4)不属于R，所以不是对称的</em>   若x是y的平方，且y是x的平方，则只能是x=y，所以是反对称的*   (8,4)与(4,2)都属于R，但(8,2)不属于R，所以不是传递的</li>
+</ul>
+<h3>h) x≥y^2</h3>
+<ul>
+<li>(4,4)不属于R，所以不是自反的<em>   (4,2)属于R，但(2,4)不属于R，所以不是对称的</em>   若(x,y)和(y,x)都属于R，则x≥y<em>y≥x</em>x<em>x</em>x，又因为x为整数，所以x=0或1，则y=x。所以是反对称的<em>   若(x,y)和(y,z)都属于R，则x≥y</em>y≥z<em>z</em>z<em>z≥z</em>z，所以(x,z)也属于R，所以是传递的</li>
+</ul>
+<hr />
+<h2>题目 08</h2>
+<p><a href="/user_images/1701-1.png"><img src="/user_images/1701-1.png" alt="image" title="image" /></a></p>
+<h2>解答 08</h2>
+<h3>a)</h3>
+<p>如果一个关系既是对称的，又是反对称的，只有一种可能：如果有对称点，则对称点在矩阵的主对角线上。</p>
+<p>假设集合A为{1,2,3,4}，则{(1,1),(2,2),(3,3),(4,4)}的任一子集都是对称和反对称的。</p>
+<h3>b)</h3>
+<p>关系中既包含不相等的对称点，又包含没有对称点的点。</p>
+<p>假设集合A为{1,2,3,4}，则{(1,1),(2,1),(1,2),(2,3)}，既不是对称的，也不是反对称的。</p>
+<hr />
+<h2>题目 09 ~ 12</h2>
+<p><a href="/user_images/1704-1.png"><img src="/user_images/1704-1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1704-3.png"><img src="/user_images/1704-3.png" alt="image" title="image" /></a></p>
+<h2>解答 09 ~ 12</h2>
+<p>反自反比较好判断。只有当矩阵主对角线上全部为假时，即关系中不存在(a,a)这样的元素时，关系才是反自反的。</p>
+<h3>9.</h3>
+<p><img src="/user_images/1704-4.png" alt="image" title="image" /></p>
+<p>其中，c、d、f是反自反的。</p>
+<h3>10</h3>
+<p><img src="/user_images/1704-5.png" alt="image" title="image" /></p>
+<p>其中，a是反自反的。</p>
+<h3>11</h3>
+<p><img src="/user_images/1704-6.png" alt="image" title="image" /></p>
+<p>四个都不是反自反的。</p>
+<ul>
+<li>a) 因为访问了某个网页a的人，当然也访问了网页a。所以不是反自反的。</li>
+<li>b) 若网页a上没有链接，则a与a上没有公共链接，属于R。所以不是反自反的。</li>
+<li>c) 如果网页a上有链接，则a和a上至少有一条公共链接，属于R。所以不是反自反的。</li>
+<li>d) 如果存在一个Web包含了到a的链接，则它包含了到a和a的链接，(a,a)属于R。所以不是反自反的。</li>
+</ul>
+<h3>12</h3>
+<p><img src="/user_images/1704-7.png" alt="image" title="image" /></p>
+<p>全部都不是反自反的。</p>
+<ul>
+<li>因为(0,0)属于R，所以不是反自反的</li>
+<li>因为(0,0)属于R，所以不是反自反的</li>
+<li>因为(0,0)属于R，所以不是反自反的</li>
+<li>因为(0,0)属于R，所以不是反自反的</li>
+<li>因为(0,0)属于R，所以不是反自反的</li>
+<li>因为(0,0)属于R，所以不是反自反的</li>
+<li>因为(1,1)属于R，所以不是反自反的</li>
+<li>因为(1,1)属于R，所以不是反自反的</li>
+</ul>
 ]]></description>
             </item>
 
