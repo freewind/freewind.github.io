@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>星期日, 31 八月 2014 23:46:43 CST</lastBuildDate>
+        <lastBuildDate>星期一, 01 九月 2014 15:03:10 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -490,6 +490,54 @@ requirejs(['jquery'], function(jq) {
 });
 </code></pre>
 <p>这样做，就解决了前面的问题：在除了jquery-private之外的任何依赖中，还可以直接使用<code>jqurey</code>这个模块名，并且总是被替换为对<code>jquery-private</code>的依赖，使得它最先被执行。</p>
+<h2>合并</h2>
+<p>在开发过程中，我们常常会创建很多个小js文件，每个文件一个module。这样在开发时比较方便，但在产品环境中，会导致浏览器下载很多次，性能比较慢。为了解决这个问题，requirejs提供了一个叫r.js的工具，可以把多个文件合并成一个或者少数几个。</p>
+<p>这样自然而然就会有一个疑问：它们是怎么合并的？仅仅是把两个文件的内容原封不动的合并在一起吗？如果是这样的话，会有问题。</p>
+<p>比如，我之前有两个js文件</p>
+<p><strong>a.js</strong></p>
+<pre><code class="js">define([], function() {
+  return "aaa";
+});
+</code></pre>
+<p><strong>b.js</strong></p>
+<pre><code class="js">define([], function() {
+  return "bbb";
+});
+</code></pre>
+<p>它们合并以后，如果是这样的：</p>
+<p><strong>one.js</strong></p>
+<pre><code class="js">define([], function() {
+  return "aaa";
+});
+define([], function() {
+  return "bbb";
+});
+</code></pre>
+<p>那我们引用这个文件时，到底用的是哪个模块呢？</p>
+<p>Requirejs聪明的解决了这个问题。它并不是原封不动的合并，而是根据我们在使用每个模块时给的命名，自动加到每个模块的定义处。假设我们分别通过module <code>a</code>和<code>b</code>去引用这两个文件的话，上面合并后的代码实际是：</p>
+<pre><code class="js">define('a', [], function() {
+  return "aaa";
+});
+define('b', [], function() {
+  return "bbb";
+});
+</code></pre>
+<p>这样就算有再多的模块放在同一个文件中，我们也能准确的拿到某一个模块。</p>
+<p>TODO: grunt的示例</p>
+<h2>bundles</h2>
+<p>当一个文件中定义了多个模块（或者如前一个例子中所示，多个模块文件合并在同一个文件之后），我们可能不太清楚一个文件中到底有多少个模块，也无法控制哪些模块是我们想用的。</p>
+<p>requirejs又提供了一个叫<code>bundles</code>的功能。代码如下：</p>
+<pre><code class="js">require.config({
+  paths: {
+    mybundleSet: 'one'
+  },
+  bundles: {
+    mybundleSet: ['a', 'b']
+  }
+});
+</code></pre>
+<p>这里我们在<code>paths</code>中，通过<code>mybundleSet</code>引用了<code>one.js</code>文件。这个<code>one.js</code>里包含了多个模块，所以在后面的<code>bundles</code>配置中，我们又声明将使用其中的<code>a</code>和<code>b</code>两个模块。</p>
+<p>如果<code>one.js</code>中缺少<code>a</code>或<code>b</code>，代码会出错。如果有其它的模块，但没有在<code>bundles</code>中声明，也是没有办法使用的。</p>
 ]]></description>
             </item>
 
@@ -8230,7 +8278,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x77;&#101;&#98;&#45;&#117;&#105;&#45;&#x64;&#x65;v&#64;&#x64;&#x61;&#x72;&#116;&#x6c;&#x61;&#x6e;&#103;&#x2e;&#111;&#114;&#x67;">&#119;&#x65;&#x62;&#45;&#117;&#105;&#x2d;&#x64;&#x65;&#118;&#64;&#x64;&#97;&#x72;&#116;&#x6c;&#x61;&#x6e;&#103;&#46;&#111;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#58;&#119;&#x65;&#98;&#45;&#117;&#x69;&#45;&#100;&#x65;&#118;&#64;&#x64;&#97;&#x72;&#x74;&#x6c;&#97;&#x6e;&#x67;.&#x6f;&#114;&#103;">&#x77;&#x65;&#x62;&#x2d;&#117;&#x69;&#45;&#x64;&#101;&#118;&#x40;&#100;&#97;&#x72;&#x74;la&#110;&#x67;&#x2e;o&#114;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
