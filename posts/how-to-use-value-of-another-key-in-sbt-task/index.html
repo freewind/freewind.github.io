@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>sbt设置全局idea插件</title>
+    <title>如何在定义sbt任务时，使用其它key的值</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 <link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
@@ -10,7 +10,7 @@
 <body>
 
 <h1>
-    (2014-05-28) sbt设置全局idea插件
+    (2014-09-12) 如何在定义sbt任务时，使用其它key的值
 </h1>
 
 <div>
@@ -20,23 +20,30 @@
 
 <div>
     <hr />
-<p>sbt本身不支持生成IDEA项目，但是对于我们来说，几乎每一个sbt项目，都需要生成相应的IDEA项目。</p>
-<p>我们可以在项目中的plugins文件中添加，更方便的做法是在全局添加，这样拿到一个sbt项目，什么都不用动就能生成IDEA项目了。</p>
-<p>在用户目录下的全局插件文件<code>~/.sbt/0.13/plugins/build.sbt</code>中添加：</p>
-<pre><code class="scala">resolvers ++= Seq(
-    "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
-)
+<p>TODO: add link [2759]</p>
+<p>如果想使用另一个key的值，可以调用其<code>.value</code>：</p>
+<pre><code class="scala">name := "hello"
 
-addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
+version := "1.0"
+
+scalaVersion := "2.11.0"
+
+val mykey = settingKey[Int]("demo key")
+
+mykey := 100
+
+val hello = taskKey[Unit]("demo task")
+
+hello := {println("Hello, world: " + mykey.value)}
 </code></pre>
-<p>这样在任意一个sbt项目中，我们都可以运行：</p>
-<pre><code>sbt gen-idea
+<p>运行<code>sbt hello</code>将输出：</p>
+<pre><code>Hello, world: 100
 </code></pre>
-<p>生成相应的IDEA文件。</p>
-<p>如果想同时下载源代码，可运行</p>
-<pre><code>sbt "gen-idea sbt-classifiers"
-</code></pre>
-<p>然后可以用idea直接打开，里面的各项依赖都可以直接使用了。</p>
+<h2>.value</h2>
+<p><code>value</code> - is a macro defined in <a href="http://www.scala-sbt.org/0.13.5/api/index.html#sbt.std.MacroValue">sbt.std.MacroValue</a></p>
+<blockquote><p>Tasks and Settings both produce values that can be used in other tasks and settings. It’s very rare in sbt that a Task doesn’t return something to be used in other tasks. This design allows great flexibility and power when defining complex builds. It’s also drastically simplifies parallel building.</p>
+</blockquote>
+<p>Thanks to: <a href="http://stackoverflow.com/a/25808809/342235">http://stackoverflow.com/a/25808809/342235</a></p>
 
 </div>
 
@@ -44,7 +51,7 @@ addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
-    var disqus_identifier = '2647';
+    var disqus_identifier = '2760';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

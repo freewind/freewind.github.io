@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>sbt设置全局idea插件</title>
+    <title>如何在sbt中定义一个最简单的hello world任务</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 <link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
@@ -10,7 +10,7 @@
 <body>
 
 <h1>
-    (2014-05-28) sbt设置全局idea插件
+    (2014-09-12) 如何在sbt中定义一个最简单的hello world任务
 </h1>
 
 <div>
@@ -20,23 +20,47 @@
 
 <div>
     <hr />
-<p>sbt本身不支持生成IDEA项目，但是对于我们来说，几乎每一个sbt项目，都需要生成相应的IDEA项目。</p>
-<p>我们可以在项目中的plugins文件中添加，更方便的做法是在全局添加，这样拿到一个sbt项目，什么都不用动就能生成IDEA项目了。</p>
-<p>在用户目录下的全局插件文件<code>~/.sbt/0.13/plugins/build.sbt</code>中添加：</p>
-<pre><code class="scala">resolvers ++= Seq(
-    "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
-)
+<p>使用<code>taskKey</code>函数，定义一个<code>TaskKey</code>类型的key，然后再给它赋一个函数即可。</p>
+<h2>build.sbt</h2>
+<pre><code class="scala">name := "hello"
 
-addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
+version := "1.0"
+
+scalaVersion := "2.11.0"
+
+lazy val hello = taskKey[Unit]("An example task")
+
+hello := { println("Hello, world") }
 </code></pre>
-<p>这样在任意一个sbt项目中，我们都可以运行：</p>
-<pre><code>sbt gen-idea
+<p>运行：</p>
+<pre><code>$ sbt hello
+Hello, world
 </code></pre>
-<p>生成相应的IDEA文件。</p>
-<p>如果想同时下载源代码，可运行</p>
-<pre><code>sbt "gen-idea sbt-classifiers"
+<p>注意：</p>
+<ol>
+<li>中间的空行不能少</li>
+<li>通常使用<code>lazy</code>以避免某些初始化顺序问题</li>
+</ol>
+<h2>show</h2>
+<p>另外，如果想看<code>hello</code>的返回值，使用<code>show</code>：</p>
+<pre><code>$ sbt
+&gt; show hello
+[info] ()
 </code></pre>
-<p>然后可以用idea直接打开，里面的各项依赖都可以直接使用了。</p>
+<h2>inspect</h2>
+<p>如果想看该任务的详细信息：</p>
+<pre><code>[info] Task: Unit
+[info] Description:
+[info]  demo task
+[info] Provided by:
+[info]  {file:/private/tmp/sbttest/}sbttest/*:hello
+[info] Defined at:
+[info]  /private/tmp/sbttest/build.sbt:9
+[info] Delegates:
+[info]  *:hello
+[info]  {.}/*:hello
+[info]  */*:hello
+</code></pre>
 
 </div>
 
@@ -44,7 +68,7 @@ addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
-    var disqus_identifier = '2647';
+    var disqus_identifier = '2759';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

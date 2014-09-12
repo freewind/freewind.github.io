@@ -20,10 +20,11 @@
 
 <div>
     <hr />
-<p><strong>一、使用sbt时，经常出现PermSize不够用的错误，怎么办？</strong>
+<p>一、使用sbt时，经常出现PermSize不够用的错误，怎么办？<strong>
 <br  /><p>修改sbt的启动文件sbt.bat，增加启动参数：
 <br  /><pre class="csharpcode">-XX:MaxPermSize=256M```
-<br  /><p><strong>二、scala文件中含有中文，编译正常；而java文件中有中文，编译提示错误（注：java文件为utf8，而系统字符集为gbk）</strong></p>
+<br  /><p></strong></p>
+<p>二、scala文件中含有中文，编译正常；而java文件中有中文，编译提示错误（注：java文件为utf8，而系统字符集为gbk）**</p>
 <p>在sbt下，输入debug命令，打开debug级的log，再次运行compile，发现它使用的scalac有utf8的选项，而javac没有，说明javac使用的是系统默认字符集。需要更改项目配置文件project/build/config.scala，在里面添加一行：</p>
 <p>override def javaCompileOptions = super.javaCompileOptions ++ javaCompileOptions(&#8220;-encoding&#8221;, &#8220;utf8&#8243;)</p>
 <p><strong>三、 一个web项目，代码中引用了servlet的一些类，并且还要运行sbt的jetty-run，则需要要匹配文件中增加：</strong></p>
