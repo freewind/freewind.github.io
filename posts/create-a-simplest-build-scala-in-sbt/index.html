@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>无需任何配置，直接使用sbt运行一个scala文件</title>
+    <title>sbt中如何创建一个最简单的Build.scala</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 <link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
@@ -10,7 +10,7 @@
 <body>
 
 <h1>
-    (2014-09-12) 无需任何配置，直接使用sbt运行一个scala文件
+    (2014-09-13) sbt中如何创建一个最简单的Build.scala
 </h1>
 
 <div>
@@ -20,34 +20,37 @@
 
 <div>
     <hr />
-<p>简单的说，就是在某个目录中创建一个scala文件，直接用sbt执行：</p>
-<pre><code class="shell">mkdir mypro
-cd mypro
-touch Hello.scala
-# edit Hello.scala
+<p>对于简单的sbt项目，我们通常会在项目目录下创建一个<code>build.sbt</code>，使用简化的格式来配置sbt项目。</p>
+<p>对于复杂一些的项目，我们还可以通过<code>project/Buils.scala</code>来配置。在这个文件中，我们将使用真正的scala代码。</p>
+<p>这里是一个最简单的<code>Build.scala</code></p>
+<h2>project/Build.scala</h2>
+<pre><code class="scala">import sbt._
+import sbt.Keys._
 
-sbt run
-</code></pre>
-<p>当然前提是你已经安装了sbt。</p>
-<h2>传参数</h2>
-<p>如果<code>Hello.scala</code>需要传参数，比如：</p>
-<pre><code class="scala">object Hello {
-
-    def main(args:Array[String]) {
-       println("The args is: ")
-       println(args.mkString(" + "))
-    }
+object DemoBuild extends Build {
+  lazy val demo = Project(
+    id = "demo",
+    base = file("."),
+    settings = Project.defaultSettings ++ Seq(
+      name := "Demo",
+      organization := "freewind",
+      version := "0.1-SNAPSHOT",
+      scalaVersion := "2.11.0"
+      // other settings here
+    )
+  )
 }
 </code></pre>
-<p>可以这样给它传参数：</p>
-<pre><code>sbt run "aaa bbb"
+<h2>执行</h2>
+<pre><code class="shell">$ sbt
+&gt; name
+[info] Demo
+&gt; organization
+[info] freewind
 </code></pre>
-<p>将会得到结果：</p>
-<pre><code>The args is:
-aaa + bbb
-</code></pre>
-<p>sbt给我的感觉是非常复杂和笨重，没想到还能这么用，感觉还是很方便的。</p>
-<p>不过如果程序依赖别的库，这样就不行了，需要使用<code>build.sbt</code>来指明依赖，参看：TODO add link</p>
+<h2>不一定叫<code>Build.scala</code></h2>
+<p>这个文件名不一定要叫做<code>Build.scala</code>，也可以改成别的名字，比如<code>bbb.scala</code>，只要它还位于<code>project</code>目录下，执行效果是一样的。</p>
+<p>不过人们通常都使用<code>Build.scala</code>方便交流。</p>
 
 </div>
 
@@ -55,7 +58,7 @@ aaa + bbb
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
-    var disqus_identifier = '2761';
+    var disqus_identifier = '2770';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

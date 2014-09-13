@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>使用build.sbt配置多个子项目</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    (2014-09-13) 使用build.sbt配置多个子项目
+</h1>
+
+<div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<div>
+    <hr />
+<p>在这里将配置<code>build.sbt</code>来支持多个项目</p>
+<h2>目录结构</h2>
+<p>我们的项目目录是<code>multi</code>，然后在里面创建了两个子目录<code>core</code>和<code>util</code>，表示将有两个子项目。</p>
+<p>这样我们的项目中实际上有三个项目：<code>multi</code>, <code>core</code>, <code>util</code>.</p>
+<p>为了方便演示，我分别在这三个项目的根目录下，各创建了一个会打出<code>Hello</code>的scala程序。</p>
+<pre><code>multi
+├── build.sbt
+├── HelloMulti.scala
+├── core
+│   └── HelloCore.scala
+└── util
+    └── HelloUtil.scala
+</code></pre>
+<h3>HelloMulti.scala</h3>
+<pre><code class="scala">object HelloMulti {
+  def main(args: Array[String]) {
+    println("Hello, multi!")
+  }
+}
+</code></pre>
+<h3>HelloCore.scala</h3>
+<pre><code class="scala">object HelloCore {
+  def main(args: Array[String]) {
+    println("Hello, core!")
+  }
+}
+</code></pre>
+<h3>HelloUtil.scala</h3>
+<pre><code class="scala">object HelloUtil {
+  def main(args: Array[String]) {
+    println("Hello, util!")
+  }
+}
+</code></pre>
+<h3>build.sbt</h3>
+<pre><code class="scala">name := "Multi Demo"
+
+version := "1.0"
+
+scalaVersion := "2.11.0"
+
+sbtVersion := "0.13.5"
+
+lazy val util = project
+
+lazy val core = project
+</code></pre>
+<p>通过<code>project</code>就可以声明一个新的子项目。在默认情况下，它会在项目根目录下寻找与变量名同名的目录，比如<code>core</code>和<code>util</code></p>
+<h2>运行</h2>
+<h3>projects</h3>
+<p>我们可以通过<code>projects</code>任务，查看该项目有多少个子项目：</p>
+<pre><code>$ sbt
+&gt; projects
+[info] In file:/sbttest/multi/
+[info]     core
+[info]   * multi
+[info]     util
+</code></pre>
+<p>这里列出了三个项目，其中有<code>*</code>的表示“当前项目”。</p>
+<h3>project</h3>
+<p>通过<code>project</code>可以查看当前哪个项目被设为“当前项目”。有一些任务默认对当前任务起作用，比如<code>run</code></p>
+<pre><code>$ sbt
+&gt; project
+[info] multi (in build file:/sbttest/multi/)
+</code></pre>
+<p>运行<code>run</code>:</p>
+<pre><code>$ sbt
+&gt; run
+[info] Running HelloMulti
+Hello, multi! 
+</code></pre>
+<h3>project newproject</h3>
+<p>通过给<code>project</code>任务一个参数，改变“当前项目”</p>
+<pre><code>$ sbt
+&gt; project
+[info] multi (in build file:/sbttest/multi/)
+&gt; project core
+[info] Set current project to core (in build file:/sbttest/multi/)
+&gt; run
+[info] Running HelloCore
+Hello, core!
+</code></pre>
+<p>可以看到已经更改了当前项目，并且在<code>run</code>的时候，将会执行另一个scala文件</p>
+<h2>指定目录</h2>
+<p>在前面，如果我们没有指明项目目录，它会默认使用与变量名同名的目录，如：</p>
+<pre><code class="scala">lazy val util = project
+</code></pre>
+<p>如果我们想使用另一个目录，如<code>my-powerful-util</code>来表示项目<code>util</code>，可以写成这样：</p>
+<pre><code class="scala">lazy val util = project in file("my-powerful-util")
+</code></pre>
+<p>这样，<code>util</code>实际指向的就是<code>my-powerful-util</code>目录了。</p>
+<h2>组合多个项目</h2>
+<p>上面定义的<code>core</code>和<code>util</code>项目之间，实际上是没有任何关系的。比如我想<code>compile</code>这两个项目，就必须分别把这两个项目设为当前项目，再依次运行<code>compile</code>。</p>
+<p>我们可以新建一个项目<code>root</code>，把它们两个组合起来：</p>
+<pre><code class="scala">lazy val root = (project in  file(".")).aggregate(util, core)
+
+lazy val util = project
+
+lazy val core = project
+</code></pre>
+<p>由于我们显式地给了根项目一个名字<code>root</code>，原来以目录名命名的<code>multi</code>就不见了：</p>
+<pre><code>$ sbt
+&gt; projects
+[info] In file:/sbttest/multi/
+[info]     core
+[info]   * root
+[info]     util
+</code></pre>
+<p>如果在<code>root</code>下执行<code>compile</code>，则会看到<code>core</code>和<code>util</code>也会跟着一起编译：</p>
+<pre><code>$ sbt
+&gt; clean
+[success] Total time: 0 s, completed 2014-9-13 16:24:06
+&gt; compile
+[info] Updating {file: /sbttest/multi/}root...
+[info] Updating {file: /sbttest/multi/}core...
+[info] Updating {file: /sbttest/multi/}util...
+[info] Resolving jline#jline;2.11 ...
+[info] Done updating.
+[info] Resolving org.scala-lang#scala-library;2.10.2 ...
+[info] Compiling 1 Scala source to  /sbttest/multi/target/scala-2.11/classes...
+[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] Resolving org.scala-lang#scala-library;2.10.2 ...
+[info] Compiling 1 Scala source to  /sbttest/multi/util/target/scala-2.10/classes...
+[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] Compiling 1 Scala source to  /sbttest/multi/core/target/scala-2.10/classes...
+</code></pre>
+<h3>顺序</h3>
+<p>会在多个子项目中并行执行，并且顺序不确定</p>
+<h3>指定不同时执行的任务</h3>
+<p>在组合项目时，我们还可以指定哪些任务不会被同时执行到子项目中：</p>
+<pre><code class="scala">lazy val root = (project in  file(".")).aggregate(util, core)
+   .settings(
+     aggregate in compile := false
+   )
+</code></pre>
+<p>这样，再执行<code>compile</code>任务，它就不会被应用到<code>core</code>和<code>util</code>上。</p>
+<pre><code>$ sbt
+&gt; clean
+[success] Total time: 0 s, completed 2014-9-13 16:27:29
+&gt; compile
+[info] Updating {file: /sbttest/multi/}root...
+[info] Resolving jline#jline;2.11 ...
+[info] Done updating.
+[info] Compiling 1 Scala source to  /sbttest/multi/target/scala-2.11/classes...
+[success] Total time: 0 s, completed 2014-9-13 16:27:32
+</code></pre>
+<p>可以看到，只有<code>root</code>项目中的scala文件被编译了。</p>
+<h2>依赖于其它项目</h2>
+<p>除了上面的组合，我们还可以让一个项目依赖于另一个项目，这样就可以在这个项目中使用另一个项目中定义的类。</p>
+<p>比如，我们让<code>core</code>依赖于<code>util</code>:</p>
+<pre><code class="scala">lazy val util = project
+
+lazy val core = project.dependsOn(util)
+</code></pre>
+<p>通过<code>.dependsOn</code>，我们让<code>core</code>项目依赖于<code>util</code>项目，这样我们就可以在<code>core</code>中使用<code>util</code>中定义的类了。</p>
+<p>如果我在<code>core</code>中执行<code>compile</code>任务，它会自动先到<code>util</code>中执行<code>compile</code>.</p>
+<h2>依赖多个项目</h2>
+<pre><code class="scala">lazy val mypro = project.dependsOn(core, util)
+</code></pre>
+
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2773';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

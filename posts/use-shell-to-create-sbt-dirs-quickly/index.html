@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>快速初始化一个sbt项目的结构</title>
+    <title>用脚本快速初始化一个sbt项目的结构</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 <link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
@@ -10,7 +10,7 @@
 <body>
 
 <h1>
-    (2014-09-12) 快速初始化一个sbt项目的结构
+    (2014-09-12) 用脚本快速初始化一个sbt项目的结构
 </h1>
 
 <div>
@@ -24,6 +24,7 @@
 <pre><code class="shell">touch build.sbt
 mkdir project
 touch project/plugins.sbt
+touch project/build.properties
 
 echo "target/" &gt; .gitignore
 

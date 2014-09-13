@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>无需任何配置，直接使用sbt运行一个scala文件</title>
+    <title>build.sbt中有哪些操作符可用</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 <link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
@@ -10,7 +10,7 @@
 <body>
 
 <h1>
-    (2014-09-12) 无需任何配置，直接使用sbt运行一个scala文件
+    (2014-09-13) build.sbt中有哪些操作符可用
 </h1>
 
 <div>
@@ -20,34 +20,43 @@
 
 <div>
     <hr />
-<p>简单的说，就是在某个目录中创建一个scala文件，直接用sbt执行：</p>
-<pre><code class="shell">mkdir mypro
-cd mypro
-touch Hello.scala
-# edit Hello.scala
-
-sbt run
+<h2><code>:=</code></h2>
+<p>给一个Key设置为一个新值</p>
+<pre><code>name := "Hello"
 </code></pre>
-<p>当然前提是你已经安装了sbt。</p>
-<h2>传参数</h2>
-<p>如果<code>Hello.scala</code>需要传参数，比如：</p>
-<pre><code class="scala">object Hello {
-
-    def main(args:Array[String]) {
-       println("The args is: ")
-       println(args.mkString(" + "))
-    }
-}
+<h2><code>+=</code></h2>
+<p>给一个<code>Seq</code>类型的key追加一个值：</p>
+<pre><code class="scala">libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.3.2"
 </code></pre>
-<p>可以这样给它传参数：</p>
-<pre><code>sbt run "aaa bbb"
+<h2><code>++=</code></h2>
+<p>给一个<code>Seq</code>类型的key追加多个值：</p>
+<pre><code class="scala">libraryDependencies += Seq(
+    "org.apache.commons" % "commons-lang3" % "3.3.2",
+    "org.scalaz" %% "scalaz-core" % "7.1.0"
+)
 </code></pre>
-<p>将会得到结果：</p>
-<pre><code>The args is:
-aaa + bbb
+<h2><code>~=</code></h2>
+<p>在key已有的值的基础上，修改为一个新值：</p>
+<pre><code class="scala">name ~= { n =&gt; n + "!!!" }
 </code></pre>
-<p>sbt给我的感觉是非常复杂和笨重，没想到还能这么用，感觉还是很方便的。</p>
-<p>不过如果程序依赖别的库，这样就不行了，需要使用<code>build.sbt</code>来指明依赖，参看：TODO add link</p>
+<h2><code>&lt;&lt;=</code></h2>
+<p>在一个key中使用另一个key的值</p>
+<h3>使用原值</h3>
+<p>假设已经定义了一个key:</p>
+<pre><code class="scala">name := "Hello" 
+</code></pre>
+<p>现在想在另一个key中直接使用它的值：</p>
+<pre><code class="scala">anotherKey &lt;&lt;= name
+</code></pre>
+<h3>使用旧值</h3>
+<p>如果想在另一个值的基础上生成一个新值，可以：</p>
+<pre><code class="scala">anotherKey &lt;&lt;= name { n =&gt; n + "!!!"}
+</code></pre>
+<h3>同时使用多个值</h3>
+<pre><code class="scala">anotherKey2 &lt;&lt;= (name, anotherKey) { (n,a) =&gt; n + a }
+</code></pre>
+<h2>more</h2>
+<p>http://stackoverflow.com/questions/25819886/where-are-examples-of-in-build-sbt</p>
 
 </div>
 
@@ -55,7 +64,7 @@ aaa + bbb
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
-    var disqus_identifier = '2761';
+    var disqus_identifier = '2765';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

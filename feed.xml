@@ -12,10 +12,599 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Sat, 13 Sep 2014 00:08:50 CST</lastBuildDate>
+        <lastBuildDate>Sat, 13 Sep 2014 17:30:30 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
+
+            <item>
+                <title>如何在build.sbt中调用其它scala中定义的值</title>
+                <link>http://freewind.github.io/posts/how-to-invoke-objects-defined-in-scala-files-in-build-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 17:18:13 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2776</guid>
+                <description><![CDATA[<hr />
+<p>我们通常使用<code>build.sbt</code>来配置一个sbt项目。由于<code>build.sbt</code>使用了一些简单易读的格式，在带给我们方便的同时，有时候也不太方便定义一些东西。</p>
+<p>这时我们可以将<code>build.sbt</code>和普通的scala代码结合起来，在scala文件中把东西都定义好，然后在<code>build.sbt</code>直接调用即可。</p>
+<h2>目录结构</h2>
+<pre><code>multi
+├── build.sbt
+└── project
+    ├── aaa.scala
+    └── bbb.scala
+</code></pre>
+<h3>aaa.scala</h3>
+<p>这里定义了一个普通的scala文件：</p>
+<pre><code class="scala">object aaa {
+   val name = "The name from scala file"
+}
+</code></pre>
+<h3>bbb.scala</h3>
+<p>同样普通</p>
+<pre><code class="scala">object bbb {
+    def hello = { println("method from scala file") }
+}
+</code></pre>
+<h3>build.sbt</h3>
+<pre><code class="scala">name := aaa.name
+
+version := "1.0"
+
+lazy val hello = taskKey[Unit]("a hello task")
+
+hello := bbb.hello
+</code></pre>
+<p>可以看到在这里，直接使用了<code>aaa</code>和<code>bbb</code>中定义的东西。</p>
+<h2>运行</h2>
+<pre><code>$ sbt
+[info] Loading project definition from  /sbttest/multi/project
+[info] Done updating.
+[info] Compiling 2 Scala sources to  /sbttest/multi/project/target/scala-2.10/sbt-0.13/classes...
+[info] Set current project to The name from scala file (in build file: /sbttest/multi/)
+&gt; name
+[info] The name from scala file
+&gt; hello
+method from scala file
+</code></pre>
+<p>可以看到，当执行<code>sbt</code>命令的时候，它会自动编译<code>project</code>目录下的两个scala文件<code>aaa.scala</code>和<code>bbb.scala</code>。</p>
+<p>当执行<code>name</code>时，它输出了在<code>aaa</code>中定义的<code>name</code>。当执行<code>hello</code>的时候，它运行的也是<code>bbb</code>中定义的方法。</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>在Build.scala中定义多个子项目</title>
+                <link>http://freewind.github.io/posts/define-multi-sub-projects-in-build-scala-in-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 17:02:49 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2775</guid>
+                <description><![CDATA[<hr />
+<p>TODO: add link to another article</p>
+<p>在前面的文章里，我们通过<code>build.sbt</code>定义了多个子项目，那么如何使用<code>Build.scala</code>来完成同样的事情呢？</p>
+<h2>目录结构</h2>
+<pre><code>multi
+├── project
+│   └── Build.scala
+├── HelloMulti.scala
+├── core
+│   └── HelloCore.scala
+└── util
+    └── HelloUtil.scala
+</code></pre>
+<p>其中各<code>HelloXXX.scala</code>的内容跟之前一样，这里只看<code>project/Build.scala</code></p>
+<h2>Build.scala</h2>
+<pre><code class="scala">import sbt._
+import sbt.Keys._
+
+object MultiBuild extends Build {
+  lazy val root = Project(
+    id = "root",
+    base = file("."),
+    settings = Project.defaultSettings ++ Seq(
+      name := "Root",
+      organization := "freewind",
+      version := "0.1.0",
+      scalaVersion := "2.11.0"
+      // other settings here
+    )
+  ).aggregate(util, core)
+
+  lazy val util = project
+
+  lazy val core = project.dependsOn(util)
+}
+</code></pre>
+<p>在这里，我们定义了三个项目，分别是<code>root</code>, <code>core</code>和<code>util</code>。</p>
+<p>其中<code>core</code>依赖于<code>util</code>，这意味着在<code>util</code>中定义的类可以直接在<code>core</code>项目中使用</p>
+<p><code>root</code>项目将<code>core</code>和<code>util</code>组合起来了，这表示在<code>root</code>中执行某个任务时，会自动调用<code>core</code>和<code>util</code>中相应的任务。</p>
+<p>可以看到这里的定义跟之前在<code>build.sbt</code>中的定义基本上是一致的，只是在这里可以完全按照scala的语法来写，来组织代码，更加灵活一些。</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>sbt多个子项目的build.sbt是如何处理的</title>
+                <link>http://freewind.github.io/posts/build-sbt-in-sub-projects-will-be-combined-to-root-project-in-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 16:50:55 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2774</guid>
+                <description><![CDATA[<hr />
+<p>我们可以在一个sbt项目中定义多个子项目，通常每个子项目都有自己独立的目录。如果每个子项目都有自己的<code>build.sbt</code>，它们是如何处理的呢？</p>
+<h2>目录结构</h2>
+<pre><code>multi
+├── build.sbt
+├── core
+│   └── build.sbt
+└── util
+    └── build.sbt
+</code></pre>
+<p>可以看到，我在<code>multi</code>下，又定义了两个子目录<code>core</code>和<code>util</code>，并且每个下面还有一个<code>build.sbt</code>.</p>
+<h3>multi/build.sbt</h3>
+<pre><code class="scala">name := "multi"
+
+version := "0.1.0"
+
+lazy val core = project
+
+lazy val util = project
+</code></pre>
+<h3>multi/core/build.sbt</h3>
+<pre><code class="scala">name := "core"
+
+version := "0.2.0"
+</code></pre>
+<h3>multi/util/build.sbt</h3>
+<pre><code class="scala">name := "build"
+
+version := "0.3.0"
+</code></pre>
+<h2>运行</h2>
+<pre><code>$ sbt
+&gt; projects
+[info] In file:/sbttest/multi/
+[info]     core
+[info]   * multi
+[info]     util
+&gt; version
+[info] util/*:version
+[info]  0.3.0
+[info] core/*:version
+[info]  0.2.0
+[info] multi/*:version
+[info]  0.1.0
+&gt; name
+[info] util/*:name
+[info]  util
+[info] core/*:name
+[info]  core
+[info] multi/*:name
+[info]  multi
+</code></pre>
+<p>可以看到，两个子项目<code>core</code>和<code>util</code>中的<code>build.sbt</code>中的内容，被合并到根项目<code>multi</code>中了，所以在我们显示一个key的时候，它会把每个子项目中相应的key的值都打印出来。</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>使用build.sbt配置多个子项目</title>
+                <link>http://freewind.github.io/posts/config-in-build-sbt-for-multi-sub-projects</link>
+                <pubDate>Sat, 13 Sep 2014 15:44:07 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2773</guid>
+                <description><![CDATA[<hr />
+<p>在这里将配置<code>build.sbt</code>来支持多个项目</p>
+<h2>目录结构</h2>
+<p>我们的项目目录是<code>multi</code>，然后在里面创建了两个子目录<code>core</code>和<code>util</code>，表示将有两个子项目。</p>
+<p>这样我们的项目中实际上有三个项目：<code>multi</code>, <code>core</code>, <code>util</code>.</p>
+<p>为了方便演示，我分别在这三个项目的根目录下，各创建了一个会打出<code>Hello</code>的scala程序。</p>
+<pre><code>multi
+├── build.sbt
+├── HelloMulti.scala
+├── core
+│   └── HelloCore.scala
+└── util
+    └── HelloUtil.scala
+</code></pre>
+<h3>HelloMulti.scala</h3>
+<pre><code class="scala">object HelloMulti {
+  def main(args: Array[String]) {
+    println("Hello, multi!")
+  }
+}
+</code></pre>
+<h3>HelloCore.scala</h3>
+<pre><code class="scala">object HelloCore {
+  def main(args: Array[String]) {
+    println("Hello, core!")
+  }
+}
+</code></pre>
+<h3>HelloUtil.scala</h3>
+<pre><code class="scala">object HelloUtil {
+  def main(args: Array[String]) {
+    println("Hello, util!")
+  }
+}
+</code></pre>
+<h3>build.sbt</h3>
+<pre><code class="scala">name := "Multi Demo"
+
+version := "1.0"
+
+scalaVersion := "2.11.0"
+
+sbtVersion := "0.13.5"
+
+lazy val util = project
+
+lazy val core = project
+</code></pre>
+<p>通过<code>project</code>就可以声明一个新的子项目。在默认情况下，它会在项目根目录下寻找与变量名同名的目录，比如<code>core</code>和<code>util</code></p>
+<h2>运行</h2>
+<h3>projects</h3>
+<p>我们可以通过<code>projects</code>任务，查看该项目有多少个子项目：</p>
+<pre><code>$ sbt
+&gt; projects
+[info] In file:/sbttest/multi/
+[info]     core
+[info]   * multi
+[info]     util
+</code></pre>
+<p>这里列出了三个项目，其中有<code>*</code>的表示“当前项目”。</p>
+<h3>project</h3>
+<p>通过<code>project</code>可以查看当前哪个项目被设为“当前项目”。有一些任务默认对当前任务起作用，比如<code>run</code></p>
+<pre><code>$ sbt
+&gt; project
+[info] multi (in build file:/sbttest/multi/)
+</code></pre>
+<p>运行<code>run</code>:</p>
+<pre><code>$ sbt
+&gt; run
+[info] Running HelloMulti
+Hello, multi! 
+</code></pre>
+<h3>project newproject</h3>
+<p>通过给<code>project</code>任务一个参数，改变“当前项目”</p>
+<pre><code>$ sbt
+&gt; project
+[info] multi (in build file:/sbttest/multi/)
+&gt; project core
+[info] Set current project to core (in build file:/sbttest/multi/)
+&gt; run
+[info] Running HelloCore
+Hello, core!
+</code></pre>
+<p>可以看到已经更改了当前项目，并且在<code>run</code>的时候，将会执行另一个scala文件</p>
+<h2>指定目录</h2>
+<p>在前面，如果我们没有指明项目目录，它会默认使用与变量名同名的目录，如：</p>
+<pre><code class="scala">lazy val util = project
+</code></pre>
+<p>如果我们想使用另一个目录，如<code>my-powerful-util</code>来表示项目<code>util</code>，可以写成这样：</p>
+<pre><code class="scala">lazy val util = project in file("my-powerful-util")
+</code></pre>
+<p>这样，<code>util</code>实际指向的就是<code>my-powerful-util</code>目录了。</p>
+<h2>组合多个项目</h2>
+<p>上面定义的<code>core</code>和<code>util</code>项目之间，实际上是没有任何关系的。比如我想<code>compile</code>这两个项目，就必须分别把这两个项目设为当前项目，再依次运行<code>compile</code>。</p>
+<p>我们可以新建一个项目<code>root</code>，把它们两个组合起来：</p>
+<pre><code class="scala">lazy val root = (project in  file(".")).aggregate(util, core)
+
+lazy val util = project
+
+lazy val core = project
+</code></pre>
+<p>由于我们显式地给了根项目一个名字<code>root</code>，原来以目录名命名的<code>multi</code>就不见了：</p>
+<pre><code>$ sbt
+&gt; projects
+[info] In file:/sbttest/multi/
+[info]     core
+[info]   * root
+[info]     util
+</code></pre>
+<p>如果在<code>root</code>下执行<code>compile</code>，则会看到<code>core</code>和<code>util</code>也会跟着一起编译：</p>
+<pre><code>$ sbt
+&gt; clean
+[success] Total time: 0 s, completed 2014-9-13 16:24:06
+&gt; compile
+[info] Updating {file: /sbttest/multi/}root...
+[info] Updating {file: /sbttest/multi/}core...
+[info] Updating {file: /sbttest/multi/}util...
+[info] Resolving jline#jline;2.11 ...
+[info] Done updating.
+[info] Resolving org.scala-lang#scala-library;2.10.2 ...
+[info] Compiling 1 Scala source to  /sbttest/multi/target/scala-2.11/classes...
+[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] Resolving org.scala-lang#scala-library;2.10.2 ...
+[info] Compiling 1 Scala source to  /sbttest/multi/util/target/scala-2.10/classes...
+[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] Compiling 1 Scala source to  /sbttest/multi/core/target/scala-2.10/classes...
+</code></pre>
+<h3>顺序</h3>
+<p>会在多个子项目中并行执行，并且顺序不确定</p>
+<h3>指定不同时执行的任务</h3>
+<p>在组合项目时，我们还可以指定哪些任务不会被同时执行到子项目中：</p>
+<pre><code class="scala">lazy val root = (project in  file(".")).aggregate(util, core)
+   .settings(
+     aggregate in compile := false
+   )
+</code></pre>
+<p>这样，再执行<code>compile</code>任务，它就不会被应用到<code>core</code>和<code>util</code>上。</p>
+<pre><code>$ sbt
+&gt; clean
+[success] Total time: 0 s, completed 2014-9-13 16:27:29
+&gt; compile
+[info] Updating {file: /sbttest/multi/}root...
+[info] Resolving jline#jline;2.11 ...
+[info] Done updating.
+[info] Compiling 1 Scala source to  /sbttest/multi/target/scala-2.11/classes...
+[success] Total time: 0 s, completed 2014-9-13 16:27:32
+</code></pre>
+<p>可以看到，只有<code>root</code>项目中的scala文件被编译了。</p>
+<h2>依赖于其它项目</h2>
+<p>除了上面的组合，我们还可以让一个项目依赖于另一个项目，这样就可以在这个项目中使用另一个项目中定义的类。</p>
+<p>比如，我们让<code>core</code>依赖于<code>util</code>:</p>
+<pre><code class="scala">lazy val util = project
+
+lazy val core = project.dependsOn(util)
+</code></pre>
+<p>通过<code>.dependsOn</code>，我们让<code>core</code>项目依赖于<code>util</code>项目，这样我们就可以在<code>core</code>中使用<code>util</code>中定义的类了。</p>
+<p>如果我在<code>core</code>中执行<code>compile</code>任务，它会自动先到<code>util</code>中执行<code>compile</code>.</p>
+<h2>依赖多个项目</h2>
+<pre><code class="scala">lazy val mypro = project.dependsOn(core, util)
+</code></pre>
+]]></description>
+            </item>
+
+            <item>
+                <title>Hello world in scala</title>
+                <link>http://freewind.github.io/posts/hello-world-in-scala</link>
+                <pubDate>Sat, 13 Sep 2014 15:34:44 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2772</guid>
+                <description><![CDATA[<hr />
+<pre><code class="scala">object Hello extends App {
+  println("Hello, world!")
+}
+</code></pre>
+<p>或者</p>
+<pre><code class="scala">object Hello {
+  def main(args: Array[String]) {
+    println("Hello, world!")
+  }
+}
+</code></pre>
+]]></description>
+            </item>
+
+            <item>
+                <title>sbt中build.sbt和Build.scala配合使用</title>
+                <link>http://freewind.github.io/posts/use-build-sbt-and-build-scala-in-one-sbt-project</link>
+                <pubDate>Sat, 13 Sep 2014 14:06:36 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2771</guid>
+                <description><![CDATA[<hr />
+<p>在一个sbt项目中，可以同时存在<code>build.sbt</code>和<code>project/Build.scala</code>。通常建议尽量使用<code>build.sbt</code>来定义主要的配置，而在<code>Build.scala</code>中放置一些供同一个项目中的多个子项目共享的代码。</p>
+<p>另外:</p>
+<ol>
+<li><code>build.sbt</code>可以读取<code>Build.scala</code>中定义的key，反之不可以。</li>
+<li><code>build.sbt</code>中定义的key优先级高，它会覆盖<code>Build.scala</code>中定义的同名key</li>
+</ol>
+<h2>project/Build.scala</h2>
+<p>在项目中创建<code>project/Build.scala</code>文件，内容如下：</p>
+<pre><code class="scala">import sbt._
+import sbt.Keys._
+
+object DemoBuild extends Build {
+
+  lazy val keyFromScala = settingKey[String]("a key from Build.scala")
+
+  lazy val demo = Project(
+    id = "demo",
+    base = file("."),
+    settings = Project.defaultSettings ++ Seq(
+      name := "Demo",
+      keyFromScala := "Value from Build.scala"
+    )
+  )
+} 
+</code></pre>
+<p>可以看到它给<code>name</code>这个预定义的key赋值为<code>Demo</code>，并且还自定义了一个key <code>keyFromScala</code>，其值为<code>Value from Build.scala</code></p>
+<h3>运行</h3>
+<pre><code class="shell">$ sbt
+&gt; name
+[info] Demo
+&gt; keyFromScala
+[info] Value from Build.scala
+</code></pre>
+<p>可以看到两者都起作用了</p>
+<h2>build.sbt</h2>
+<p>然后我们在项目下创建一个<code>build.sbt</code>文件，内容如下：</p>
+<pre><code class="scala">name := "hello"
+
+version := "1.0"
+
+scalaVersion := "2.11.0"
+
+val mykey = settingKey[String]("Key from build.sbt")
+
+mykey &lt;&lt;= keyFromScala { a =&gt; a + " ==&gt; now in build.sbt" }
+</code></pre>
+<h3>运行</h3>
+<pre><code class="shell">$ sbt
+&gt; name
+[info] hello
+&gt; mykey
+[info] Value from Build.scala ==&gt; now in build.sbt
+</code></pre>
+<p>可以看到<code>name</code>的值现在已经变成<code>build.sbt</code>中定义的<code>hello</code>了，而<code>mykey</code>的值，也成功的引用了<code>Build.scala</code>中定义的<code>keyFromScala</code>的值。</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>sbt中如何创建一个最简单的Build.scala</title>
+                <link>http://freewind.github.io/posts/create-a-simplest-build-scala-in-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 13:55:30 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2770</guid>
+                <description><![CDATA[<hr />
+<p>对于简单的sbt项目，我们通常会在项目目录下创建一个<code>build.sbt</code>，使用简化的格式来配置sbt项目。</p>
+<p>对于复杂一些的项目，我们还可以通过<code>project/Buils.scala</code>来配置。在这个文件中，我们将使用真正的scala代码。</p>
+<p>这里是一个最简单的<code>Build.scala</code></p>
+<h2>project/Build.scala</h2>
+<pre><code class="scala">import sbt._
+import sbt.Keys._
+
+object DemoBuild extends Build {
+  lazy val demo = Project(
+    id = "demo",
+    base = file("."),
+    settings = Project.defaultSettings ++ Seq(
+      name := "Demo",
+      organization := "freewind",
+      version := "0.1-SNAPSHOT",
+      scalaVersion := "2.11.0"
+      // other settings here
+    )
+  )
+}
+</code></pre>
+<h2>执行</h2>
+<pre><code class="shell">$ sbt
+&gt; name
+[info] Demo
+&gt; organization
+[info] freewind
+</code></pre>
+<h2>不一定叫<code>Build.scala</code></h2>
+<p>这个文件名不一定要叫做<code>Build.scala</code>，也可以改成别的名字，比如<code>bbb.scala</code>，只要它还位于<code>project</code>目录下，执行效果是一样的。</p>
+<p>不过人们通常都使用<code>Build.scala</code>方便交流。</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>sbt的resolvers</title>
+                <link>http://freewind.github.io/posts/sbt-resolvers</link>
+                <pubDate>Sat, 13 Sep 2014 13:53:32 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2769</guid>
+                <description><![CDATA[<hr />
+<pre><code>resolvers += "Local Maven Repository" at "file://"+Path.userHome.
+   absolutePath+"/.m2/repository"
+</code></pre>
+]]></description>
+            </item>
+
+            <item>
+                <title>在sbt中声明依赖时同时下载源代码</title>
+                <link>http://freewind.github.io/posts/download-source-jar-when-declaring-dependency-in-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 13:44:57 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2768</guid>
+                <description><![CDATA[<hr />
+<p>在<code>build.sbt</code>中声明依赖的时候：</p>
+<pre><code class="scala">libraryDependencies +=
+     "org.apache.felix" % "org.apache.felix.framework" % "1.8.0"
+   withSources() withJavadoc()
+</code></pre>
+<p><code>withSources()</code>是说要下载源代码jar，<code>withJavadoc()</code>是说要下载文档jar。</p>
+<p>可根据需要选择。</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>在sbt中使用一个不在maven库中的jar作为依赖</title>
+                <link>http://freewind.github.io/posts/use-a-jar-not-inside-a-maven-repo-as-dependency-in-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 13:40:38 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2767</guid>
+                <description><![CDATA[<hr />
+<p>只上代码不解释：</p>
+<pre><code class="scala">libraryDependencies += "slinky" % "slinky" % "2.1" from "http://
+   slinky2.googlecode.com/svn/artifacts/2.1/slinky.jar"
+</code></pre>
+]]></description>
+            </item>
+
+            <item>
+                <title>如何在build.sbt中执行一段初始化代码</title>
+                <link>http://freewind.github.io/posts/run-initailization-code-in-build-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 12:42:52 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2766</guid>
+                <description><![CDATA[<hr />
+<p>在<code>build.sbt</code>中加入：</p>
+<pre><code class="scala">initialize := {
+  // your initialization code, e.g.
+  System.setProperty("database.user", "user1")
+  System.setProperty("database.schema.name", "db1")
+}
+</code></pre>
+<p>如果是追加，则使用<code>~=</code>：</p>
+<pre><code class="scala">initialize ~= { _ =&gt;
+  // your other initialization code, e.g.
+  System.setProperty("other", "values")
+}
+</code></pre>
+<p>它不会覆盖前面定义的初始化代码。</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>build.sbt中有哪些操作符可用</title>
+                <link>http://freewind.github.io/posts/the-operators-for-keys-in-build-sbt</link>
+                <pubDate>Sat, 13 Sep 2014 00:02:30 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2765</guid>
+                <description><![CDATA[<hr />
+<h2><code>:=</code></h2>
+<p>给一个Key设置为一个新值</p>
+<pre><code>name := "Hello"
+</code></pre>
+<h2><code>+=</code></h2>
+<p>给一个<code>Seq</code>类型的key追加一个值：</p>
+<pre><code class="scala">libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.3.2"
+</code></pre>
+<h2><code>++=</code></h2>
+<p>给一个<code>Seq</code>类型的key追加多个值：</p>
+<pre><code class="scala">libraryDependencies += Seq(
+    "org.apache.commons" % "commons-lang3" % "3.3.2",
+    "org.scalaz" %% "scalaz-core" % "7.1.0"
+)
+</code></pre>
+<h2><code>~=</code></h2>
+<p>在key已有的值的基础上，修改为一个新值：</p>
+<pre><code class="scala">name ~= { n =&gt; n + "!!!" }
+</code></pre>
+<h2><code>&lt;&lt;=</code></h2>
+<p>在一个key中使用另一个key的值</p>
+<h3>使用原值</h3>
+<p>假设已经定义了一个key:</p>
+<pre><code class="scala">name := "Hello" 
+</code></pre>
+<p>现在想在另一个key中直接使用它的值：</p>
+<pre><code class="scala">anotherKey &lt;&lt;= name
+</code></pre>
+<h3>使用旧值</h3>
+<p>如果想在另一个值的基础上生成一个新值，可以：</p>
+<pre><code class="scala">anotherKey &lt;&lt;= name { n =&gt; n + "!!!"}
+</code></pre>
+<h3>同时使用多个值</h3>
+<pre><code class="scala">anotherKey2 &lt;&lt;= (name, anotherKey) { (n,a) =&gt; n + a }
+</code></pre>
+<h2>more</h2>
+<p>http://stackoverflow.com/questions/25819886/where-are-examples-of-in-build-sbt</p>
+]]></description>
+            </item>
 
             <item>
                 <title>可放在项目代码中的sbt脚本</title>
@@ -488,7 +1077,7 @@ execRunner "$java_cmd" \
             </item>
 
             <item>
-                <title>快速初始化一个sbt项目的结构</title>
+                <title>用脚本快速初始化一个sbt项目的结构</title>
                 <link>http://freewind.github.io/posts/use-shell-to-create-sbt-dirs-quickly</link>
                 <pubDate>Fri, 12 Sep 2014 23:44:48 CST</pubDate>
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
@@ -499,6 +1088,7 @@ execRunner "$java_cmd" \
 <pre><code class="shell">touch build.sbt
 mkdir project
 touch project/plugins.sbt
+touch project/build.properties
 
 echo "target/" &gt; .gitignore
 
@@ -516,7 +1106,7 @@ mkdir -p src/test/scala
             </item>
 
             <item>
-                <title>使用简单的sbt配置运行scala程序</title>
+                <title>基本的build.sbt配置</title>
                 <link>http://freewind.github.io/posts/use-simple-sbt-config-to-run-scala-program</link>
                 <pubDate>Fri, 12 Sep 2014 23:14:34 CST</pubDate>
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
@@ -535,7 +1125,8 @@ sbtVersion := "0.13.5"
 
 resolvers ++= Seq(
   "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
-  "Sonatype" at "https://oss.sonatype.org/content/repositories/central",
+  "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases",
 )
 
 libraryDependencies ++= Seq(
@@ -599,6 +1190,23 @@ touch Hello.scala
 sbt run
 </code></pre>
 <p>当然前提是你已经安装了sbt。</p>
+<h2>传参数</h2>
+<p>如果<code>Hello.scala</code>需要传参数，比如：</p>
+<pre><code class="scala">object Hello {
+
+    def main(args:Array[String]) {
+       println("The args is: ")
+       println(args.mkString(" + "))
+    }
+}
+</code></pre>
+<p>可以这样给它传参数：</p>
+<pre><code>sbt run "aaa bbb"
+</code></pre>
+<p>将会得到结果：</p>
+<pre><code>The args is:
+aaa + bbb
+</code></pre>
 <p>sbt给我的感觉是非常复杂和笨重，没想到还能这么用，感觉还是很方便的。</p>
 <p>不过如果程序依赖别的库，这样就不行了，需要使用<code>build.sbt</code>来指明依赖，参看：TODO add link</p>
 ]]></description>
@@ -9420,7 +10028,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#119;&#101;&#x62;&#x2d;&#x75;&#x69;&#x2d;&#x64;&#x65;&#x76;&#x40;&#100;&#x61;&#114;&#x74;&#108;&#x61;&#x6e;&#103;&#x2e;&#x6f;&#114;&#x67;">&#119;&#101;&#98;&#45;&#117;&#105;&#x2d;&#x64;&#x65;&#118;&#64;&#100;&#97;&#x72;&#x74;&#108;&#x61;&#x6e;&#x67;&#46;&#x6f;&#114;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#58;&#x77;e&#98;&#x2d;&#x75;&#x69;&#45;&#100;&#101;&#x76;&#x40;&#x64;&#97;&#x72;&#x74;&#108;&#x61;&#110;&#x67;&#46;&#x6f;&#x72;&#103;">w&#101;&#x62;&#x2d;&#x75;&#105;&#x2d;&#x64;&#101;&#118;&#64;&#x64;&#x61;&#x72;&#116;&#x6c;&#x61;&#x6e;&#x67;&#x2e;&#111;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -33395,18 +34003,19 @@ val Map = collection.immutable.Map //引用对象
 <br  /><p></strong></p>
 <p>二、scala文件中含有中文，编译正常；而java文件中有中文，编译提示错误（注：java文件为utf8，而系统字符集为gbk）**</p>
 <p>在sbt下，输入debug命令，打开debug级的log，再次运行compile，发现它使用的scalac有utf8的选项，而javac没有，说明javac使用的是系统默认字符集。需要更改项目配置文件project/build/config.scala，在里面添加一行：</p>
-<p>override def javaCompileOptions = super.javaCompileOptions ++ javaCompileOptions(&#8220;-encoding&#8221;, &#8220;utf8&#8243;)</p>
+<p>override def javaCompileOptions = super.javaCompileOptions ++ javaCompileOptions(&ldquo;-encoding&rdquo;, &ldquo;utf8&rdquo;)</p>
 <p><strong>三、 一个web项目，代码中引用了servlet的一些类，并且还要运行sbt的jetty-run，则需要要匹配文件中增加：</strong></p>
-<p>&#8220;org.mortbay.jetty&#8221; % &#8220;jetty&#8221; % &#8220;6.1.25&#8243; % &#8220;compile->default&#8221;, // 用于编译</p>
-<p>&#8220;org.mortbay.jetty&#8221; % &#8220;jetty&#8221; % &#8220;6.1.25&#8243; % &#8220;test->default&#8221;, // 用于sbt的jetty-run</p>
+<p>&ldquo;org.mortbay.jetty&rdquo; % &ldquo;jetty&rdquo; % &ldquo;6.1.25&rdquo; % &ldquo;compile->default&rdquo;, // 用于编译</p>
+<p>&ldquo;org.mortbay.jetty&rdquo; % &ldquo;jetty&rdquo; % &ldquo;6.1.25&rdquo; % &ldquo;test->default&rdquo;, // 用于sbt的jetty-run</p>
 <p><strong>四、 lib_managed目录下的jar，有时候并不是最新的，即使使用了clean-lib和update。</strong></p>
 <p>最好的办法就是手动删除lib_managed下的所有文件，再重新update一下。然后再编译，运行。</p>
 <p><strong>4. 本地的jar放在lib目录下，可嵌套</strong></p>
 <p><strong>5. 如果在一个项目中，定义多个子项目</strong>，简单的做法可在匹配文件中：</p>
-<p>&nbsp; lazy val demo = project(&#8220;demo&#8221;, &#8220;Demo of ScalaEye&#8221;)</p>
+<p>lazy val demo = project(&ldquo;demo&rdquo;, &ldquo;Demo of ScalaEye&rdquo;)</p>
 <p>前面是目录名，后面是项目全名</p>
 <p><strong>6. 如果使用了jrebel插件，希望修改后热生效，不用重启jetty</strong>，可在config.scala中增加：</p>
-<p>&nbsp;&nbsp;&nbsp; override def scanDirectories = Nil</p>
+<pre><code>override def scanDirectories = Nil
+</code></pre>
 <p>但我在使用中，发现了一些问题（如css文件没有及时生效等问题)，觉得还不如不用，直接让jetty重新载入吧。</p>
 ]]></description>
             </item>

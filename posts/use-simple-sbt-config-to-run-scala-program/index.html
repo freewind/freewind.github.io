@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>使用简单的sbt配置运行scala程序</title>
+    <title>基本的build.sbt配置</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 <link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
@@ -10,7 +10,7 @@
 <body>
 
 <h1>
-    (2014-09-12) 使用简单的sbt配置运行scala程序
+    (2014-09-12) 基本的build.sbt配置
 </h1>
 
 <div>
@@ -32,7 +32,8 @@ sbtVersion := "0.13.5"
 
 resolvers ++= Seq(
   "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
-  "Sonatype" at "https://oss.sonatype.org/content/repositories/central",
+  "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases",
 )
 
 libraryDependencies ++= Seq(

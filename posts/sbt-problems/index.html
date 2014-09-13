@@ -26,18 +26,19 @@
 <br  /><p></strong></p>
 <p>二、scala文件中含有中文，编译正常；而java文件中有中文，编译提示错误（注：java文件为utf8，而系统字符集为gbk）**</p>
 <p>在sbt下，输入debug命令，打开debug级的log，再次运行compile，发现它使用的scalac有utf8的选项，而javac没有，说明javac使用的是系统默认字符集。需要更改项目配置文件project/build/config.scala，在里面添加一行：</p>
-<p>override def javaCompileOptions = super.javaCompileOptions ++ javaCompileOptions(&#8220;-encoding&#8221;, &#8220;utf8&#8243;)</p>
+<p>override def javaCompileOptions = super.javaCompileOptions ++ javaCompileOptions(&ldquo;-encoding&rdquo;, &ldquo;utf8&rdquo;)</p>
 <p><strong>三、 一个web项目，代码中引用了servlet的一些类，并且还要运行sbt的jetty-run，则需要要匹配文件中增加：</strong></p>
-<p>&#8220;org.mortbay.jetty&#8221; % &#8220;jetty&#8221; % &#8220;6.1.25&#8243; % &#8220;compile->default&#8221;, // 用于编译</p>
-<p>&#8220;org.mortbay.jetty&#8221; % &#8220;jetty&#8221; % &#8220;6.1.25&#8243; % &#8220;test->default&#8221;, // 用于sbt的jetty-run</p>
+<p>&ldquo;org.mortbay.jetty&rdquo; % &ldquo;jetty&rdquo; % &ldquo;6.1.25&rdquo; % &ldquo;compile->default&rdquo;, // 用于编译</p>
+<p>&ldquo;org.mortbay.jetty&rdquo; % &ldquo;jetty&rdquo; % &ldquo;6.1.25&rdquo; % &ldquo;test->default&rdquo;, // 用于sbt的jetty-run</p>
 <p><strong>四、 lib_managed目录下的jar，有时候并不是最新的，即使使用了clean-lib和update。</strong></p>
 <p>最好的办法就是手动删除lib_managed下的所有文件，再重新update一下。然后再编译，运行。</p>
 <p><strong>4. 本地的jar放在lib目录下，可嵌套</strong></p>
 <p><strong>5. 如果在一个项目中，定义多个子项目</strong>，简单的做法可在匹配文件中：</p>
-<p>&nbsp; lazy val demo = project(&#8220;demo&#8221;, &#8220;Demo of ScalaEye&#8221;)</p>
+<p>lazy val demo = project(&ldquo;demo&rdquo;, &ldquo;Demo of ScalaEye&rdquo;)</p>
 <p>前面是目录名，后面是项目全名</p>
 <p><strong>6. 如果使用了jrebel插件，希望修改后热生效，不用重启jetty</strong>，可在config.scala中增加：</p>
-<p>&nbsp;&nbsp;&nbsp; override def scanDirectories = Nil</p>
+<pre><code>override def scanDirectories = Nil
+</code></pre>
 <p>但我在使用中，发现了一些问题（如css文件没有及时生效等问题)，觉得还不如不用，直接让jetty重新载入吧。</p>
 
 </div>
