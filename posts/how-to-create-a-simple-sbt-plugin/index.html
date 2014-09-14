@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>如何创建一个简单的sbt插件</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
+<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+
+</head>
+<body>
+
+<h1>
+    (2014-09-13) 如何创建一个简单的sbt插件
+</h1>
+
+<div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<div>
+    <hr />
+<p>经过几个小时的吐血，踩了无数的坑以后，终于成功的创建一个简单的sbt插件。其功能异常简单：使用该插件后，可以执行任务<code>hello</code>，输出一段文字。</p>
+<h2>创建一个普通的sbt项目</h2>
+<p>一个sbt插件项目，首先是一个普通的sbt项目，只是有一些特殊的配置，以及需要继承一些特殊的类。</p>
+<p>可以使用下面的命令创建必要的目录和文件：</p>
+<pre><code>mkdir my-sbt-plugin
+cd my-sbt-plugin
+
+touch build.sbt
+
+mkdir project
+touch project/build.properties
+
+mkdir -p src/main/scala
+touch src/main/scala/MyPlugin.scala
+</code></pre>
+<p>然后向<code>build.sbt</code>中填入以下内容：</p>
+<pre><code class="scala">name := "my-sbt-plugin"
+
+version := "0.1.0"
+
+organization := "test20140913"
+</code></pre>
+<p>这三个配置非常重要，因为插件发布以后，其它项目使用的时候，需要这样导入它：</p>
+<pre><code class="scala">addSbtPlugin("test20140913" %% "myplugin" % "0.1.0")
+</code></pre>
+<p>这里我使用了一个奇怪的organization名字<code>test20140913</code>，是为了方便本地测试。因为在测试时，需要把这个包发布到本地，如果起一个正常的如<code>com.xxx</code>的名字，到时候不好找。可以在调好以后再改名。</p>
+<h2>指定sbt版本</h2>
+<p>在sbt 0.13.5中，sbt提供了一种新的插件机制<code>AutoPlugin</code>，可以让插件自动被sbt发现并载入，不再像以前那样必须在<code>build.sbt</code>里添加一些初始化代码。</p>
+<p>我们的插件将使用这种方式，所以我们需要指定sbt版本。</p>
+<p>可以在<code>project/build.properties</code>中填入以下内容：</p>
+<pre><code class="scala">sbt.version=0.13.5
+</code></pre>
+<p>或者，直接在<code>build.sbt</code>里添加：</p>
+<pre><code class="scala">sbtVersion := 0.13.5
+</code></pre>
+<h2>sbtPlugin := true</h2>
+<p>向<code>build.sbt</code>中添加：</p>
+<pre><code class="scala">sbtPlugin := true
+</code></pre>
+<p>它将自动将sbt作为依赖添加到我们项目中，方便我们在代码中引用sbt中定义的类。</p>
+<h2>定义MySbtPlugin，继承AutoPlugin</h2>
+<p>我们需要创建一个继承自<code>AutoPlugin</code>的<code>object</code>，名字可以随便取，这里我使用<code>MySbtPlugin</code>。它是插件的入口。</p>
+<h3>放在哪里</h3>
+<p>这个<code>MySbtPlugin.scala</code>应该放在哪里呢？</p>
+<ol>
+<li>可以直接放在项目根目录下，如果比较简单的话</li>
+<li>放在<code>src/main/scala/</code>下</li>
+</ol>
+<p>这两个位置都是sbt可以自动发现、编译和处理的。</p>
+<p>不能放在<code>project</code>下，因为这里的scala文件都是为了配置sbt的构建命令而存在的，如果放在这里，它们不会被发布出去。</p>
+<h3>package</h3>
+<p>需要放在一个package下面吗？还是可以直接弄成顶层object?</p>
+<p>这里是一个坑，因为在<code>sbt 0.13.5</code>中，必须放在某个包下面，否则会报下面的错：</p>
+<pre><code>[info] Compiling 2 Scala sources to /sbttest/my-sbt-plugin/project/target/scala-2.10/sbt-0.13/classes...
+/sbttest/my-sbt-plugin/build.sbt:0: error: '.' expected but eof found.
+import _root_.sbt.plugins.IvyPlugin, _root_.sbt.plugins.JvmPlugin, _root_.sbt.plugins.CorePlugin, _root_.sbt.plugins.JUnitXmlReportPlugin, MyPlugin
+</code></pre>
+<p>而在<code>sbt 0.13.6</code>中已经修复了。</p>
+<p>为了能在当前的主流版本<code>sbt 0.13.5</code>中正常运行，我决定还是把它放在某个包下。</p>
+<h3>包名叫什么</h3>
+<p>随便什么包名都行，也不需要为这个包名专门创建一个目录。我打算使用当前的日期<code>test20140913</code>作为包名，以后可以改个正常点的。</p>
+<h3>代码</h3>
+<p>最后，我在<code>src/main/scala/MySbtPlugin.scala</code>中，写入以下代码：</p>
+<pre><code class="scala">package test20140913
+
+import sbt._
+
+object MySbtPlugin extends AutoPlugin {
+
+}
+</code></pre>
+<p>到现在为止，一个什么也不能做的sbt plugin就完成了。前面提到的<code>hello</code>的功能呢？我们晚点在后面实现。</p>
+<p>我们可以先把它发布到本地试试，看看效果。</p>
+<h2>发布</h2>
+<p>需要使用<code>sbt</code>的<code>publicLocal</code>命令，把它发布到本地。</p>
+<h3>更新sbt到0.13.5或以上</h3>
+<p>因为我们用到的<code>AutoPlugin</code>功能比较新，所以先升级到最新的版本比较保险。</p>
+<p>首先看一下你本地安装的sbt版本是多少：</p>
+<pre><code>$ sbt --version
+sbt launcher version 0.13.5
+</code></pre>
+<p>如果低于<code>0.13.5</code>，需要升级一下。比如在mac下，可以使用<code>brew</code>:</p>
+<pre><code>brew update
+brew upgrade sbt
+</code></pre>
+<p>当前它支持的最新版本是<code>0.13.5</code>。</p>
+<p><code>sbt 0.13.6</code>也发布了，应该很快能更新。</p>
+<h3>publishLocal</h3>
+<pre><code>$ cd my-sbt-plugin
+$ sbt
+&gt; publishLocal
+</code></pre>
+<p>输出：</p>
+<pre><code>&gt; publishLocal
+[info] Packaging /sbttest/myplugin/target/scala-2.10/sbt-0.13/my-sbt-plugin-0.1.0-sources.jar ...
+[info] Done packaging.
+[info] Updating {file:/sbttest/myplugin/}myplugin...
+[info] Wrote /sbttest/myplugin/target/scala-2.10/sbt-0.13/my-sbt-plugin-0.1.0.pom
+[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] :: delivering :: test20140913#my-sbt-plugin;0.1.0 :: 0.1.0 :: release :: Sun Sep 14 12:09:04 CST 2014
+[info]  delivering ivy file to /sbttest/myplugin/target/scala-2.10/sbt-0.13/ivy-0.1.0.xml
+[info] Main Scala API documentation to /sbttest/myplugin/target/scala-2.10/sbt-0.13/api...
+[info] Compiling 1 Scala source to /sbttest/myplugin/target/scala-2.10/sbt-0.13/classes...
+model contains 4 documentable templates
+[info] Main Scala API documentation successful.
+[info] Packaging /sbttest/myplugin/target/scala-2.10/sbt-0.13/my-sbt-plugin-0.1.0-javadoc.jar ...
+[info] Packaging /sbttest/myplugin/target/scala-2.10/sbt-0.13/my-sbt-plugin-0.1.0.jar ...
+[info] Done packaging.
+[info] Done packaging.
+[info]  published my-sbt-plugin to /Users/freewind/.ivy2/local/test20140913/my-sbt-plugin/scala_2.10/sbt_0.13/0.1.0/poms/my-sbt-plugin.pom
+[info]  published my-sbt-plugin to /Users/freewind/.ivy2/local/test20140913/my-sbt-plugin/scala_2.10/sbt_0.13/0.1.0/jars/my-sbt-plugin.jar
+[info]  published my-sbt-plugin to /Users/freewind/.ivy2/local/test20140913/my-sbt-plugin/scala_2.10/sbt_0.13/0.1.0/srcs/my-sbt-plugin-sources.jar
+[info]  published my-sbt-plugin to /Users/freewind/.ivy2/local/test20140913/my-sbt-plugin/scala_2.10/sbt_0.13/0.1.0/docs/my-sbt-plugin-javadoc.jar
+[info]  published ivy to /Users/freewind/.ivy2/local/test20140913/my-sbt-plugin/scala_2.10/sbt_0.13/0.1.0/ivys/ivy.xml
+</code></pre>
+<p>可以看到，它顺利地把代码编译打包，并发布到了<code>/Users/freewind/.ivy2/local/test20140913</code>目录下。</p>
+<h3>注意清空</h3>
+<p>如果我们修改了插件代码，最好在每次调用<code>publishLocal</code>前先把<code>/Users/freewind/.ivy2/local/test20140913</code>清空一下，不然会有警告：</p>
+<pre><code>[warn] Attempting to overwrite /Users/freewind/.ivy2/local/test20140913/my-sbt-plugin/scala_2.10/sbt_0.13/0.1.0/jars/my-sbt-plugin.jar
+[warn]  This usage is deprecated and will be removed in sbt 1.0.
+</code></pre>
+<p>如果不清空，不知道会不会有奇怪的问题。</p>
+<h2>创建一个新项目使用该plugin</h2>
+<p>为了测试前面创建的plugin，我们新创建一个项目来使用它</p>
+<h3>创建新项目</h3>
+<pre><code>mkdir my-project
+cd my-project
+
+touch build.sbt
+
+mkdir project
+touch project/plugins.sbt
+</code></pre>
+<h3>project/plugins.sbt</h3>
+<p>在这个文件中引入我们的插件：</p>
+<pre><code>addSbtPlugin("test20140913" %% "my-sbt-plugin" % "0.1.0")
+</code></pre>
+<h3>build.sbt</h3>
+<p>这里随便填入一些基本内容，比如:</p>
+<pre><code>name := "test-my-sbt-plugin"
+
+version := "0.1.0"
+</code></pre>
+<p>需要注意的是，由于我们在<code>MySbtPlugin</code>中，缺少一些必要的设置，没有自动启用插件，所以我们还必须在<code>build.sbt</code>中手动启用。等我们完善<code>MySbtPlugin</code>以后，下面这句话就不需要了。</p>
+<pre><code class="scala">lazy val root = (project in file(".")).enablePlugins(test20140913.MySbtPlugin)
+</code></pre>
+<p>注意，我们在这里可以直接调用<code>test20140913.MySbtPlugin</code>，是因为该插件已经导入，里面定义的对象对于sbt配置文件来说，已经可见。</p>
+<h3>运行</h3>
+<pre><code>$ sbt
+&gt; plugins
+In file:/sbttest/my-project/
+    sbt.plugins.IvyPlugin: enabled in root
+    sbt.plugins.JvmPlugin: enabled in root
+    sbt.plugins.CorePlugin: enabled in root
+    sbt.plugins.JUnitXmlReportPlugin: root
+    test20140913.MySbtPlugin: enabled in root
+</code></pre>
+<p>前面几个是sbt内置的插件。最后一行，显示我们的插件已经启动成功了！</p>
+<p>虽然现在我们什么也做不了。</p>
+<h2>让我们的插件自动启用</h2>
+<p>前面说了，为了使用该插件，我们需要在另一个项目中做两件事：</p>
+<ol>
+<li>project/plugins.sbt中通过<code>addSbtPlugin</code>引用该插件</li>
+<li>build.sbt中通过<code>enablePlugins</code>启动该插件</li>
+</ol>
+<p>对于一个继承自<code>AutoPlugin</code>的插件来说，第二步实际上可以避免的。</p>
+<h3>在MySbtPlugin中设置trigger</h3>
+<p>在<code>MySbtPlugin.scala</code>中，添加以下代码：</p>
+<pre><code class="scala">override def trigger = allRequirements
+</code></pre>
+<p>它覆盖了父类<code>AutoPlugin</code>中的<code>trigger</code>方法。它有两个值可用：</p>
+<ol>
+<li><code>allRequirements</code>： 当该插件依赖的其它插件满足之后，会自动启用该插件</li>
+<li><code>noTrigger</code>: 必须在项目中手动启动该插件</li>
+</ol>
+<p>可见第一个值就是我们需要的。（默认是第二个值）</p>
+<h3>重新发布</h3>
+<p>先清空<code>/Users/freewind/.ivy2/local/test20140913</code>，再重新<code>publishLocal</code></p>
+<h3>删除my-project中build.sbt中的enablePlugins</h3>
+<p>删除<code>my-project/build.sbt</code>中的这句代码：</p>
+<pre><code class="scala">lazy val root = (project in file(".")).enablePlugins(test20140913.MySbtPlugin)
+</code></pre>
+<p>其实留着也行，不过没有必要了。</p>
+<h3>重新运行</h3>
+<p>为了保险起见，先删除各<code>target</code>目录。然后再<code>sbt plugins</code>，可以看到<code>MySbtPlugin</code>依然处于启用状态。</p>
+<h2>添加hello任务</h2>
+<p>在<code>MySbtPlugin</code>中添加以下代码：</p>
+<pre><code class="scala">  lazy val hello = taskKey[Unit]("hello task from my plugin")
+  val helloSetting = hello := println("Hello from my plugin")
+
+  override def projectSettings = Seq(
+    helloSetting
+  )
+</code></pre>
+<p>这里实际上有两块内容，下面依次介绍</p>
+<h3>hello task</h3>
+<p>这两行代码定义了一个简单的<code>hello</code>任务：</p>
+<pre><code class="scala">lazy val hello = taskKey[Unit]("hello task from my plugin")
+hello := println("Hello from my plugin")
+</code></pre>
+<p>前者定义了一个task key，第二行给它赋予了行为。只这么做还不够，因为它们对外不可见</p>
+<h3>添加到projectSettings中</h3>
+<pre><code class="scala">  override def projectSettings = Seq(
+    helloSetting
+  )
+</code></pre>
+<p>通过override <code>projectSettings</code>，我们把刚定义的<code>hello</code>任务加了进去，这样引用该插件的项目，会自动把这里定义的<code>projectSettings</code>信息合并过去，才能使用<code>hello</code></p>
+<h3>autoImport</h3>
+<p>还有一个名为<code>autoImport</code>的特性，我们在这里没有用上。因为它很重要，所以一起介绍。</p>
+<p>在<code>MySbtPlugin</code>的内容，我们可以定义一个名为<code>autoImport</code>的<code>object</code>（注意一定要是这个名字），它里面的代码将自动合并到目录项目中sbt配置中去。</p>
+<p>比如：</p>
+<pre><code class="scala">object MySbtPlugin extends AutoPlugin {
+  object autoImport {
+    // here is some code will be merged to target project
+    // You can consider you are writing something in `build.sbt` here
+  }
+}
+</code></pre>
+<h2>大功告成</h2>
+<p>再将<code>publishLocal</code>，然后在<code>my-project</code>中重新执行<code>sbt</code>。注意各处的清理工作。</p>
+<pre><code>$ sbt
+&gt; plugins
+In file:/sbttest/my-project/
+    sbt.plugins.IvyPlugin: enabled in my-project
+    sbt.plugins.JvmPlugin: enabled in my-project
+    sbt.plugins.CorePlugin: enabled in my-project
+    sbt.plugins.JUnitXmlReportPlugin: my-project
+    test20140913.MySbtPlugin: enabled in my-project
+&gt; hello
+Hello from my plugin
+</code></pre>
+<p>可以看到，我们成功的调用了插件中定义的任务！直至大功告成！</p>
+<h2>源代码</h2>
+<p>可参考我的源代码：https://github.com/freewind/my-sbt-plugin</p>
+
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2778';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -55,8 +55,41 @@
 <h3>同时使用多个值</h3>
 <pre><code class="scala">anotherKey2 &lt;&lt;= (name, anotherKey) { (n,a) =&gt; n + a }
 </code></pre>
+<h2>？</h2>
+<p>可用来判断一个key是否有值</p>
+<pre><code class="scala">lazy val unintiedKey = settingKey[String]("Unitialized key")
+
+lazy val someKey = settingKey[String]("Key to check the value of another")
+
+someKey := unintiedKey.?.value getOrElse "new value"
+</code></pre>
+<p>这时<code>someKey</code>的值是:</p>
+<pre><code>new value
+</code></pre>
+<p>但是如果已经给<code>unintiedKey</code>赋了值，比如：</p>
+<pre><code class="scala">unintiedKey := "Another value"
+</code></pre>
+<p>那么<code>someKey</code>的值将会是：</p>
+<pre><code>Another value
+</code></pre>
+<h2>??</h2>
+<p>跟<code>?</code>有一点相似：</p>
+<pre><code class="scala">lazy val unintiedKey = settingKey[String]("Unitialized key")
+
+lazy val someKey = settingKey[String]("Key to check the value of another")
+
+someKey := (unintiedKey ?? "uninitedKey had no value").value
+</code></pre>
+<p>则<code>someKey</code>的值是:</p>
+<pre><code>uninitedKey had no value
+</code></pre>
 <h2>more</h2>
-<p>http://stackoverflow.com/questions/25819886/where-are-examples-of-in-build-sbt</p>
+<p>从文档上看到还有这一些奇怪的操作符，不知道有什么用。</p>
+<pre><code>&lt;++=
+&lt;+=
+</code></pre>
+<p>不过万能的stackoverflow告诉我，自从sbt 0.13有了<code>.value</code>以后，就再也不需要它们了。</p>
+<p><a href="http://stackoverflow.com/questions/25819886/where-are-examples-of-in-build-sbt">http://stackoverflow.com/questions/25819886/where-are-examples-of-in-build-sbt</a></p>
 
 </div>
 
