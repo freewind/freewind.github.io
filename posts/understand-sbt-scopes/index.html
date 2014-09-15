@@ -266,6 +266,27 @@ Hello, lily
 <pre><code>[info] Global name
 </code></pre>
 <p>由此可见，我们可以把Global当作安全网，定义一些比较通用的默认值。这样，当我们执行与某个config特定的任务但又找不到相应的值的时候，还可以用global的值来顶一下。</p>
+<h2>ThisBuild</h2>
+<p>还可以指定一个key的scope是整个build，它不属于某一个特定的project。</p>
+<p>首先看一个普通的<code>build.sbt</code>：</p>
+<pre><code class="scala">lazy val root = project in file(".")
+
+lazy val util = project
+
+lazy val core = project
+
+lazy val myname = settingKey[String]("a setting of myname")
+
+myname := "Freewind"
+</code></pre>
+<p>这个<code>myname</code>的值<code>Freewind</code>属于哪个project呢？属于它所在的project，即<code>root</code>。</p>
+<p>我们在<code>core</code>和<code>util</code>这两个project是，是没法使用它的。</p>
+<p>来个<code>ThisBuild</code>:</p>
+<pre><code class="scala">myname in ThisBuild := "Freewind"
+</code></pre>
+<p>此时<code>myname</code>的值<code>Freewind</code>就不再属于某一个project了，我们可以在任何一个project中使用它</p>
+<h4>ThisBuild和global project</h4>
+<p>这两者很相似，会另写一篇文章介绍。</p>
 <h2>key的完整形式</h2>
 <p>根据前面的说明，一个key实际上要跟<code>project</code>,<code>config</code>,<code>task</code>等绑定在一起的。那么我们需要制定一个格式，即可以让我们精确指定，又可以在显示时准确显示。</p>
 <p>它的格式如下：</p>
@@ -325,7 +346,13 @@ myname in(root, myconf, hello) := "my complete name"
 <li><code>inkey</code>: 该key所属的task <code>hello</code></li>
 <li><code>key</code>: 该key的名称<code>myname</code></li>
 </ol>
-<p>这种格式在我们<code>inspect</code>某个key时非常常见，我们一定要记住。</p>
+<p>如果某一项是<code>global</code>或者没有指定，则会写成<code>*</code>，比如：</p>
+<pre><code>root/*:myname
+</code></pre>
+<p>如果是属于整个build，即<code>ThisBuild</code>，则相应处格式为：</p>
+<pre><code>{.}/*:myname
+</code></pre>
+<p>上面这些表示key和scope的格式在我们<code>inspect</code>某个key时非常常见，我们一定要记住。</p>
 <p>关于如何读懂<code>inspect</code>的结果，将会写在另一篇博客里。</p>
 
 </div>
