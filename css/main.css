@@ -4,6 +4,10 @@ html {
     line-height: 1.5;
 }
 
+body {
+    padding: 0 20px;
+}
+
 .index_articles a {
     text-decoration: none;
 }

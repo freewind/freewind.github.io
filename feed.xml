@@ -12,10 +12,49 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Mon, 15 Sep 2014 23:19:09 CST</lastBuildDate>
+        <lastBuildDate>Tue, 16 Sep 2014 13:41:00 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
+
+            <item>
+                <title>如何查看系统传给某一个进程的环境变量</title>
+                <link>http://freewind.github.io/posts/how-to-see-the-env-vars-system-passed-to-a-process</link>
+                <pubDate>Tue, 16 Sep 2014 10:39:13 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2781</guid>
+                <description><![CDATA[<hr />
+<p>我们经常需要让系统向某个java程序传入一些环境变量，如何检查它到底向该进程传递了哪些变量呢？</p>
+<h2>找到进程id</h2>
+<pre><code>$ ps -ef | grep java
+12006     1050     1  0 12:25 ?        00:00:04 java ...
+</code></pre>
+<h2>在mac上查看</h2>
+<pre><code>$ ps -wwE -p 1050
+</code></pre>
+<p>将会以一个长长的字符串打印出：</p>
+<pre><code>1050 ?? 67:40.42 /usr/bin/java -Dcom.sun.management.jmxremote -Xmx2048m -XX:MaxPermSize=512m -jar /Application
+/Jenkins/jenkins.war SHELL=/bin/bash TMPDIR=/var/folders/5f/qnywwqmx3h5fxnwlcssp2sr00000gn/T/ USER=jenkins __CF
+_USER_TEXT_ENCODING=0x1F5:0:0 JENKINS_HOME=/Users/Shared/Jenkins/Home PATH=/usr/bin:/bin:/usr/sbin:/sbin PWD=/
+CATALINA_OPTS= -Dcom.sun.management.jmxremote SHLVL=0 HOME=/Users/jenkins LOGNAME=jenkins SECURITYSESSIONID=1c2
+92 com.apple.java.jvmTask=CommandLine JAVA_ARCH=x
+</code></pre>
+<h2>在linux上查看</h2>
+<pre><code>$ xargs --null --max-args=1 &lt; /proc/1050/environ
+</code></pre>
+<p>将会以列表形式打印出：</p>
+<pre><code>SHELL=/bin/sh
+TERM=linux
+USER=me
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+PWD=/
+HOME=/home/me
+SHLVL=2
+LOGNAME=me
+</code></pre>
+]]></description>
+            </item>
 
             <item>
                 <title>sbt中读懂inspect的输出</title>
@@ -10879,7 +10918,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#119;&#101;&#98;&#45;&#117;&#x69;&#45;&#x64;&#101;&#x76;&#64;&#100;&#x61;&#114;&#116;&#x6c;&#97;&#110;&#x67;&#46;&#111;r&#103;">&#119;&#101;&#x62;&#x2d;&#x75;&#x69;&#45;&#100;&#101;&#118;&#x40;&#x64;&#x61;&#x72;&#x74;&#108;&#x61;&#x6e;&#103;&#x2e;&#111;&#114;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#119;&#x65;&#x62;&#x2d;&#x75;&#105;&#45;&#100;&#x65;&#x76;&#x40;&#100;&#97;r&#116;&#x6c;&#x61;&#110;&#103;&#x2e;&#111;&#114;&#x67;">&#119;&#101;&#98;&#45;&#x75;&#x69;&#45;&#x64;&#101;&#118;&#64;&#x64;&#97;&#114;&#x74;&#x6c;&#x61;&#x6e;&#103;&#46;&#111;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
