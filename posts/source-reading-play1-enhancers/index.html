@@ -52,7 +52,7 @@
 User user = new User();
 System.out.println(user.name);
 
-这种方式，让我们的代码看起来简单很多，因为我们不需要再定义一大堆的getter和setter，也不需要在赋值时使用user.setName(&amp;#8221;)这种复杂的方式。
+这种方式，让我们的代码看起来简单很多，因为我们不需要再定义一大堆的getter和setter，也不需要在赋值时使用user.setName(")这种复杂的方式。
 
 这样会让我们有些疑问，因为很多库如hibernate，会对getter/setter进行增强，插入它们自己的代码。而我们这样写，会不会跟他们产生矛盾？
 

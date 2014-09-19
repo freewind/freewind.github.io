@@ -40,7 +40,7 @@
 <p>package test;</p>
 <p>public class HelloWorld {</p>
 <p>public static void main(String[] args) {</p>
-<p>System.out.println(&#8220;Hello, World!&#8221;);</p>
+<p>System.out.println(&#8220;Hello, World!&ldquo;);</p>
 <p>}</p>
 <p>}<span id="more-70"></span></p>
 <p>编译后，生成一个545字节的HelloWorld.class文件。我们可以使用以下代码，读取其内容并打印出来：</p>
@@ -49,14 +49,14 @@
 <p>import org.apache.commons.io.IOUtils;</p>
 <p>public class ClassReader {</p>
 <p>public static void main(String[] args) throws Exception {</p>
-<p>String file = &#8220;E:/WORKSPACE/TestJava/bin/test/HelloWorld.class&#8221;;</p>
+<p>String file = &#8220;E:/WORKSPACE/TestJava/bin/test/HelloWorld.class&rdquo;;</p>
 <p>FileInputStream input = new FileInputStream(file);</p>
 <p>byte[] bytes = IOUtils.toByteArray(input);</p>
 <p>HexDump.dump(bytes, 0, System.out, 0);</p>
 <p>}</p>
 <p>}</p>
 <p>其中HexDump是commons-io提供的一个类，非常实用。该程序将向控制台上打印出以下内容：</p>
-<p>00000000 CA FE BA BE 00 00 00 32 00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&#8221;&hellip;&hellip;</p>
+<p>00000000 CA FE BA BE 00 00 00 32 00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&ldquo;&hellip;&hellip;</p>
 <p>00000010 74 65 73 74 2F 48 65 6C 6C 6F 57 6F 72 6C 64 07 test/HelloWorld.</p>
 <p>00000020 00 04 01 00 10 6A 61 76 61 2F 6C 61 6E 67 2F 4F &hellip;..java/lang/O</p>
 <p>00000030 62 6A 65 63 74 01 00 06 3C 69 6E 69 74 3E 01 00 bject&hellip;<init>..</p>
@@ -105,7 +105,7 @@
 <p>CA FE BA BE <strong>00 00</strong>00 32 00 22 07 00 02 01 00 0F</p>
 <p>表示子版本号，这里是0</p>
 <p><strong>读取两个字节major_version</strong></p>
-<p>CA FE BA BE 00 00 <strong>00 32</strong>00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&#8221;&hellip;&hellip;</p>
+<p>CA FE BA BE 00 00 <strong>00 32</strong>00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&ldquo;&hellip;&hellip;</p>
 <p>表示主版本号，32表示50，即jdk1.6</p>
 <p><strong>读取两个字节constant_pool_count</strong></p>
 <p>CA FE BA BE 00 00 00 32 <strong>00 22</strong>07 00 02 01 00 0F</p>

@@ -76,8 +76,8 @@
 </ol>
 <p>Lift中的css transform功能十分强大。之前见到的其它框架或者模板引擎，都是向view中提供一些数据，让view自己在合适的地方展示它们。而lift通过css transform，可以让我们对某块html以类似于jquery的方式对它们随意修改。在修改的过程中，我们即可以尽量保持html代码原来的结构和内容，也可以大刀阔斧地修改，实现出完全不同的效果。甚至还可以对产生的html代码再进行新一轮的transform。使用这种方式，我们可以实现非常强大的组件，而只需要定义一些结构不那么严格的html模板，这种能力太神奇了。</p>
 <p>但从另一个角度来看，使用css transform，当替换的东西一多时，可读性就不那么好了。我们眼前看到的html代码，很可能跟最终的html完全没有关系，而想知道最终是什么样子，我们只能一句句地读定义的css transform代码，同时在脑海中想像出每一句执行之后的效果，这是一个相当费脑子的事情。同时css transform的代码是字符串，只要里面写错一点，最终的效果可能就跟预想的不同，而要想查出问题，只能一边开着html页面，一边开着css transform页面，然后眼睛在两边一一对比，这种痛苦经历过一次就很难忘了。</p>
-<p>另外，lift似乎推荐使用id和class来定位代码，所以当你想修改一句html代码<div class=&#8221;nickname highlight&#8221;>user name</div>的时候，你会有一种不敢下手的感觉。因为nickname可能被lift用了，也可能被css用了。除非你小心地查找并确定没有混用的时候，你才敢修改它。</p>
-<p>今天看到css transform支持@name，即name属性，所以我们可以写成<div name=&#8221;nickname&#8221;>..</div>，这样可以让lift与css隔离开，修改的时候也不会迷茫。会不会好一点？</p>
+<p>另外，lift似乎推荐使用id和class来定位代码，所以当你想修改一句html代码<div class="nickname highlight">user name</div>的时候，你会有一种不敢下手的感觉。因为nickname可能被lift用了，也可能被css用了。除非你小心地查找并确定没有混用的时候，你才敢修改它。</p>
+<p>今天看到css transform支持@name，即name属性，所以我们可以写成<div name="nickname">..</div>，这样可以让lift与css隔离开，修改的时候也不会迷茫。会不会好一点？</p>
 <ol>
 <li>使用Scala语言</li>
 </ol>

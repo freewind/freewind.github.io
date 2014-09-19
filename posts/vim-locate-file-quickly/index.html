@@ -59,9 +59,9 @@
 <p>作者给FuzzyFinder里增加了一小段代码，让它也可以查找深层的文件了。虽然只改动了一点点，但是的确方便了很多。（不过实话说，跟eclipse的相比，还是差一点）</p>
 <p>在没有找到更好的插件之前，先用这个方法了。</p>
 <p>打开vim/vim72/autoload/fuf/file.vim，找到function fuf#file#onInit()，增加一行：</p>
-<p>call fuf#defineLaunchCommand('FufFileRecursive', s:MODE_NAME, '&#8221;**/&#8221;')</p>
+<p>call fuf#defineLaunchCommand('FufFileRecursive', s:MODE_NAME, '&ldquo;**/&ldquo;')</p>
 <p>然后定义快捷键，在_vimrc中增加：</p>
-<p>&#8221; FuzzyFinder - Ctrl + Shift + R</p>
+<p>" FuzzyFinder - Ctrl + Shift + R</p>
 <p>map <C-S-R> :FufFileRecursive<CR></p>
 <p>这样，在vim中，按下Ctrl+Shift+R，就可以快速查找文件了。</p>
 

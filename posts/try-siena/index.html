@@ -38,33 +38,33 @@
 <p>Siena也是一个设计非常简单的ORM，而且很有自己的特色。可以说，它是目前我看到的里面最好的那个（如果ActiveObjects不用接口和getter/setter的话，两个就并列第一了）。</p>
 <p>它的灵感来源于Google App Engine Python Datastore API，看一个查询的例子：</p>
 <p>List<Employee> someEmployees = Employee.all()</p>
-<p>.filter(&#8220;firstName&#8221;, &#8220;Mark&#8221;)</p>
-<p>.order(&#8220;-lastName&#8221;)</p>
+<p>.filter(&#8220;firstName&rdquo;, &#8220;Mark&rdquo;)</p>
+<p>.order(&#8220;-lastName&rdquo;)</p>
 <p>.fetch(10);<span id="more-98"></span></p>
 <p>相当的简洁明快。再和它的实体类的定义：</p>
-<p>@Table(&#8220;employees&#8221;)</p>
+<p>@Table(&#8220;employees&rdquo;)</p>
 <p>public class Employee extends Model {</p>
 <p>@Id(Generator.AUTO_INCREMENT)</p>
 <p>public Long id;</p>
-<p>@Column(&#8220;first_name&#8221;)</p>
+<p>@Column(&#8220;first_name&rdquo;)</p>
 <p>@Max(200) @NotNull</p>
 <p>public String firstName;</p>
-<p>@Column(&#8220;last_name&#8221;)</p>
+<p>@Column(&#8220;last_name&rdquo;)</p>
 <p>@Max(200) @NotNull</p>
 <p>public String lastName;</p>
-<p>@Column(&#8220;contact_info&#8221;)</p>
+<p>@Column(&#8220;contact_info&rdquo;)</p>
 <p>public Json contactInfo;</p>
-<p>@Column(&#8220;boss&#8221;) @Index(&#8220;boss_index&#8221;)</p>
+<p>@Column(&#8220;boss&rdquo;) @Index(&#8220;boss_index&rdquo;)</p>
 <p>public Employee boss;</p>
-<p>@Filter(&#8220;boss&#8221;)</p>
+<p>@Filter(&#8220;boss&rdquo;)</p>
 <p>public Query<Employee> employees;</p>
 <p>public static void main(String[] args) {</p>
 <p>Employee e = new Employee();</p>
-<p>e.firstName = &#8220;John&#8221;;</p>
-<p>e.lastName = &#8220;Smith&#8221;;</p>
+<p>e.firstName = &#8220;John&rdquo;;</p>
+<p>e.lastName = &#8220;Smith&rdquo;;</p>
 <p>e.contactInfo = map()</p>
-<p>.put(&#8220;email&#8221;, &#8220;<a href="mailto:john.smith@example.com">john.smith@example.com</a>&#8220;)</p>
-<p>.put(&#8220;telephone&#8221;, list(&#8220;xxx&#8221;, &#8220;yyy&#8221;));</p>
+<p>.put(&#8220;email&rdquo;, &#8220;<a href="mailto:john.smith@example.com">john.smith@example.com</a>&#8220;)</p>
+<p>.put(&#8220;telephone&rdquo;, list(&#8220;xxx&rdquo;, &#8220;yyy&rdquo;));</p>
 <p>e.insert();</p>
 <p>System.out.println(e.contactInfo);</p>
 <p>}</p>

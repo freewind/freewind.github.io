@@ -12,10 +12,311 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Fri, 19 Sep 2014 19:23:21 CST</lastBuildDate>
+        <lastBuildDate>Fri, 19 Sep 2014 23:50:00 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
+
+            <item>
+                <title>Session: 轻快的SBT</title>
+                <link>http://freewind.github.io/posts/session-agile-sbt</link>
+                <pubDate>Thu, 18 Sep 2014 12:24:47 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2782</guid>
+                <description><![CDATA[<h1>轻快的SBT</h1>
+<p>Sbt是当前Scala项目的标准构建工具</p>
+<hr />
+<h2>Session目的</h2>
+<ol>
+<li>了解sbt中让人感觉轻松愉快的部分</li>
+<li>以最小的学习成本帮助我们处理scala项目</li>
+</ol>
+<hr />
+<h2>http://scala-sbt.org</h2>
+<p><em></em> The interactive build tool <em></em></p>
+<blockquote><p>Use Scala to define your tasks. Then run them in parallel from the shell.</p>
+</blockquote>
+<hr />
+<h2>Sbt 全称</h2>
+<ol>
+<li>Simple Build Tool</li>
+<li>Scala Build Tool</li>
+<li>The interactive build tool</li>
+</ol>
+<p>or</p>
+<p><strong>S(i) B(ian) T(ai)</strong></p>
+<hr />
+<h2>Sbt的复杂来源于</h2>
+<ol>
+<li>糟糕的文档: 没有实例，抽象描述，冗长，不准确</li>
+<li>初学者不友好: 无向导工具，无模板项目</li>
+<li>混乱的版本: sbt &amp; scala</li>
+<li>各种奇怪操作符: <code>:=</code>, <code>+=</code>, <code>++=</code>, <code>&lt;&lt;=</code></li>
+<li>混乱的结构: <code>*.sbt</code>, <code>project/*.scala</code>, <code>~/.sbt/0.13/plugins/*</code></li>
+</ol>
+<hr />
+<h2>以及</h2>
+<ol>
+<li>各种编译错误: Sbt是一套类型安全的scala DSL</li>
+<li>复杂的key机制: <code>settingKey</code>, <code>taskKey</code>, <code>inputKey</code></li>
+<li>复杂的scope: <code>project scope</code>, <code>config scope</code>, <code>inkey scope</code></li>
+</ol>
+<hr />
+<h2>Sbt很努力，只是Scala世界很复杂</h2>
+<p>让我们开始SBT轻快之旅吧！</p>
+<hr />
+<ol>
+<li>一条命令SBT安装</li>
+<li>零配置运行一个Scala程序</li>
+<li>一条命令生成新项目</li>
+<li>快速添加依赖</li>
+<li>快速生成Idea项目</li>
+<li>一条命令让项目内置sbt脚本</li>
+<li>Sbt好插件</li>
+<li>轻松支持多项目</li>
+<li>轻松解读配置文件基本规则</li>
+<li>自定义极简单的任务</li>
+</ol>
+<hr />
+<h2>1. SBT安装</h2>
+<p>安装：</p>
+<pre><code>brew install sbt
+</code></pre>
+<p>升级：</p>
+<pre><code>brew update sbt
+</code></pre>
+<hr />
+<h2>2. 零配置运行一个Scala程序</h2>
+<pre><code>touch Hello.scala
+</code></pre>
+<p>内容如下：</p>
+<pre><code class="scala">object Hello extends App {
+    println("Hello, sbt!")
+}
+</code></pre>
+<hr />
+<p>运行：</p>
+<pre><code>$ sbt run
+Hello, sbt!
+</code></pre>
+<hr />
+<h2>3. 一条命令生成新项目</h2>
+<p><strong>~/.sbt/0.13/plugins/np.sbt</strong></p>
+<pre><code>resolvers += Resolver.url("sbt-np",
+  url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(
+    Resolver.ivyStylePatterns)
+
+addSbtPlugin("me.lessis" % "np" % "0.2.0")
+</code></pre>
+<p><strong>~/.sbt/0.13/np.sbt</strong></p>
+<pre><code>seq(npSettings: _*)
+</code></pre>
+<hr />
+<pre><code>$ sbt np
+</code></pre>
+<p>生成：</p>
+<pre><code>├── build.sbt
+└── src
+    ├── main
+    │   ├── resources
+    │   └── scala
+    └── test
+        ├── resources
+        └── scala
+</code></pre>
+<hr />
+<p><strong>build.sbt</strong></p>
+<pre><code>organization := "mytest"
+
+name := "default"
+
+version := "0.1-SNAPSHOT"%
+</code></pre>
+<hr />
+<h2>4. 快速添加依赖</h2>
+<p><strong>build.sbt</strong></p>
+<pre><code>resolvers ++= Seq(
+  "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
+  "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases"
+)
+
+libraryDependencies ++= Seq(
+  "org.scalaz" %% "scalaz-core" % "7.1.0",
+  "org.specs2" %% "specs2" % "2.3.13" % "test"
+)
+</code></pre>
+<hr />
+<pre><code>$ sbt
+&gt; update
+&gt; gen-idea
+</code></pre>
+<hr />
+<h2>5. 快速生成Idea项目</h2>
+<p><strong>~/.sbt/0.13/plugins/sbt-idea.sbt</strong></p>
+<pre><code>resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+
+addSbtPlugin("com.github.mpeltonen" %% "sbt-idea" % "1.7.0-SNAPSHOT")
+</code></pre>
+<hr />
+<p>不下载源代码</p>
+<pre><code>$ sbt gen-idea
+</code></pre>
+<p>下载源代码：</p>
+<pre><code>$ sbt 
+&gt; gen-idea sbt-classifiers
+</code></pre>
+<p>用idea打开：</p>
+<pre><code>idea .
+</code></pre>
+<hr />
+<h2>6. 一条命令让项目内置sbt脚本</h2>
+<pre><code>curl -s https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt &gt; sbt
+chmod 0755 sbt
+</code></pre>
+<hr />
+<pre><code>$ ./sbt
+Downloading sbt launcher for 0.13.6:
+  From  http://typesafe.artifactoryonline.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.6/sbt-launch.jar
+    To  /Users/freewind/.sbt/launchers/0.13.6/sbt-launch.jar
+Getting org.scala-sbt sbt 0.13.6 ...
+:: retrieving :: org.scala-sbt#boot-app
+    confs: [default]
+    44 artifacts copied, 0 already retrieved (13750kB/150ms)
+[info] Loading global plugins from /Users/freewind/.sbt/0.13/plugins
+[info] Updating {file:/Users/freewind/.sbt/0.13/plugins/}global-plugins...
+[info] Resolving org.scala-sbt.ivy#ivy;2.3.0-sbt-14d4d23e25f354cd296c73bfff40554[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] Set current project to default (in build file:/private/tmp/mytest/)
+</code></pre>
+<hr />
+<h2>7. Sbt好插件</h2>
+<ol>
+<li>创建新项目: https://github.com/softprops/np</li>
+<li>生成IDEA项目：https://github.com/mpeltonen/sbt-idea</li>
+<li>显示dependency: https://github.com/jrudolph/sbt-dependency-graph</li>
+<li>查看项目文件数量统计：https://github.com/orrsella/sbt-stats</li>
+</ol>
+<hr />
+<ol>
+<li>Git支持：https://github.com/sbt/sbt-git</li>
+<li>把build.sbt中信息自动生成scala: https://github.com/sbt/sbt-buildinfo</li>
+<li>打包成一个jar: https://github.com/sbt/sbt-assembly</li>
+</ol>
+<p><strong>更多：</strong></p>
+<p>http://www.scala-sbt.org/0.13/docs/Community-Plugins.html</p>
+<hr />
+<h2>8. 轻松支持多项目</h2>
+<pre><code>$ sbt
+&gt; np name:root
+&gt; np name:core dir:core
+&gt; np name:util dir:util
+</code></pre>
+<hr />
+<pre><code>├── build.sbt
+├── src
+│   ├── main
+│   │   ├── resources
+│   │   └── scala
+│   └── test
+│       ├── resources
+│       └── scala
+├── core
+│   ├── build.sbt
+│   └── src
+└── util
+    ├── build.sbt
+    └── src
+</code></pre>
+<hr />
+<h2>9. 轻松解读配置文件基本规则</h2>
+<p><strong>build.sbt</strong></p>
+<pre><code>name := "hello"
+
+version := "1.0"
+
+organization := "org.my"
+
+scalaVersion := "2.11.0"
+
+sbtVersion := "0.13.5"
+</code></pre>
+<hr />
+<h2>规则</h2>
+<ol>
+<li>以空行分隔两个定义</li>
+<li>可使用预定义的key，也可以自定义key</li>
+<li>使用<code>:=</code>给一个key赋值</li>
+<li>可以将一个key定义成一个task</li>
+<li>会将<code>*.sbt</code>, <code>*.scala</code>, <code>project/*.sbt</code>, <code>project/*.scala</code>内容合并</li>
+</ol>
+<hr />
+<h2>10. 自定义极简单的任务</h2>
+<pre><code>lazy val hello = taskKey[Unit]("An example task")
+
+hello := { println("Hello, world") }
+</code></pre>
+<hr />
+<h2>运行</h2>
+<pre><code>$ sbt
+&gt; hello
+Hello, world!
+</code></pre>
+<hr />
+<h2>任务：显示根目录下的文件</h2>
+<pre><code class="scala">lazy val showRootFiles = taskKey[Unit]("Show root files")
+
+showRootFiles := {
+  baseDirectory.value.listFiles.foreach(println)
+}
+</code></pre>
+<hr />
+<h2>运行</h2>
+<pre><code>$ sbt
+&gt; showRootFiles
+/private/tmp/mytest/.idea
+/private/tmp/mytest/.idea_modules
+/private/tmp/mytest/.sbt
+/private/tmp/mytest/build.sbt
+/private/tmp/mytest/core
+/private/tmp/mytest/project
+/private/tmp/mytest/src
+/private/tmp/mytest/target
+/private/tmp/mytest/util
+</code></pre>
+<hr />
+<h2>更多文档（后面的简单，从最后一个看起）</h2>
+<ol>
+<li><a href="http://freewind.github.io/posts/understand-the-output-of-sbt-inspect">sbt中读懂inspect的输出</a></li>
+<li><a href="http://freewind.github.io/posts/understand-sbt-scopes">理解sbt的scopes</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-create-a-simple-sbt-plugin">如何创建一个简单的sbt插件</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-invoke-objects-defined-in-scala-files-in-build-sbt">如何在build.sbt中调用其它scala中定义的值</a></li>
+<li><a href="http://freewind.github.io/posts/define-multi-sub-projects-in-build-scala-in-sbt">在Build.scala中定义多个子项目</a></li>
+<li><a href="http://freewind.github.io/posts/build-sbt-in-sub-projects-will-be-combined-to-root-project-in-sbt">sbt多个子项目的build.sbt是如何处理的</a></li>
+<li><a href="http://freewind.github.io/posts/config-in-build-sbt-for-multi-sub-projects">使用build.sbt配置多个子项目</a></li>
+</ol>
+<hr />
+<ol>
+<li><a href="http://freewind.github.io/posts/use-build-sbt-and-build-scala-in-one-sbt-project">sbt中build.sbt和Build.scala配合使用</a></li>
+<li><a href="http://freewind.github.io/posts/create-a-simplest-build-scala-in-sbt">sbt中如何创建一个最简单的Build.scala</a></li>
+<li><a href="http://freewind.github.io/posts/download-source-jar-when-declaring-dependency-in-sbt">在sbt中声明依赖时同时下载源代码</a></li>
+<li><a href="http://freewind.github.io/posts/use-a-jar-not-inside-a-maven-repo-as-dependency-in-sbt">在sbt中使用一个不在maven库中的jar作为依赖</a></li>
+<li><a href="http://freewind.github.io/posts/run-initailization-code-in-build-sbt">如何在build.sbt中执行一段初始化代码</a></li>
+<li><a href="http://freewind.github.io/posts/the-operators-for-keys-in-build-sbt">build.sbt中有哪些操作符可用</a></li>
+<li><a href="http://freewind.github.io/posts/the-sbt-shell-for-project">可放在项目代码中的sbt脚本</a></li>
+<li><a href="http://freewind.github.io/posts/use-shell-to-create-sbt-dirs-quickly">用脚本快速初始化一个sbt项目的结构</a></li>
+</ol>
+<hr />
+<ol>
+<li><a href="http://freewind.github.io/posts/use-simple-sbt-config-to-run-scala-program">基本的build.sbt配置</a></li>
+<li><a href="http://freewind.github.io/posts/use-sbt-to-run-scala-program-directly">无需任何配置，直接使用sbt运行一个scala文件</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-use-value-of-another-key-in-sbt-task">如何在定义sbt任务时，使用其它key的值</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-define-a-simplest-hello-word-task-in-sbt">如何在sbt中定义一个最简单的hello world任务</a></li>
+<li><a href="http://freewind.github.io/posts/sbt-keys">sbt预定义的keys</a></li>
+</ol>
+]]></description>
+            </item>
 
             <item>
                 <title>如何查看系统传给某一个进程的环境变量</title>
@@ -1486,7 +1787,15 @@ someKey := (unintiedKey ?? "uninitedKey had no value").value
                 <description><![CDATA[<p>我们经常需要在项目中放置一个sbt脚本，以执行各种sbt命令，让每个人都使用相同的环境。</p>
 <p>在Linux/Mac下可在项目目录下创建文件sbt，填充为以下内容（这里使用了当前最新的sbt 0.13.5，你可以根据情况调整）。</p>
 <p>项目来源：https://github.com/paulp/sbt-extras</p>
-<h2>sbt</h2>
+<h2>一条命令搞定</h2>
+<pre><code>curl -s https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt &gt; sbt &amp;&amp; chmod 0755 sbt
+</code></pre>
+<p>运行：</p>
+<pre><code>$ ./sbt
+</code></pre>
+<p>它会自动下载所需要的sbt及相关库，非常方便。</p>
+<h2>看一下内容</h2>
+<p><strong>sbt</strong></p>
 <pre><code class="shell">#!/usr/bin/env bash
 #
 # A more capable sbt runner, coincidentally also called sbt.
@@ -1936,13 +2245,6 @@ execRunner "$java_cmd" \
   "${sbt_commands[@]}" \
   "${residual_args[@]}"
 </code></pre>
-<h2>设置执行权限</h2>
-<pre><code>chmod +x sbt
-</code></pre>
-<h2>运行</h2>
-<pre><code>$ sbt
-</code></pre>
-<p>它会自动下载所需要的sbt及相关库，非常方便。</p>
 ]]></description>
             </item>
 
@@ -1953,24 +2255,23 @@ execRunner "$java_cmd" \
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">2763</guid>
-                <description><![CDATA[<p>sbt没有提供初始化一个项目目录结构的功能，我也没有找到相应的插件，不过使用下面的脚本也基本上能满足需求。</p>
+                <description><![CDATA[<p>sbt没有提供初始化一个项目目录结构的功能，我们有两种办法快速创建</p>
+<h2>纯脚本</h2>
 <pre><code class="shell">touch build.sbt
 mkdir project
-touch project/plugins.sbt
-touch project/build.properties
-
-echo "target/" &gt; .gitignore
-
-mkdir -p src/main/resources
-mkdir -p src/main/scala
+touch project/{plugins.sbt,build.properties}
+mkdir -p src/{main,test}/{resources,scala}
 touch src/main/scala/Hello.scala
-mkdir -p src/test/resources
-mkdir -p src/test/scala
+echo "target/" &gt; .gitignore
 </code></pre>
+<p>结构出来了，如果需要一些常用的内容，可以从下面文章中拷贝一些东西过来。</p>
 <p>然后再从下面的文章中，把<code>build.sbt</code>和<code>plugins.sbt</code>的基本内容拷贝过来就行了。</p>
 <p>TODO: Add link 2762</p>
 <p>如果需要放置供该项目使用的sbt脚本，可参看：</p>
 <p>TODO: add link 2764</p>
+<h2>插件</h2>
+<p>https://github.com/softprops/np</p>
+<p>一个功能非常简单的插件，可用于创建目录结构，可以设置为全局插件，方便使用。</p>
 ]]></description>
             </item>
 
@@ -3644,21 +3945,21 @@ Nil.::(1)
 <ol>
 <li>Java中已经提供了一套强大的集合库，比如List/Set/Map等等</li>
 <li>JVM上一些其它的面向对象语言，如Groovy/Xtend/Kotlin等等，都是直接或间接使用Java的集合类库</li>
-<li>但Scala不但不用，还自己重写了两套：一套&#8221;不可变&#8221;的，一套&#8221;可变的&#8221;</li>
+<li>但Scala不但不用，还自己重写了两套：一套"不可变"的，一套"可变的&rdquo;</li>
 </ol>
 <hr />
-<h3>Scala为什么要&#8221;重新造轮子&#8221;？</h3>
+<h3>Scala为什么要"重新造轮子&rdquo;？</h3>
 <hr />
 <h2>三个原因</h2>
 <ol>
 <li><p>Scala最初希望同时运行于Java和.net平台，所以需要尽量保持独立，不要与Java的类库产生太多交集</p>
 </li>
-<li><p>Scala是一门面向对象+函数式的语言，而函数式语言追求&#8221;不可变的数据类型&#8221;，而Java的类库都是可变的</p>
+<li><p>Scala是一门面向对象+函数式的语言，而函数式语言追求"不可变的数据类型&rdquo;，而Java的类库都是可变的</p>
 </li>
 <li><p>Scala的类型系统与Java不同</p>
 <ol>
 <li>Java中的集合类不支持协变/逆变</li>
-<li>Scala早期甚至不支持Java的泛型（后来加入&#8221;存在类型&#8221;）</li>
+<li>Scala早期甚至不支持Java的泛型（后来加入"存在类型&rdquo;）</li>
 </ol>
 </li>
 </ol>
@@ -3676,7 +3977,7 @@ Nil.::(1)
 <li>可变： <code>scala.collection.mutable</code></li>
 </ol>
 <hr />
-<h2>我们通常都应该使用&#8221;<strong>不可变</strong>&#8220;的</h2>
+<h2>我们通常都应该使用&rdquo;<strong>不可变</strong>&#8220;的</h2>
 <hr />
 <h2>scala._</h2>
 <pre><code>package object scala {
@@ -3824,7 +4125,7 @@ List(1,2,3).foldRight(10)(_+_) // 16
 
 * * *
 
-### val list = List(&amp;#8220;aaa&amp;#8221;,&amp;#8221;bbb&amp;#8221;,&amp;#8221;ccc&amp;#8221;)
+### val list = List(&amp;#8220;aaa","bbb","ccc")
 
 * * *
 
@@ -3973,7 +4274,7 @@ val list2:List[Int] = Nil
 <hr />
 <p>通常<strong>不可变</strong>的泛型，都可以声明为协变的（这里不讲）</p>
 <hr />
-<h2>问题4: 向&#8221;大List&#8221;尾巴多次添加数据效率很低</h2>
+<h2>问题4: 向"大List"尾巴多次添加数据效率很低</h2>
 <hr />
 <p>需求：</p>
 <p>val bigList = (1 to 1000000).toList</p>
@@ -4699,7 +5000,7 @@ case _ =&gt;
 <p>在开发时会追求开发速度，在估点时会下意识做最乐观估计。“这个功能我已经做过类似的，比较熟悉”，“已经有相关代码可以重用”，但大多数情况下，实际情况总会超过预期，成为常态。</p>
 <p>最后会拆卡，会说“超出scope”，但是人们都会接受这些理由。</p>
 <p>问进度时会问：这张卡你还要多久可以完成，人们通常会乐观估计，告诉一个理想化的最短时间</p>
-<p>看板上有很多queue，一般以&#8221;ready for XXX&#8221;为标题。这些queue会把看板分成独立的几个部分，每个角色只会关注其中的一块。</p>
+<p>看板上有很多queue，一般以"ready for XXX"为标题。这些queue会把看板分成独立的几个部分，每个角色只会关注其中的一块。</p>
 <p>比如dev会关注：Ready for dev -> in dev -> ready for QA</p>
 <p>QA会关注：Ready for QA -> in QA -> ready for Prod</p>
 <p>当dev完成后，就会把卡移到ready for QA，而不管里面积了多少张卡，因为不是自己的事。可能dev会很快，但是QA不够，积了很多卡，最后还是无法交付，有大量的WIP(work in progress)</p>
@@ -4717,7 +5018,7 @@ case _ =&gt;
 <p>问进度时会问：在这个cycletime期限，这个功能你能不能完成。只回答能或者不能，而不关心几天</p>
 <p>如果没有完成，则是一个“事故”。人们通常会悲观估计。</p>
 <p>人们关心的是一个需求从提出（答应客户要做），直到上线的总体时间。</p>
-<p>看板上没有Queue，每个列上有一个&#8221;MAX&#8221;值，说这一列最多有几个。超过数量后，人们就要尽快解决。</p>
+<p>看板上没有Queue，每个列上有一个"MAX"值，说这一列最多有几个。超过数量后，人们就要尽快解决。</p>
 <p>那么什么是拉式系统呢？它是实时响应实际需求或消耗来执行，一种由下游向上游提出实际生产需求的生产控制方法。分散控制，灵活和容易的适应性，关注物料的流动。</p>
 <p>市场要多少，生产多少，没有库存（WIP），没有浪费</p>
 <p>当某列阻塞时，两种做法：</p>
@@ -5042,13 +5343,13 @@ addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
 <ol>
 <li><p>Arduino介绍</p>
 </li>
-<li><p>Go through &#8220;Getting Started&#8221;</p>
+<li><p>Go through &#8220;Getting Started&rdquo;</p>
 </li>
 <li><p>Digital I/O, Analog I/O介绍</p>
 </li>
-<li><p>Practice: &#8220;Digital I/O&#8221;控制，通过按钮控制LED灯的亮和灭</p>
+<li><p>Practice: &#8220;Digital I/O"控制，通过按钮控制LED灯的亮和灭</p>
 </li>
-<li><p>Practice: &#8220;Analog I/O&#8221;控制，通过电位器控制LED灯的亮度</p>
+<li><p>Practice: &#8220;Analog I/O"控制，通过电位器控制LED灯的亮度</p>
 </li>
 <li><p>串口通讯UART</p>
 </li>
@@ -6260,7 +6561,7 @@ class PubLanguage extends Language("pub")
 object PubLanguage extends PubLanguage
 
 
-代码很简单，只需要继承`Language`即可。其中的&amp;#8221;pub&amp;#8221;参数是照着教程来的，不太清楚到底有什么用（Idea源代码还没下完，看不了），不过写成&amp;#8221;pub&amp;#8221;应该没什么问题。
+代码很简单，只需要继承`Language`即可。其中的"pub"参数是照着教程来的，不太清楚到底有什么用（Idea源代码还没下完，看不了），不过写成"pub"应该没什么问题。
 
 `object PubLanguage`是一个单例，方便在其它类中直接引用。
 
@@ -6366,7 +6667,7 @@ http://github.com/freewind/PubEditor
 <h2>安装Scala插件</h2>
 <p>首先需要到<a href="http://www.scala-lang.org">http://www.scala-lang.org</a>上下载最新的scala安装包，并在IDEA中安装好Scala插件</p>
 <h2>在项目中添加Scala支持</h2>
-<p>首先打开项目属性，在&#8221;Facets&#8221;中添加Scala：</p>
+<p>首先打开项目属性，在"Facets"中添加Scala：</p>
 <p><img src="/user_images/2554-0.png" alt="QQ20140406-25" /></p>
 <p>然后在Modules中选择PubEditor的module，添加上scala-library相应的依赖：</p>
 <p><img src="/user_images/2554-1.png" alt="QQ20140406-26" /></p>
@@ -6467,7 +6768,7 @@ Idea中默认自带了`Plugin DevKit`插件，但是没有开启。首先我们�
 
 ## 创建项目
 
-打开Idea，创建一个新项目，记得要选左右要选&amp;#8221;Intellij Plugin Platform&amp;#8221;类型：
+打开Idea，创建一个新项目，记得要选左右要选"Intellij Plugin Platform"类型：
 
 ![QQ20140406-4](/user_images/2503-2.png)
 
@@ -6483,7 +6784,7 @@ Idea中默认自带了`Plugin DevKit`插件，但是没有开启。首先我们�
 
 ## 添加Action
 
-我打算实现一个功能：在菜单最后添加一项&amp;#8221;Pub Editor&amp;#8221;，里面有一个&amp;#8221;Hello world&amp;#8221;的子菜单。当点击它以后，会提示一个对话框，让我们输入自己的名字，然后弹出欢迎的信息。
+我打算实现一个功能：在菜单最后添加一项"Pub Editor"，里面有一个"Hello world"的子菜单。当点击它以后，会提示一个对话框，让我们输入自己的名字，然后弹出欢迎的信息。
 
 首先我们需要实现一个`AnAction`的子类，用于实现触发之后的功能：
 
@@ -6546,11 +6847,11 @@ public class HelloWorldAction extends AnAction {
 
 ## 运行插件
 
-不能直接运行，而要先建立一个配置。打开菜单&amp;#8221;Run&amp;#8221;-&gt;&amp;#8221;Configuration&amp;#8221;，点击左上角的&amp;#8221;+&amp;#8221;新建，选择&amp;#8221;Plugin&amp;#8221;，如图：
+不能直接运行，而要先建立一个配置。打开菜单"Run"-&gt;"Configuration"，点击左上角的"+"新建，选择"Plugin"，如图：
 
 ![QQ20140406-18](/user_images/2503-6.png)
 
-基本上不用改什么，我就只把名字设成了&amp;#8221;Pub Editor&amp;#8221;，然后点击&amp;#8221;OK&amp;#8221;.
+基本上不用改什么，我就只把名字设成了"Pub Editor"，然后点击"OK".
 
 这时右上角运行栏处会变成这样：
 
@@ -6562,11 +6863,11 @@ public class HelloWorldAction extends AnAction {
 
 ![QQ20140406-20](/user_images/2503-8.png)
 
-由于我们添加的菜单只能在进入项目后才能看到，所以我们需要随便创建一个项目。我建的是&amp;#8221;TestPlugin&amp;#8221;，进去后可以看到上面的菜单最右边多了一项&amp;#8221;Pub Editor&amp;#8221;，以及&amp;#8221;Hello world&amp;#8221;:
+由于我们添加的菜单只能在进入项目后才能看到，所以我们需要随便创建一个项目。我建的是"TestPlugin"，进去后可以看到上面的菜单最右边多了一项"Pub Editor"，以及"Hello world":
 
 ![QQ20140406-22](/user_images/2503-9.png)
 
-点击&amp;#8221;Hello world&amp;#8221;后，会弹出对话框，提示我们输入名称：
+点击"Hello world"后，会弹出对话框，提示我们输入名称：
 
 ![QQ20140406-23](/user_images/2503-10.png)
 
@@ -6580,7 +6881,7 @@ public class HelloWorldAction extends AnAction {
 
 http://github.com/freewind/PubEditor
 </code></pre>
-<p>本文所对应的tag为&#8221;1_hello_world&#8221;，你可以checkout它运行一下看结果。</p>
+<p>本文所对应的tag为"1_hello_world&rdquo;，你可以checkout它运行一下看结果。</p>
 ]]></description>
             </item>
 
@@ -6837,7 +7138,7 @@ set req.backend = someServer;
 <p>举个例子，假如游戏想到的数字是<code>1234</code>，你输入<code>5678</code>，则它输出<code>0A0B</code>。你输入<code>1678</code>，它输出<code>1A0B</code>；你输入<code>1243</code>，它输出<code>2A2B</code>。</p>
 <p>我们要做的，就是要实现这样的一个函数，当然要通过先写测试把它驱动出来。</p>
 <p>这个题目的难点在于：测试写多少才够？</p>
-<p>如果把所有情况都考虑到，那么四个不重复的数字，就有几千种情况，而用户的输入也有几千种情况，全测显然是不可能的事情。后来我们缩小范围，打算按&#8221;?A?B&#8221;来分，比如&#8221;0A0B&#8221;,&#8221;0A1B&#8221;,直到&#8221;4A0B&#8221;，每种想一个测试数据，但这样的话也会有十几个。伙伴说只测边界情况，比如&#8221;0A0B&#8221;,&#8221;4A0B&#8221;,&#8221;0A4B&#8221;，其它的再挑几个。但由于我们都拿不定主意，我索性把问题放大，如何便给每一种情况写了一个测试。代码如下：</p>
+<p>如果把所有情况都考虑到，那么四个不重复的数字，就有几千种情况，而用户的输入也有几千种情况，全测显然是不可能的事情。后来我们缩小范围，打算按&rdquo;?A?B"来分，比如"0A0B&rdquo;,&ldquo;0A1B&rdquo;,直到"4A0B&rdquo;，每种想一个测试数据，但这样的话也会有十几个。伙伴说只测边界情况，比如"0A0B&rdquo;,&ldquo;4A0B&rdquo;,&ldquo;0A4B&rdquo;，其它的再挑几个。但由于我们都拿不定主意，我索性把问题放大，如何便给每一种情况写了一个测试。代码如下：</p>
 <pre><code>public class ComparatorTest {
     private Comparator comparator;
     @Before
@@ -6961,7 +7262,7 @@ public class ComparatorTest {
 <p>关于测试名，仝老师还补充了一个问题：我们是否应该在测试名上使用如0A0B这样的词。</p>
 <p>仝老师说这个问题曾经在thoughtworks有过激烈的争论，因为有人认为应该尽量使用人们都能理解的词，而不是一些不懂业务就看不懂的词。比如这个0A0B，我们应该写成“既没有位置和内容都正确的数字，也没有内容正确和位置不对的数字”。</p>
 <p>后来争论的结果是，我们可以把它当作“业务名词”，是可以写在方法名里的。因为作为参与到项目中的开发者，是必须要理解这些业务名词的意思的。既然大家都理解，为什么还要想办法把它变成另一种说法呢？</p>
-<p>至少我觉得&#8221;0A0B&#8221;既好写又好懂，如果真要写成“既没有位置和内容都正确的数字，也没有内容正确和位置不对的数字”，我不知道自己能不能用英文写的出来，也不知道别人能不能看得懂。</p>
+<p>至少我觉得"0A0B"既好写又好懂，如果真要写成“既没有位置和内容都正确的数字，也没有内容正确和位置不对的数字”，我不知道自己能不能用英文写的出来，也不知道别人能不能看得懂。</p>
 <h3>我们可不可以准备好大量数据，在一个测试里循环验证</h3>
 <p>我们其实还想出了一种方案：把数据都放在一个二维数组里，只需要写一个测试，循环一下就可以了。代码如下：</p>
 <p>public class ComparatorTest {</p>
@@ -7085,7 +7386,7 @@ public Game(NumberGenerator numberGenerator, Comparator comparator) {
 <h3>mock的分类</h3>
 <p>仝老师还讲了一个mock的分类，大意是，曾经mock分为了很多种，比如stub, fake, dummy等等，它们之间都有微小的差别，我们在调用时还需要指定用哪个。但是后来人们发现，分这么细没用，没人关注你是什么，只关注你的行为，所以到最后都统一成mock了。</p>
 <h2>第四题</h2>
-<p>再对题目进行扩展：现在要增加人机交互界面了，用命令行即可。机器会提示让用户输入一个数字，它检查并给出结果。如果输入的数字跟它预想的一样，直接输出&#8221;Congratulations!&#8221;，否则输出&#8221;?A?B&#8221;这样的提示。如果失败6次，则输出&#8221;You lose&#8221;并退出。</p>
+<p>再对题目进行扩展：现在要增加人机交互界面了，用命令行即可。机器会提示让用户输入一个数字，它检查并给出结果。如果输入的数字跟它预想的一样，直接输出"Congratulations!&ldquo;，否则输出&rdquo;?A?B"这样的提示。如果失败6次，则输出"You lose"并退出。</p>
 <p>这道题的重点在于：我们如何写一个集成测试来测试这些功能？</p>
 <p>由于当时我们在跟仝老师讨论一些类设计的问题，没做这个题，只能把一些讨论过的问题记录下来：</p>
 <h3>集成测试中怎么测随机数</h3>
@@ -7128,7 +7429,7 @@ public Game(NumberGenerator numberGenerator, Comparator comparator) {
 </li>
 </ul>
 <p>要以看到，作者创建的<code>RandomNumberGenerator</code>类还可以接受一个<code>Random</code>对象，这样通过对<code>Random</code>进行mock来测试随机数的生成，是一个很好的思路。</p>
-<p>这是一个&#8221;Real integrate test&#8221;。因为我们可以把<code>Random</code>类看作是一个外部单元，而我们的代码又是一个单元。通过指定<code>Random</code>的行为来对两个单元进行集成测试。</p>
+<p>这是一个"Real integrate test&rdquo;。因为我们可以把<code>Random</code>类看作是一个外部单元，而我们的代码又是一个单元。通过指定<code>Random</code>的行为来对两个单元进行集成测试。</p>
 <h3>测随机数连续5次不同</h3>
 <p>看到有一个测试，测连续5次生成的随机数不相同：</p>
 <p>https://github.com/lxdcn/ut-workshop/blob/master/java/maven/src/test/java/RandomNumberGeneratorTest.java#L57</p>
@@ -9573,7 +9874,7 @@ gradle eclipse
 <p>Jetty</p>
 <p>如果我们的项目是一个web项目，可以添加jetty插件，快速启动一个jetty server。</p>
 <p>只需要在build.gradle中添加：</p>
-<p>apply plugin: &#8220;jetty&#8221;</p>
+<p>apply plugin: &#8220;jetty&rdquo;</p>
 <p>即可。然后执行：</p>
 <p>gradle jettyRun</p>
 <p>就会启动server，默认以8080端口提供http服务。</p>
@@ -10260,7 +10561,7 @@ public class UserStorageService {
 <li><code>UserStorageService</code>还有机会继承其它的类，因为在java中，只能单继承</li>
 </ol>
 <p>但是这两个好处是不是决定性的因素呢？如果<code>StorageService</code>中还提供了一些其它需要被调用的方法，或者我们根本不需要让<code>UserService</code>继承别的类，是不是这两种方案的优劣对比就不明显了呢？</p>
-<p>老猪说，判断是否该使用继承要看&#8221;is_a&#8221;，是否该用组合要看&#8221;has_a&#8221;。但<code>UserStorageService</code>与<code>StorageService</code>的关系，是&#8221;is_a&#8221;，还是&#8221;has_a&#8221;呢？我好像也没法确定。</p>
+<p>老猪说，判断是否该使用继承要看"is_a&rdquo;，是否该用组合要看"has_a&rdquo;。但<code>UserStorageService</code>与<code>StorageService</code>的关系，是"is_a&rdquo;，还是"has_a"呢？我好像也没法确定。</p>
 <p>（注：本文本来有两个例子，由于内容增加，并且例子的差别较大，我分成了两篇）</p>
 <h2>一些评论</h2>
 <h3>杨博</h3>
@@ -10804,7 +11105,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x77;&#101;&#98;&#x2d;&#x75;&#x69;&#45;&#x64;&#x65;&#x76;&#64;&#x64;&#x61;&#x72;&#116;&#108;&#x61;&#110;&#x67;&#46;&#x6f;r&#x67;">&#x77;&#x65;b&#x2d;u&#105;&#x2d;&#x64;e&#x76;&#x40;&#x64;&#97;&#114;&#x74;&#108;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;w&#101;&#x62;&#x2d;&#117;&#105;&#x2d;&#100;e&#x76;&#x40;&#x64;&#x61;&#x72;&#x74;l&#97;&#x6e;&#x67;&#x2e;&#111;&#x72;&#103;">&#119;&#x65;&#98;&#x2d;&#117;&#105;&#x2d;&#x64;&#x65;&#x76;&#64;&#100;&#97;&#x72;&#116;l&#97;&#x6e;&#x67;&#x2e;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -10917,8 +11218,8 @@ dart2js index.html_bootstrap.dart -oindex.html_bootstrap.dart.js
 </ol>
 <p>Lift中的css transform功能十分强大。之前见到的其它框架或者模板引擎，都是向view中提供一些数据，让view自己在合适的地方展示它们。而lift通过css transform，可以让我们对某块html以类似于jquery的方式对它们随意修改。在修改的过程中，我们即可以尽量保持html代码原来的结构和内容，也可以大刀阔斧地修改，实现出完全不同的效果。甚至还可以对产生的html代码再进行新一轮的transform。使用这种方式，我们可以实现非常强大的组件，而只需要定义一些结构不那么严格的html模板，这种能力太神奇了。</p>
 <p>但从另一个角度来看，使用css transform，当替换的东西一多时，可读性就不那么好了。我们眼前看到的html代码，很可能跟最终的html完全没有关系，而想知道最终是什么样子，我们只能一句句地读定义的css transform代码，同时在脑海中想像出每一句执行之后的效果，这是一个相当费脑子的事情。同时css transform的代码是字符串，只要里面写错一点，最终的效果可能就跟预想的不同，而要想查出问题，只能一边开着html页面，一边开着css transform页面，然后眼睛在两边一一对比，这种痛苦经历过一次就很难忘了。</p>
-<p>另外，lift似乎推荐使用id和class来定位代码，所以当你想修改一句html代码<div class=&#8221;nickname highlight&#8221;>user name</div>的时候，你会有一种不敢下手的感觉。因为nickname可能被lift用了，也可能被css用了。除非你小心地查找并确定没有混用的时候，你才敢修改它。</p>
-<p>今天看到css transform支持@name，即name属性，所以我们可以写成<div name=&#8221;nickname&#8221;>..</div>，这样可以让lift与css隔离开，修改的时候也不会迷茫。会不会好一点？</p>
+<p>另外，lift似乎推荐使用id和class来定位代码，所以当你想修改一句html代码<div class="nickname highlight">user name</div>的时候，你会有一种不敢下手的感觉。因为nickname可能被lift用了，也可能被css用了。除非你小心地查找并确定没有混用的时候，你才敢修改它。</p>
+<p>今天看到css transform支持@name，即name属性，所以我们可以写成<div name="nickname">..</div>，这样可以让lift与css隔离开，修改的时候也不会迷茫。会不会好一点？</p>
 <ol>
 <li>使用Scala语言</li>
 </ol>
@@ -11067,13 +11368,13 @@ user.setName(_)将会展开为 (x) =&gt; user.setName(x)
 <ol>
 <li>基本可用，语法层面已经比较完善，已经看到有一些小项目（比如Idea插件acejump）使用它来开发</li>
 <li>它的IDE支持不错，高亮、格式化、错误检查、基本的代码重构等，都已经提供，而且用起来不卡（不像scala或者xtend)</li>
-<li>Kotlin的卖点之一&ldquo;生成javascript&#8221;目前看来基本可用，但与第三方框架集成，还有一些不方便的地方，主要是不能生成JSON形式的代码，以及不能方便的传递函数</li>
+<li>Kotlin的卖点之一&ldquo;生成javascript"目前看来基本可用，但与第三方框架集成，还有一些不方便的地方，主要是不能生成JSON形式的代码，以及不能方便的传递函数</li>
 <li>生态环境还没有建立起来，比如web框架、一些成熟java项目的wrapper、比较有亮点的库等，目前都没有看到</li>
 <li>在语法层面上，还缺少一些比较有用的特性，比如传递函数值、macro、或者xml/json的语法支持（这个是我希望直接支持的）</li>
 </ol>
 <p>不过正因为Kotlin的低调，以及IDEA这些年在高端开发人员中的流行，让我相信它比较靠谱。毕竟它的出发点&rdquo;代替java作为IDEA的开发语言&ldquo;，我想对于Jetbrains公司来说，应该是一个强需求。而Kotlin在开发过程中的稳扎稳打，小步前进，让我们用起来会比较放心：提供了的都是好用的。</p>
-<p>这里正好跟它的竞争对手xtend进行一下对比, Xtend跟Kotlin的行事作风正好相反。当它推出2.x（还是3.x?)版的时候，让人误以为已经是一个成熟可用的版本了，哪知一试，到处都bug。编辑器支持不好，连基本的格式化功能都没提供，随便写几行代码就能遇到一堆bug，IDE还经常卡死。开发团队似乎只顾着开发&rdquo;next big feature&#8221;，我当时提的一些很基本的issue，值到一年以后才部分修复。所以我现在基本上不再相信Xtend，虽然更喜欢它&ldquo;生成java源代码而非字节码&rdquo;这个功能。</p>
-<p>言归正传，说一下Kotlin的&ldquo;生成Javascript&#8221;代码的功能。作为Kotlin的卖点之一，现在只能说基本可用。它目前基本上还没有考虑与第三方js库的集成，而主要是&rdquo;把Kotlin中定义的类及代码以自己特定的方式转为Javascript，并可以操作DOM及Canvas&rdquo;。希望以后Kotlin提供某种方式，能够更好的支持那些比较成熟的前端框架，让代码写起来更加自然。</p>
+<p>这里正好跟它的竞争对手xtend进行一下对比, Xtend跟Kotlin的行事作风正好相反。当它推出2.x（还是3.x?)版的时候，让人误以为已经是一个成熟可用的版本了，哪知一试，到处都bug。编辑器支持不好，连基本的格式化功能都没提供，随便写几行代码就能遇到一堆bug，IDE还经常卡死。开发团队似乎只顾着开发&rdquo;next big feature&rdquo;，我当时提的一些很基本的issue，值到一年以后才部分修复。所以我现在基本上不再相信Xtend，虽然更喜欢它&ldquo;生成java源代码而非字节码&rdquo;这个功能。</p>
+<p>言归正传，说一下Kotlin的&ldquo;生成Javascript"代码的功能。作为Kotlin的卖点之一，现在只能说基本可用。它目前基本上还没有考虑与第三方js库的集成，而主要是&rdquo;把Kotlin中定义的类及代码以自己特定的方式转为Javascript，并可以操作DOM及Canvas&rdquo;。希望以后Kotlin提供某种方式，能够更好的支持那些比较成熟的前端框架，让代码写起来更加自然。</p>
 <p>Kotlin代码转js代码，目前采用的是code to code，所以我们没有办法使用Java或Kotlin自己提供的jar库。如果我们想使用第三方Kotlin库，需要把它们的源代码加到自己的项目中，并且要保证它没有用到不支持的包和类，且能正确编译。这种方式比我预期中的弱很多，但在实际使用中，发现并不成问题，因为已经有很多好用的js库可供使用，我们只需要定义一些native接口就可以直接用了，还是非常方便的。</p>
 <p>下面是一些与js库集成时必须注意的问题：</p>
 <ol>
@@ -11743,7 +12044,7 @@ public class CCC {
 User user = new User();
 System.out.println(user.name);
 
-这种方式，让我们的代码看起来简单很多，因为我们不需要再定义一大堆的getter和setter，也不需要在赋值时使用user.setName(&amp;#8221;)这种复杂的方式。
+这种方式，让我们的代码看起来简单很多，因为我们不需要再定义一大堆的getter和setter，也不需要在赋值时使用user.setName(")这种复杂的方式。
 
 这样会让我们有些疑问，因为很多库如hibernate，会对getter/setter进行增强，插入它们自己的代码。而我们这样写，会不会跟他们产生矛盾？
 
@@ -12753,7 +13054,7 @@ npm的配置放在名为package.json的文件中，它的内容是一个json字�
 }
 
 
-其中name和version是基本信息，必须有。不过通常比较关注的是&amp;#8221;dependencies&amp;#8221;信息，它表示所在项目依赖于哪些第三方库。
+其中name和version是基本信息，必须有。不过通常比较关注的是"dependencies"信息，它表示所在项目依赖于哪些第三方库。
 
 首先要讲一下npm是怎么来查找路径的。当我们执行一个npm命令时，比如`npm install typescript`，它会首先查当前目录下有没有`package.json`文件或者`node_modules`目录。如果有则直接使用，没有的话，到上级目录中寻找，直到根目录。这个特性可以让我们在一个项目的子目录中执行npm命令，十分方便。如果所有的上级目录都没有的话，则会以当前目录作为工作目录，创建一个node_modules目录，把安装的库放到里面。
 
@@ -13114,7 +13415,7 @@ module.exports = function (grunt) {
 };
 
 
-注意其中的&amp;#8221;typescript&amp;#8221;和&amp;#8221;concat&amp;#8221;任务，可以设置多个子任务，名字（这里是WindBase和wind_articles）任选，只要里面的配置写对即可。你可以参照它修改。
+注意其中的"typescript"和"concat"任务，可以设置多个子任务，名字（这里是WindBase和wind_articles）任选，只要里面的配置写对即可。你可以参照它修改。
 
 另外把package.json也贴上：
 
@@ -13264,7 +13565,7 @@ private typedef Scope = {
     hello: Void -&gt; Void
 }
 
-这种结构对于javascript来说是比较理想的，因为完全没有&amp;#8221;this&amp;#8221;的调用，减少了混乱，所有的操作都是针对scope来进行的。但是放在haxe中，则有点不太好：
+这种结构对于javascript来说是比较理想的，因为完全没有"this"的调用，减少了混乱，所有的操作都是针对scope来进行的。但是放在haxe中，则有点不太好：
 </code></pre>
 <ol>
 <li><p>我们需要在最下面另外定义一个typedef，指明Scope所有可用的字段和方法，以获得静态类型的检验和编辑器的提示</p>
@@ -13288,9 +13589,9 @@ function hello() {
 <p>}</p>
 </li>
 </ol>
-<p>你可以看到，以前放在scope上的东西，现在全都以field/method的方式放在class中了。我们对数据进行操作时，都指向this，而不必像之前那样，必须写个&#8221;scope.xxx&#8221;。</p>
+<p>你可以看到，以前放在scope上的东西，现在全都以field/method的方式放在class中了。我们对数据进行操作时，都指向this，而不必像之前那样，必须写个"scope.xxx&rdquo;。</p>
 <p>最大的好处是结构更加清楚了，当代码多起来的时候，感觉就会比较明显了。</p>
-<p>这段代码实现了接口&#8221;AngularSupport&#8221;，所有实现该接口的类，都会在编译期得到增强。</p>
+<p>这段代码实现了接口"AngularSupport&rdquo;，所有实现该接口的类，都会在编译期得到增强。</p>
 <p>由于它使用了最新的macro api，所以在稳定版的2.10 haxe上用不了，需要下载最新的nightly-build。对于遗留项目有风险，所以最好等到3.0正式发布后再在生产项目中使用，尝鲜的话无所谓了。</p>
 <p>具体要求和用法，请参考项目的README：<a href="https://github.com/freewind/HaxeAngularSupport">https://github.com/freewind/HaxeAngularSupport</a></p>
 <p>(更多理论上的内容，可参考：http://blog.csdn.net/rocks_lee/article/details/9129319)</p>
@@ -26205,11 +26506,11 @@ margin: 0em;
 <p>json现在越来越重要，一方面它是服务器端与浏览器端的首选通信格式，另一方面，如果使用如mongodb或couchdb这样的nosql数据库，更离不开json。如果能在语言层面支持json，会大大简化我们的工具。而dart不仅支持，还远超预期。</p>
 <p>首先dart中的各种内置类型，可以很好的表示json格式：</p>
 <blockquote><p>{</p>
-<p>&#8220;language&#8221;: &#8220;dart&#8221;,                                 // String</p>
-<p>&#8220;targets&#8221;: [&ldquo;dartium&rdquo;,&ldquo;javascript&rdquo;],                // List</p>
-<p>&#8220;website&#8221;: {                                        // Map</p>
-<p>&#8220;homepage&#8221;: &#8220;www.dartlang.org&#8221;,</p>
-<p>&#8220;api&#8221;: &#8220;api.dartlang.org&#8221;</p>
+<p>&#8220;language&rdquo;: &#8220;dart&rdquo;,                                 // String</p>
+<p>&#8220;targets&rdquo;: [&ldquo;dartium&rdquo;,&ldquo;javascript&rdquo;],                // List</p>
+<p>&#8220;website&rdquo;: {                                        // Map</p>
+<p>&#8220;homepage&rdquo;: &#8220;www.dartlang.org&rdquo;,</p>
+<p>&#8220;api&rdquo;: &#8220;api.dartlang.org&rdquo;</p>
 <p>}</p>
 <p>}</p>
 </blockquote>
@@ -27761,7 +28062,7 @@ conn.db.dropDatabase(function(err){
 <br  />alert(arguments.length + &ldquo;: " + join(arguments));
 <br  />}
 <br  />function join(args) {
-<br  />var s = &#8221;;
+<br  />var s = &ldquo;;
 <br  />for(i in args) {
 <br  />s += args[i] + ' ';
 <br  />}
@@ -29289,7 +29590,7 @@ println(result + " ==&gt; Cost: " + (end - start) / 1000000.0 + " ms")
 <br  /><script type="text /javascript">
 <br  />var baseTag = document.getElementsByTagName('base')[0];
 <br  />var loc = location.href;
-<br  />if(baseTag.href.indexOf('../')==0 &amp;&amp; loc.replace('://', &#8221;).indexOf('/')>0) {</p>
+<br  />if(baseTag.href.indexOf('../')==0 &amp;&amp; loc.replace('://', &ldquo;).indexOf('/')>0) {</p>
 <pre><code>baseTag.href= location.href.replace(/[/][^/]*$/,"/") + baseTag.href;      
 </code></pre>
 <p>}
@@ -31299,7 +31600,7 @@ private static void testListSize(List&lt;Long&gt; list) {
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">482</guid>
-                <description><![CDATA[<p>刚才在群里介绍了JVisualVM的功能，sungod问：&#8221;它能检测到线程死锁吗&#8221;</p>
+                <description><![CDATA[<p>刚才在群里介绍了JVisualVM的功能，sungod问：&ldquo;它能检测到线程死锁吗&rdquo;</p>
 <p>所以我专门写了一个简单的死锁程序，看看jvisualvm的反应。</p>
 <p>这里我考虑的是一种简单的死锁情况：线程1拿到了a的锁，准备拿b的锁；同时线程2拿到了b的锁，准备拿a的锁。两个线程谁也不让，把自己的既得利益抓得紧紧的，然后会抢对方的。于是僵持不下，程序就死锁了。</p>
 <p><span id="more-482"></span>
@@ -31358,11 +31659,11 @@ public class DeadLock {
 <p>然后就卡住了。</p>
 <p>现在打开jvisualvm，如下图：</p>
 <p><img src="/user_images/482-0.png" alt="" /></p>
-<p>可以看到，Thread1与2两个都处于&#8221;监视&#8221;状态。</p>
-<p>点一下&#8221;线程Dump&#8221;按钮，找到Thread1与2的信息，如下：</p>
+<p>可以看到，Thread1与2两个都处于"监视"状态。</p>
+<p>点一下"线程Dump"按钮，找到Thread1与2的信息，如下：</p>
 <p><img src="/user_images/482-1.png" alt="" /></p>
-<p>从中可以得知，两者都处于&#8221;Blocked&#8221;状态，并且知道阻塞在哪一行代码上。</p>
-<p>我在jvisualvm中没有找到明确说明两者都处于&#8221;死锁&#8221;状态的文字，但从线程图中，我们可以很轻易地找到这种可疑特征：两个（或多个）线程长期同时处于&#8221;监视（被阻塞）&#8221;状态，说明它们很可能出现了死锁，应当认真分析其代码。</p>
+<p>从中可以得知，两者都处于"Blocked"状态，并且知道阻塞在哪一行代码上。</p>
+<p>我在jvisualvm中没有找到明确说明两者都处于"死锁"状态的文字，但从线程图中，我们可以很轻易地找到这种可疑特征：两个（或多个）线程长期同时处于"监视（被阻塞）&ldquo;状态，说明它们很可能出现了死锁，应当认真分析其代码。</p>
 <p>我想这对于我们检查死锁也是非常有帮助的。</p>
 ]]></description>
             </item>
@@ -31386,7 +31687,7 @@ public class DeadLock {
 <p><span id="more-479"></span>
 <br  /><p><strong>2。运行一个Java程序IncTestN，jvisualvm会自动找到它</strong></p>
 <p><img src="/user_images/479-1.png" alt="" /></p>
-<p><strong>3.右键点击它，&#8221;打开&#8221;</strong></p>
+<p><strong>3.右键点击它，&ldquo;打开&rdquo;</strong></p>
 <p><img src="/user_images/479-2.png" alt="" /></p>
 <p>可以看到它有很多标签页，可以让我们监测程序的各种数据。默认没有这么多，我其实安装了一些jvisualvm的插件。</p>
 <p><strong>4。查看jvm参数及系统属性</strong></p>
@@ -31406,41 +31707,41 @@ public class DeadLock {
 <li>等待(Wait)：手动调用了wait方法，或者某些IO操作，在阻塞中等待数据。</li>
 <li>监视(Monitor)：这里就是我想找的问题了。它表示线程想执行一段synchronized中的代码，但是发现已经有其它线程正在执行，自己被block了，只能无奈地等待。如果这种状态多，说明程序需要好好优化。</li>
 </ol>
-<p>从上面的这个图可以看到，下面多个线程都处于&#8221;监视&#8221;状态。多个线程都卡在了独木桥的一头过不去，干不了活干着急呢。</p>
+<p>从上面的这个图可以看到，下面多个线程都处于"监视"状态。多个线程都卡在了独木桥的一头过不去，干不了活干着急呢。</p>
 <p>当然这个程序是我专门设计成这样的，存在着严重的性能问题，需要好好优化。</p>
 <p><strong>7。查看各线程的统计数据</strong></p>
-<p>如果我们需要一些统计数据，比如某个线程总共运行了多少时间，&#8221;运行&#8221;状态有多久（或百分比），休眠、等待、监视有多久，则需要用到&#8221;表&#8221;这一页。</p>
+<p>如果我们需要一些统计数据，比如某个线程总共运行了多少时间，&ldquo;运行"状态有多久（或百分比），休眠、等待、监视有多久，则需要用到"表"这一页。</p>
 <p><img src="/user_images/479-7.png" alt="" /></p>
 <p>从中可以看到这个悲催的程序，几分所有的时间都用在了synchronized的阻塞上了。只有百分之零点几的时间在运行中，效率可真低啊。</p>
 <p>还可以使用图表方式来看这些数据，得到更直观的体验：</p>
 <p><img src="/user_images/479-8.png" alt="" /></p>
 <p><strong>8。查看各方法的运行时间</strong></p>
-<p>想不想程序中到底是哪些方法一直在运行？可使用&#8221;抽样器&#8221;功能：</p>
+<p>想不想程序中到底是哪些方法一直在运行？可使用"抽样器"功能：</p>
 <p><img src="/user_images/479-9.png" alt="" /></p>
-<p>我们需要先点击上面的&#8221;CPU&#8221;按钮，它才会开始统计，下面的数据会慢慢多起来。从上图可以看出，程序一直在运行SynIncer.inc()方法，它占用了所有方法执行总时间的99.8%。如果我们想提高程序性能，则需要重点优化它，让它运行得更快。</p>
-<p>还想知道方法被调用的次数？使用&#8221;Profiler&#8221;页中的功能：</p>
+<p>我们需要先点击上面的"CPU"按钮，它才会开始统计，下面的数据会慢慢多起来。从上图可以看出，程序一直在运行SynIncer.inc()方法，它占用了所有方法执行总时间的99.8%。如果我们想提高程序性能，则需要重点优化它，让它运行得更快。</p>
+<p>还想知道方法被调用的次数？使用"Profiler"页中的功能：</p>
 <p><img src="/user_images/479-10.png" alt="" /></p>
-<p>它与抽样器很像，但是最后多了一个&#8221;调用次数&#8221;。</p>
+<p>它与抽样器很像，但是最后多了一个"调用次数&rdquo;。</p>
 <p><strong>9。查看哪些对象占用了最多的内存</strong></p>
-<p>当出现了内存不足的错误时，想不想知道到底是哪些对象把内存都占用了？这时需要使用&#8221;抽样器&#8221;的&#8221;内存&#8221;检测功能：</p>
+<p>当出现了内存不足的错误时，想不想知道到底是哪些对象把内存都占用了？这时需要使用"抽样器"的"内存"检测功能：</p>
 <p><img src="/user_images/479-11.png" alt="" /></p>
 <p>从表中可以看出当前最多的是哪些对象，它们有多少个，用了多少个字节。</p>
 <p><strong>10。安装更多插件</strong></p>
-<p>jvisualvm还在线提供了很多插件，提供了更多的功能。我们可以通过&#8221;工具&#8221;->&#8221;插件&#8221;，找到并安装它们。推荐全装，比如我就安装了全部（当前有16个）：</p>
+<p>jvisualvm还在线提供了很多插件，提供了更多的功能。我们可以通过"工具&rdquo;->&ldquo;插件&rdquo;，找到并安装它们。推荐全装，比如我就安装了全部（当前有16个）：</p>
 <p><img src="/user_images/479-12.png" alt="" /></p>
 <p>安装重启后，再找到某个程序节点，就会发现有更多的标签页可用。</p>
 <p><strong>11。查看MBeans</strong></p>
 <p>MBeans可以将程序中的某些信息暴露给外部。有一些库在设计时，就考虑到了这一点。如果我们不满足于前面那些基础信息，可以在这里看看。</p>
 <p><img src="/user_images/479-13.png" alt="" /></p>
-<p>由于当前程序没有使用到提供MBeans信息的库，所以看不到什么多少有用的信息。如果你使用了某些数据库连接池（提供了MBeans功能的），可以在这里看到池里的一些信息，还可以通过&#8221;Operations&#8221;标签页，对程序数据进行一些修改。</p>
+<p>由于当前程序没有使用到提供MBeans信息的库，所以看不到什么多少有用的信息。如果你使用了某些数据库连接池（提供了MBeans功能的），可以在这里看到池里的一些信息，还可以通过"Operations"标签页，对程序数据进行一些修改。</p>
 <p><strong>12。查看gc情况</strong></p>
-<p>垃圾回收是我们不能忽略的一个地方。我们可以通过&#8221;Visual GC&#8221;页，查看到非常详细的垃圾回收情况。</p>
+<p>垃圾回收是我们不能忽略的一个地方。我们可以通过"Visual GC"页，查看到非常详细的垃圾回收情况。</p>
 <p><img src="/user_images/479-14.png" alt="" /></p>
 <p>可以说，这个功能提供的信息真是非常地详尽，连两个小Eden的情况也实时地表现出来了。不过要看懂这些数据，还是需要先到网上看看讲解Java垃圾回收的文章，了解其内部原理才行。</p>
 <p><strong>13。更多更详细的监测内容</strong></p>
 <p>Tracer页提供了更多的监测内容</p>
 <p><img src="/user_images/479-15.png" alt="" /></p>
-<p>可以看到程序中遍布探针，让我们实时了解到各处的运行情况。先选中感兴趣的内容，然后点击&#8221;Start&#8221;按钮即可。</p>
+<p>可以看到程序中遍布探针，让我们实时了解到各处的运行情况。先选中感兴趣的内容，然后点击"Start"按钮即可。</p>
 <p><img src="/user_images/479-16.png" alt="" /></p>
 <p>这一块比较专业，普通开发人员可能都不知道这些数据到底有什么用。但专业人士可能会觉得会很需要它们。</p>
 <p>JvisualVM的大部分功能都已经演示完了，我想它的功能的确很强大，在我们平时的开发中会非常有用。</p>
@@ -31454,7 +31755,7 @@ public class DeadLock {
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">460</guid>
-                <description><![CDATA[<p>在之前的文章&#8221;<a href="http://freewind.me/blog/20111022/458.html">原子操作与synchronized在多线程环境下的性能差别</a>&#8220;中，发现在2个线程与50个线程情况下，程序运行时间并没有什么差别。我考虑的原因是，因为我synchronized中的代码都很简单，所以线程间竞争的机会并不大。</p>
+                <description><![CDATA[<p>在之前的文章&rdquo;<a href="http://freewind.me/blog/20111022/458.html">原子操作与synchronized在多线程环境下的性能差别</a>&#8220;中，发现在2个线程与50个线程情况下，程序运行时间并没有什么差别。我考虑的原因是，因为我synchronized中的代码都很简单，所以线程间竞争的机会并不大。</p>
 <p>林教主让我在代码中增加一些sleep(1)，来模拟IO操作。于是有了以下的代码：</p>
 <p><span id="more-460"></span></p>
 <pre><code>public class IncTestN {
@@ -31697,7 +31998,7 @@ public class DeadLock {
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">457</guid>
-                <description><![CDATA[<p>synchronized因为多了一个&#8221;加锁&#8221;的过程，会占用额外的时间，导致性能较差。特别是在多线程环境中，如果存在竞争，性能会更差一些。但是到底有多差呢？</p>
+                <description><![CDATA[<p>synchronized因为多了一个"加锁"的过程，会占用额外的时间，导致性能较差。特别是在多线程环境中，如果存在竞争，性能会更差一些。但是到底有多差呢？</p>
 <p>我们先看看在单线程环境中，它的表现如何。这里使用了三种不同的方式：</p>
 <ul>
 <li>普通变量加1</li>
@@ -31825,7 +32126,7 @@ System.out.println("Your code cost: " + (end-start) + "ms");
 <p>于是我到万能的stackoverflow上问了几个问题，得到了几位大仙们的回答，终于明白了这个问题：</p>
 <ul>
 <li>System.currentTimeMillis得到的是一个绝对时间值，你可以从该值推算当前的时间，也可以从当前的时间推算出这个值。因为有这样的要求，所以它的精度不高，特别在windows xp上，只有15ms的精度。</li>
-<li>而System.nanoTime是专门用来算间隔的。它的值跟当前时间没有任何关系，它甚至可以是负值。也正因为没有这个限制，使用它反而可以得到精度很高的间隔值。比如在windows xp sp3上，这个时间是可信的。也就是说，例子中的&#8221;763ns&#8221;说明那段代码的确运行了大约700ns。</li>
+<li>而System.nanoTime是专门用来算间隔的。它的值跟当前时间没有任何关系，它甚至可以是负值。也正因为没有这个限制，使用它反而可以得到精度很高的间隔值。比如在windows xp sp3上，这个时间是可信的。也就是说，例子中的"763ns"说明那段代码的确运行了大约700ns。</li>
 </ul>
 <p>明白这一点之后，我得出了以下结论：</p>
 <p>如果我们要测量的代码运行时间很长，或者不是特别关心其准确度，可以使用System.currentTimeMillis图个方便。但如果要求很精确或者间隔很小，最好使用nanoTime。</p>
@@ -31925,7 +32226,7 @@ System.out.println("Your code cost: " + (end-start) + "ms");
 <ol>
 <li>每一个任务都有一个deadline。如果在预定时间内没有完成，可以设置超时处理方案。</li>
 <li>线程分为22级，并且保证其优先级。对于实时程序来说这一点无比重要。因为windows等系统，并没有提供线程的优化级支持，所以real-time java只能运行在某些操作系统之上。</li>
-<li>低优先级的gc。Java中的gc是一旦运行，则&#8221;stop the world&#8221;，其时间长短还不确定，这对于实时系统来说是难以接受的。而real-time中，gc的行为将被改变</li>
+<li>低优先级的gc。Java中的gc是一旦运行，则"stop the world&rdquo;，其时间长短还不确定，这对于实时系统来说是难以接受的。而real-time中，gc的行为将被改变</li>
 <li>自管理的内存。对于这种内存，需要用户自己手动创建及销毁，gc不参与。这一点很像c/c++等自动管理内存的语言。对于某些常驻内存的数据，放在这种内存中可以提高性能</li>
 <li>其它</li>
 </ol>
@@ -31962,7 +32263,7 @@ System.out.println("Your code cost: " + (end-start) + "ms");
 </blockquote>
 <p>所以我们也不能使用cygwin来安装node了。（我是在花了一下午的时间在cygwin下安装好node后，才发现这一点的）</p>
 <p><span id="more-452"></span>
-<br  /><p>按&#8221;Installing on Windows&#8221;所写的方式，直接下载node.exe(v0.5.8)，再设置一堆属性，再安装npm，成功。</p>
+<br  /><p>按"Installing on Windows"所写的方式，直接下载node.exe(v0.5.8)，再设置一堆属性，再安装npm，成功。</p>
 <p>再安装coffeescript，使用<code>npm install -g coffee-script</code>安装成功，但是！</p>
 <p>输入coffee后，进行coffee的提示符后，随便输入点什么，比如<code>a=2</code>，出错：</p>
 <blockquote><p>coffee> a=2
@@ -31979,7 +32280,7 @@ System.out.println("Your code cost: " + (end-start) + "ms");
 <br  />at onKeypress (tty_win32.js:46:10)</p>
 </blockquote>
 <p>经过一番排查，发现原因是nodejs在0.5.x中改变了一些内部实现，导致coffeescript的代码无法正常工作。可是想安装nodejs 0.4.x的话，又没法安装npm。这可真让人纠结啊。</p>
-<p>最终，还是按照<a href="https://github.com/alisey/CoffeeScript-Compiler-for-Windows">https://github.com/alisey/CoffeeScript-Compiler-for-Windows</a>所讲的&#8221;Better solution&#8221;，直接使用node.exe与coffee结合在一起，去掉npm。再次进入coffee环境，输入代码，一切正常。</p>
+<p>最终，还是按照<a href="https://github.com/alisey/CoffeeScript-Compiler-for-Windows">https://github.com/alisey/CoffeeScript-Compiler-for-Windows</a>所讲的"Better solution&rdquo;，直接使用node.exe与coffee结合在一起，去掉npm。再次进入coffee环境，输入代码，一切正常。</p>
 ]]></description>
             </item>
 
@@ -32044,7 +32345,7 @@ which :  no node in (/sbin:/bin:/usr/sbin:/usr/bin)
 <p>有很多精彩的例子，看完后就会让人爱上写coffeescript。</p>
 <p>这里讲的是如果在windows下安装coffeescript。</p>
 <p><span id="more-450"></span>
-<br  /><p>coffeescript依赖于node.js，它们这一套&#8221;运行于服务器端的js&#8221;通常在linux下会用的比较爽，因为node有一个叫npm(Node Package Manager)的工具，可以让我们方便地安装各种js库。比如在linux下安装coffee，只需要：</p>
+<br  /><p>coffeescript依赖于node.js，它们这一套"运行于服务器端的js"通常在linux下会用的比较爽，因为node有一个叫npm(Node Package Manager)的工具，可以让我们方便地安装各种js库。比如在linux下安装coffee，只需要：</p>
 <pre><code>npm install -g coffee-script
 </code></pre>
 <p>可惜的是，这个npm工具不支持windows，如果想在windows下使用，还得安装一些如cygwin这样的linux模拟环境。如果我们仅仅想使用coffee的话，安装这个就太麻烦了。</p>
@@ -32729,8 +33030,8 @@ App.writerView = new App.Views.WriterView(el: $(".writer")).render()
                 <description><![CDATA[<p>我是在看play自带的聊天室程序<code>samples-and-tests/chat</code>时，发现了这个类<code>libs.F</code>。</p>
 <p>Play的文档，在基本使用方面写得很详细，但对于较高级的功能，如这个<code>libs.F</code>类，则非常简略。没有注释，没有文档，只有源代码，以及网上一篇辛苦找到的很简单的介绍性文章：<a href="https://github.com/playframework/play/blob/master/documentation/manual/libs.textile">https://github.com/playframework/play/blob/master/documentation/manual/libs.textile</a></p>
 <p>这里做一下简单介绍（边学边写）：</p>
-<p>libs.F中的F，指的是&#8221;Functional programming&#8221;，即函数式编程。Java本身不支持函数式编程，所以play试图将一些函数式编程中的概念移植到java中，所以有了这个libs.F。</p>
-<p>libs.F虽然是一个类，但play其实是把它当成&#8221;包&#8221;在用。因为里面定义了很多public类和方法，放在一起显得更加方便。</p>
+<p>libs.F中的F，指的是"Functional programming&rdquo;，即函数式编程。Java本身不支持函数式编程，所以play试图将一些函数式编程中的概念移植到java中，所以有了这个libs.F。</p>
+<p>libs.F虽然是一个类，但play其实是把它当成"包"在用。因为里面定义了很多public类和方法，放在一起显得更加方便。</p>
 <p><span id="more-438"></span>
 <br  /><p>基本结构如下：</p>
 <p><img src="/user_images/438-0.png" alt="" /></p>
@@ -32786,7 +33087,7 @@ for (String s : String.and(StartsWith("command:")).match(obj)) {
 }
 </code></pre>
 <p><strong>5. 并发及异步</strong></p>
-<p>上面的这些，在代码中使用的并不多。它们的存在，实际上是为了这里的&#8221;并发及异步&#8221;。</p>
+<p>上面的这些，在代码中使用的并不多。它们的存在，实际上是为了这里的"并发及异步&rdquo;。</p>
 <p>这里涉及到的类（和接口）有：Action, Action0, Promise, Timeout, EventStream, IndexedEvent, ArchivedEventStream</p>
 <p>这一块的代码写得极其复杂且完全没有注释，看起来让人头大无比。这也能代表play整体的代码风格：代码写得比较玄，有些地方逻辑复杂，很难理解。</p>
 <p>在play的google group中有一段描述，也许可以帮助理解：</p>
@@ -32898,7 +33199,7 @@ for (String s : String.and(StartsWith("command:")).match(obj)) {
 <p><strong>二、Xmind</strong></p>
 <p>网站：<a href="http://xmind.net">http://xmind.net</a>，据说是国人开发的（网站却没有中文版）。</p>
 <p><a href="/user_images/381-3.png"><img src="/user_images/381-3.png" alt="image" title="image" /></a></p>
-<p>基于swt，功能比较强大，可以在官网上注册后，将设计的脑图上传。它有一个特色的“自由主题”功能，不像freemind只能有一个root。有一点不方便的是，移动画布时，只能通过移动两边的滚动条。另外，我注册帐号始终不成功，一点&#8221;Sign up&#8221;，它就自动刷新了。</p>
+<p>基于swt，功能比较强大，可以在官网上注册后，将设计的脑图上传。它有一个特色的“自由主题”功能，不像freemind只能有一个root。有一点不方便的是，移动画布时，只能通过移动两边的滚动条。另外，我注册帐号始终不成功，一点"Sign up&rdquo;，它就自动刷新了。</p>
 <p>中文字体有点虚虚的，看起来不舒服。</p>
 <p><strong>三、PersonalBrain</strong></p>
 <p>网站：<a href="http://www.thebrain.com/products/personalbrain">http://www.thebrain.com/products/personalbrain</a></p>
@@ -32908,7 +33209,7 @@ for (String s : String.and(StartsWith("command:")).match(obj)) {
 <p>网站：<a href="http://mind42.com">http://mind42.com</a></p>
 <p>这实际上是一个免费的在线服务，直接在浏览器中画图。</p>
 <p><a href="/user_images/381-7.png"><img src="/user_images/381-7.png" alt="image" title="image" /></a></p>
-<p>操作时主要用鼠标来选择动作，不像前面那些软件用键盘那么顺手。可以方便地把脑图发布出来，得到一个url，供其它人查看。还支持多人协作，点击顶部中间的“invite and manage collaborators&#8221; 即可。</p>
+<p>操作时主要用鼠标来选择动作，不像前面那些软件用键盘那么顺手。可以方便地把脑图发布出来，得到一个url，供其它人查看。还支持多人协作，点击顶部中间的“invite and manage collaborators&rdquo; 即可。</p>
 <p><strong>我的选择</strong></p>
 <p>个人比较喜欢freemind和mind42。</p>
 ]]></description>
@@ -32921,7 +33222,7 @@ for (String s : String.and(StartsWith("command:")).match(obj)) {
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">351</guid>
-                <description><![CDATA[<p>通过<code>ulimit -n</code>可以看到linux&#8221;最大打开文件数量&#8221;的默认值是<code>1024</code>。对于一些程序，如web服务，太小不够用。由于建立SOCKET会占用一个系统句柄，效果类似于打开了一个文件。LINUX默认的最大文件打开个数是1024（可能不同内核版本不一样），所以如果并发太多连接时就会报错。</p>
+                <description><![CDATA[<p>通过<code>ulimit -n</code>可以看到linux"最大打开文件数量"的默认值是<code>1024</code>。对于一些程序，如web服务，太小不够用。由于建立SOCKET会占用一个系统句柄，效果类似于打开了一个文件。LINUX默认的最大文件打开个数是1024（可能不同内核版本不一样），所以如果并发太多连接时就会报错。</p>
 <p><span id="more-351"></span>
 <br  /><p>可通过下面几个步骤修改：</p>
 <ol>
@@ -33304,7 +33605,7 @@ Lisp语言在jvm上的实现
 
 ````import javafx.stage.Stage; import javafx.scene.Scene; import javafx.scene.text.Text; import javafx.scene.text.Font; Stage { title: "Hello World" width: 250 height: 80 scene: Scene { content: Text { font : Font { size : 24 } x: 10, y: 30 content: "Hello World" } } } 
 
-它将创建一个窗口，内容为&amp;#8221;Hello World&amp;#8221;
+它将创建一个窗口，内容为"Hello World"
 
 **现在风头正胜的scala: **[**http://scala-lang.org**](http://scala-lang.org/)
 
@@ -33804,7 +34105,7 @@ models.Article```
 <p>红色那行报错为：</p>
 <blockquote><p><strong>ClassCastException</strong> occured : models.User cannot be cast to models.User</p>
 </blockquote>
-<p>一个&#8221;models.User&#8221;不能转换为另一个&#8221;models.User&#8221;，只能说明一种情况：这个类被两个不同classloader导入了。</p>
+<p>一个"models.User"不能转换为另一个"models.User&rdquo;，只能说明一种情况：这个类被两个不同classloader导入了。</p>
 <p>为了完全解决这个问题，我需要好好复习一下Java的classloader机制以及play的classloader运作原理。</p>
 <p><span id="more-238"></span>
 <br  /><p><strong>几篇不错的资料</strong></p>
@@ -33991,7 +34292,7 @@ Git Bash是指git安装好之后，有一个专用的命令行工具（开始->G
 </code></pre>
 <p><p>这个aaa就是将传给view层的变量。</p>
 <p>能否用一种更简化的写法达到同样的效率？可以利用scala中的符号（Symbol），写成：</p>
-<pre><code>'aaa := &amp;#8220;AAA&amp;#8221;
+<pre><code>'aaa := &amp;#8220;AAA"
 </code></pre>
 <p>需要做两件事：</p>
 <ol>
@@ -34097,14 +34398,14 @@ def id_=(v: Int)```
 <pre><code>def apply(s:String) = s*2
 </code></pre>
 <p>}</p>
-<pre><code>&lt;p&gt;则test(&amp;#8220;a&amp;#8221;)实际上是test.apply(&amp;#8220;a&amp;#8221;)
+<pre><code>&lt;p&gt;则test(&amp;#8220;a")实际上是test.apply(&amp;#8220;a")
 
 那么，下面这段代码呢？
 &lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;class&lt;/span&gt; A {
     def apply(s:String) = s*2
 }
 </code></pre>
-<p><p>虽然我们不能直接A(&#8220;a&#8221;)，但是我们可以：
+<p><p>虽然我们不能直接A(&#8220;a&rdquo;)，但是我们可以：
 <br  /><pre class="csharpcode">val a = <span class="kwrd">new</span> A
 <br  />a(<span class="str">&ldquo;a&rdquo;</span>)</p>
 <pre><code>&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre
@@ -34298,7 +34599,7 @@ def print = println(&lt;span class="str"&gt;"hello world"&lt;/span&gt;)
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">191</guid>
                 <description><![CDATA[<p>昨天重装了windows，今天连接github.com时，提示连接不上。我记得已经备份过了密钥，怎么用不了了呢？</p>
-<p>后来发现，原来我把文件拷错了地方，应该拷到<code>C:\Documents and Settings\current_user\.ssh</code>下，有三个文件，分别是&#8221;id_rsa&#8221;，&#8221;id_rsa.pub&#8221;，&#8221;known_hosts&#8221;</p>
+<p>后来发现，原来我把文件拷错了地方，应该拷到<code>C:\Documents and Settings\current_user\.ssh</code>下，有三个文件，分别是"id_rsa&rdquo;，&ldquo;id_rsa.pub&rdquo;，&ldquo;known_hosts&rdquo;</p>
 <p>重新拷完，再试，一切正常。</p>
 <p>如果以后出现这样的问题，可以在git bash下，使用命令：</p>
 <pre><code>ssh -v git@github.com
@@ -34960,12 +35261,10 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <guid isPermaLink="false">130</guid>
                 <description><![CDATA[<p>今天开了独立博客，下载了最新的wordpress3.2.1，安装后，发现在IE6下面目全非！进入后台，也看到了一个红底的提示，说我使用的浏览器太旧了，不安全，建议我更换到最新的浏览器。</p>
 <p>上网一查，果然看到人们说，wordpress已经公开表示不支持IE6了。</p>
-<p><span id="more-130"></span>
-<br  /><p>问：中国还有多少人在用IE6?美国还有多少人？</p>
+<h2>问：中国还有多少人在用IE6?美国还有多少人？</h2>
 <p>答：打开<a href="http://ie6countdown.com">http://ie6countdown.com</a>，可以看到世界地图上，“红色”的中国</p>
-<p><a href="/user_images/130-1.png"><img src="/user_images/130-1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/130-1.png">!image</a></p>
 <p>中国以30.5%的最高比例，压倒性的优势，稳居世界第一！中国的程序员苦啊，特别是前端工程师。</p>
-<p>作为一个与世界接轨的程序员，在一番痛苦摇摆之后（放弃wordpress？还是放弃IE6？），终于下定决心，选择了wordpress，为世界和谐做出了一丝贡献。反正来看我博客的，都是程序员，还再用IE6的，除了前端工程师，都不是好程序员。</p>
 ]]></description>
             </item>
 
@@ -35081,7 +35380,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>当然，这可以说是我的设计问题。比如对于这种需要统计数量的，通常的做法，应该是在每个分类中增加一个count字段，当其下的问题增删之后，对它进行更新。查询时，直接使用它的值即可。另外，关于N+1问题，我们也可以通过预先fetch来避免。</p>
 <p>我想这些都是可行的，只要你对hibernate掌握得够熟练，你不光可以使用这些优化手段，还可以再利用上它的缓存系统，再次优化性能。另外，对于不经常变动的页面，还可以使用页面缓存，那样的话，就更快了。但是我觉得麻烦之处，不是在这里。而是在于思考重心的矛盾。</p>
 <p>Hibernate的目标，本来是为了简化持久层的操作，让我们面对pojo，不需要再关心它下面的数据库（卖点之一是可以随意更换数据库，只需要修改一下配置文件及少数使用了与特定数据库的SQL语句即可）。所以我们在使用Hibernate时，会把思考的重心放在pojo上，以面向对象的方式来设计结构良好的pojo们，而数据库在hibernate的刻意掩饰下，似乎变得无足轻重（比如你甚至可以不关心到底生成了哪些字段）。的确，Hibernate初用起来，感觉很好。对于简单的增删改查，非常方便，基本上调用几个方法即可。对于复杂一些的查询，使用它提供的HQL查询语句，也可以写出来。在不关心性能的情况下，一切都很美好。</p>
-<p>但是现实是残酷的，除非这网站只给自己用。一旦数据量多一些，访问人数多一些，性能瓶颈马上就可能出现。对于性能问题，通常我们都会去分析使用的SQL，比如是否有N+1，是否可以把几个SQL取得的数据一次取出，数据库的结构是否需要调整等等。此时才发现，TMD，之前hibernate口口声声对我说：&#8221;有我在，你不用考虑数据库了&#8221;，到最后，还是得去分析数据库，然后再根据问题，去调整pojo的结构、查询语句等。之前的&#8221;以pojo为重心&#8221;，到最后还是要回到&#8221;以数据库为重心&#8221;，甚至双重心。于是，最开始简单优雅的代码，被改得复杂；某些地方，需要使用SQL代替之前写的HQL；最要命的是，hibernate的SQL是动态生成的，必须在日志中才能看到最终的真实SQL，调试起来简直头大无比。</p>
+<p>但是现实是残酷的，除非这网站只给自己用。一旦数据量多一些，访问人数多一些，性能瓶颈马上就可能出现。对于性能问题，通常我们都会去分析使用的SQL，比如是否有N+1，是否可以把几个SQL取得的数据一次取出，数据库的结构是否需要调整等等。此时才发现，TMD，之前hibernate口口声声对我说：&ldquo;有我在，你不用考虑数据库了&rdquo;，到最后，还是得去分析数据库，然后再根据问题，去调整pojo的结构、查询语句等。之前的"以pojo为重心&rdquo;，到最后还是要回到"以数据库为重心&rdquo;，甚至双重心。于是，最开始简单优雅的代码，被改得复杂；某些地方，需要使用SQL代替之前写的HQL；最要命的是，hibernate的SQL是动态生成的，必须在日志中才能看到最终的真实SQL，调试起来简直头大无比。</p>
 <p>这个时候会觉得，之前看起来那么优雅的代码，现在成了累赘，一方面想保持它，一方面又难免要破坏它。矛盾吧，是不是有种被欺骗的感觉？原以为可以从数据库中解脱出来，最后发现仅仅是为了少写几句代码，得多学习一整个框架，代码还弄得不沦不类。优化性能的时候，不但要考虑数据库，还要去考虑hibernate，更累了。</p>
 <p>如果在一开始，我们就以数据库为重心，则写每一条SQL时，都会自然而然地想到性能问题，这样就可以避免大部分的性能问题。而且，因为每一条SQL是都固定的，都是自己手写的，比较放心，还可以利用数据库的工具，去分析它是否存在性能上的问题。不像hibernate，一个大圈回到了原点，问题还更加复杂了。</p>
 ]]></description>
@@ -35095,17 +35394,18 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">112</guid>
                 <description><![CDATA[<p>有时候追求技术的纯粹性，是一件费时费力的事情，特别是某些技术在某些方面设计得不够好的时候。比如说，页面布局，是用div+css，还是用table?</p>
-<p><span id="more-112"></span>
-<br  /><p>记得上大学刚学做网页时，好像css用得很少，那时候布局基本上就一个选择：table。利用table的单元格td，将页面分成几块，里面再套table。这种方式挺古老，但是很好用：比如，你把table的宽设为100%，再将其中某些列的宽度设个固定值，则其它没有设值的，就会自动占满剩余空间。每一行的各单元格，总是拥有相同的高度。在一个单元格内，可以方便的设置其align，即里面的内容是靠左靠右，还是靠上靠下。我们可以很轻松地利用它做出一些复杂的页面布局，虽然用的标签稍有点多。(table > tr > td )
-<br  /><p>大约是毕业那会儿，突然css流行起来了。人们仿佛一夜之间，发现了css的强大，于是那种复杂的效果都出来了，网页也越来越漂亮。有人说，我们做网页时，html是用来放数据的，而css是用来放样式的，不能混在一起。html中的标签是有语义的，比如table，它表示的是一个数据表格，是用来放数据的，而不是布局的。要布局，一定要用div+css这种方式，这才是纯粹的css用法。而且，div+css还有其它的好处，比如你要更改页面，把这一块放在那一块的前面，只需要改改css即可，而不用动html，这多好。
-<br  /><p>好吧，我承认这的确很有吸引力，于是开始学着用div+css来布局。然而，很快发现，这东西怎么这么难以理解？要理解div的定位方式absolute, relative, static，要理解它的流布局，以及方向float，还有换行clear，还有margin的设置，还要解决IE6的某些bug，以前不同浏览器上的显示差异。我只想做一个简单的左右两列布局，左列固定右列自动占满剩余空间，并且两列等高。这用table一分钟完成的任务，用div搞了一天都没搞定。
-<br  /><p>上网搜索一下，发现这的确是个大问题，无数的人在问怎么写。当然也发现了一些解决方案：比如一些网站，列出了一些常见布局，直接下载它写好的css。还有就是960.gs/blueprint等，居然是专门的布局框架，只需要用它定义好的一些css类，就可以方便地做出布局。（这在table时代是没有的，可以说是制造问题再解决它）
-<br  /><p>我很认真地学习了它们，并且在自己的项目中使用了960.gs，效果还不错。但是，总是感觉手脚被绑着。比如，它推荐的布局方式是宽960px，分成12列（可调整），这表明我无法弄一个占满页面100%宽度的布局出来。而且，把页面分潭矶鹊?2列，大多数时候够用，但是一旦需要一些不规则的宽度，那就相当的头疼。但是我一直认同那种观点：布局应该是css的事情，这样比较纯粹。
-<br  /><p>直到前某几天，突然想做一个很简单的网站，不想再拷960gs过来，就偷个懒用table吧。当我花了几分钟把布局做好之后，我愣住了－－竟然这么轻松！之前用div+css费老劲做出来的布局，用table两下子搞定了！
-<br  /><p>仔细想想，之前用960gs那么麻烦的布局，最终也只能得到一个近似table的效果。而且难度、复杂度远高于用table，可维护性反而更差（因为太复杂）。以前期望的优点没有得到，反而更麻烦了。这样做，唯一达到的效果就是：看，我的布局全是div+css搞定的，没有用table！牛B吧！
-<br  /><p>之所以会产生这样的情况，是因为css关于布局这一块，没有设计好。使用div进行定位、大小控制、缩放方面，比较麻烦，而且各浏览器的实现情况不一样，容易产生不同的布局效果。如果它设计得更好一些的话，我想我们是可以抛开table，大胆使用div+css布局。
-<br  /><p>在当前的现实情况下，某些时候使用table方便，某些时候使用div+css方便。对于同一个网页，有多种显示效果的（比如博客），应该尽量使用div+css，因为虽然麻烦一些，但可以通过css定义出产生非常自由的效果。而对于普通网站，不妨直接使用table，因为简单方便，容易控制。
-<br  /><p>写了这么多，只是想强调：大多数的技术都不够完美，都有自己擅长和不擅长的地方。如果你不去思考，只是为了用而用，会很辛苦。更不能因为想用某一种技术，就盲目地认为它是最好的，其它的看都没看就否认了。我们的选择标准，应该是：简单、方便、快捷，稳定。至于到底用了什么技术，一点也不重要。</p>
+<p>记得上大学刚学做网页时，好像css用得很少，那时候布局基本上就一个选择：table。利用table的单元格td，将页面分成几块，里面再套table。</p>
+<p>这种方式挺古老，但是很好用：比如，你把table的宽设为100%，再将其中某些列的宽度设个固定值，则其它没有设值的，就会自动占满剩余空间。每一行的各单元格，总是拥有相同的高度。在一个单元格内，可以方便的设置其align，即里面的内容是靠左靠右，还是靠上靠下。我们可以很轻松地利用它做出一些复杂的页面布局，虽然用的标签稍有点多。<code>(table &gt; tr &gt; td )</code></p>
+<p>大约是毕业那会儿，突然css流行起来了。人们仿佛一夜之间，发现了css的强大，于是那种复杂的效果都出来了，网页也越来越漂亮。</p>
+<p>有人说，我们做网页时，html是用来放数据的，而css是用来放样式的，不能混在一起。html中的标签是有语义的，比如table，它表示的是一个数据表格，是用来放数据的，而不是布局的。要布局，一定要用div+css这种方式，这才是纯粹的css用法。而且，div+css还有其它的好处，比如你要更改页面，把这一块放在那一块的前面，只需要改改css即可，而不用动html，这多好。</p>
+<p>好吧，我承认这的确很有吸引力，于是开始学着用div+css来布局。然而，很快发现，这东西怎么这么难以理解？要理解div的定位方式<code>absolute</code>, <code>relative</code>, <code>static</code>，要理解它的流布局，以及方向<code>floa</code>t，还有换行<code>clear</code>，还有<code>margin</code>的设置，还要解决IE6的某些bug，以前不同浏览器上的显示差异。我只想做一个简单的左右两列布局，左列固定右列自动占满剩余空间，并且两列等高。这用table一分钟完成的任务，用div搞了一天都没搞定。</p>
+<p>上网搜索一下，发现这的确是个大问题，无数的人在问怎么写。当然也发现了一些解决方案：比如一些网站，列出了一些常见布局，直接下载它写好的css。还有就是960.gs/blueprint等，居然是专门的布局框架，只需要用它定义好的一些css类，就可以方便地做出布局。（这在table时代是没有的，可以说是制造问题再解决它）</p>
+<p>我很认真地学习了它们，并且在自己的项目中使用了960.gs，效果还不错。但是，总是感觉手脚被绑着。比如，它推荐的布局方式是宽960px，分成12列（可调整），这表明我无法弄一个占满页面100%宽度的布局出来。而且，把页面分成12列，大多数时候够用，但是一旦需要一些不规则的宽度，那就相当的头疼。但是我一直认同那种观点：布局应该是css的事情，这样比较纯粹。</p>
+<p>直到前某几天，突然想做一个很简单的网站，不想再拷960gs过来，就偷个懒用table吧。当我花了几分钟把布局做好之后，我愣住了－－竟然这么轻松！之前用div+css费老劲做出来的布局，用table两下子搞定了！</p>
+<p>仔细想想，之前用960gs那么麻烦的布局，最终也只能得到一个近似table的效果。而且难度、复杂度远高于用table，可维护性反而更差（因为太复杂）。以前期望的优点没有得到，反而更麻烦了。这样做，唯一达到的效果就是：看，我的布局全是div+css搞定的，没有用table！牛B吧！</p>
+<p>之所以会产生这样的情况，是因为css关于布局这一块，没有设计好。使用div进行定位、大小控制、缩放方面，比较麻烦，而且各浏览器的实现情况不一样，容易产生不同的布局效果。如果它设计得更好一些的话，我想我们是可以抛开table，大胆使用div+css布局。</p>
+<p>在当前的现实情况下，某些时候使用table方便，某些时候使用div+css方便。对于同一个网页，有多种显示效果的（比如博客），应该尽量使用div+css，因为虽然麻烦一些，但可以通过css定义出产生非常自由的效果。而对于普通网站，不妨直接使用table，因为简单方便，容易控制。</p>
+<p>写了这么多，只是想强调：大多数的技术都不够完美，都有自己擅长和不擅长的地方。如果你不去思考，只是为了用而用，会很辛苦。更不能因为想用某一种技术，就盲目地认为它是最好的，其它的看都没看就否认了。我们的选择标准，应该是：简单、方便、快捷，稳定。至于到底用了什么技术，一点也不重要。</p>
 ]]></description>
             </item>
 
@@ -35147,22 +35447,24 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">110</guid>
-                <description><![CDATA[<p>linux下有很多神奇的命令行小工具，功能强大，使用灵活方便，学会使用它们可以让我们的工作简单而高效。
-<br  /><p>比如今天，我需要把一个csv格式的文件，从第二行开始，把每行的第一列取出来，保存在一个单独的文件中。之前遇到这样的任务，我会写一个java程序，读取文件的每一行，分解为数组，取出每一个元素，保存在一个list中，再写到另一个文件。虽说代码也比较简单，但是每次遇到这样的任务都要写一次，也相当不便。我发现linux下有两个小工具：sed和awk，处理这种操作非常方便。
-<br  /><p>但我现在是在windows下，怎么使用呢？好在这些小工具基本上都有windows的版本，很快就找到了。</p>
-<p><span id="more-110"></span>
-<br  /><p>下面编写命令：
-<br  /><p>&nbsp;&nbsp;&nbsp; cat c:\data\1.csv | sed &#8220;2,$p&#8221; -n | awk &#8220;BEGIN {FS=\&#8221;,\&#8221;} print $1&#8243; > ids.txt
-<br  /><p>搞定。
-<br  /><p>简单说明一下，这一句其实是由三个命令组成，它们之间用&#8221;|&#8221;分隔开，&#8221;|&#8221;的作用是把前一个命令的输出转为下一个命令的输入。
-<br  /><p>1. cat c:\data\1.csv 读取1.csv文件的内容
-<br  /><p>2. sed &#8220;2,$p&#8221; -n 输出第2行到最后
-<br  /><p>3. awk &#8220;BEGIN {FS=\&#8221;,\&#8221;} print $1&#8243; 设置逗号为分隔符，只打印每一行的第一个元素
-<br  /><p>4. > ids.txt 把结果保存到1.txt文件中
-<br  /><p>整个过程还是相当清晰明了的。特别是，sed和awk还有很多灵活的参数，可以组合在一起，实现更复杂一些的功能。相比使用java来写程序，不需要开编辑器，不需要配置，不需要编译，仅仅写一行命令即可，实在是太方便了。
-<br  /><p>注意看第3行，如果是在linux中，可以写成：
-<br  /><p>awk 'BEGIN {FS=&#8221;,&#8221;} print $1&#8242;
-<br  /><p>的，而不像windows下，只能使用双引号，中间的双引号还需要用\&#8221;来转义一下，不太方便。有种把windows格了装linux的冲动。</p>
+                <description><![CDATA[<p>linux下有很多神奇的命令行小工具，功能强大，使用灵活方便，学会使用它们可以让我们的工作简单而高效。</p>
+<p>比如今天，我需要把一个csv格式的文件，从第二行开始，把每行的第一列取出来，保存在一个单独的文件中。之前遇到这样的任务，我会写一个java程序，读取文件的每一行，分解为数组，取出每一个元素，保存在一个list中，再写到另一个文件。虽说代码也比较简单，但是每次遇到这样的任务都要写一次，也相当不便。我发现linux下有两个小工具：<code>sed</code>和<code>awk</code>，处理这种操作非常方便。</p>
+<p>但我现在是在windows下，怎么使用呢？好在这些小工具基本上都有windows的版本，很快就找到了。</p>
+<p>下面编写命令：</p>
+<pre><code>cat c:\data\1.csv | sed "2,$p" -n | awk "BEGIN {FS=\",\"} print $1" &gt; ids.txt 
+</code></pre>
+<p>搞定。</p>
+<p>简单说明一下，这一句其实是由三个命令组成，它们之间用&rdquo;|&ldquo;分隔开，&ldquo;|&ldquo;的作用是把前一个命令的输出转为下一个命令的输入。</p>
+<ol>
+<li><code>cat c:\data\1.csv</code> 读取1.csv文件的内容</li>
+<li><code>sed "2,$p" -n</code> 输出第2行到最后</li>
+<li><code>awk "BEGIN {FS=\",\"} print $1"</code> 设置逗号为分隔符，只打印每一行的第一个元素</li>
+<li><code>&gt; ids.txt</code> 把结果保存到1.txt文件中</li>
+</ol>
+<p>整个过程还是相当清晰明了的。特别是，sed和awk还有很多灵活的参数，可以组合在一起，实现更复杂一些的功能。相比使用java来写程序，不需要开编辑器，不需要配置，不需要编译，仅仅写一行命令即可，实在是太方便了。</p>
+<p>注意看第3行，如果是在linux中，可以写成：</p>
+<p><code>awk 'BEGIN {FS=","} print $1'</code></p>
+<p>的，而不像windows下，只能使用双引号，中间的双引号还需要用<code>\"</code>来转义一下，不太方便。</p>
 ]]></description>
             </item>
 
@@ -35174,12 +35476,11 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">109</guid>
                 <description><![CDATA[<p>Postgresql自带了一个pgAdmin的管理程序，提供了一些基本且常用的功能，我一直用它，而且以为只有它。可惜它提供的功能，有时候有点太简单了，稍复杂一点的，操作起来异常麻烦。比如，我以前建立的外键都是on delete on action的，现在想把它改为on delete set null，需要先删除原有的，再新建一个。其实仅仅是想更改一个属性而已，但是我要做一大堆的操作才能完成。我改了两三个以后，看着还有三十来个，决定找找看，有没有别的工具。</p>
-<p><span id="more-109"></span>
-<br  /><p>首先想到的是phppgadmin这个东西。既然phpmyadmin这个程序人人皆知，想必phppgadmin也不会差到哪儿去。下载后，解压到web目录，再配置APMServ，却总是提示“你的php不能完全支持postgresql”。经过好一番搜索，也没找到解决方法。最后发现，还不能使用postgres8.4自带的那个168K的libpq.dll，而是从别处找到一个96K的，放过去，才正常。进去之后，看到功能也挺全的，可惜对于外键，也只有删除新增，而没有修改。
-<br  /><p>最后在万能的stackoverflow上，找到了一个问题：
-<br  /><p><a href="http://stackoverflow.com/questions/105788/good-postgresql-client-for-windows">http://stackoverflow.com/questions/105788/good-postgresql-client-for-windows</a>
-<br  /><p>里面提到了一个Postgresql Maestro，它是一个收费的，但好评不好。下载后，发现它有30天的试用。安装后试用，果然不错，对得起收费两字。使用它可以很方便地更改外键，很满意，三两天就改完了。还有很多其它的功能，暂时用不到。
-<br  /><p>网址是：<a href="http://www.sqlmaestro.com/products/postgresql/maestro/">http://www.sqlmaestro.com/products/postgresql/maestro/</a></p>
+<p>首先想到的是phppgadmin这个东西。既然phpmyadmin这个程序人人皆知，想必phppgadmin也不会差到哪儿去。下载后，解压到web目录，再配置APMServ，却总是提示“你的php不能完全支持postgresql”。经过好一番搜索，也没找到解决方法。最后发现，还不能使用postgres8.4自带的那个168K的libpq.dll，而是从别处找到一个96K的，放过去，才正常。进去之后，看到功能也挺全的，可惜对于外键，也只有删除新增，而没有修改。</p>
+<p>最后在万能的stackoverflow上，找到了一个问题：
+<br  />http://stackoverflow.com/questions/105788/good-postgresql-client-for-windows</p>
+<p>里面提到了一个Postgresql Maestro，它是一个收费的，但好评不好。下载后，发现它有30天的试用。安装后试用，果然不错，对得起收费两字。使用它可以很方便地更改外键，很满意，三两天就改完了。还有很多其它的功能，暂时用不到。</p>
+<p>网址是：http://www.sqlmaestro.com/products/postgresql/maestro/</p>
 ]]></description>
             </item>
 
@@ -35290,30 +35591,28 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">104</guid>
-                <description><![CDATA[<p><a href="http://haml-lang.com/">http://haml-lang.com/</a></p>
-<p>表现层是一个web框架中最重要，却又最被忽视的一层。人们把精力都放在了MC，后台部分已经很完善了，但是前台V，即表现层，却一直没有太多改进。对于表现层，人们总希望&#8221;页面中不要嵌入逻辑代码，内容要与样式分离&#8221;，但是由于难度大，或者后台语言的限制，这个目标很难达到。可以说，我之前见过用过的大多数表面层，做的都不太好，如jsp, asp, php, velocity, freemarker, rails erb等等。</p>
-<p>而haml的出现，则让我有了一点惊喜：内容跟样式分离得如此彻底，代码却又如此清晰。虽然对于纯美工MM来说，不是个好消息（完全无法使用dreamweaver等工具），但对于程序员来说，却是非常的贴心。
-<br  /><span id="more-104"></span></p>
+                <description><![CDATA[<p>http://haml-lang.com</p>
+<p>表现层是一个web框架中最重要，却又最被忽视的一层。人们把精力都放在了MC，后台部分已经很完善了，但是前台V，即表现层，却一直没有太多改进。对于表现层，人们总希望"页面中不要嵌入逻辑代码，内容要与样式分离&rdquo;，但是由于难度大，或者后台语言的限制，这个目标很难达到。可以说，我之前见过用过的大多数表面层，做的都不太好，如jsp, asp, php, velocity, freemarker, rails erb等等。</p>
+<p>而haml的出现，则让我有了一点惊喜：内容跟样式分离得如此彻底，代码却又如此清晰。虽然对于纯美工MM来说，不是个好消息（完全无法使用dreamweaver等工具），但对于程序员来说，却是非常的贴心。</p>
 <p>初看下，这种模板语言有点怪异，没有出现一个html tag，写起来好像在写配置文件。但是很快就会发现，没有了众多html tag的打扰，可以如此专注的把精力放在内容上，完全不用考虑样式，的确可以让开发效率大大提高。内容全部交给haml，样式全部交给css，各司其职。这种大胆前卫的设计，真的是非常具有想像力。</p>
 <p>贴段代码：</p>
 <pre><code>#profile
-.left.column
-#date= print_date
-#address= current_user.address
+  .left.column
+  #date= print_date
+  #address= current_user.address
 .right.column
-#email= current_user.email
-#bio= current_user.bio
+  #email= current_user.email
+  #bio= current_user.bio
 </code></pre>
 <p>它将被解析为：</p>
 <pre><code>&lt;div id="profile"&gt;
-&lt;div class="left column"&gt;
-&lt;div id="date"&gt;${print_date}&lt;/div&gt;
-&lt;div id="address"&gt;${current_user.address}&lt;/div&gt;
+  &lt;div class="left column"&gt;
+  &lt;div id="date"&gt;${print_date}&lt;/div&gt;
+  &lt;div id="address"&gt;${current_user.address}&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="right column"&gt;
-&lt;div id="email"&gt;${current_user.emil}&lt;/div&gt;
-&lt;div id="bio"&gt;${current_user.bio}&lt;/div&gt;
-&lt;/div&gt;
+  &lt;div id="email"&gt;${current_user.emil}&lt;/div&gt;
+  &lt;div id="bio"&gt;${current_user.bio}&lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
 <p>对比上下两段，是否觉得前面的代码更让人把注意力集中在内容上？</p>
@@ -35327,21 +35626,25 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">103</guid>
-                <description><![CDATA[<p><strong>mongodb</strong>是个什么东西？</p>
-<p><a href="http://baike.baidu.com/view/3385614.htm">http://baike.baidu.com/view/3385614.htm</a></p>
-<p><strong>主页</strong>：<a href="http://www.mongodb.org/">http://www.mongodb.org/</a></p>
-<p>由介绍可知，这是一种与传统的关系数据库不同的数据库，跟google、amason等提供的数据存储方式很像，不用建表，而是根据<strong>key-value</strong>的方式存储。key是一个个字符串，而value可以是复杂的数据类型。感觉跟哈希表有点像。另外，它是分布式的。<span id="more-103"></span></p>
+                <description><![CDATA[<h2>mongodb是什么</h2>
+<p>http://baike.baidu.com/view/3385614.htm</p>
+<h2>主页</h2>
+<p>http://www.mongodb.org/</p>
+<p>由介绍可知，这是一种与传统的关系数据库不同的数据库，跟google、amason等提供的数据存储方式很像，不用建表，而是根据<strong>key-value</strong>的方式存储。key是一个个字符串，而value可以是复杂的数据类型。感觉跟哈希表有点像。另外，它是分布式的。</p>
 <p>为什么用它，而不用传统的数据库呢？好像是从这几年开始，这种<strong>NoSQL</strong>类型的数据库流行起来，原因应该是它速度快，性能好，能比关系型数据库支持更大的负载，使用简单（不需要sql），对于网站这样的应用也比较适合（没有复杂的报表）。跟它类似的还有一个叫couchdb的数据库。</p>
 <p>mongodb<strong>授权基于AGPL</strong>，详情请看<a href="http://www.mongodb.org/display/DOCS/Licensing">http://www.mongodb.org/display/DOCS/Licensing</a>. 我的英语不太好，没看太懂它的意思。感觉好像是比较宽松，只要不改它的源代码，就不需要自己开源，也不需要付费。但是为了保险，还是问了一下：</p>
-<p><a href="http://stackoverflow.com/questions/2984634/i-wanna-build-a-website-use-mongodb-is-it-free-do-i-need-to-open-my-source-of">http://stackoverflow.com/questions/2984634/i-wanna-build-a-website-use-mongodb-is-it-free-do-i-need-to-open-my-source-of</a></p>
+<p>http://stackoverflow.com/questions/2984634/i-wanna-build-a-website-use-mongodb-is-it-free-do-i-need-to-open-my-source-of</p>
 <p>回答者果然也这么说，这下我就放心了。</p>
-<p><strong>在线体验</strong>：打开主页，点&#8221;try it out&#8221;按钮，会出现一个由javascript做出来的交互式教程，简洁明了，更有趣的是可以直接输入各种mongodb的命令，在线体验一把mongodb的增删改查是怎么做的，有一个基本的印象。做的真贴心。注意：要用<strong>非IE6</strong>的浏览器，才能正常使用。</p>
-<p><strong>安装</strong>：</p>
-<p><a href="http://www.mongodb.org/display/DOCS/Building+for+Linux#BuildingforLinux-Fedora8or10">http://www.mongodb.org/display/DOCS/Building+for+Linux#BuildingforLinux-Fedora8or10</a></p>
+<h2>在线体验</h2>
+<p>打开主页，点"try it out"按钮，会出现一个由javascript做出来的交互式教程，简洁明了，更有趣的是可以直接输入各种mongodb的命令，在线体验一把mongodb的增删改查是怎么做的，有一个基本的印象。做的真贴心。注意：要用<strong>非IE6</strong>的浏览器，才能正常使用。</p>
+<h2>安装</h2>
+<p>http://www.mongodb.org/display/DOCS/Building+for+Linux#BuildingforLinux-Fedora8or10</p>
 <p>按照教程，大约花了一个小时才安装完。注意要先安装下面的dependencies，然后再用git下载源代码，编译并安装。这种安装方式与windows上的傻瓜安装完全不同，这可是拿到了原原本本的代码(这里是c代码)，从头做起。进行到scons all那一步时，将编译所有的代码，看着满屏幕飞滚的字母，有点像电影里演黑客时的感觉。漫长的编译过程（半个多小时），真让人担心，万一哪一行有问题，失败了怎么办，满屏幕的日志真会把人看死。好在一切顺利，终于安装好了。</p>
 <p>看看这几篇入门教程：</p>
-<p><a href="http://database.51cto.com/art/201003/187379.htm">http://database.51cto.com/art/201003/187379.htm</a></p>
-<p><a href="http://www.mongodb.org/display/DOCS/Developer+FAQ">http://www.mongodb.org/display/DOCS/Developer+FAQ</a></p>
+<ol>
+<li>http://database.51cto.com/art/201003/187379.htm</li>
+<li>http://www.mongodb.org/display/DOCS/Developer+FAQ</li>
+</ol>
 ]]></description>
             </item>
 
@@ -35378,9 +35681,9 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>作者给FuzzyFinder里增加了一小段代码，让它也可以查找深层的文件了。虽然只改动了一点点，但是的确方便了很多。（不过实话说，跟eclipse的相比，还是差一点）</p>
 <p>在没有找到更好的插件之前，先用这个方法了。</p>
 <p>打开vim/vim72/autoload/fuf/file.vim，找到function fuf#file#onInit()，增加一行：</p>
-<p>call fuf#defineLaunchCommand('FufFileRecursive', s:MODE_NAME, '&#8221;**/&#8221;')</p>
+<p>call fuf#defineLaunchCommand('FufFileRecursive', s:MODE_NAME, '&ldquo;**/&ldquo;')</p>
 <p>然后定义快捷键，在_vimrc中增加：</p>
-<p>&#8221; FuzzyFinder - Ctrl + Shift + R</p>
+<p>" FuzzyFinder - Ctrl + Shift + R</p>
 <p>map <C-S-R> :FufFileRecursive<CR></p>
 <p>这样，在vim中，按下Ctrl+Shift+R，就可以快速查找文件了。</p>
 ]]></description>
@@ -35444,11 +35747,11 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <dc:creator><![CDATA[Freewind]]></dc:creator>
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">100</guid>
-                <description><![CDATA[<p>这几天一直在看ruby和rails的书，感触颇多。特别是今天看到了rails的ActiveRecord，即rails提供的ORM，感觉非常欣慰－－看来这次转ruby是转对了。
-<br  /><p>为什么？因为我从Java转到Ruby，就是因为Java的ORM。也许是跟语言本身的限制有关，也许跟Javaer的文化有关，Java的ORM就是找不到好用的。Hibernate，这个东西把我折腾坏了。它认为SQL是罪恶、难以理解和学习的，而且不够OO，所以在SQL的基础上，自己搞了一套叫HQL的查询语言。可惜，这个HQL复杂度跟SQL差不多，但是功能却不够强大（在不少地方有限制），为了增强其功能，又弄了一些其它的东西加进去。所以最终的结果，就是把问题弄得更复杂了：你不光要学习HQL，最终还是得学习SQL。
-<br  /><p>说到这里，我感觉java中有一种文化，就是死板僵硬，思路全被设计模式固定死了，写代码一定要按套路来。把实现功能、处理异常做为主要目的，而易用性却无所谓。Java的开源库有很多，但是顺手好用的，却没有多少。（好在这两年有不少人意识到了这一点，设计出来的库很好用，比如Mockito，相比之前的EasyMock，好用多了）
-<br  /><p>我认为，从根源上来说，这是由于Java语言本身的限制和JDK本身的代码风格所决定的。比如，java的String类，内置的方法只有那么多，很多常用的功能都得靠第三方的库来完成（比如commons-lang）。虽然借助第三方库可以做到，但是用起来就是没那么顺手。再看看那些集合类，如ArrayList，要想新建一个有三个元素的ArrayList，必须得先建生成一个List，再调用三次add，四行代码，明明可以简化的，可惜当时写这些代码的大牛们却没多做一点点。同时由于Java本身的限制，太静态了，以至于有时候想设计一些易用的函数都困难。形象一点的比喻，用Java写代码就像是穿着紧身的西装在球场上踢球，除了跑步传球，是没办法做出复杂精彩的动作的。
-<br  /><p>然而ActiveRecord不一样。它认为SQL是很好的，所以直接利用SQL本身，再结合自己动态语言的优势，弄出了一个ORM。在看书的过程中，我开始还担心这样做会不会有问题，但是发现不但没问题，反而很优雅的解决了一些在Hibernate很难处理的问题。现在觉得，Hibernate真是把简单的弄复杂，然后再用更复杂的方法来解决复杂。而ruby，则是想方设法让事情更简单，让程序更容易使用。</p>
+                <description><![CDATA[<p>这几天一直在看ruby和rails的书，感触颇多。特别是今天看到了rails的ActiveRecord，即rails提供的ORM，感觉非常欣慰－－看来这次转ruby是转对了。</p>
+<p>为什么？因为我从Java转到Ruby，就是因为Java的ORM。也许是跟语言本身的限制有关，也许跟Javaer的文化有关，Java的ORM就是找不到好用的。Hibernate，这个东西把我折腾坏了。它认为SQL是罪恶、难以理解和学习的，而且不够OO，所以在SQL的基础上，自己搞了一套叫HQL的查询语言。可惜，这个HQL复杂度跟SQL差不多，但是功能却不够强大（在不少地方有限制），为了增强其功能，又弄了一些其它的东西加进去。所以最终的结果，就是把问题弄得更复杂了：你不光要学习HQL，最终还是得学习SQL。</p>
+<p>说到这里，我感觉java中有一种文化，就是死板僵硬，思路全被设计模式固定死了，写代码一定要按套路来。把实现功能、处理异常做为主要目的，而易用性却无所谓。Java的开源库有很多，但是顺手好用的，却没有多少。（好在这两年有不少人意识到了这一点，设计出来的库很好用，比如Mockito，相比之前的EasyMock，好用多了）</p>
+<p>我认为，从根源上来说，这是由于Java语言本身的限制和JDK本身的代码风格所决定的。比如，java的String类，内置的方法只有那么多，很多常用的功能都得靠第三方的库来完成（比如commons-lang）。虽然借助第三方库可以做到，但是用起来就是没那么顺手。再看看那些集合类，如ArrayList，要想新建一个有三个元素的ArrayList，必须得先建生成一个List，再调用三次add，四行代码，明明可以简化的，可惜当时写这些代码的大牛们却没多做一点点。同时由于Java本身的限制，太静态了，以至于有时候想设计一些易用的函数都困难。形象一点的比喻，用Java写代码就像是穿着紧身的西装在球场上踢球，除了跑步传球，是没办法做出复杂精彩的动作的。</p>
+<p>然而ActiveRecord不一样。它认为SQL是很好的，所以直接利用SQL本身，再结合自己动态语言的优势，弄出了一个ORM。在看书的过程中，我开始还担心这样做会不会有问题，但是发现不但没问题，反而很优雅的解决了一些在Hibernate很难处理的问题。现在觉得，Hibernate真是把简单的弄复杂，然后再用更复杂的方法来解决复杂。而ruby，则是想方设法让事情更简单，让程序更容易使用。</p>
 ]]></description>
             </item>
 
@@ -35491,33 +35794,33 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>Siena也是一个设计非常简单的ORM，而且很有自己的特色。可以说，它是目前我看到的里面最好的那个（如果ActiveObjects不用接口和getter/setter的话，两个就并列第一了）。</p>
 <p>它的灵感来源于Google App Engine Python Datastore API，看一个查询的例子：</p>
 <p>List<Employee> someEmployees = Employee.all()</p>
-<p>.filter(&#8220;firstName&#8221;, &#8220;Mark&#8221;)</p>
-<p>.order(&#8220;-lastName&#8221;)</p>
+<p>.filter(&#8220;firstName&rdquo;, &#8220;Mark&rdquo;)</p>
+<p>.order(&#8220;-lastName&rdquo;)</p>
 <p>.fetch(10);<span id="more-98"></span></p>
 <p>相当的简洁明快。再和它的实体类的定义：</p>
-<p>@Table(&#8220;employees&#8221;)</p>
+<p>@Table(&#8220;employees&rdquo;)</p>
 <p>public class Employee extends Model {</p>
 <p>@Id(Generator.AUTO_INCREMENT)</p>
 <p>public Long id;</p>
-<p>@Column(&#8220;first_name&#8221;)</p>
+<p>@Column(&#8220;first_name&rdquo;)</p>
 <p>@Max(200) @NotNull</p>
 <p>public String firstName;</p>
-<p>@Column(&#8220;last_name&#8221;)</p>
+<p>@Column(&#8220;last_name&rdquo;)</p>
 <p>@Max(200) @NotNull</p>
 <p>public String lastName;</p>
-<p>@Column(&#8220;contact_info&#8221;)</p>
+<p>@Column(&#8220;contact_info&rdquo;)</p>
 <p>public Json contactInfo;</p>
-<p>@Column(&#8220;boss&#8221;) @Index(&#8220;boss_index&#8221;)</p>
+<p>@Column(&#8220;boss&rdquo;) @Index(&#8220;boss_index&rdquo;)</p>
 <p>public Employee boss;</p>
-<p>@Filter(&#8220;boss&#8221;)</p>
+<p>@Filter(&#8220;boss&rdquo;)</p>
 <p>public Query<Employee> employees;</p>
 <p>public static void main(String[] args) {</p>
 <p>Employee e = new Employee();</p>
-<p>e.firstName = &#8220;John&#8221;;</p>
-<p>e.lastName = &#8220;Smith&#8221;;</p>
+<p>e.firstName = &#8220;John&rdquo;;</p>
+<p>e.lastName = &#8220;Smith&rdquo;;</p>
 <p>e.contactInfo = map()</p>
-<p>.put(&#8220;email&#8221;, &#8220;<a href="mailto:john.smith@example.com">john.smith@example.com</a>&#8220;)</p>
-<p>.put(&#8220;telephone&#8221;, list(&#8220;xxx&#8221;, &#8220;yyy&#8221;));</p>
+<p>.put(&#8220;email&rdquo;, &#8220;<a href="mailto:john.smith@example.com">john.smith@example.com</a>&#8220;)</p>
+<p>.put(&#8220;telephone&rdquo;, list(&#8220;xxx&rdquo;, &#8220;yyy&rdquo;));</p>
 <p>e.insert();</p>
 <p>System.out.println(e.contactInfo);</p>
 <p>}</p>
@@ -35547,7 +35850,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">97</guid>
                 <description><![CDATA[<p><a href="http://www.avaje.com/ebean">http://www.avaje.com/ebean</a></p>
-<p>这个playframework邮件组里的一个热心朋友介绍给我的，因为我发了一个&#8221;I hate Hibernate&#8221;的信，他便把他使用的这个ORM介绍给了我，还把他们做的play插件源代码也发给了我，让我参考。在此表示感谢。</p>
+<p>这个playframework邮件组里的一个热心朋友介绍给我的，因为我发了一个"I hate Hibernate"的信，他便把他使用的这个ORM介绍给了我，还把他们做的play插件源代码也发给了我，让我参考。在此表示感谢。</p>
 <p>我大约得看了一下这个EBean，它和JPA很像，但是对其进行了简化：</p>
 <p>– No Session Object (or UnitOfWork or EntityManager)</p>
 <p>– No Attached or Detached Beans</p>
@@ -35555,11 +35858,11 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>的确，这些设计是罪恶的根源，我每次用JPA/Hibernate出问题，都是用了它们或者没用它们。理解起来虽然不是非常难，但是它们规则太多了，一点误用就会产生错误或者性能问题。看来EBean果然有眼光。<span id="more-97"></span></p>
 <p>增改：</p>
 <p>ESimple e = new ESimple();</p>
-<p>e.setName(&#8220;test&#8221;);</p>
-<p>e.setDescription(&#8220;something&#8221;);</p>
+<p>e.setName(&#8220;test&rdquo;);</p>
+<p>e.setDescription(&#8220;something&rdquo;);</p>
 <p>// will insert</p>
 <p>Ebean.save(e);</p>
-<p>e.setDescription(&#8220;changed&#8221;);</p>
+<p>e.setDescription(&#8220;changed&rdquo;);</p>
 <p>// this will update</p>
 <p>Ebean.save(e);</p>
 <p>查询：</p>
@@ -35567,8 +35870,8 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>Customer customer = Ebean.find(Customer.class, 4);</p>
 <p>// find a list&hellip;</p>
 <p>List<Customer> customers = Ebean.find(Customer.class)</p>
-<p>.where().like(&#8220;name&#8221;, &#8220;Rob%&#8221;)</p>
-<p>.orderBy(&#8220;name desc&#8221;)</p>
+<p>.where().like(&#8220;name&rdquo;, &#8220;Rob%&ldquo;)</p>
+<p>.orderBy(&#8220;name desc&rdquo;)</p>
 <p>.findList();</p>
 <p>这种语法跟ActiveObjects挺像的。</p>
 <p>文档有点长，有机会再研究一下。不过我还是稍稍觉得它有点麻烦，可能ActiveObjects更爽一些。</p>
@@ -35646,7 +35949,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>public interface Person extends Entity {</p>
 <p>public String name;</p>
 <p>}</p>
-<p>调用者直接使用Person.name = &#8220;sss&#8221;这样的方式来赋值，ActiveObjects在后台把它变为getter/setter呢？结果一尝试，发现这样是行不通的，因为接口中的常量都是final，无法再赋值，所以ActiveObjects只好使用getter/setter来做。</p>
+<p>调用者直接使用Person.name = &#8220;sss"这样的方式来赋值，ActiveObjects在后台把它变为getter/setter呢？结果一尝试，发现这样是行不通的，因为接口中的常量都是final，无法再赋值，所以ActiveObjects只好使用getter/setter来做。</p>
 <p>我觉得如果不用接口而用类来做，就可以实现只使用字段不用getter/setter，可以简化很多，像play中就是这么做的。可是这样需要使用cglib的库去动态改变字节码，而ActiveObjects强调它们不想使用这样的方式，所以只好用接口。</p>
 <p>如果你能接受这样稍稍的麻烦，ActiveObjects还是一个很不错的ORM框架，值得尝试。如果不喜欢这样的方式，可以再看看这个叫Siena的东西。</p>
 ]]></description>
@@ -35704,7 +36007,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <br  /><p>主页：<a href="http://www.mockito.org/">http://www.mockito.org/</a>
 <br  /><p>两个缺点：
 <br  /><p>1. 只能使用jdk1.5以上，因为它的方便是用jdk1.5的泛型换来的
-<br  /><p>2. 不能mock &#8220;static method&#8221;,&#8221;final method&#8221;,&#8221;new&#8221;，这没办法，简单易用的mock库基本上都有这缺陷。
+<br  /><p>2. 不能mock &#8220;static method&rdquo;,&ldquo;final method&rdquo;,&ldquo;new&rdquo;，这没办法，简单易用的mock库基本上都有这缺陷。
 <br  /><p>另一个专讲mock的有名网站：<a href="http://www.mockobjects.com/">http://www.mockobjects.com</a>，上面有各个语言的常用的mock库的链接</p>
 ]]></description>
             </item>
@@ -35780,40 +36083,41 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <guid isPermaLink="false">88</guid>
                 <description><![CDATA[<p>使用python已经三周了。随着使用的深入，对于它的了解比以前要多，优缺点也有更切身的体会了。现在回头看两周前写的“python一周感言”，总体感觉还是差不多的，看来python真是一个学习曲线很平滑的语言（不像ruby）。</p>
 <p>现在就讲一下python与web开发相关的一些问题。这些问题对于web开发来说，是通用的，不论使用哪种语言，都是需要面对与解决的。从另一方面来说，哪种语言解决得更好，哪种语言就更有优势。</p>
-<p>一、字符集</p>
+<h2>一、字符集</h2>
 <p>python有这个问题上还不错，通常只需要在文件最前面写一句：</p>
-<h1>&#8212; coding: utf-8 &#8212;</h1>
+<pre><code># -*- coding: utf-8 -*-
+</code></pre>
 <p>这个文件就会以utf-8的方式编码，通常不会遇到中文乱码的问题。不过如果你调用了第三方的库，要是那边没有使用utf8，或者没有处理好编码，还是有可能出现问题。那时就需要手动进行转码，会麻烦一些。</p>
 <p>python3会使用与java类似的方式来处理，但是目前人们广泛使用的还是python2.7。</p>
 <p>Java在这个方面做得真是太好了，从Java转到ruby和python的人，都会怀念吧。</p>
-<p>评价：四星<span id="more-88"></span></p>
-<p>二、web框架</p>
+<p>评价：四星</p>
+<h2>二、web框架</h2>
 <p>使用人数最多、支持最多的还是django。从google的关键字趋势图上可以看到，django的指数比其它（如pylons, turbogears）大20倍，这跟django历史悠久很有关系。另外，现在很多编辑器都对django提供了直接的支持，其它的框架都没这个福气。</p>
 <p>python中现在流行的框架有django, pylons, turbogears, cherrypy, 2py, web.py等。但是，python的web开发，真的是远远不如ruby，甚至相对java来说，也不够优秀。这一块不太想详细说，因为自己都觉得没多少意思，感觉挺灰暗的。简单来说，社区薄弱，文档落后，插件少，兼容性差，感觉各个框架的前途都挺灰暗的，说不定什么时候就没人维护了。</p>
 <p>如果说原因的话，我觉得应该是“接口”的问题。因为python不像java那样注重接口与兼容性，大家的代码都是互相直接调用。所以经常出现这样的情况：你使用的某一个组件的版本号更新了0.1，都导致整个程序运行不起来了。这比ruby要严重一些，因为ruby对于模块和类结构的规定要完善一些。</p>
 <p>评价：二星</p>
-<p>三、ORM</p>
+<h2>三、ORM</h2>
 <p>Python中目前最有名的orm当属alchemy。其它一些要么没它出名，要么没它好用。alchemy的设计不错，即可以方便地处理遗留数据表结构，又可以很好地使用orm方式来设计，而且这两种方式使用起来，风格的差异并不大。</p>
 <p>alchemy有个特点对于提高性能很有帮耗阈戳艘淮蠖汛邮菘舛寥∈莼蛘吒率莸牟僮鳎撬鞘导噬喜⒚挥兄葱校挥械钡饔昧薙ession.flush()或Session.commit()时，才会一次性批量提交，这样可以提高数据读写的性能。比hibernate之类的lazy load要厉害得多。</p>
 <p>另外，alchemy使用起来非常灵活，基本上直接写sql能做的，它都能做。虽然灵活，且用法很多，但一旦熟悉之后，并不觉得很难记，这与它的api设计得好有关系。</p>
 <p>不过有得也有失，alchemy对于回调支持很差。比如说你有一个对象，希望它在保存的时候，修改与它关联另一个对象的内容，就很麻烦。自己写了一些简单的代码来扩展它，虽然能做到，但是用起来很别扭。</p>
 <p>评价：四星</p>
-<p>四、模板</p>
+<h2>四、模板</h2>
 <p>python中的模板有四五种，如mako, genshi, jinja等，设计理念相差不大。感觉python中的模板层都做得挺不错的，不论是功能、灵活性和易用性，都很好。我最终使用的是mako，它也是由sqlahchemy的作者创建。</p>
-<p>功能上没什么问题，但是我已经习惯了&#8221;haml+sass&#8221;那样的方式（没办法，这种方式对于布局实在太方便了）。我原以为，同为动态语言，python应该像ruby那样，很容易地就实现了haml语法，结果大失所望，找了几天只找到了几个不太成熟的类haml的库，而且用起来都不顺手。</p>
+<p>功能上没什么问题，但是我已经习惯了"haml+sass"那样的方式（没办法，这种方式对于布局实在太方便了）。我原以为，同为动态语言，python应该像ruby那样，很容易地就实现了haml语法，结果大失所望，找了几天只找到了几个不太成熟的类haml的库，而且用起来都不顺手。</p>
 <p>好在最后发现了一个叫shpaml的，用起来还不错。</p>
 <p>评价：四星</p>
-<p>五、文档生成</p>
-<p>不得不说，python程序的文档网站都很漂亮专业，如：<a href="http://pylonsbook.com/en/1.1/">http://pylonsbook.com/en/1.1/</a>。这得益于它们使用的一个叫&#8221;sphinx&#8221;的一个文档工具，可以直接读取写在源代码中的文档，生成一个漂亮的文档网站。</p>
+<h2>五、文档生成</h2>
+<p>不得不说，python程序的文档网站都很漂亮专业，如：<a href="http://pylonsbook.com/en/1.1/">http://pylonsbook.com/en/1.1/</a>。这得益于它们使用的一个叫"sphinx"的一个文档工具，可以直接读取写在源代码中的文档，生成一个漂亮的文档网站。</p>
 <p><a href="http://sphinx.pocoo.org/">http://sphinx.pocoo.org/</a></p>
 <p>评价：五星</p>
-<p>六、分页</p>
+<h2>六、分页</h2>
 <p>pylons中的分页很简单，可以把一个sqlalchemy的query对象传过去，就直接能分页，再配合一个生成链接的函数，很方便且完美。跟ruby中差不多。</p>
 <p>评价：五星</p>
-<p>七、循环导入</p>
+<h2>七、循环导入</h2>
 <p>不能不说，python的这个限制非常不方便：当你使用一个类之前，必须先定义它或者导入它。</p>
 <p>当我们使用orm时，通常都会在不同的文件中，定义互相调用的类。</p>
-<p>比如，定义了一个User和一个Question，它们都在自己的文件里，且会互相引用，就会很麻烦，而且很难解决。sqlalchemy的做法是，在引用时使用字符串代替，比如User.id要写出&#8221;User.id&#8221;，虽然可行，但是实在太丑了。其它语言中，基本上都不会出现这样的问题。</p>
+<p>比如，定义了一个User和一个Question，它们都在自己的文件里，且会互相引用，就会很麻烦，而且很难解决。sqlalchemy的做法是，在引用时使用字符串代替，比如User.id要写出"User.id&rdquo;，虽然可行，但是实在太丑了。其它语言中，基本上都不会出现这样的问题。</p>
 <p>转换语言，最大的郁闷就是：之前那个语言的不爽的地方被解决了，但是爽的地方变不爽了。而有时候，不是技术上的问题，而是风格和文化的问题。比如对haml的使用，在ruby世界已经风形，用过的人都说好，但是在python中，唉。</p>
 ]]></description>
             </item>
@@ -35846,7 +36150,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 </ol>
 <p>如果解决问题的方式有多种，python只用其中最好的那一种。</p>
 <ol>
-<li>一切都是&#8221;namespace&#8221;：包括package, module, class, object</li>
+<li>一切都是"namespace&rdquo;：包括package, module, class, object</li>
 </ol>
 <p>Python的面向对象，更像javascript，而不像java, c++或者ruby</p>
 <p>下面从做网站的角度谈谈python。</p>
@@ -35932,14 +36236,14 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
                 <guid isPermaLink="false">83</guid>
                 <description><![CDATA[<p>从eclipse转到idea后，有一些操作习惯发生变化，不太适应，所以需要先对idea进行一下设置。记录下来，以备后用。</p>
 <p>1。使用eclipse的快捷键</p>
-<p>File -> Settings -> Keymap ->　右边选&#8221;Eclipse&#8221;</p>
+<p>File -> Settings -> Keymap ->　右边选"Eclipse&rdquo;</p>
 <p>2。调整字体</p>
 <p>File -> Settings -> Editor -> Colors &amp; Fonts -> Font -> 字体名调整为Courier New，大小为12，行距为1.3</p>
 <p>注意调整前需要先另存为一个新的Scheme name，不然无法修改。<span id="more-83"></span></p>
 <p>3。点击时超过行尾字符，则定位在最后一个字符，而不是点击的位置</p>
-<p>File -> Settings -> Editor -> 右边 &#8220;Allow placement of caret after end of line&#8221;，去掉勾</p>
+<p>File -> Settings -> Editor -> 右边 &#8220;Allow placement of caret after end of line&rdquo;，去掉勾</p>
 <p>4。按Ctrl+方向键移动鼠标时，不是按整词，而是按词中词来跳动</p>
-<p>File -> Settings -> Editor -> Smart Keys -> 右边选中&#8221;user CamelHumps words&#8221;</p>
+<p>File -> Settings -> Editor -> Smart Keys -> 右边选中"user CamelHumps words&rdquo;</p>
 <ol>
 <li>鼠标双击一个单词时，则选中全部，而不是词中词</li>
 </ol>
@@ -35970,12 +36274,12 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>5。通过外部搜索引擎，如google。stackoverflow上发布的问题，通常在3分钟之后，就会显示在google的搜索列表中。</p>
 <p>我能想到的所有有可能看到该问题的方式都在上面了，但却没有找到一个很好的解释：<strong>为什么就这个问题会被这么多人看到？</strong></p>
 <p>按照正常情况来说，一个问题提出之后，在几分钟之内就会跑到第二页之后了，一个小时之后就会在十几页之后了，这时基本上等于淹没于问题的海洋中了。日后想再被人看到，只能靠被人搜索到。而这个问题，在短时间内被大量人看到，应该与搜索引擎无关（不会这么巧就今天有无数人想起来搜索这个问题，而且问题的标题和内容看着不都热门）。那么就只有一种情况了，它被系统定义为“热门问题”、“有趣问题”，并且在相关问题中，排名靠前。这样才会有这么多的人看到。</p>
-<p>那么我去验证一下，我按照一个普通浏览者的身份来浏览Stackoverflow，看能不能轻易地找到这个问题。果然，在首页的“周热门问题栏”，这个问题排在第4名。并且，显示的最后回答者的&#8221;86.4K&#8221;的贡献值（这绝对是超级大牛级的人物）给这个问题增加了莫大的吸引力，见下图：</p>
+<p>那么我去验证一下，我按照一个普通浏览者的身份来浏览Stackoverflow，看能不能轻易地找到这个问题。果然，在首页的“周热门问题栏”，这个问题排在第4名。并且，显示的最后回答者的"86.4K"的贡献值（这绝对是超级大牛级的人物）给这个问题增加了莫大的吸引力，见下图：</p>
 <p><a href="/user_images/81-1.jpg"><img src="/user_images/81-1.jpg" alt="image" title="image" /></a></p>
 <p>马上又在“月热门问题”中找到了这个问题，排名18。只在这两个地方发现了这个问题，但是已经非常足够了，按照Stackoverflow的访问量，每小时100多人的访问是非常轻松的。而且这个问题又的确很有意思，回答者给出来的回答又非常好，所以很容易引得人们的参与欲望。</p>
 <p>刚刚搜了一下那个86.4K牛人的信息，八卦一下，他的网站上，直接把Stackoverflow上的贡献值列出来了，这是一个非常有说服力的证明：</p>
 <p><a href="/user_images/81-3.jpg"><img src="/user_images/81-3.jpg" alt="image" title="image" /></a></p>
-<p>他在Stackoverflow旗下的五个网站中，总的贡献值达到了&#8221;90K&#8221;，我才1800多。</p>
+<p>他在Stackoverflow旗下的五个网站中，总的贡献值达到了"90K&rdquo;，我才1800多。</p>
 <p>回到主题，看来的确是因为这个问题被评为了“热门问题”，它才得到了这么多的浏览量和参与；但是反过来，正是人们的参与，又让Stackoverflow判定它是一个好问题，所以放在首页。通过这件事，我觉得Stackoverflow不仅仅是一个简单的问答网站，它不仅仅是提供了“可编辑”“贡献多者拥有更多管理权限”“奖章”来保证问题的质量和人们的参与性，它还通过一些算法，<strong>让好问题得到更多的展示机会</strong>。</p>
 <p>只有在网站上看到更多的好问题，人们才愿意去看，去看，去投票，提问者也会受到肯定和鼓励，下次再有问题时，会第一时间想到这个网站。可以说，这个网站是活的，因为它可以找出最热门的问题并展示出来，并且它展示出来的问题，都是被人认可的好问题。</p>
 <p>这和google对网站的判定一样：什么样的网站是好网站，它应该排在前面。想判定一个网站是好还是不好，为什么比另一个好，这不是一件容易的事情。而Stackoverflow所做的很类似，这也不是一件容易的事情。</p>
@@ -36077,7 +36381,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>if(user.save()) {</p>
 <p>[user: user]</p>
 <p>} else {</p>
-<p>render view: &#8220;register&#8221;, model: [user: user]</p>
+<p>render view: &#8220;register&rdquo;, model: [user: user]</p>
 <p>}</p>
 <p>}</p>
 <p>}</p>
@@ -36106,7 +36410,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>package test;</p>
 <p>public class HelloWorld {</p>
 <p>public static void main(String[] args) {</p>
-<p>System.out.println(&#8220;Hello, World!&#8221;);</p>
+<p>System.out.println(&#8220;Hello, World!&ldquo;);</p>
 <p>}</p>
 <p>}<span id="more-70"></span></p>
 <p>编译后，生成一个545字节的HelloWorld.class文件。我们可以使用以下代码，读取其内容并打印出来：</p>
@@ -36115,14 +36419,14 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>import org.apache.commons.io.IOUtils;</p>
 <p>public class ClassReader {</p>
 <p>public static void main(String[] args) throws Exception {</p>
-<p>String file = &#8220;E:/WORKSPACE/TestJava/bin/test/HelloWorld.class&#8221;;</p>
+<p>String file = &#8220;E:/WORKSPACE/TestJava/bin/test/HelloWorld.class&rdquo;;</p>
 <p>FileInputStream input = new FileInputStream(file);</p>
 <p>byte[] bytes = IOUtils.toByteArray(input);</p>
 <p>HexDump.dump(bytes, 0, System.out, 0);</p>
 <p>}</p>
 <p>}</p>
 <p>其中HexDump是commons-io提供的一个类，非常实用。该程序将向控制台上打印出以下内容：</p>
-<p>00000000 CA FE BA BE 00 00 00 32 00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&#8221;&hellip;&hellip;</p>
+<p>00000000 CA FE BA BE 00 00 00 32 00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&ldquo;&hellip;&hellip;</p>
 <p>00000010 74 65 73 74 2F 48 65 6C 6C 6F 57 6F 72 6C 64 07 test/HelloWorld.</p>
 <p>00000020 00 04 01 00 10 6A 61 76 61 2F 6C 61 6E 67 2F 4F &hellip;..java/lang/O</p>
 <p>00000030 62 6A 65 63 74 01 00 06 3C 69 6E 69 74 3E 01 00 bject&hellip;<init>..</p>
@@ -36171,7 +36475,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>CA FE BA BE <strong>00 00</strong>00 32 00 22 07 00 02 01 00 0F</p>
 <p>表示子版本号，这里是0</p>
 <p><strong>读取两个字节major_version</strong></p>
-<p>CA FE BA BE 00 00 <strong>00 32</strong>00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&#8221;&hellip;&hellip;</p>
+<p>CA FE BA BE 00 00 <strong>00 32</strong>00 22 07 00 02 01 00 0F &hellip;&hellip;.2.&ldquo;&hellip;&hellip;</p>
 <p>表示主版本号，32表示50，即jdk1.6</p>
 <p><strong>读取两个字节constant_pool_count</strong></p>
 <p>CA FE BA BE 00 00 00 32 <strong>00 22</strong>07 00 02 01 00 0F</p>
@@ -36331,16 +36635,16 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <p>改变窗口大小</p>
 <pre><code>行数Ctrl-w+
 </code></pre>
-<p>把当前窗口高度增加&#8221;行数&#8221;行(如不指定行数，默认为1)</p>
+<p>把当前窗口高度增加"行数"行(如不指定行数，默认为1)</p>
 <pre><code>行数Ctrl-w-
 </code></pre>
-<p>把当前窗口高度减少&#8221;行数&#8221;行(如不指定行数，默认为1)</p>
+<p>把当前窗口高度减少"行数"行(如不指定行数，默认为1)</p>
 <pre><code>Ctrl-w=
 </code></pre>
 <p>让所有窗口一样高</p>
 <pre><code>行数Ctrl-w_
 </code></pre>
-<p>把当前窗口的高度设为&#8221;行数&#8221;，如不指定则把它最大化。</p>
+<p>把当前窗口的高度设为"行数&rdquo;，如不指定则把它最大化。</p>
 <p>缓冲</p>
 <p>Vim用缓冲来代表一个文件。当你在编缉一个文件时，只是在编缉它的缓冲。当你完成编辑保存时，Vim把缓冲中的内容保存进文件。当然，事情并不是这么简单。在Vim中设置的标记之类的也保存在缓冲中。你可以同时拥有多个缓冲，当你编辑多个文件时就是这样。当你想要一个Vim窗口，并且想编辑多个文件时，把这个窗口最大化是不管用的，因为这不是一个窗口，其它的窗口还是能看得见的。此时你可以把不编辑的缓冲隐藏(hide)，用命令</p>
 <pre><code>:hide
@@ -36389,7 +36693,7 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 :sbmodified count 等于:split加:bmodified
 </code></pre>
 <p>缓冲选项</p>
-<p>通常当所有编辑一个文件的窗口都关掉后，这个窗口的缓冲就变成&#8221;不活动&#8221;,如果不想这样，可以设置</p>
+<p>通常当所有编辑一个文件的窗口都关掉后，这个窗口的缓冲就变成"不活动&rdquo;,如果不想这样，可以设置</p>
 <pre><code>:set hidden
 </code></pre>
 <p>让它变成隐藏而不是不活动。</p>
@@ -36469,19 +36773,19 @@ RewriteRule ^(.*)$ http://freewind.me/$1 [R=permanent,L]
 <pre><code>source $VIMRUNTIME/../myvimrc.vim
 </code></pre>
 <p>我的myvimrc.vim文件的内容，现在是这样子的：</p>
-<p>&#8221; 不要菜单</p>
+<p>" 不要菜单</p>
 <pre><code>set go=
 </code></pre>
-<p>&#8221; 使用evening配色</p>
+<p>" 使用evening配色</p>
 <pre><code>colo evening
 </code></pre>
-<p>&#8221; 显示行号</p>
+<p>" 显示行号</p>
 <pre><code>set nu
 </code></pre>
-<p>&#8221; 使用Megatops ProCoder字体</p>
+<p>" 使用Megatops ProCoder字体</p>
 <pre><code>set guifont=Megatops_ProCoder_1.0:h10
 </code></pre>
-<p>&#8221; 下面是一个插件Taglist的快捷键，按F8就可以快速打开和关闭tag列表</p>
+<p>" 下面是一个插件Taglist的快捷键，按F8就可以快速打开和关闭tag列表</p>
 <pre><code>nnoremap &lt;silent&gt; &lt;F8&gt; :TlistToggle&lt;CR&gt;
 </code></pre>
 ]]></description>
@@ -36539,7 +36843,7 @@ set guifont
                 <guid isPermaLink="false">33</guid>
                 <description><![CDATA[<p>在windows下，gvim使用的是一种叫Fixedsys的等宽字体，就是记事本默认使用的那种。其实看起来也还好，除了有一些关键字会被“加粗”，看起来就别扭了。如图：</p>
 <p><a href="/user_images/33-1.jpg"><img src="/user_images/33-1.jpg" alt="image" title="image" /></a></p>
-<p>注意那些&#8221;private/public/void/return&#8221;，被加粗了，虽然看起来还能将就，看是总觉得有点不舒服，五大三粗，太胖了。<span id="more-33"></span></p>
+<p>注意那些"private/public/void/return&rdquo;，被加粗了，虽然看起来还能将就，看是总觉得有点不舒服，五大三粗，太胖了。<span id="more-33"></span></p>
 <p>经过搜索资料，发现在linux等操作系统上，默认使用的字体是细的，“加粗”后看起来正好，但是在windows上，fixedsys这种字体本身就是笔划比较粗的，再加粗后就肿了。怎么办？</p>
 <p>我开始试着改gvim的配置，但是对于现在的我来说实在太复杂了，而且这也好像不是推荐的方式。最后发现，真有不少字体是专门为编程而设计的，这些字体，字母的宽度相等，看起来清晰，容易区分。只要我换一种细字体，不就可以了吗？</p>
 <p>找到了几篇文章，专门讲编程字体：</p>
@@ -36561,7 +36865,7 @@ set guifont
 <p><a href="http://3seconds.cn/2010/01/20/10-programming-fonts.html">http://3seconds.cn/2010/01/20/10-programming-fonts.html</a></p>
 <p>直奔第一名：免费的Inconsolata</p>
 <p>主页：<a href="http://www.levien.com/type/myfonts/inconsolata.html">http://www.levien.com/type/myfonts/inconsolata.html</a></p>
-<p>点击其中的&#8221;OpenType file &#8220;链接下载字体文件，放入windows/font</p>
+<p>点击其中的"OpenType file &#8220;链接下载字体文件，放入windows/font</p>
 <p>看看效果：</p>
 <p><a href="/user_images/33-5.jpg"><img src="/user_images/33-5.jpg" alt="image" title="image" /></a></p>
 <p>字体很好看，圆润型的，我记得那些搞rails的基本上都用的是这种字体。只是不知道为什么，在我这里看起来有点虚，不舒服，不然我就选它了。</p>
@@ -36617,7 +36921,7 @@ set guifont
    // setters omitted
 }
 </code></pre>
-<p>List people = em.createQuery( &#8220;SELECT FROM Person p WHERE p.surname LIKE 'Smith%'&#8221;) .getResultList();</p>
+<p>List people = em.createQuery( &#8220;SELECT FROM Person p WHERE p.surname LIKE 'Smith%'&ldquo;) .getResultList();</p>
 <p>变为：</p>
 <pre><code>Person p = LiquidForm.use(Person.class, "p");
    List people = em.createQuery(
@@ -36700,7 +37004,7 @@ set guifont
 }
 </code></pre>
 <p>这样，这个Hello类实际上就有了一个bye()的函数了。</p>
-<p>play使用它，成功地实现了&#8221;充血模型&#8221;，使我们不需要dao。基本思路是：</p>
+<p>play使用它，成功地实现了"充血模型&rdquo;，使我们不需要dao。基本思路是：</p>
 <p>定义一个基类，叫Model，里面定义了一些函数如find(), save(), delete()，但是为空，它们的作用就像接口一样，只是为了让我们在程序中可以调用这些函数。我们定义的model都继承于它。当这些model导入时，使用javassist对这些类进行增强，把之前为空的代码都换成事先定义好的代码。这样，我们即可以调用它们，又实现了真正所需的功能，这个做法真的是非常方便。</p>
 <p>这只是其中的一个例子。可以说play的基础就是javassist，它的很多魔术般的功能都来自于它。一旦理解之后，我们也可以自己实现一些方便好用的功能。</p>
 ]]></description>
@@ -36918,7 +37222,7 @@ $ ./winetricks
 <pre><code># yum update
 </code></pre>
 <p>提示有200多M需要下载，此时要多等一会儿。</p>
-<p><strong>六、在右键中增加&#8221;在终端中打开&#8221;</strong></p>
+<p><strong>六、在右键中增加"在终端中打开&rdquo;</strong></p>
 <pre><code># yum install nautilus-open-terminal
 </code></pre>
 <p><strong>七、增加gnome调整工具</strong></p>
@@ -36956,10 +37260,10 @@ $ ./winetricks
 <p>Linux发行版通常都提供了神奇的Live模式，即不用安装，就可以正常运行Linux。上网、安装和运行程序，都没有问题。这可比windows xp先进多了。我们现在就可以试试操作，比如左上角的菜单里，可以找到Firefox，用它来上上网。还可以找到一个“安装到硬盘”的菜单项，点击后将开始安装。在安装的过程中，将提示我们进行一些配置，如选择语言、键盘类型、时区，选择硬盘分区，设置密码等。此时如果遇到什么不明白的，还可以上网搜索。</p>
 <p>一切顺利的话，大约十分钟后就能安装成功，重启即可。</p>
 <p><strong>六、更改语言区域</strong></p>
-<p>默认情况下，安装的是英文。进入桌面后，点击“Application->System Tools->System Settings&#8221;，在打开的面板中的第一行找到“语言区域设置”，点击后将出现一个列表，找到Chinese一项并点击它。然后注销，重新登录，菜单就会变成中文的了。</p>
-<p>这时会提示，是否把一些常用目录改为中文，如“Download”将改为“下载”，“Music&#8221;改为“音乐”。最好的做法是“Keep old names&#8221;，不然你在文本模式下操作时，中文都变成了一个个黑方块，让人欲哭无泪。</p>
+<p>默认情况下，安装的是英文。进入桌面后，点击“Application->System Tools->System Settings&rdquo;，在打开的面板中的第一行找到“语言区域设置”，点击后将出现一个列表，找到Chinese一项并点击它。然后注销，重新登录，菜单就会变成中文的了。</p>
+<p>这时会提示，是否把一些常用目录改为中文，如“Download”将改为“下载”，“Music"改为“音乐”。最好的做法是“Keep old names&rdquo;，不然你在文本模式下操作时，中文都变成了一个个黑方块，让人欲哭无泪。</p>
 <p><strong>七、安装中文输入法</strong></p>
-<p>系统已经默认安装了一个拼音输入法。但我习惯使用五笔，所以第一件事就是安装一个五笔输入法，不然这篇日志都没法写。。点击“应用程序->系统工具->添加删除程序“，在打开的对话框中输入wubi，等一会儿后，将会出现几条结果。我选择“Jidian&#8221;开头的那个，它使用的是极点五笔的词库。安装后，在点上角的“小键盘”图标上点右键，选择“重新启动”，然后再点右键，选择“首选项”进行配置。在第二个tab里，给“custom active methods&#8221;勾上，在列表中找到“极点五笔”并点击右边的&#8221;添加“按钮。同时可以删除一些无用的输入法，并将五笔向上移到首位。</p>
+<p>系统已经默认安装了一个拼音输入法。但我习惯使用五笔，所以第一件事就是安装一个五笔输入法，不然这篇日志都没法写。。点击“应用程序->系统工具->添加删除程序“，在打开的对话框中输入wubi，等一会儿后，将会出现几条结果。我选择“Jidian"开头的那个，它使用的是极点五笔的词库。安装后，在点上角的“小键盘”图标上点右键，选择“重新启动”，然后再点右键，选择“首选项”进行配置。在第二个tab里，给“custom active methods"勾上，在列表中找到“极点五笔”并点击右边的"添加“按钮。同时可以删除一些无用的输入法，并将五笔向上移到首位。</p>
 <p>至此，基本的安装过程结束。</p>
 ]]></description>
             </item>

@@ -36,7 +36,15 @@
     <p>我们经常需要在项目中放置一个sbt脚本，以执行各种sbt命令，让每个人都使用相同的环境。</p>
 <p>在Linux/Mac下可在项目目录下创建文件sbt，填充为以下内容（这里使用了当前最新的sbt 0.13.5，你可以根据情况调整）。</p>
 <p>项目来源：https://github.com/paulp/sbt-extras</p>
-<h2>sbt</h2>
+<h2>一条命令搞定</h2>
+<pre><code>curl -s https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt &gt; sbt &amp;&amp; chmod 0755 sbt
+</code></pre>
+<p>运行：</p>
+<pre><code>$ ./sbt
+</code></pre>
+<p>它会自动下载所需要的sbt及相关库，非常方便。</p>
+<h2>看一下内容</h2>
+<p><strong>sbt</strong></p>
 <pre><code class="shell">#!/usr/bin/env bash
 #
 # A more capable sbt runner, coincidentally also called sbt.
@@ -486,13 +494,6 @@ execRunner "$java_cmd" \
   "${sbt_commands[@]}" \
   "${residual_args[@]}"
 </code></pre>
-<h2>设置执行权限</h2>
-<pre><code>chmod +x sbt
-</code></pre>
-<h2>运行</h2>
-<pre><code>$ sbt
-</code></pre>
-<p>它会自动下载所需要的sbt及相关库，非常方便。</p>
 
 </div>
 

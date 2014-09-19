@@ -34,7 +34,7 @@
 
 <div>
     <p>昨天重装了windows，今天连接github.com时，提示连接不上。我记得已经备份过了密钥，怎么用不了了呢？</p>
-<p>后来发现，原来我把文件拷错了地方，应该拷到<code>C:\Documents and Settings\current_user\.ssh</code>下，有三个文件，分别是&#8221;id_rsa&#8221;，&#8221;id_rsa.pub&#8221;，&#8221;known_hosts&#8221;</p>
+<p>后来发现，原来我把文件拷错了地方，应该拷到<code>C:\Documents and Settings\current_user\.ssh</code>下，有三个文件，分别是"id_rsa&rdquo;，&ldquo;id_rsa.pub&rdquo;，&ldquo;known_hosts&rdquo;</p>
 <p>重新拷完，再试，一切正常。</p>
 <p>如果以后出现这样的问题，可以在git bash下，使用命令：</p>
 <pre><code>ssh -v git@github.com

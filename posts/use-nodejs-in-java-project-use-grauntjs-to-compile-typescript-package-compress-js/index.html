@@ -100,7 +100,7 @@ npm的配置放在名为package.json的文件中，它的内容是一个json字�
 }
 
 
-其中name和version是基本信息，必须有。不过通常比较关注的是&amp;#8221;dependencies&amp;#8221;信息，它表示所在项目依赖于哪些第三方库。
+其中name和version是基本信息，必须有。不过通常比较关注的是"dependencies"信息，它表示所在项目依赖于哪些第三方库。
 
 首先要讲一下npm是怎么来查找路径的。当我们执行一个npm命令时，比如`npm install typescript`，它会首先查当前目录下有没有`package.json`文件或者`node_modules`目录。如果有则直接使用，没有的话，到上级目录中寻找，直到根目录。这个特性可以让我们在一个项目的子目录中执行npm命令，十分方便。如果所有的上级目录都没有的话，则会以当前目录作为工作目录，创建一个node_modules目录，把安装的库放到里面。
 
@@ -461,7 +461,7 @@ module.exports = function (grunt) {
 };
 
 
-注意其中的&amp;#8221;typescript&amp;#8221;和&amp;#8221;concat&amp;#8221;任务，可以设置多个子任务，名字（这里是WindBase和wind_articles）任选，只要里面的配置写对即可。你可以参照它修改。
+注意其中的"typescript"和"concat"任务，可以设置多个子任务，名字（这里是WindBase和wind_articles）任选，只要里面的配置写对即可。你可以参照它修改。
 
 另外把package.json也贴上：
 

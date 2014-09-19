@@ -34,7 +34,7 @@
 
 <div>
     <p><a href="http://www.avaje.com/ebean">http://www.avaje.com/ebean</a></p>
-<p>这个playframework邮件组里的一个热心朋友介绍给我的，因为我发了一个&#8221;I hate Hibernate&#8221;的信，他便把他使用的这个ORM介绍给了我，还把他们做的play插件源代码也发给了我，让我参考。在此表示感谢。</p>
+<p>这个playframework邮件组里的一个热心朋友介绍给我的，因为我发了一个"I hate Hibernate"的信，他便把他使用的这个ORM介绍给了我，还把他们做的play插件源代码也发给了我，让我参考。在此表示感谢。</p>
 <p>我大约得看了一下这个EBean，它和JPA很像，但是对其进行了简化：</p>
 <p>– No Session Object (or UnitOfWork or EntityManager)</p>
 <p>– No Attached or Detached Beans</p>
@@ -42,11 +42,11 @@
 <p>的确，这些设计是罪恶的根源，我每次用JPA/Hibernate出问题，都是用了它们或者没用它们。理解起来虽然不是非常难，但是它们规则太多了，一点误用就会产生错误或者性能问题。看来EBean果然有眼光。<span id="more-97"></span></p>
 <p>增改：</p>
 <p>ESimple e = new ESimple();</p>
-<p>e.setName(&#8220;test&#8221;);</p>
-<p>e.setDescription(&#8220;something&#8221;);</p>
+<p>e.setName(&#8220;test&rdquo;);</p>
+<p>e.setDescription(&#8220;something&rdquo;);</p>
 <p>// will insert</p>
 <p>Ebean.save(e);</p>
-<p>e.setDescription(&#8220;changed&#8221;);</p>
+<p>e.setDescription(&#8220;changed&rdquo;);</p>
 <p>// this will update</p>
 <p>Ebean.save(e);</p>
 <p>查询：</p>
@@ -54,8 +54,8 @@
 <p>Customer customer = Ebean.find(Customer.class, 4);</p>
 <p>// find a list&hellip;</p>
 <p>List<Customer> customers = Ebean.find(Customer.class)</p>
-<p>.where().like(&#8220;name&#8221;, &#8220;Rob%&#8221;)</p>
-<p>.orderBy(&#8220;name desc&#8221;)</p>
+<p>.where().like(&#8220;name&rdquo;, &#8220;Rob%&ldquo;)</p>
+<p>.orderBy(&#8220;name desc&rdquo;)</p>
 <p>.findList();</p>
 <p>这种语法跟ActiveObjects挺像的。</p>
 <p>文档有点长，有机会再研究一下。不过我还是稍稍觉得它有点麻烦，可能ActiveObjects更爽一些。</p>

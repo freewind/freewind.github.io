@@ -36,8 +36,8 @@
     <p>我是在看play自带的聊天室程序<code>samples-and-tests/chat</code>时，发现了这个类<code>libs.F</code>。</p>
 <p>Play的文档，在基本使用方面写得很详细，但对于较高级的功能，如这个<code>libs.F</code>类，则非常简略。没有注释，没有文档，只有源代码，以及网上一篇辛苦找到的很简单的介绍性文章：<a href="https://github.com/playframework/play/blob/master/documentation/manual/libs.textile">https://github.com/playframework/play/blob/master/documentation/manual/libs.textile</a></p>
 <p>这里做一下简单介绍（边学边写）：</p>
-<p>libs.F中的F，指的是&#8221;Functional programming&#8221;，即函数式编程。Java本身不支持函数式编程，所以play试图将一些函数式编程中的概念移植到java中，所以有了这个libs.F。</p>
-<p>libs.F虽然是一个类，但play其实是把它当成&#8221;包&#8221;在用。因为里面定义了很多public类和方法，放在一起显得更加方便。</p>
+<p>libs.F中的F，指的是"Functional programming&rdquo;，即函数式编程。Java本身不支持函数式编程，所以play试图将一些函数式编程中的概念移植到java中，所以有了这个libs.F。</p>
+<p>libs.F虽然是一个类，但play其实是把它当成"包"在用。因为里面定义了很多public类和方法，放在一起显得更加方便。</p>
 <p><span id="more-438"></span>
 <br  /><p>基本结构如下：</p>
 <p><img src="/user_images/438-0.png" alt="" /></p>
@@ -93,7 +93,7 @@ for (String s : String.and(StartsWith("command:")).match(obj)) {
 }
 </code></pre>
 <p><strong>5. 并发及异步</strong></p>
-<p>上面的这些，在代码中使用的并不多。它们的存在，实际上是为了这里的&#8221;并发及异步&#8221;。</p>
+<p>上面的这些，在代码中使用的并不多。它们的存在，实际上是为了这里的"并发及异步&rdquo;。</p>
 <p>这里涉及到的类（和接口）有：Action, Action0, Promise, Timeout, EventStream, IndexedEvent, ArchivedEventStream</p>
 <p>这一块的代码写得极其复杂且完全没有注释，看起来让人头大无比。这也能代表play整体的代码风格：代码写得比较玄，有些地方逻辑复杂，很难理解。</p>
 <p>在play的google group中有一段描述，也许可以帮助理解：</p>

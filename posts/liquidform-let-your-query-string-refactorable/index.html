@@ -47,7 +47,7 @@
    // setters omitted
 }
 </code></pre>
-<p>List people = em.createQuery( &#8220;SELECT FROM Person p WHERE p.surname LIKE 'Smith%'&#8221;) .getResultList();</p>
+<p>List people = em.createQuery( &#8220;SELECT FROM Person p WHERE p.surname LIKE 'Smith%'&ldquo;) .getResultList();</p>
 <p>变为：</p>
 <pre><code>Person p = LiquidForm.use(Person.class, "p");
    List people = em.createQuery(
