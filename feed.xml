@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Fri, 19 Sep 2014 10:01:53 CST</lastBuildDate>
+        <lastBuildDate>Fri, 19 Sep 2014 19:23:21 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -1996,29 +1996,24 @@ sbtVersion := "0.13.5"
 resolvers ++= Seq(
   "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
   "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases",
+  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases"
 )
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-lang3" % "3.3.2",
   "commons-io" % "commons-io" % "2.4",
   "com.google.guava" % "guava" % "18.0",
-
   "org.scalaz" %% "scalaz-core" % "7.1.0",
   "io.argonaut" %% "argonaut" % "6.1-M4",
-
   "net.databinder" %% "unfiltered" % "0.8.1",
   "net.databinder" %% "unfiltered-filter-async" % "0.8.1",
   "net.databinder" %% "unfiltered-jetty" % "0.8.1",
-
   "ch.qos.logback" % "logback-classic" % "1.1.2",
   "org.slf4j" % "slf4j-api" % "1.7.7",
-
   "org.commonjava.googlecode.markdown4j" % "markdown4j" % "2.2-cj-1.0",
   "com.github.spullara.mustache.java" % "compiler" %    "0.8.16",
   "org.jsoup" % "jsoup" % "1.7.3",
-
-  "org.specs2" %% "specs2" % "2.3.13" % "test",
+  "org.specs2" %% "specs2" % "2.3.13" % "test"
 )
 </code></pre>
 <p><code>libraryDependencies</code>里加的东西比较多，可以自行删减或增加。</p>
@@ -4428,7 +4423,7 @@ case _ =&gt;
 <p>所以个人感觉，scala中DSL的“强大”主要体现在类型方面，而在表达能力和易读性方面，可能要弱于其它一些语言。</p>
 <div class="se-section-delimiter"></div>
 <h2>类型系统我们不用学</h2>
-<p>Scala中的类型系统很强大，也很复杂，对于初学者来说是一个难点。记得以前看到有人说，普通的程序员不需要掌握它们，只有类库的设计者需要掌握。</p>
+<p>Scala中的类型系统很强大，也很复杂，对于初学者来说是一个难点。记得以前看到有人说，普通的程序员不需要掌握它们，只有类库的设计者需要掌握。</p>
 <p>但是实际情况是，如果不能尽早的掌握足够的类型系统知识，在使用Scala时我们几乎寸步难行。我们在编译Scala代码时，遇到的最多错误就是各种类型不匹配，如果不熟悉的话，可能要卡几个小时都解决不了。</p>
 <p>所以在最开始学习的时候，就不能回避它。也许我们的目的不是设计出一个类型很复杂的类库，我们也要能做到看得懂复杂一点的方法签名，解决常见的类型编译错误。</p>
 <div class="se-section-delimiter"></div>
@@ -10809,7 +10804,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="m&#x61;&#105;&#108;&#116;&#111;&#x3a;w&#101;&#x62;&#45;&#x75;i&#45;&#x64;&#101;&#x76;&#x40;&#100;&#97;&#114;&#116;&#108;&#x61;&#110;&#103;&#46;&#x6f;&#114;&#x67;">&#x77;&#x65;&#98;&#x2d;&#x75;&#x69;&#45;&#x64;&#x65;&#118;&#64;&#x64;&#97;&#x72;&#116;&#x6c;&#97;&#x6e;&#x67;&#x2e;&#x6f;&#x72;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x77;&#101;&#98;&#x2d;&#x75;&#x69;&#45;&#x64;&#x65;&#x76;&#64;&#x64;&#x61;&#x72;&#116;&#108;&#x61;&#110;&#x67;&#46;&#x6f;r&#x67;">&#x77;&#x65;b&#x2d;u&#105;&#x2d;&#x64;e&#x76;&#x40;&#x64;&#97;&#114;&#x74;&#108;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -11489,7 +11484,7 @@ import java.util.Map;
  * User: Freewind
  * Date: 13-3-31
  * Time: 下午5:22
- * Blog: http://freewind.me
+ * Blog: http://freewind.github.io
  */
 public class CompileWithJDT {
 
