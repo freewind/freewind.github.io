@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>现在web开发的趋势是前后端分离。前端采用某些js框架，后端采用某些语言提供restful API，两者以json格式进行数据交互。</p>
+    <p>现在web开发的趋势是前后端分离。前端采用某些js框架，后端采用某些语言提供restful API，两者以json格式进行数据交互。</p>
 <p>如果后端采用node.js，则前后端可以使用同一种语言，共享某些可重用的Js代码，并共享构建工具。但很多时候我们可能采用别的语言，如ruby/java/scala等，此时前后端代码基本上是完全独立的。虽然大家都在同一个项目中，但可以分成互相独立的两块，并且前后端通常使用不同的构建工具。</p>
 <p>比如当后端使用Scala时，我们会使用sbt进行项目构建，对scala代码进行编译、测试、打包等。它的专长是处理与scala相关的任务，但对于前端的支持比较弱。前端一些常见的任务，如js库的下载和管理、css文件的转换、js文件合并压缩、js测试的执行等，很难在sbt中找到好用的插件，而利用js世界里的工具来做反而更加方便一些。</p>
 <p>我们项目组这几天正在讨论是否在项目中引入一些前端框架，还是直接用原生Javascript写。经过反复讨论和调研，最终决定引入AngularJs。但AngularJs的引入并不是单一的任务，因为我们还需要考虑前端代码的测试、依赖管理等，都需要有相应的工具支持，所以最后引入了这么一整套工具：</p>

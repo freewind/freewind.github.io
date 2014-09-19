@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>Play的优点无数，缺点只有一个，但也是最大的一个：
+    <p>Play的优点无数，缺点只有一个，但也是最大的一个：
 <br  /><p><strong>　　很多第三方的Java库在Play中无法直接使用！</strong></p>
 <p><span id="more-115"></span>
 <br  /><p>这就是所谓的有得即有失。Play通过实现自己的ClassLoader，做到了修改源代码不用重启，大大提高了开发效率，让Play脱颖而出。但同时也导致与其它Java类库（涉及到ClassLoader的），与Play一起使用时，有可能因为ClassLoader的问题，无法正常运行。

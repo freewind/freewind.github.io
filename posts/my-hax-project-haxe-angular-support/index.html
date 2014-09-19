@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>经过几天的奋斗，终于把这个小项目做出来了：<a href="https://github.com/freewind/HaxeAngularSupport">https://github.com/freewind/HaxeAngularSupport</a></p>
+    <p>经过几天的奋斗，终于把这个小项目做出来了：<a href="https://github.com/freewind/HaxeAngularSupport">https://github.com/freewind/HaxeAngularSupport</a></p>
 <p>这个东西是一个haxe的宏，它的作用是在编译时期改变我们的代码结构，自动生成一些手写麻烦的代码，让我们写起来简单一些。这个项目的代码之前不是这个样子的，但由于一个关于宏的bug还未修复，之前的想法无法实现。好在今天发现了另一种简单的办法，绕开了那个问题，终于成功。</p>
 <p>现在haxe官方发布的稳定版是2.10，近期将要发布3.0版。其中有关宏的api正在大幅增强，所以有bug是难免的，期待3.0的发布。</p>
 <p>下面讲讲这个AngularSupport的宏的作用。之前我们用haxe写angularjs的代码，使用的是传统方式（也是angularjs推荐的方式）：</p>

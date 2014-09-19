@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>在前面我们已经通过PetitParser可以成功的解析出模板文件中的内容，识别出标签、表达式等等，如果我们想对它们进行进一步处理，比如生成dart代码等，则需要构建出一棵语法树，再针对这棵语法树处理。</p>
+    <p>在前面我们已经通过PetitParser可以成功的解析出模板文件中的内容，识别出标签、表达式等等，如果我们想对它们进行进一步处理，比如生成dart代码等，则需要构建出一棵语法树，再针对这棵语法树处理。</p>
 <h2>语法节点类</h2>
 <p>首先我们要定义一堆节点类，与解析出来的语法元素对应，方便后续处理。</p>
 <h3>SharkNode</h3>

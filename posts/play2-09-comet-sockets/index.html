@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>(本文译者是爱国者)</p>
+    <p>(本文译者是爱国者)</p>
 <h3>Comet sockets</h3>
 <h4>使用chunked response创建comet sockets</h4>
 <p><strong>chunked response</strong>的一个用途就是创建Comet sockets。 一个Comet socket就是一段只包含<code>&lt;script&gt;</code>元素的<code>text/html</code>文本。每次浏览器收到这一份chunked resposne后，会执行<code>&lt;script&gt;</code>里的脚本。我们可以利用这种特性向浏览器发送一些实时的事件(event)，或者说服务器能实时通知客户端(浏览器）某些事件已发生，让客户端（浏览器）对此做出响应，比如向服务器发送异步请求或局部刷新页面。</p>

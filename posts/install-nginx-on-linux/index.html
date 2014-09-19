@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>nginx是一个高性能的web server，它还有一个非常好用的功能叫反向代理。考虑到这种情况：我在一台服务器上，要用tomcat跑java程序，还要运行php程序，80端口只有一个，怎么办给谁好呢？使用nginx就可以方便地解决这个问题：让nginx监听80，其它程序各自监听自己的端口，然后在nginx内部配置反向代理，指向它们即可。对于用户的访问，我们可以在nginx通过判断域名或者请求的内容，进行不同的转发，让各请求达到正确的目的地。</p>
+    <p>nginx是一个高性能的web server，它还有一个非常好用的功能叫反向代理。考虑到这种情况：我在一台服务器上，要用tomcat跑java程序，还要运行php程序，80端口只有一个，怎么办给谁好呢？使用nginx就可以方便地解决这个问题：让nginx监听80，其它程序各自监听自己的端口，然后在nginx内部配置反向代理，指向它们即可。对于用户的访问，我们可以在nginx通过判断域名或者请求的内容，进行不同的转发，让各请求达到正确的目的地。</p>
 <p>下面是在linux安装nginx的步骤：</p>
 <p><span id="more-336"></span>
 <br  /><p><strong>下载</strong></p>

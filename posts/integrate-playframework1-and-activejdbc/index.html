@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>Play是一个高效的java web开发框架，而activejdbc是一个看起来很不错的activerecord模式的持久层，但是它们两个不能放在一起用。因为Play启动后，直接读取java源代码，然后编译、增强，都是由Play自己的classloader载入的。而activejdbc要求先用maven或ant手动增加.class文件，然后再部署。</p>
+    <p>Play是一个高效的java web开发框架，而activejdbc是一个看起来很不错的activerecord模式的持久层，但是它们两个不能放在一起用。因为Play启动后，直接读取java源代码，然后编译、增强，都是由Play自己的classloader载入的。而activejdbc要求先用maven或ant手动增加.class文件，然后再部署。</p>
 <p>为了解决这个问题，需要写一个插件，接管activejdbc的增强工作。其原理是，在play将java源代码编译为字节码之后，我们可以在plugin中的enhance方法中，拿到这些字节码，并手动调用activejdbc中的相关函数，直接对其进行增强，然后再交还给play。这样就完美解决了两者各自为政的问题，原理还是非常简单的。</p>
 <p><span id="more-243"></span>
 <br  /><pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">class</span> ActiveJdbcPlugin extends PlayPlugin {</p>

@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>mongodb是NOSQL数据库中的一种，它是一种文档数据库，其特点是：每一个文档（相当于关系数据库中的一条记录）就像一个json，它的结构是可以完全自定义的；同一个集合（相当于关系数据库中的表）中的所有文档都可以互相不同。这一特点给了mongodb极大的自由，完全不像在关系数据库中那样，必须先规定好每一个表的所有字段。</p>
+    <p>mongodb是NOSQL数据库中的一种，它是一种文档数据库，其特点是：每一个文档（相当于关系数据库中的一条记录）就像一个json，它的结构是可以完全自定义的；同一个集合（相当于关系数据库中的表）中的所有文档都可以互相不同。这一特点给了mongodb极大的自由，完全不像在关系数据库中那样，必须先规定好每一个表的所有字段。</p>
 <p>自由不一定就是力量，要看用在哪里。</p>
 <p><span id="more-332"></span>
 <br  /><p>我在一个问答网中使用了mongodb，设计了如users, questions, answers, comments等表，在使用中并没有感觉到什么方便之处。相反，因为管理程序的不成熟，在后台维护数据时非常不方便，比如根据条件搜索一些数据，都很难做到。因为mongodb使用的json结构的查询语句，与SQL相比实在太难用了。另外，因为mongodb不要求每个文档的结构相同，也不进行检查，我有时候重构了代码后，发现mongodb的表中居然保存了几种不同结构的数据，还得一个个去检查，改成一样的。</p>

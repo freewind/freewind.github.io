@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>Varnish是一个开源的反向代理服务器，具有页面缓存功能，也可以用来做负载均衡，据说它的性能比较好。我们的项目中也使用了它。</p>
+    <p>Varnish是一个开源的反向代理服务器，具有页面缓存功能，也可以用来做负载均衡，据说它的性能比较好。我们的项目中也使用了它。</p>
 <h2>背景</h2>
 <p>我们有几台不同的服务器，分别运行不同的网站，每个服务器有自己的域名。为了能让用户得到更好的体验，不需要在不同的域名中跳转，我们使用了一台服务器运行Varnish来进行反向代理，根据用户请求的路径分别到不同的服务器上取内容展示给用户。</p>
 <p>假设Varnish服务器对应域名为<code>abc.com</code>，后端几个网站分别为<code>x1.com</code>, <code>x2.com</code>, <code>x3.com</code>，我们在Varnish中定义了以下映射规则：</p>

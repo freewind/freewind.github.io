@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>这两天在研究JavaAgent，动力是想弄明白playframework到底是做到热修改的。从目前的少许了解，推测出它利用javaagent在类导入到JVM之前，对字节码进行了修改。然后再配合classloader，实现热修改。</p>
+    <p>这两天在研究JavaAgent，动力是想弄明白playframework到底是做到热修改的。从目前的少许了解，推测出它利用javaagent在类导入到JVM之前，对字节码进行了修改。然后再配合classloader，实现热修改。</p>
 <p>从网上找到的相关资料上来看，如果想理解清楚其原理，必须要了解字节码文件的格式和指令，也就是我们的.java文件编译后生成的.class二进制文件。听起来挺难的，毕竟我们在编程时，只需要面对java文件，从不需要考虑.class，而且打开.class看到的都是无法识别的二进制代码。好在《深入Java虚拟机》这本书详细讲解了字节码，真是雪中送炭。边看边试，发现并没有想像中的那么难以理解。</p>
 <p>.class文件中的内容，可以分为两部分，一是结构描述，二是代码指令。这其实跟我们写的java文件是非常相似的，只不过它为了性能考虑，生成了二进制文件。下面以HelloWorld来举例说明。</p>
 <p>首先我们定义一个最简单的test/HelloWorld.java：</p>

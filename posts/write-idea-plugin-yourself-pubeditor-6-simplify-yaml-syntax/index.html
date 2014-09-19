@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>YAML是一种看起来很易读、格式简单的语法格式，但实际上，它的<a href="www.yaml.org/spec/1.2/spec.html">语言规范</a>相当复杂，甚至连读一遍文档都是非常痛苦的事情。同时在IDEA上也没有找到可用的YAML插件，这让我很头痛，看起来一个很简单的任务突然变得复杂到无法实现。</p>
+    <p>YAML是一种看起来很易读、格式简单的语法格式，但实际上，它的<a href="www.yaml.org/spec/1.2/spec.html">语言规范</a>相当复杂，甚至连读一遍文档都是非常痛苦的事情。同时在IDEA上也没有找到可用的YAML插件，这让我很头痛，看起来一个很简单的任务突然变得复杂到无法实现。</p>
 <h2>简化的文法</h2>
 <p>经过短暂的纠结，我决定按照pubspec.yaml上给出的例子，实现一个简化的YAML语法规则，只支持以下几种格式：</p>
 <ul>

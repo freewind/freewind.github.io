@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>对于我正在寻找的基于js的快速开发方案，我今天尝试了一下couchdb+angularjs。</p>
+    <p>对于我正在寻找的基于js的快速开发方案，我今天尝试了一下couchdb+angularjs。</p>
 <p>Couchdb是这几天让我觉得很振奋的一个项目。它与mongodb类似，是一个基于文档的nosql数据库，但不同的是，mongodb专注于大数量文档的存储，而couchdb的每一处设计，都紧扣"WEB&rdquo;。比如它内置的restful api，可允许客户端通过http直接操作数据库；数据采用json格式，与js程序交互时非常直接；对于数据的分发同步有很好的解决方案，可以让一个web程序offline。然而最让我眼前一亮的是，通过某些工具（如couchdb, kanso），可以把html/css/js等文件，直接嵌入到couchdb中，这时的couchdb又成了一个web server！</p>
 <p>嵌入到couchdb中的js，可以通过某些回调，对数据进行处理，对访问进行控制。我以前还担心，完全开放了restful api的couchdb，如何保证客户端的访问在权限的控制之内，现在终于心安一些（还没有深入，不能完全心安）。这一处创新是我非常喜欢的，因为对于开放了restful api的数据库来说，额外的web层，似乎有点多余（就像是一层代理，把api再包装一下再对外）。现在好了，直接放数据库里，多省事。</p>
 <p>可以想像，对于需求不是很复杂的信息管理系统，前台直接用js mvc+ui框架，通过restful api接口与couchdb直接交互，某些逻辑可以写在前台，重要操作写在couchdb中的js里，就可以快速地实现功能。当需求更复杂一些时，可以考虑某些web框架，如node.js+express等等。</p>

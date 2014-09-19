@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>Couchdb中有一个强大的特性，可以把html/css/js等直接嵌入到couchdb中，将couchdb变成webserver+database。Kanso号称couchdb的npm，它可以帮我们做这些事，并且一些主要功能都比较成熟了，相比couchapp更胜一筹。</p>
+    <p>Couchdb中有一个强大的特性，可以把html/css/js等直接嵌入到couchdb中，将couchdb变成webserver+database。Kanso号称couchdb的npm，它可以帮我们做这些事，并且一些主要功能都比较成熟了，相比couchapp更胜一筹。</p>
 <p>couchdb的这个功能非常吸引我，我的目标就是前台使用angularjs，后台使用couchdb干所有事。</p>
 <p>我花了几天时间来熟悉couchdb的操作以及kanso提供的功能，期间参考了：<a href="https://github.com/petebacondarwin/questionnaire-angular">https://github.com/petebacondarwin/questionnaire-angular</a>。开始一直比较顺利，直到遇到了用户权限问题。</p>
 <p>用户权限问题，是指couchdb提供了http restful的api以供客户端对数据库、文档进行CRUD。如果我们直接通过浏览器端进行操作，如何对用户的权限进行检查与限制呢？虽然couchdb也内置了一些简单的验证方案，但粒度太大，无法细化。</p>

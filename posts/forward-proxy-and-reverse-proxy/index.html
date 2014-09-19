@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>前两天在配置varnish的时候，我看到配置文件中有不少后端服务器的设置，觉得这是在配“反向代理”，但同事说这是“正向代理”。我不确定哪个对，以及它们之间有何区别，便查了一下。</p>
+    <p>前两天在配置varnish的时候，我看到配置文件中有不少后端服务器的设置，觉得这是在配“反向代理”，但同事说这是“正向代理”。我不确定哪个对，以及它们之间有何区别，便查了一下。</p>
 <p>网上资料很多，便不再重复。我自己的理解是这样的：</p>
 <h2>正向代理</h2>
 <p>我们想访问某个网站，但是访问不了，需要借助另一台服务器的帮助。比如我们番羽墙时会设一些代理服务器(http的，socks的等），然后输入我们要访问的网站，代理服务器便会替我们把内容取回来。这些代理服务器所做的事情就是“正向代理”。</p>

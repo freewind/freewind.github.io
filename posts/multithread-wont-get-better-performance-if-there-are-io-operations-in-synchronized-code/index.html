@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>在之前的文章&#8221;<a href="http://freewind.me/blog/20111022/458.html">原子操作与synchronized在多线程环境下的性能差别</a>&#8220;中，发现在2个线程与50个线程情况下，程序运行时间并没有什么差别。我考虑的原因是，因为我synchronized中的代码都很简单，所以线程间竞争的机会并不大。</p>
+    <p>在之前的文章&#8221;<a href="http://freewind.me/blog/20111022/458.html">原子操作与synchronized在多线程环境下的性能差别</a>&#8220;中，发现在2个线程与50个线程情况下，程序运行时间并没有什么差别。我考虑的原因是，因为我synchronized中的代码都很简单，所以线程间竞争的机会并不大。</p>
 <p>林教主让我在代码中增加一些sleep(1)，来模拟IO操作。于是有了以下的代码：</p>
 <p><span id="more-460"></span></p>
 <pre><code>public class IncTestN {

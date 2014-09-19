@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>Anguar的services是一些包含了web开发中常用的任务的实例对象，比如<code>$http</code> service就提供了对浏览器的<code>XMLHttpRequest</code>对象的底层访问。</p>
+    <p>Anguar的services是一些包含了web开发中常用的任务的实例对象，比如<code>$http</code> service就提供了对浏览器的<code>XMLHttpRequest</code>对象的底层访问。</p>
 <p>使用Anguar的service，你需要在一个依赖service的元素（如controller，或其它service）中声明依赖于该service。Angular的依赖注入子系统自动处理其它的杂事，如service初始化，依赖的解决，在需要的时候把依赖提供给工厂函数等。</p>
 <p>Angular使用"构造器"来注入依赖(service通过工厂函数传入)。因为JavaScript是一个动态类型的这篇文章，Angular的依赖注入子系统不能使用静态类型来确定属性的依赖，所以必须显式地使用<code>$inject</code>属性来声明依赖的services。例如：</p>
 <pre><code>myController.$inject = ['$location'];

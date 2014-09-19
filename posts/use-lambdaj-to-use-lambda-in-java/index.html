@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>在闭包如此流行的时代，java却迟迟不能支持闭包，不能不说是一件让人失望郁闷的事情。Java7也不支持，Java8也许吧，但不知道那是多久之后的事情（或者只支持lambda?）
+    <p>在闭包如此流行的时代，java却迟迟不能支持闭包，不能不说是一件让人失望郁闷的事情。Java7也不支持，Java8也许吧，但不知道那是多久之后的事情（或者只支持lambda?）
 <br  /><p>终于出现了一个叫lambdaj的项目，它充分使用了java的静态导入等功能，模拟出来了一个闭包系统。先看一行代码：
 <br  /><p>List<Integer> biggerThan3 = filter(greaterThan(3), asList(1, 2, 3, 4, 5));</p>
 <p>这是从一个列表中，找到所有大于3的数字。这种写法，是不是挺新奇的？

@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>本来打算这几天好好研究Netty的源代码的，真做起来发现还是缺少充足的动力。最开始还算认真的看了其buffer包，但是到了后来，就变成看javadoc了，知道有哪些类、类中有哪些方法就知足了。毕竟有500多个java文件，看起来真够累的。</p>
+    <p>本来打算这几天好好研究Netty的源代码的，真做起来发现还是缺少充足的动力。最开始还算认真的看了其buffer包，但是到了后来，就变成看javadoc了，知道有哪些类、类中有哪些方法就知足了。毕竟有500多个java文件，看起来真够累的。</p>
 <p>好在基本理解了nio 之后，看netty也不是很难。Netty跟Mina结构上相当的相似，据说性能略优、在细节上更完善一些，但是我的直观感觉就是，Netty的文档和例子相当不错，让人很理解起来容易一些（以前学Mina时，费不了少工夫）。</p>
 <p>这里简单的总结一下，技术含量不高（因为没有深入下去）。上一个日志中讲到，NIO有四大主要概念：Channel, Selector, SelectionKey, Buffer。Netty中同样也少不了这些，并且出于性能和设计上的考虑，对它们进行了扩充。比如netty的buffer包，重新定义了Buffer，提供了各种各样的实现，比jdk中自带的Buffer更加高效与好用。举例来说，jdk中的buffer在读完数据写之前，必须调用一个flip()方法，否则数据出错但不报错，这很容易引起bug。而Netty的Buffer中增加了一个write index，将读写分开，解决了这个问题。另外，jdk的buffer是固定的，而netty还提供了一个可变长的buffer，方便操作。</p>
 <p>而Channel在Netty中也重新设计，提供了很多种Channel，照顾到不同程序的需要。而Selector和SelectionKey，还是使用jdk自己的。</p>

@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>话说上次用Hibernate，发觉性能问题处理起来很麻烦之后，我又拾起了Mybatis。Mybatis曾经叫作ibatis，它与Hibernate同时代，但以Hibernate相反的方式来实现orm（准确的说，叫mapper）。即仍然以SQL为重心，但自动将结果集装配成pojo（当然配置是少不了的）。</p>
+    <p>话说上次用Hibernate，发觉性能问题处理起来很麻烦之后，我又拾起了Mybatis。Mybatis曾经叫作ibatis，它与Hibernate同时代，但以Hibernate相反的方式来实现orm（准确的说，叫mapper）。即仍然以SQL为重心，但自动将结果集装配成pojo（当然配置是少不了的）。</p>
 <p>　　Mybatis的特色是：1。手写所有的SQL　2。SQL写在XML文件里　3。pojo与数据表的映射关系，以及与结果集的映射关系，也写在XML中。4。当我们需要操作数据库时，在java代码中，调用XML文件中定义的某SQL的ID，同时传参数进去。</p>
 <p><span id="more-114"></span>
 <br  /><p>　　与Hibernate相比，使用mybatis的人少得多，但也有不少死忠。它的显著优点是：你可以完全自由的写SQL，可以使用某些数据库特定的写法，甚至存储过程，来实现高性能的数据库操作。比如N+1问题，在mybatis中也存在，但是我们完全可以手写复杂的join语句来避免。因为mybatis中的所有SQL都是手写的，你在写的时候会自然而然地使用掌握的技巧，写出高性能的SQL，哪怕复杂一些，都不会让你觉得别扭。而这在Hibernate中，复杂的hql就会让人感觉有点别扭。</p>

@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>ArrayList是我们用的最多的List类，但它有一个同胞兄弟叫LinkedList，我们有时候需要考虑到底应该使用哪个。</p>
+    <p>ArrayList是我们用的最多的List类，但它有一个同胞兄弟叫LinkedList，我们有时候需要考虑到底应该使用哪个。</p>
 <p>首先可以确定的是，在大多数情况下我们最好使用ArrayList。只有在需要大量删除的时候，才需要考虑LinkedList。</p>
 <p>ArrayList在内部用数组来保持数据。当add时，发现不够用，会生成一个新的数组，其长度是原来的1.5倍，然后把数据都拷贝过去。当remove时，每次都会生成一个新数组，拷贝过去。所以最耗时的操作是remove，而add和get，都是很快的。</p>
 <p>LinkedList在内部使用双向链接实现。每一个元素都有一个Entry对象，保持着前一个和后一个Entry。每一次插入都需要生成一个新的Entry对象，比ArrayList多占用很多内存，但速度较快；get时，需要从头一个个遍历元素，也比较慢；最快的操作就是remove了，因为它仅仅需要删除一个Entry，把它前后的Entry指针改一下即可。</p>

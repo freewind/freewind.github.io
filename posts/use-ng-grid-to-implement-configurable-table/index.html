@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>使用Angularjs在带来方便的同时，也有一些遗憾：很多基于jquery或其它的组件，在angularjs中需要集成一下才能用得流畅。但是一些比较复杂的组件，集成起来的工作量相当大，比如说grid。</p>
+    <p>使用Angularjs在带来方便的同时，也有一些遗憾：很多基于jquery或其它的组件，在angularjs中需要集成一下才能用得流畅。但是一些比较复杂的组件，集成起来的工作量相当大，比如说grid。</p>
 <p>大多数情况下，使用angularjs可以方便地实现简单的表格，甚至点击修改这样的功能也很容易。但是如果还希望增加更多的功能，比如拖动改变列的前后顺序，点击表头排序，拖动列宽度，隐藏某些列时，就不那么容易了。如果还想加上分组的功能，那就十分麻烦了。这时候我们就需要一个与angularjs配合很好的grid组件。</p>
 <p>这几天我试用了<a href="http://angular-ui.github.com/ng-grid/">http://angular-ui.github.com/ng-grid/</a>，它完全是基于angularjs写的，所以可以使用angularjs的思路与它交互。使用感觉还不错，基本功能齐全，与之交互实现需要的效果也很顺畅。我用它简单地实现了一个表格设计器，在这里演示一下。</p>
 <p>我实现的功能如下：</p>

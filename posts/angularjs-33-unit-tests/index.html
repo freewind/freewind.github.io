@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>JavaScript是一门有强大表现力的动态类型语言，但它几乎无法从compiler中得到任何帮助。因此我们强调任何用JavaScript写的代码都需要有一组测试方法。我们在Angular中添加很多特性让你测试程序更方便，所以没有理由不写测试。</p>
+    <p>JavaScript是一门有强大表现力的动态类型语言，但它几乎无法从compiler中得到任何帮助。因此我们强调任何用JavaScript写的代码都需要有一组测试方法。我们在Angular中添加很多特性让你测试程序更方便，所以没有理由不写测试。</p>
 <h3>说的全都是不要混合专注点（It is all about NOT mixing concerns，怎么翻）</h3>
 <p>单元测试(Unit Test)，如同它的名字所说，是关于单独一块代码的测试。单元测试试图回答这个问题：我认为我的业务逻辑是正确的吗？比如，这个排序函数是否将list按正确的顺序进行了排序？为了能回答这样的问题，隔离代码很重要。因为当我们测试这种函数时，我们不想被强迫去考虑那些如DOM操作、使用XHR取数据等无关操作。</p>
 <p>在一个项目中，我们通常很难只调用一个单独的函数。原因在于开发者们经常把关注者混合在了一起，以致于一块代码中把所有的事情都干了：从XHR中读取数据，排序，然后操作DOM。在Angular中我们尝试让你以简单的方式做正确的事情，所以我们为你的XHR提供了依赖注入（在测试中你可以使用mock）。我们进行了抽象，让你对model进行排序时，无需手动对DOM进行排序操作。所以最终，测试一个“对数据排序”的函数变得容易，因为我们可以在测试中简单地创建一些数据集，应用到该函数，最后验证model中的数据的顺序是正确的。测试代码不需要等待XHR，不需要创建任何DOM，也不需要验证你的函数正确地修改了DOM。</p>

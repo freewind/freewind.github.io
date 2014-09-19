@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>这两天在尝试把activejdbc集成到play中。因为两者都需要对类进行增强，有冲突，所以不能直接使用。经过一晚上的反复尝试，终于能让activejdbc在play上跑起来了。但是，很快发现，一旦model类被修改，play重新载入后会报错。</p>
+    <p>这两天在尝试把activejdbc集成到play中。因为两者都需要对类进行增强，有冲突，所以不能直接使用。经过一晚上的反复尝试，终于能让activejdbc在play上跑起来了。但是，很快发现，一旦model类被修改，play重新载入后会报错。</p>
 <p>源代码为：</p>
 <p><pre class="csharpcode"><font color="#ff0000"><strong><span class="kwrd">for</span> (User user : users) {
 <br  /></strong></font>     System.err.println(<span class="str">&ldquo;&raquo;> &ldquo;</span> + user);

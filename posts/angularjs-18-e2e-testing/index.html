@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>当程序越来越大，越来越复杂的时候，靠人工手动测试新特性、抓bug变得越来越不可靠了。</p>
+    <p>当程序越来越大，越来越复杂的时候，靠人工手动测试新特性、抓bug变得越来越不可靠了。</p>
 <p>为了解决这个问题，我们创建了Angular Scenario Runner来模拟用户与程序的交互，来帮助我们检查Angular程序的健康状况。</p>
 <h3>概览</h3>
 <p>你使用JavaScript来写情景测试，描述在一个确定的状态下给定一个确定的交互，你的程序如何反应。一个情景包含了一个或多个<code>it(..)</code>块（你可以把它们想像你的程序要满足的需求），由<strong>命令</strong>和<strong>预期</strong>组成。命令用来指挥Runner让程序做一些操作（比如转到某个页面，或者点击一个按钮），而预期用来指挥Runner验证程序状态（如某个字段的值，或者当前的URL）。如果验证出错，runner把当前的<code>it</code>块标记为"failed"并继续运行下一个。情景脚本还可以有<strong>beforeEach</strong>和<strong>afterEach</strong>块，它们会在每一个<code>it</code>块之前或之后运行，不管测试过程中有没有失败。</p>

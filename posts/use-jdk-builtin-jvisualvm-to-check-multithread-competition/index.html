@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>我有一个程序，里面有大量的synchronized关键字。我怀疑它们导致的多线程竞争影响了程序的性能。但不知道如何去检测，总不能只凭自己的猜测就去修改它们，万一改到最后发现不是它们的问题，岂不浪费了。</p>
+    <p>我有一个程序，里面有大量的synchronized关键字。我怀疑它们导致的多线程竞争影响了程序的性能。但不知道如何去检测，总不能只凭自己的猜测就去修改它们，万一改到最后发现不是它们的问题，岂不浪费了。</p>
 <p>用什么工具来测试呢？我以前用过jprofiler，那个虽然功能强大，但不是免费的。于是我在万能的stackoverflow上提了个问题，聆听神人的教诲。</p>
 <p><a href="http://stackoverflow.com/questions/7858730/how-to-know-how-much-time-cost-by-synchronized-code-in-java">http://stackoverflow.com/questions/7858730/how-to-know-how-much-time-cost-by-synchronized-code-in-java</a></p>
 <p>果然，很快有人提供了一个很强大的免费工具：JDK6自带的jvisualvm。</p>

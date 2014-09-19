@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>虽然Anguar提供了一些常用的services，但对于一个普通的程序来说，你会需要创建自己的Services。通常在一个module的service factory函数中通过<code>Module#factory</code> api注册一个service，或者直接在module的<code>config</code>函数中使用<code>$provide</code> api注册。</p>
+    <p>虽然Anguar提供了一些常用的services，但对于一个普通的程序来说，你会需要创建自己的Services。通常在一个module的service factory函数中通过<code>Module#factory</code> api注册一个service，或者直接在module的<code>config</code>函数中使用<code>$provide</code> api注册。</p>
 <p>所有的Anguar services都使用一个唯一的name(id)注册到Anguar的依赖注入(DI)系统当中，同时它也可以声明它自己依赖的、需要提供给其工厂函数的其他service。services拥有可被替换的能力，所以在测试中可将services替换为mocks/stubs/dummies，这让services高度可测。</p>
 <h3>注册Services</h3>
 <p>为了注册一个service，你必须让它属于某一个module。然后，你可以通过<code>Module</code> api或在module的配置函数中使用<code>$provide</code> service来注册该service。下面的伪代码展示了这两种方式：</p>

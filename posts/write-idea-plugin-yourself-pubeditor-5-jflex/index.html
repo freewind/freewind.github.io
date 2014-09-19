@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>在IDEA中，使用JFlex来写词法分析器最方便，因为IDEA提供了一个修改后的jflex，内置了对它的支持。</p>
+    <p>在IDEA中，使用JFlex来写词法分析器最方便，因为IDEA提供了一个修改后的jflex，内置了对它的支持。</p>
 <p>需要注意的是，由于IDEA提供的<code>idea-flex.skeleton</code>的实现内容跟原始的模板有一些区别，用法也不一样，我在这里花费了不少时间才搞清楚。具体参看：<a href="http://stackoverflow.com/questions/23031925/whats-wrong-with-this-simplest-jflex-code">http://stackoverflow.com/questions/23031925/whats-wrong-with-this-simplest-jflex-code</a></p>
 <p>关于JFlex的内容，可以看官方文档：<a href="http://jflex.de/manual.html">http://jflex.de/manual.html</a>，非常详细，看一遍下来就差不多了，然后再注意一下我上面提的那个问题，就差不多可以搭架子了。</p>
 <p>不过JFlex相关的内容还是比较复杂的，特别JFlex生成的Java代码很难读，一些复杂的逻辑基本上没法看懂，我花了一天的时间也没弄懂，只好点到为止了。</p>

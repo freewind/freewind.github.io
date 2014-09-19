@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>当项目中文件多了以后，定位文件很不方便，特别是在一个长长的HTML中找到某个按钮、链接，能把眼睛看瞎。今天我有一个想法，能不能在页面上点击某个元素后，直接在编辑器中打开相应代码吗？这样的话，我们可以在浏览页面的同时，发现问题随时编辑，大大提高开发效率。</p>
+    <p>当项目中文件多了以后，定位文件很不方便，特别是在一个长长的HTML中找到某个按钮、链接，能把眼睛看瞎。今天我有一个想法，能不能在页面上点击某个元素后，直接在编辑器中打开相应代码吗？这样的话，我们可以在浏览页面的同时，发现问题随时编辑，大大提高开发效率。</p>
 <p>经过几个小时的试验，基本上达到了我的要求，目前可以做到这样：</p>
 <ol>
 <li>在Play的模板中某些位置加入一些<code>#{debug /}</code>标签，它们将以button的形式显示在最终的html中2.  在浏览器中浏览页面时，默认情况下这些button是不可见的，所以不会破坏页面结构3.  当按下ctrl键时，标签对应的button显示出来4.  点击离想编辑的地方最近的button，将在idea中直接打开对应源文件并定位到对应的#{debug/}处</li>

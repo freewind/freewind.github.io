@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>曾经听说scala的类型系统很强大，是“图灵完备”的，而“图灵完备”的语言的计算能力是相同的。这岂不是说，利用scala的类型系统，就可以完成普通编程语言才能做的事情？</p>
+    <p>曾经听说scala的类型系统很强大，是“图灵完备”的，而“图灵完备”的语言的计算能力是相同的。这岂不是说，利用scala的类型系统，就可以完成普通编程语言才能做的事情？</p>
 <p>这一直是我心里的一个疑问，类型系统怎么看都只是一些定义，怎么能编程，还能解题？连想都不知道如何去想。直到前几天再次看到了老高在09年（没错，四年前）写的那一篇文章，豁然开朗，仿佛推开了一道光亮的门。</p>
 <p>老高的文章地址：<a href="http://www.blogjava.net/sean/archive/2009/11/23/303374.html">http://www.blogjava.net/sean/archive/2009/11/23/303374.html</a></p>
 <p>老高的文章太低调了，标题仅为"用Scala解Hanoi塔&rdquo;，里面也只提到了利用了implicit和递归等，而没有突出“类型系统”四字，让人一眼看上去，还以为是用普通的scala代码再加上递归算法去做题。所以在2012年我看到这篇文章时，只是扫了一眼就那么错过了。实际上，该文章讲的是如何利用scala的类型系统去解题，通过implicit指示编译器寻找合适类型的时候，在类型的层面上使用了递归。如果你仔细看那段代码，会发现几乎所有的方法实现都是空的，真正起到解题的作用的，是里面各种类型定义和它们在声明时参数位置的变化，再加上implicit关键字，让编译器帮我们实现了解题过程。</p>

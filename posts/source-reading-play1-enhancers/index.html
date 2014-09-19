@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>Play中的代码增强是play的魔力之源。Play自己控制java源代码的编译与载入，所以有机会在载入到jvm之前，调用各种enhancer对字节码进行增强，从而获得超强的功能。</p>
+    <p>Play中的代码增强是play的魔力之源。Play自己控制java源代码的编译与载入，所以有机会在载入到jvm之前，调用各种enhancer对字节码进行增强，从而获得超强的功能。</p>
 <p>Play的代码增强都是基于javassist这个超级强大又易用的字节码工具库。</p>
 <h2>play.classloading.enhancers.Enhancer</h2>
 <p>Enhancer是一个abstract的基类，为其它enhancer做了一些准备工作，提供了一些工具方法。它创建了一个javassist.ClassPool实例，并把自定义的ApplicationClassLoader所使用的classpath、以及当前项目中的java源代码路径都传了进去，以保证javassist可以找到所有需要的源代码。</p>

@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>在公司做项目时，后台管理页面都是用extjs来写的。这个过程很痛苦，因为手写js代码很容易出错，经常因为写错一个字母标点、少写一个参数，效果死活出不来，还抛一些奇怪的错误。这不能怪我们不细心，因为实在是太容易出错了。调试的过程异常痛苦，因为基本上得靠肉眼一行行地检查，无法发挥机器的优势，一卡就是一两小时。</p>
+    <p>在公司做项目时，后台管理页面都是用extjs来写的。这个过程很痛苦，因为手写js代码很容易出错，经常因为写错一个字母标点、少写一个参数，效果死活出不来，还抛一些奇怪的错误。这不能怪我们不细心，因为实在是太容易出错了。调试的过程异常痛苦，因为基本上得靠肉眼一行行地检查，无法发挥机器的优势，一卡就是一两小时。</p>
 <p>这个感觉，在只看Ext那华丽的Demo，或者在动手写代码之前，是很难感受到的。我刚接手这个项目，看到公司其它产品华丽的界面时，在群里还欣喜地跟大家说，“使用Ext做出来的界面真好看，功能真强大”。当时刘松说，他们之前用Ext做项目时，调试过程太痛苦了，后来再也不想碰Ext或类似的js gui框架。我还奇怪，有这么多的Demo可供参考，这么多产品都用它做出来了，还会遇到那么多的问题吗？</p>
 <p>现在果真体会到了。使用Ext做项目，靠的就是经验、记性和眼力，以及时间。Ext中的定义的一个类，初始化参数常常有几十个，传入不同的参数就可以得到不同的效果，不同的参数进行组合又能得到另外的效果。而这些参数只能查文档，编辑器是给不了提示的。但总不能每用到一个类就要去查文档吧，所以要牢记每一个参数和用法，才能加快开发速度，这时要靠记性。在输入参数的过程中，如果参数名里不小心输错一个字母，不会报错，但效果就是出不来，因为那个参数实际上被忽略了。这时只能靠一个个单词去看，跟文档对比，才能找到错误原因，这时要靠眼力。Ext的一些组件（特别是老版本，如我们公司使用的2.x版）在不同的浏览器下会有不同的显示效果，比如fieldstet在IE下正常，在firefox下里面东西全被隐藏了。所以我们还得知道如果去绕开这些bug，这要靠经验。每当遇到一个新bug，或者死活查不出原因的时候，那就只能靠时间去耗了。</p>
 <p>所以，使用Ext，在你在熟读其源代码并且累积了大量的使用经验之前，基本上可当成是体力活，因为可以让机器帮我们完成的事情太少了。</p>

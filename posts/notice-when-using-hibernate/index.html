@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>因为公司项目需要，无奈还是使用上了Hibernate。我一向认为Hibernate是一个高难度的的框架，原理复杂、问题多多，稍不注意就被卡住，所以一向避而远之。但是因为公司的项目要同时支持Oracle和SqlServer，除了jdbc,与mybatis，能担此重任的也只有hibernate了，最后还是用上了它。当前的版本是3.6.x。</p>
+    <p>因为公司项目需要，无奈还是使用上了Hibernate。我一向认为Hibernate是一个高难度的的框架，原理复杂、问题多多，稍不注意就被卡住，所以一向避而远之。但是因为公司的项目要同时支持Oracle和SqlServer，除了jdbc,与mybatis，能担此重任的也只有hibernate了，最后还是用上了它。当前的版本是3.6.x。</p>
 <p>一、使用Annotation还是hbm.xml</p>
 <p>使用Annotation很爽，除了一点：列定义的注释信息，在生成数据表时会丢失。因为公司之前的项目都是先生成数据表，列名都是拼音首字母，所以注释显得非常重要。为了保持这一传统，我采用了曲线救国的方式：先使用hibernate tools的ant任务，从annotation生成xml，再写一个工具类，从annotation中读取注释添加到xml中，再通过ant任务，从xml生成数据表。这样注释信息就能成功地加到数据库里去了。</p>
 <p>开始表之间的结构比较简单时，这一方法没有问题。直到有一天，我使用了@Inheritance来定义带有继承关系的类，生成的xml中缺少@DiscriminatorColumn字义的字段！这意味着生成的表结构不正确，导致后来插入数据总是出错。我搜索很久没有找到答案，左右为难：难道要放弃Annotation，改用手写的xml吗？工作量可不小，而且很不直观。</p>

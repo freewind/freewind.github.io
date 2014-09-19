@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<h2>1. PyCharm</h2>
+    <h2>1. PyCharm</h2>
 <p>在用PyCharm编写PySide代码的时候，发现提示功能很弱。不论是方法还是参数，都几乎没用提示。选中一个方法后，想跳到它的源代码，也做不到。</p>
 <p>我一开始以为自己的设置有问题，或者PyCharm不够强，想找一个更强大的工具，毕竟没有提示的话，只能靠看文档或者猜，太累了。但我把PySide的代码下载下来之后，发现有点不对劲，因为里面没多少py文件，cpp和xml倒是很多。PySide不是让Python使用QT的库吗，怎么没有Python代码呢？</p>
 <p>打开安装到Python中的PySide，看到了一大堆的.pyc和.pyd，就是没有.py。其中有一个QtGui.pyd有6M多，很可疑。经过研究，发现原来PySide本身本不是用Python写的，而是在xml中定义了很多类与方法的接口，再用工具转成.pyd文件。这里可能不准确，但原理差不多，总之我们看到不Python源代码，PyCharm也没有办法进行提示了。</p>

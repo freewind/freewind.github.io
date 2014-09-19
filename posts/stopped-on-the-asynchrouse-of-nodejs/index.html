@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>学习nodejs一个月之后，终于还是败在了nodejs的异步编程模型上。</p>
+    <p>学习nodejs一个月之后，终于还是败在了nodejs的异步编程模型上。</p>
 <p>我对nodejs的其它都还是比较满意的：活跃的社区，很多有创意的项目，node本身无比快速的启动，以及写js代码时那种虽然不踏实但相当放松的感觉，都让我很舒服。</p>
 <p>除了异步。</p>
 <p>nodejs的特点是“单线程、基于事件非阻塞”，对于各种耗时操作，比如IO/数据库之类，都通过异步api调用，传个回调进去。让node在后台通过其它线程处理，完了以后调用我们的回调函数，把错误或者数据传进来。这也可算是一件好事，因为我们的代码运行于单线程，不需要考虑线程竞争、同步的问题，但是带来的问题也是相当麻烦：每调用一次异步，就要多一次嵌套，代码复杂点，轻轻松松五六层。这还是小事，更麻烦的是，错误处理变麻烦了（不能用try-catch），算法逻辑分散了（东一块西一块），当需要考虑某些操作并行或顺序执行时，也非常难以控制。</p>

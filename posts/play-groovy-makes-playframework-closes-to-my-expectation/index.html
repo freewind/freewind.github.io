@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>这里所说的playframework是指play1，而不是play2。另外，本文中不考虑scala。</p>
+    <p>这里所说的playframework是指play1，而不是play2。另外，本文中不考虑scala。</p>
 <p>Play1是一个很有创造力的java web框架，在很多方面离我的期待都很接近了。它通过各种字节码增强技术，大大简化了各种操作，使用起来让人感觉非常舒适。</p>
 <p>但它有一个无法克服的问题：必须使用java语言。这在很多时候都不太方便，比如缺少多行文本，字符串表达式，闭包等等，另外想在代码中直接拼json也很麻烦。</p>
 <p>为了解决这些问题，曾经我尝试过xtend，因为它在eclipse的帮助下，直接生成java源代码，与play集成在理论上没问题。我们可以在其它的目录中写xtend代码，让java源文件生成到app目录下，让play直接读取，这样就不需要额外写xtend的插件了。可惜由于xtend的不成熟，以及生成的java代码与其它库的习惯不同（field前加了一个下划线），使用起来各种不方便。虽然我很看好xtend即将推出的active annotation功能，但在目前的情况下，基本上是无法使用的。</p>

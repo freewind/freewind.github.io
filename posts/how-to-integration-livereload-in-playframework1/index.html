@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>Livereload是一个非常贴心的功能，可以让我们修改项目中的文件时，浏览器自动刷新取得新代码，省了手动切换刷新。在<a href="http://freewind.me/blog/20121226/1167.html">我的web开发最强组合：Play1+angularjs+bootstrap ++ (idea + livereload)</a>一文中，有gif动画来演示效果。然而稍嫌麻烦的是，我们需要安装python/easy_install/python-livereload等工具，并且每次使用时都得开一个shell，定位到工作目录，输入<code>livereload</code>命令才行。</p>
+    <p>Livereload是一个非常贴心的功能，可以让我们修改项目中的文件时，浏览器自动刷新取得新代码，省了手动切换刷新。在<a href="http://freewind.me/blog/20121226/1167.html">我的web开发最强组合：Play1+angularjs+bootstrap ++ (idea + livereload)</a>一文中，有gif动画来演示效果。然而稍嫌麻烦的是，我们需要安装python/easy_install/python-livereload等工具，并且每次使用时都得开一个shell，定位到工作目录，输入<code>livereload</code>命令才行。</p>
 <p>如果能在playframework中集成livereload功能，每次输入play run时就自动提供livereload服务，就太好了。经过一翻折腾，终于实现。</p>
 <p>实现这种功能，有三种可行的方式：</p>
 <ol>

@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>为了利用大内存，让scala和xtend插件流畅一些，终于决定使用64位的windows7了。之前使用的windows xp是32位的，只能用到3G多内存，每个jvm也只能分配几百M，对于scala插件来说，实在是太少了（它的推荐配置是1.5G）。</p>
+    <p>为了利用大内存，让scala和xtend插件流畅一些，终于决定使用64位的windows7了。之前使用的windows xp是32位的，只能用到3G多内存，每个jvm也只能分配几百M，对于scala插件来说，实在是太少了（它的推荐配置是1.5G）。</p>
 <p><strong>一、安装</strong></p>
 <p>首先想到的是用U盘安装，之前我装xp和linux都是这么做的，比较方便。下载了微软的windows 7 USB DVD Tool，和一个3G多的win7 iso，制作了一个安装U盘。但是发现无法启动，换用其它类似软件重做，也都无法启动。在网上搜索后得知，我们无法在32位系统中制作64位win7的启动盘。</p>
 <p>一筹莫展，准备去买张光盘时，突然发现一个叫NT6 hdd installer的工具，可以让我们直接在硬盘上安装。做法也非常简单：直接把iso解压到一个分区的根目录下，运行NT6进行一些简单设置后重启，菜单中就多了一个启动项。使用它启动后，就自动安装win7了！一共花了大约30分钟，安装完成，再装驱动。

@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>使用circumflex大约一周，通过边写代码边写测试的方式，到今天终于把它的orm,mvc等基本功能跑通。感觉如下：
+    <p>使用circumflex大约一周，通过边写代码边写测试的方式，到今天终于把它的orm,mvc等基本功能跑通。感觉如下：
 <br  /><p>1. orm模块：api设计巧妙，用起来很顺手。提供了类似于SQL的DSL来写查询，在编译器的实时查错的帮助下，不易出错。源代码中注释和文档写得很好，连我这刚学scala半个月的新手，读起来都不觉得费力。在测试时，可以方便地根据定义的model，去生成表，还可以在xml中定义测试数据，导进去。有一点需要注意，官方现在仅支持postgresql数据库，其它数据库的支持需自己扩展或搜索。
 <br  /><p>2. mvc模块：结构很简单，controller+action，再render view层，就搞定了。其中router那一块，可以很灵活地支持各种结构的url。view层支持freemarker及scalate。这一块很简单，基本上看两眼就知道大概了。
 <br  /><p>3. view层：我使用的是scalate，jade语法。因为我比较喜欢这种类haml的风格，比较顺手。需要先看scalate定义的那些简化符号。

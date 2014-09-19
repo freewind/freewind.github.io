@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks &raquo; Feed" href="/feed.xml" />
 
-<link href="/rainbow/themes/github.css" rel="stylesheet" type="text/css">
-<link rel='stylesheet' href='/css/main.css' type='text/css' media='all' />
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
 
-<script src="/rainbow/js/rainbow.js"></script>
-<script src="/rainbow/js/language/generic.js"></script>
-<script src="/rainbow/js/language/python.js"></script>
-<script src="/rainbow/js/language/java.js"></script>
-<script src="/rainbow/js/language/javascript.js"></script>
-<script src="/rainbow/js/language/html.js"></script>
-<script src="/rainbow/js/language/css.js"></script>
-<script src="/rainbow/js/language/scala.js"></script>
-<script src="/rainbow/js/language/shell.js"></script>
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
 
 </head>
 <body>
@@ -30,9 +30,10 @@
 </div>
 
 
+<hr/>
+
 <div>
-    <hr />
-<p>最近在做一个网站时大量使用了xtend，感觉非常好。今年5月推出的xtend 2.3，提供了很多很好（也很基础）的功能，比如定义property、把对property的引用转化为对getter/setter的引用等，再加上它已有的“扩展方法”和“闭包”，用起来就很舒服了。</p>
+    <p>最近在做一个网站时大量使用了xtend，感觉非常好。今年5月推出的xtend 2.3，提供了很多很好（也很基础）的功能，比如定义property、把对property的引用转化为对getter/setter的引用等，再加上它已有的“扩展方法”和“闭包”，用起来就很舒服了。</p>
 <p>xtend号称java界的coffeescript。当我们写下xtend代码时，编译器会把它翻译成可读性很高的java源代码，注意是“源代码”，而不是“字节码”。相比jvm上的其它语言如scala等，这是一个巨大的优势：只要是用java的地方，都可以用xtend代替，而不需要处理额外的如编译等问题。这样对于我们来说，写下的是简洁清楚的xtend代码，而对系统或框架来说，它们看到的还是java源代码，皆大欢喜。</p>
 <p>正因为有了xtend，让我对一些java框架也不像之前那么排斥了，比如play2-java。play1中大量利用了annotation和javassist来突破java语法的限制，让我们编码时轻松一些，受到了广大java程序员的欢迎。而play2认为play1中魔术太多，去掉了一些魔术，但代码写起来要啰嗦一些。也因此，用play2的人都会半逼迫着去学习scala（或退回到play1），但scala与java库之间的不匹配，有时候会造成很多问题，让人很郁闷。同时因为scala语言本身的难度，用起来很坎坷，所以我一度对play2的未来充满了怀疑。</p>
 <p>但现在有了xtend，情况立马变得不同。使用xtend+play2-java，既能保持所有java的优势，又能让代码写起来不那么痛苦。以前需要用annotation来简化的操作，通过xtend定义一些DSL，写起来既简单又易调试。以前用得顺手的java库，现在继续能用，而且还更容易了。再加上xtend学习成本很低，几个小时就能掌握，这的确是相当大的吸引力。</p>
