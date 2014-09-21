@@ -136,14 +136,14 @@ Hello, sbt!
         <article>
             <p><h2>3. 一条命令生成新项目</h2>
 <p><strong>~/.sbt/0.13/plugins/np.sbt</strong></p>
-<pre><code>resolvers += Resolver.url("sbt-np",
+<pre><code class="scala">resolvers += Resolver.url("sbt-np",
   url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(
     Resolver.ivyStylePatterns)
 
 addSbtPlugin("me.lessis" % "np" % "0.2.0")
 </code></pre>
 <p><strong>~/.sbt/0.13/np.sbt</strong></p>
-<pre><code>seq(npSettings: _*)
+<pre><code class="scala">seq(npSettings: _*)
 </code></pre>
 </p>
         </article>
@@ -164,7 +164,7 @@ addSbtPlugin("me.lessis" % "np" % "0.2.0")
         </article>
         <article>
             <p><p><strong>build.sbt</strong></p>
-<pre><code>organization := "mytest"
+<pre><code class="scala">organization := "mytest"
 
 name := "default"
 
@@ -175,7 +175,7 @@ version := "0.1-SNAPSHOT"%
         <article>
             <p><h2>4. 快速添加依赖</h2>
 <p><strong>build.sbt</strong></p>
-<pre><code>resolvers ++= Seq(
+<pre><code class="scala">resolvers ++= Seq(
   "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
   "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
   "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases"
@@ -198,7 +198,7 @@ libraryDependencies ++= Seq(
         <article>
             <p><h2>5. 快速生成Idea项目</h2>
 <p><strong>~/.sbt/0.13/plugins/sbt-idea.sbt</strong></p>
-<pre><code>addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
+<pre><code class="scala">addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 </code></pre>
 </p>
         </article>
@@ -287,9 +287,18 @@ Getting org.scala-sbt sbt 0.13.6 ...
 </p>
         </article>
         <article>
+            <p><h2>添加对子项目的引用</h2>
+<p><strong>build.sbt</strong></p>
+<pre><code class="scala">lazy val core = project
+
+lazy val util = project
+</code></pre>
+</p>
+        </article>
+        <article>
             <p><h2>9. 轻松解读配置文件基本规则</h2>
 <p><strong>build.sbt</strong></p>
-<pre><code>name := "hello"
+<pre><code class="scala">name := "hello"
 
 version := "1.0"
 
@@ -314,7 +323,7 @@ sbtVersion := "0.13.5"
         </article>
         <article>
             <p><h2>10. 自定义极简单的任务</h2>
-<pre><code>lazy val hello = taskKey[Unit]("An example task")
+<pre><code class="scala">lazy val hello = taskKey[Unit]("An example task")
 
 hello := { println("Hello, world") }
 </code></pre>
@@ -329,7 +338,7 @@ Hello, world!
 </p>
         </article>
         <article>
-            <p><h2>任务：显示根目录下的文件</h2>
+            <p><h2>Task：显示根目录下的文件</h2>
 <pre><code class="scala">lazy val showRootFiles = taskKey[Unit]("Show root files")
 
 showRootFiles := {
