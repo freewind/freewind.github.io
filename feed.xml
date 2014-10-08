@@ -12,10 +12,288 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Sun, 21 Sep 2014 21:24:29 CST</lastBuildDate>
+        <lastBuildDate>Wed, 08 Oct 2014 20:03:25 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
+
+            <item>
+                <title>在IdeaPlugin中如何知道当前editor中的内容发生了变化？</title>
+                <link>http://freewind.github.io/posts/how-to-know-the-content-changes-of-editor-in-idea-plugin</link>
+                <pubDate>Sat, 27 Sep 2014 20:08:40 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2796</guid>
+                <description><![CDATA[<p>每一个文件打开后，都会有一个对应的<code>com.intellij.openapi.fileEditor.FileEditor</code>实例。它有一个方法<code>getEditor</code>可以拿到一个<code>com.intellij.openapi.editor.Editor</code>实例。<code>Editor</code>实例中，有一个<code>getDocument</code>方法，可以拿到一个<code>Document</code>实例。在这个实例中，我们可以添加一些<code>DocumentListener</code>，实时监视内容的变化。</p>
+<p>示例代码如下（假设我们有一个editor）：</p>
+<pre><code class="scala">editor.getDocument.addDocumentListener(new DocumentListener {
+
+  override def beforeDocumentChange(event: DocumentEvent) {
+    println("## beforeDocumentChanged: " + event)
+  }
+
+  override def documentChanged(event: DocumentEvent) {
+    println("## documentChanged: " + event)
+  }
+
+}
+</code></pre>
+<p>可以看到，每当文档中有内容发生变化时，这两个回调方法都会被调用，一个在前一个在后。其参数<code>DocumentEvent</code>会告诉我们，文档发生了什么变化。</p>
+<p>比如，我在文档中输入了一个字母<code>a</code>后，会打印出两条信息：</p>
+<pre><code>## beforeDocumentChanged: DocumentEventImpl[myOffset=73, myOldLength=0, myNewLength=1, myOldString='', myNewString='a'].
+## documentChanged: DocumentEventImpl[myOffset=73, myOldLength=0, myNewLength=1, myOldString='', myNewString='a'].
+</code></pre>
+<p>它会告诉我们哪个位置的内容发生了变化，以及改变的内容是什么样子的。</p>
+<h2>editor从哪里来</h2>
+<h3>直接拿到当前被选中的editor</h3>
+<p>我知道有两种方法，一个是全局的用来拿到“当前被选中的editor”：</p>
+<pre><code>FileEditorManager.getInstance(project).getSelectedTextEditor
+</code></pre>
+<p>这个方法可以直接拿到当前project中被选中的那个TextEditor，其类型为<code>Editor</code>.</p>
+<p>但是对于我想做的事情来说，这个方法用不上。我想给每一个“当前”editor添加一个<code>DocumentListener</code>。由于每个文件都可以被多次打开、关闭，我必须想办法准确拿到当前操作的editor。</p>
+<h3>通过监听editor切换事件</h3>
+<p>我们可以通过添加一个<code>FileEditorManager</code>去监听当前项目各editor之间切换、开关的事件：</p>
+<pre><code class="scala">val connection: MessageBusConnection = project.getMessageBus.connect(project)
+connection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerAdapter {
+  override def fileOpened(@NotNull source: FileEditorManager, @NotNull file: VirtualFile) {}
+
+  override def fileClosed(source: FileEditorManager, file: VirtualFile) {}
+
+  override def selectionChanged(event: FileEditorManagerEvent) {
+    val oldEditor = Option(event.getOldEditor)
+    val newEditor = Option(event.getNewEditor)
+
+    oldEditor match {
+      case Some(x: TextEditor) =&gt; removeDocumentListener(x.getEditor)
+      case _ =&gt;
+    }
+    newEditor match {
+      case Some(x: TextEditor) =&gt; addDocumentListener(x.getEditor)
+      case _ =&gt;
+    }
+  }
+})
+</code></pre>
+<p>当我们在<code>selectionChanged</code>回调中，通过事件对象拿到发生切换的两个<code>FileEditor</code>后，就可以拿到每一个相应的<code>Editor</code>实例，为其添加或者移除listener.</p>
+]]></description>
+            </item>
+
+            <item>
+                <title>如何在编写Idea Plugin的时候，知道项目中哪些文件被新建、删除、移动等</title>
+                <link>http://freewind.github.io/posts/how-to-know-file-creation-deleteion-when-writing-idea-plugin</link>
+                <pubDate>Sat, 27 Sep 2014 17:42:58 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2795</guid>
+                <description><![CDATA[<h2>plugin.xml</h2>
+<pre><code>&lt;project-components&gt;
+    &lt;component&gt;
+        &lt;implementation-class&gt;com.thoughtworks.pli.intellij.remotepair.RemotePairProjectComponent&lt;/implementation-class&gt;
+    &lt;/component&gt;
+&lt;/project-components&gt;
+</code></pre>
+<h2>RemotePairProjectComponent.scala</h2>
+<pre><code class="scala">package com.thoughtworks.pli.intellij.remotepair
+
+import com.intellij.openapi.fileEditor.{FileEditorManagerEvent, FileEditorManager, FileEditorManagerAdapter, FileEditorManagerListener}
+import com.intellij.openapi.vfs._
+import org.jetbrains.annotations.NotNull
+import com.intellij.util.messages.{Topic, MessageBusConnection}
+import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.impl.BulkVirtualFileListenerAdapter
+
+class RemotePairProjectComponent(project: Project) extends ProjectComponent {
+
+  override def initComponent() {}
+
+  override def disposeComponent() {}
+
+  override def getComponentName: String = "RemotePairProjectComponent"
+
+  override def projectOpened() {
+    val connection: MessageBusConnection = project.getMessageBus.connect(project)
+    val fileListener = new VirtualFileAdapter() {
+      override def fileDeleted(event: VirtualFileEvent) {
+        println("### file deleted: " + event.getFile)
+      }
+
+      override def fileCreated(event: VirtualFileEvent) {
+        println("### file created: " + event.getFile)
+      }
+
+      override def fileMoved(event: VirtualFileMoveEvent) {
+        println("### file moved: " + event.getFile)
+      }
+
+      override def propertyChanged(event: VirtualFilePropertyEvent) {
+        println("### file property changed: " + event.getFile)
+      }
+
+      override def fileCopied(event: VirtualFileCopyEvent) {
+        println("### file copied: " + event.getFile)
+      }
+
+      override def contentsChanged(event: VirtualFileEvent) {
+        println("### contents changed: " + event.getFile)
+      }
+    }
+
+    connection.subscribe(VirtualFileManager.VFS_CHANGES, new BulkVirtualFileListenerAdapter(fileListener))
+  }
+
+  override def projectClosed() {}
+
+}
+</code></pre>
+<h2>运行</h2>
+<pre><code>### file created: file:///.../test/src/XXX.java
+### contents changed: file:///.../test/src/XXX.java
+########## file selection changed: null -&gt; file:///.../test/src/XXX.java
+########## file opened: file:///.../test/src/XXX.java
+### contents changed: file:///.../test/src/XXX.java
+### contents changed: file:///.../test/.idea/workspace.xml
+</code></pre>
+]]></description>
+            </item>
+
+            <item>
+                <title>如何在编写Idea Plugin的时候，知道项目中哪些文件被打开、关闭等</title>
+                <link>http://freewind.github.io/posts/how-to-kown-file-open-close-when-writing-idea-plugin</link>
+                <pubDate>Sat, 27 Sep 2014 17:03:24 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2794</guid>
+                <description><![CDATA[<h2>plugin.xml</h2>
+<pre><code class="xml">&lt;project-components&gt;
+    &lt;component&gt;
+        &lt;implementation-class&gt;com.thoughtworks.pli.intellij.remotepair.RemotePairProjectComponent&lt;/implementation-class&gt;
+    &lt;/component&gt;
+&lt;/project-components&gt;
+</code></pre>
+<h2>RemotePairProjectComponent.scala</h2>
+<pre><code class="scala">package com.thoughtworks.pli.intellij.remotepair
+
+import com.intellij.openapi.fileEditor.{FileEditorManagerEvent, FileEditorManager, FileEditorManagerAdapter, FileEditorManagerListener}
+import com.intellij.openapi.vfs.VirtualFile
+import org.jetbrains.annotations.NotNull
+import com.intellij.util.messages.MessageBusConnection
+import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.project.Project
+
+class RemotePairProjectComponent(project: Project) extends ProjectComponent {
+
+  override def initComponent() {}
+
+  override def disposeComponent() {}
+
+  override def getComponentName: String = "RemotePairProjectComponent"
+
+  override def projectOpened() {
+    val connection: MessageBusConnection = project.getMessageBus.connect(project)
+    connection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerAdapter {
+      override def fileOpened(@NotNull source: FileEditorManager, @NotNull file: VirtualFile) {
+        System.out.println("########## file opened: " + file)
+      }
+
+      override def fileClosed(source: FileEditorManager, file: VirtualFile) {
+        System.out.println("########## file closed: " + file)
+      }
+
+      override def selectionChanged(event: FileEditorManagerEvent) {
+        val oldFile = event.getOldFile
+        val newFile = event.getNewFile
+        System.out.println(s"########## file selection changed: $oldFile -&gt; $newFile")
+      }
+    })
+  }
+
+  override def projectClosed() {}
+
+}
+</code></pre>
+<h2>运行</h2>
+<p>运行该插件，在新打开的IDEA中打开一个项目，进行一些打开、关闭、切换文件的操作，可以看到原IDEA的console中会输出：</p>
+<pre><code>########## file selection changed: null -&gt; file:///.../test/src/Aaa.java
+########## file opened: file:///.../test/src/Aaa.java
+########## file selection changed: file:///.../test/src/Aaa.java -&gt; file:///.../test/src/pubspec.yaml
+########## file opened: file:///.../test/src/pubspec.yaml
+########## file selection changed: file:///.../test/src/pubspec.yaml -&gt; file:///.../test/src/Aaa.java
+########## file selection changed: file:///.../test/src/Aaa.java -&gt; file:///.../test/src/pubspec.yaml
+</code></pre>
+]]></description>
+            </item>
+
+            <item>
+                <title>写Idea Plugin时，如何让它在某个项目打开的时候做些事？</title>
+                <link>http://freewind.github.io/posts/how-to-do-something-when-a-new-project-is-opened-when-writing-idea-plugin</link>
+                <pubDate>Sat, 27 Sep 2014 16:50:06 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2793</guid>
+                <description><![CDATA[<p>比如输出一个<code>Hello world</code>?</p>
+<h2>plugin.xml</h2>
+<pre><code class="xml">&lt;project-components&gt;
+    &lt;component&gt;
+        &lt;implementation-class&gt;com.thoughtworks.pli.intellij.remotepair.RemotePairProjectComponent&lt;/implementation-class&gt;
+    &lt;/component&gt;
+&lt;/project-components&gt;
+</code></pre>
+<h2>RemotePairProjectComponent.scala</h2>
+<pre><code class="scala">package com.thoughtworks.pli.intellij.remotepair
+
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorManagerAdapter
+import com.intellij.openapi.vfs.VirtualFile
+import org.jetbrains.annotations.NotNull
+import com.intellij.util.messages.MessageBusConnection
+import com.intellij.openapi.fileEditor.FileEditorManagerListener
+import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.project.Project
+
+class RemotePairProjectComponent(project: Project) extends ProjectComponent {
+
+  override def initComponent() {
+    System.out.println("##### RemotePairProjectComponent.initComponent")
+    System.out.println("## project: " + project)
+  }
+
+  override def disposeComponent() {
+  }
+
+  override def getComponentName: String = "RemotePairProjectComponent"
+
+  override def projectOpened() {
+    System.out.println("########## projectOpened: Hello world!")
+  }
+
+  override def projectClosed() {
+  }
+
+}
+</code></pre>
+<h2>运行</h2>
+<p>运行该插件，在打开的新idea中，打开一个新项目，则会在console中输出：</p>
+<pre><code>## project: Project '/Users/freewind/IdeaProjects/test' test
+########## projectOpened
+</code></pre>
+]]></description>
+            </item>
+
+            <item>
+                <title>在开发Idea Plugin时，为什么修改的代码没有生效？</title>
+                <link>http://freewind.github.io/posts/why-modified-code-is-not-run-when-develop-idea-plugin</link>
+                <pubDate>Sat, 27 Sep 2014 15:54:25 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2791</guid>
+                <description><![CDATA[<p>今天打算开发一个新的Idea插件，发现一个奇怪的问题：我在代码中所做的任何修改，运行时都没有生效。</p>
+<p>这个问题浪费了我很多时间，因为我不知道是Idea的问题，还是我的代码写的不对。经过反复排查，终于找到了原因：</p>
+<p>我正在编写的这个插件，是灰色的，而且右边的复选框没有被勾上！也就是说，我的插件没有被启用。</p>
+<p>导致这个原因，是因为中途有一次，修改<code>plugin.xml</code>文件时写错了，导致插件没法正常启动，Idea便自动把它禁用了。哪怕我后来重新修好了代码，它也不会自动启用。</p>
+<p>所以在开发过程中一定要注意，如果什么时候觉得不对劲，一定要来看看这个插件是否处于启用状态。</p>
+]]></description>
+            </item>
 
             <item>
                 <title>如何组织你的Scala代码</title>
@@ -854,7 +1132,7 @@ addSbtPlugin("me.lessis" % "np" % "0.2.0")
 
 name := "default"
 
-version := "0.1-SNAPSHOT"%
+version := "0.1-SNAPSHOT"
 </code></pre>
 <hr />
 <h2>4. 快速添加依赖</h2>
@@ -6695,7 +6973,7 @@ export JDK_HOME=`/usr/libexec/java_home -v 1.7`
 <p>我们在Idea编辑器中看到的每一个单词或者token，并不是一个简单的字符串，实际上是一个对象，定义了文本内容，前景色后景色，各种文字效果（加粗、斜体、下划线），以及不同状态下的效果（悬停、出错、选中）。</p>
 <p>我们要定义一个Highlighter，它将使用前面定义的Lexer对代码进行解析，然后根据不同的token类型，提供一些颜色定义。</p>
 <p>代码如下：</p>
-<pre><code>package com.thoughtworks.pli.pub_editor.highlight
+<pre><code class="scala">package com.thoughtworks.pli.pub_editor.highlight
 
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -6735,49 +7013,34 @@ class PubHighlighter extends SyntaxHighlighterBase {
   }
 
 }
-
-
-代码比较直白，不多讲
-
-## HighlighterFactory
-
-然后我还要建立一个HighlighterFactory，注册到Idea，告诉它当编辑pubspec.yaml文件时，使用我们提供的Highlighter。
-
-class PubHighlighterFactory extends SyntaxHighlighterFactory {
+</code></pre>
+<p>代码比较直白，不多讲</p>
+<h2>HighlighterFactory</h2>
+<p>然后我还要建立一个HighlighterFactory，注册到Idea，告诉它当编辑pubspec.yaml文件时，使用我们提供的Highlighter。</p>
+<pre><code class="scala">class PubHighlighterFactory extends SyntaxHighlighterFactory {
 
   def getSyntaxHighlighter(project: Project, virtualFile: VirtualFile): SyntaxHighlighter = {
     new PubHighlighter
   }
 
 }
-
-
-然后在plugin.xml中添加以下代码：
-
-&lt;lang.syntaxHighlighterFactory key="pub" implementationClass="com.thoughtworks.pli.pub_editor.highlight.PubHighlighterFactory"/&gt;
-
-
-其中的`key`的值很重要，一定是我们定义的language名称，否则Idea没法匹配。其值跟这里定义的Language相同：
-
-class PubLanguage extends Language("pub")
-
-
-## 对认识的key特殊对待
-
-[Pub的文档](https://www.dartlang.org/tools/pub/pubspec.html)中定义了哪些key是它所识别的，对于这个key我们可以以特殊的颜色显示，跟其它的key区分开。
-
-以下key是可识别的：
-
-"name", "version", "description", "author",
+</code></pre>
+<p>然后在plugin.xml中添加以下代码：</p>
+<pre><code class="xml">&lt;lang.syntaxHighlighterFactory key="pub" implementationClass="com.thoughtworks.pli.pub_editor.highlight.PubHighlighterFactory"/&gt;
+</code></pre>
+<p>其中的<code>key</code>的值很重要，一定是我们定义的language名称，否则Idea没法匹配。其值跟这里定义的Language相同：</p>
+<pre><code class="scala">class PubLanguage extends Language("pub")
+</code></pre>
+<h2>对认识的key特殊对待</h2>
+<p><a href="https://www.dartlang.org/tools/pub/pubspec.html">Pub的文档</a>中定义了哪些key是它所识别的，对于这个key我们可以以特殊的颜色显示，跟其它的key区分开。</p>
+<p>以下key是可识别的：</p>
+<pre><code>"name", "version", "description", "author",
 "homepage", "documentation", "dependencies", 
 "dev_dependencies", "dependency_overrides"
-
-
-为了跟其它key分开，我们必须定义一种新的token类型`KnownKey`，同时把由Lexer解析出来的`InlineKey`, `ParentKey`和`MultiLineStringKey`根据其值转换为`KnownKey`类型。
-
-首先定义一个`PubWithKnownKeyLexer`:
-
-class PubWithKnownKeyLexer extends PubSpecLexer {
+</code></pre>
+<p>为了跟其它key分开，我们必须定义一种新的token类型<code>KnownKey</code>，同时把由Lexer解析出来的<code>InlineKey</code>, <code>ParentKey</code>和<code>MultiLineStringKey</code>根据其值转换为<code>KnownKey</code>类型。</p>
+<p>首先定义一个<code>PubWithKnownKeyLexer</code>:</p>
+<pre><code>class PubWithKnownKeyLexer extends PubSpecLexer {
 
   val KeyTypes = List(InlineKey, ParentKey, MultiLineStringKey)
   val KnownKeys = List(
@@ -6794,11 +7057,9 @@ class PubWithKnownKeyLexer extends PubSpecLexer {
 
   private def getKey(token: String) = StringUtils.substringBefore(token, ":").trim.toLowerCase
 }
-
-
-然后修改`PubHighlighter`，让它返回新的Lexer:
-
-def getHighlightingLexer: Lexer = new PubWithKnownKeyLexer
+</code></pre>
+<p>然后修改<code>PubHighlighter</code>，让它返回新的Lexer:</p>
+<pre><code>def getHighlightingLexer: Lexer = new PubWithKnownKeyLexer
 </code></pre>
 <p>这样就大功告成了。</p>
 <h2>源代码</h2>
@@ -6816,181 +7077,183 @@ def getHighlightingLexer: Lexer = new PubWithKnownKeyLexer
                 <description><![CDATA[<p>YAML是一种看起来很易读、格式简单的语法格式，但实际上，它的<a href="www.yaml.org/spec/1.2/spec.html">语言规范</a>相当复杂，甚至连读一遍文档都是非常痛苦的事情。同时在IDEA上也没有找到可用的YAML插件，这让我很头痛，看起来一个很简单的任务突然变得复杂到无法实现。</p>
 <h2>简化的文法</h2>
 <p>经过短暂的纠结，我决定按照pubspec.yaml上给出的例子，实现一个简化的YAML语法规则，只支持以下几种格式：</p>
-<ul>
-<li><p>注释，如</p>
+<h3>注释</h3>
+<p>如</p>
 <pre><code># this is comment
 </code></pre>
-</li>
-<li><p>单行key value，如
-<br  />key: value</p>
-</li>
-<li><p>嵌套key value, 如
-<br  />key:
-<br  />key1: value1
-<br  />key2:</p>
-<pre><code>key3: value3
-key4: value4
+<h3>单行key value</h3>
+<p>如</p>
+<pre><code>key: value
 </code></pre>
-</li>
-<li><p>多行文本，如
-<br  />key: >
-<br  />this is
-<br  />multiline
-<br  />string</p>
+<h3>嵌套key value, 如</h3>
+<pre><code>key:
+  key1: value1
+  key2:
+    key3: value3
+    key4: value4
+</code></pre>
+<h3>多行文本，如</h3>
+<pre><code>key: &gt;
+  this is
+  multiline
+  string
+</code></pre>
 <p>对于其它格式的内容，直接当作不识别的文本处理，这样简化后，词法规则的规模小了很多。</p>
 <h2>缩进处理</h2>
 <p>但是马上又遇到另一个头疼的问题：YAML的文法实际上并不完全是“上下文无关”的，因为它的很多词法成分实际上跟它前面的缩进数量是相关的。而我使用的词法生成器工具JFlex只支持“上下文无关”文法，必须对缩进进行一些额外的处理才行。</p>
 <p>好在看到了一篇文章，讲如何在JFlex中处理缩进，对于我要实现的简化的缩进来说，还是可行的: <a href="http://matt.might.net/articles/standalone-lexers-with-lex/">http://matt.might.net/articles/standalone-lexers-with-lex/</a></p>
 <h2>JFlex规则</h2>
 <p>经过两天的努力和反复的尝试，终于实现了以下规则：</p>
-<p>package com.thoughtworks.pli.pub_editor.parser;</p>
-<p>import com.intellij.lexer.FlexLexer;
-<br  />import com.intellij.psi.tree.IElementType;
-<br  />import java.util.*;</p>
-<p>%%</p>
-<p>%class _PubSpecLexer
-<br  />%implements FlexLexer
-<br  />%unicode
-<br  />%type IElementType
-<br  />%function advance
-<br  />//%debug
-<br  />%{
-<br  />IndentationStack indentationStack = new IndentationStack();
-<br  />public int currentIndentation() { return indentationStack.current(); }
-<br  />public List<Integer> allIndentations() { return indentationStack.all(); }
-<br  />%}</p>
-<p>Comment = &ldquo;#&rdquo; .<em>
-<br  />LineSeparator = \r\n | \r | \n
-<br  />Indentation = {WhiteSpace}+
-<br  />WhiteSpace = [\ ]
-<br  />NonWhiteSpace = [<sup>\ ]
-<br  />BlankChar = [\ \t\f]
-<br  />NonBlankChar = [</sup>\ \r\n\t\f]
-<br  />ParentKey = {NonBlankChar}+ &ldquo;:&rdquo; {BlankChar}</em> {LineSeparator}
-<br  />InlineKey = {NonBlankChar}+ &ldquo;:&rdquo; {BlankChar}+
-<br  />InlineValue = .+
-<br  />MultiLineStringKey = {NonBlankChar}+ &ldquo;:&rdquo; {BlankChar}* &ldquo;>&rdquo; {LineSeparator}</p>
-<p>%state $newLine
-<br  />%state $value
-<br  />%state $multiLineString
-<br  />%state $multiLineStringAfterIndentation
-<br  />%state $inlineValue
-<br  />%state $multiChildren</p>
-<p>%%
-<br  /><YYINITIAL> {</p>
-<pre><code>{Indentation}    { indentationStack.push(yytext().length()); return PubTokenTypes.Indentation(); }
-{Comment}        { return PubTokenTypes.Comment(); }
-{ParentKey}      { yybegin(YYINITIAL);return PubTokenTypes.ParentKey(); }
-{InlineKey}      { yybegin($inlineValue); return PubTokenTypes.InlineKey(); }
-{MultiLineStringKey} { yybegin($multiLineString); return PubTokenTypes.MultiLineStringKey(); }
-{LineSeparator}  { return PubTokenTypes.LineSeparator(); }
-</code></pre>
-<p>}
-<br  /><$inlineValue> {</p>
-<pre><code>{InlineValue}    { yybegin(YYINITIAL); return PubTokenTypes.InlineValue(); }
-</code></pre>
-<p>}
-<br  /><$multiLineString> {</p>
-<pre><code>{Indentation}    {
-                     int currentIndent = yytext().length();
-                     if(currentIndent &gt;= indentationStack.current()) {
-                     yybegin($multiLineStringAfterIndentation);
-                         return PubTokenTypes.Indentation();
-                     } else {
-                         yypushback(currentIndent);
-                         yybegin(YYINITIAL);
-                     }
-                 }
-{NonWhiteSpace}+ { yypushback(yytext().length()); yybegin(YYINITIAL); }
-&lt;$multiLineStringAfterIndentation&gt; {
-    {NonBlankChar}+ {  return PubTokenTypes.OneLineOfMultiLineString(); }
-    {LineSeparator} {  yybegin($multiLineString); return PubTokenTypes.LineSeparator(); }
+<pre><code>package com.thoughtworks.pli.pub_editor.parser;
+
+import com.intellij.lexer.FlexLexer;
+import com.intellij.psi.tree.IElementType;
+import java.util.*;
+
+%%
+
+%class _PubSpecLexer
+%implements FlexLexer
+%unicode
+%type IElementType
+%function advance
+//%debug
+%{
+IndentationStack indentationStack = new IndentationStack();
+public int currentIndentation() { return indentationStack.current(); }
+public List&lt;Integer&gt; allIndentations() { return indentationStack.all(); }
+%}
+
+Comment = "#" .*
+LineSeparator = \r\n | \r | \n
+Indentation = {WhiteSpace}+
+WhiteSpace = [\ ]
+NonWhiteSpace = [^\ ]
+BlankChar = [\ \t\f]
+NonBlankChar = [^\ \r\n\t\f]
+ParentKey = {NonBlankChar}+ ":" {BlankChar}* {LineSeparator}
+InlineKey = {NonBlankChar}+ ":" {BlankChar}+
+InlineValue = .+
+MultiLineStringKey = {NonBlankChar}+ ":" {BlankChar}* "&gt;" {LineSeparator}
+
+%state $newLine
+%state $value
+%state $multiLineString
+%state $multiLineStringAfterIndentation
+%state $inlineValue
+%state $multiChildren
+
+%%
+&lt;YYINITIAL&gt; {
+    {Indentation}    { indentationStack.push(yytext().length()); return PubTokenTypes.Indentation(); }
+    {Comment}        { return PubTokenTypes.Comment(); }
+    {ParentKey}      { yybegin(YYINITIAL);return PubTokenTypes.ParentKey(); }
+    {InlineKey}      { yybegin($inlineValue); return PubTokenTypes.InlineKey(); }
+    {MultiLineStringKey} { yybegin($multiLineString); return PubTokenTypes.MultiLineStringKey(); }
+    {LineSeparator}  { return PubTokenTypes.LineSeparator(); }
 }
+&lt;$inlineValue&gt; {
+    {InlineValue}    { yybegin(YYINITIAL); return PubTokenTypes.InlineValue(); }
+}
+&lt;$multiLineString&gt; {
+    {Indentation}    {
+                         int currentIndent = yytext().length();
+                         if(currentIndent &gt;= indentationStack.current()) {
+                         yybegin($multiLineStringAfterIndentation);
+                             return PubTokenTypes.Indentation();
+                         } else {
+                             yypushback(currentIndent);
+                             yybegin(YYINITIAL);
+                         }
+                     }
+    {NonWhiteSpace}+ { yypushback(yytext().length()); yybegin(YYINITIAL); }
+    &lt;$multiLineStringAfterIndentation&gt; {
+        {NonBlankChar}+ {  return PubTokenTypes.OneLineOfMultiLineString(); }
+        {LineSeparator} {  yybegin($multiLineString); return PubTokenTypes.LineSeparator(); }
+    }
+}
+.                    { return PubTokenTypes.BadCharacter(); }
 </code></pre>
-<p>}
-<br  />.                    { return PubTokenTypes.BadCharacter(); }</p>
 <p>可以看到对于这小小的文法，居然需要这么多定义和代码。除去文法相关的定义，有不少代码是关于处理缩进的。不过由于上面的代码比较直白，所以就不多解释，如果看起来有不明白的地方，最好再看一遍JFlex的文档：<a href="http://jflex.de/manual.html">http://jflex.de/manual.html</a></p>
 <h2>测试</h2>
 <p>最后上一个测试：</p>
-<p>String input = &ldquo;#!!!!!\n&rdquo; +</p>
-<pre><code>    "#????\n" +
-    "abc: \"sss\"\n" +
-    "xxx:\n" +
-    "  aaa: 111\n" +
-    "  bbb: 222\n" +
-    "yyy: &gt;\n" +
-    "  1111111111111\n" +
-    "    2222222222222\n" +
-    "  3333333333333\n" +
-    "zzz: ZZZ\n" +
-    "  ccc: This line actually is invalid\n" +
-    "???";
-</code></pre>
-<p>PubSpecLexer lexer = new PubSpecLexer();
-<br  />lexer.start(input);
-<br  />while (true) {</p>
-<pre><code>IElementType tokenType = lexer.getTokenType();
-if (tokenType == null) {
-    System.out.println("--- end ---");
-    return;
-}
+<pre><code>String input = "#!!!!!\n" +
+        "#????\n" +
+        "abc: \"sss\"\n" +
+        "xxx:\n" +
+        "  aaa: 111\n" +
+        "  bbb: 222\n" +
+        "yyy: &gt;\n" +
+        "  1111111111111\n" +
+        "    2222222222222\n" +
+        "  3333333333333\n" +
+        "zzz: ZZZ\n" +
+        "  ccc: This line actually is invalid\n" +
+        "???";
+PubSpecLexer lexer = new PubSpecLexer();
+lexer.start(input);
+while (true) {
+    IElementType tokenType = lexer.getTokenType();
+    if (tokenType == null) {
+        System.out.println("--- end ---");
+        return;
+    }
 
-System.out.println(tokenType + "(" + lexer.getTokenText() + ")");
-lexer.advance();
+    System.out.println(tokenType + "(" + lexer.getTokenText() + ")");
+    lexer.advance();
+}
 </code></pre>
-<p>}</p>
 <p>运行结果如下：</p>
-<p>Comment(#!!!!!)
-<br  />LineSeparator(
-<br  />)
-<br  />Comment(#????)
-<br  />LineSeparator(
-<br  />)
-<br  />InlineKey(abc: )
-<br  />InlineValue(&ldquo;sss&rdquo;)
-<br  />LineSeparator(
-<br  />)
-<br  />ParentKey(xxx:
-<br  />)
-<br  />Indentation(  )
-<br  />InlineKey(aaa: )
-<br  />InlineValue(111)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(  )
-<br  />InlineKey(bbb: )
-<br  />InlineValue(222)
-<br  />LineSeparator(
-<br  />)
-<br  />MultiLineStartFlag(yyy: >
-<br  />)
-<br  />Indentation(  )
-<br  />OneLineOfMultiLineString(1111111111111)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(    )
-<br  />OneLineOfMultiLineString(2222222222222)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(  )
-<br  />OneLineOfMultiLineString(3333333333333)
-<br  />LineSeparator(
-<br  />)
-<br  />InlineKey(zzz: )
-<br  />InlineValue(ZZZ)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(  )
-<br  />InlineKey(ccc: )
-<br  />InlineValue(This line actually is invalid)
-<br  />LineSeparator(
-<br  />)
-<br  />BadCharacter(?)
-<br  />BadCharacter(?)
-<br  />BadCharacter(?)
-<br  />&mdash; end &mdash;</p>
-</li>
-</ul>
+<pre><code>Comment(#!!!!!)
+LineSeparator(
+)
+Comment(#????)
+LineSeparator(
+)
+InlineKey(abc: )
+InlineValue("sss")
+LineSeparator(
+)
+ParentKey(xxx:
+)
+Indentation(  )
+InlineKey(aaa: )
+InlineValue(111)
+LineSeparator(
+)
+Indentation(  )
+InlineKey(bbb: )
+InlineValue(222)
+LineSeparator(
+)
+MultiLineStartFlag(yyy: &gt;
+)
+Indentation(  )
+OneLineOfMultiLineString(1111111111111)
+LineSeparator(
+)
+Indentation(    )
+OneLineOfMultiLineString(2222222222222)
+LineSeparator(
+)
+Indentation(  )
+OneLineOfMultiLineString(3333333333333)
+LineSeparator(
+)
+InlineKey(zzz: )
+InlineValue(ZZZ)
+LineSeparator(
+)
+Indentation(  )
+InlineKey(ccc: )
+InlineValue(This line actually is invalid)
+LineSeparator(
+)
+BadCharacter(?)
+BadCharacter(?)
+BadCharacter(?)
+--- end ---
+</code></pre>
 <h2>源代码</h2>
 <p>代码在<a href="http://github.com/freewind/PubEditor">http://github.com/freewind/PubEditor</a>，标签为<code>6_other_basic_rules</code></p>
 ]]></description>
@@ -7017,7 +7280,7 @@ lexer.advance();
 </ul>
 <h2>创建pubspec.flex语法文件</h2>
 <p>下面在项目中创建一个<code>pubspec.flex</code>文件，内容如下：</p>
-<pre><code>package com.thoughtworks.pli.pub_editor.parser;
+<pre><code class="flex">package com.thoughtworks.pli.pub_editor.parser;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
@@ -7047,50 +7310,31 @@ NewLine = \r\n | \r | \n
 {Comment} { return PubTokenTypes.comment(matchedText()); }
 {NewLine} { return PubTokenTypes.newLine(); }
 .         { return PubTokenTypes.badCharacter(matchedText()); }
-
-
-每个jflex定义文件，都分成三部分，以`%%`隔开。
-
-### User code
-
-第一部分是`user code`，我们可以添加自己的java代码，将原样写到最终生成的java文件中，一般用来放`package`,`import`之类的语句。
-
-在我们的例子中，声明了所在的package和引入的类，这些类将会在下面的代码里用到。
-
-其中`scala.Some`是因为我其它的代码是用scala写的，需要这个类。而｀FlexLexer｀和`IElementType`是IDEA提供的公共类，我们必须使用它们才能让IDEA识别生成的类。
-
-### Options and declarations
-
-第二部分是`options and declarations`，我们可以提供一些代码生成的设置，使用类似于正则表达式的方式定义一些字符类，还可以定义一些state，以及一些将嵌入到生成文件中的java方法。
-
-生成的类名为`_PubSpecLexer`，使用这个名字是因为还会生成一个供外部使用的包装类:
-
-%class _PubSpecLexer
-
-
-将实现`FlexLexer`，这是IDEA要求的：
-
-%implements FlexLexer
-
-
-使用`unicode`来解析目标文件，这基本上是必须的：
-
-%unicode
-
-
-匹配到token时，返回哪种类型的对象。`IElementType`是IDEA提供的：
-
-%type IElementType
-
-
-自定义用于获取下一个token的方法名，默认是`yylex`，但为了配合`FlexLexer`接口的定义，需要改成`advance`:
-
-%function advance
-
-
-我们还可以定义一些变量或者方法供文件中的其它代码使用，它们将会成为生成的类的实例变量或方法：
-
-%{
+</code></pre>
+<p>每个jflex定义文件，都分成三部分，以<code>%%</code>隔开。</p>
+<h3>User code</h3>
+<p>第一部分是<code>user code</code>，我们可以添加自己的java代码，将原样写到最终生成的java文件中，一般用来放<code>package</code>,<code>import</code>之类的语句。</p>
+<p>在我们的例子中，声明了所在的package和引入的类，这些类将会在下面的代码里用到。</p>
+<p>其中<code>scala.Some</code>是因为我其它的代码是用scala写的，需要这个类。而｀FlexLexer｀和<code>IElementType</code>是IDEA提供的公共类，我们必须使用它们才能让IDEA识别生成的类。</p>
+<h3>Options and declarations</h3>
+<p>第二部分是<code>options and declarations</code>，我们可以提供一些代码生成的设置，使用类似于正则表达式的方式定义一些字符类，还可以定义一些state，以及一些将嵌入到生成文件中的java方法。</p>
+<p>生成的类名为<code>_PubSpecLexer</code>，使用这个名字是因为还会生成一个供外部使用的包装类:</p>
+<pre><code>%class _PubSpecLexer
+</code></pre>
+<p>将实现<code>FlexLexer</code>，这是IDEA要求的：</p>
+<pre><code>%implements FlexLexer
+</code></pre>
+<p>使用<code>unicode</code>来解析目标文件，这基本上是必须的：</p>
+<pre><code>%unicode
+</code></pre>
+<p>匹配到token时，返回哪种类型的对象。<code>IElementType</code>是IDEA提供的：</p>
+<pre><code>%type IElementType
+</code></pre>
+<p>自定义用于获取下一个token的方法名，默认是<code>yylex</code>，但为了配合<code>FlexLexer</code>接口的定义，需要改成<code>advance</code>:</p>
+<pre><code>%function advance
+</code></pre>
+<p>我们还可以定义一些变量或者方法供文件中的其它代码使用，它们将会成为生成的类的实例变量或方法：</p>
+<pre><code>%{
 private String matchedText() {
     return yytext().toString();
 }
@@ -7098,28 +7342,20 @@ private Some&lt;String&gt; someText() {
     return new Some&lt;String&gt;(yytext().toString());
 }
 %}
-
-
-最后定义了两个字符类，使用了类似正则的表达式：
-
-Comment = "#" .*
+</code></pre>
+<p>最后定义了两个字符类，使用了类似正则的表达式：</p>
+<pre><code>Comment = "#" .*
 NewLine = \r\n | \r | \n
-
-
-其中`Comment`将匹配所有以`#`开头的单行内容，`NewLine`匹配了三种换行符。
-
-### Lexcial rules
-
-第三部分将针对某一种词法定义，提供相应的java代码返回某个特点的token对象。
-
-{Comment} { return PubTokenTypes.comment(matchedText()); }
+</code></pre>
+<p>其中<code>Comment</code>将匹配所有以<code>#</code>开头的单行内容，<code>NewLine</code>匹配了三种换行符。</p>
+<h3>Lexcial rules</h3>
+<p>第三部分将针对某一种词法定义，提供相应的java代码返回某个特点的token对象。</p>
+<pre><code>{Comment} { return PubTokenTypes.comment(matchedText()); }
 {NewLine} { return PubTokenTypes.newLine(); }
 .         { return PubTokenTypes.badCharacter(matchedText()); }
-
-
-它们使用了自定义的`PubTokenTypes`类，其内容如下：
-
-package com.thoughtworks.pli.pub_editor.parser
+</code></pre>
+<p>它们使用了自定义的<code>PubTokenTypes</code>类，其内容如下：</p>
+<pre><code>package com.thoughtworks.pli.pub_editor.parser
 
 import com.intellij.psi.tree.IElementType
 import com.thoughtworks.pli.pub_editor.PubLanguage
@@ -7136,26 +7372,17 @@ object PubTokenTypes {
 class PubElementType[T](elementType: String, value: Option[T] = None) extends IElementType(elementType, PubLanguage) {
   override def toString = elementType + value.map(v =&gt; s" ($v)").getOrElse("")
 }
-
-
-可以看到内容比较简单，只是定义了一些方法生成特定的token对象。
-
-匹配的时候，定义在前面的规则将会先使用，所以当匹配到最后一行，即:
-
-.         { return PubTokenTypes.badCharacter(matchedText()); }
-
-
-时，说明它不是我们认识的，直接生成一个相应的`badCharacter`类型的对象。
-
-## 生成Java类
-
-在`pubspec.flex`文件上点右键，选中`Run JFlex Generator`，插件会自动下载所需要的`jflex.jar`和`idea-flex.skeleton`文件，放在我们指定的位置，然后生成两个Java文件。
-
-一个是`_PubSpecLexer`，主要的逻辑都在里面，代码很长，是典型的C风格代码（为了性能）。
-
-另一个是`PubSpecLexer`，这是一个包装类，继承了IDEA提供的`FlexAdapter`类，供我们使用，其内容如下：
-
-package com.thoughtworks.pli.pub_editor.parser;
+</code></pre>
+<p>可以看到内容比较简单，只是定义了一些方法生成特定的token对象。</p>
+<p>匹配的时候，定义在前面的规则将会先使用，所以当匹配到最后一行，即:</p>
+<pre><code>.         { return PubTokenTypes.badCharacter(matchedText()); }
+</code></pre>
+<p>时，说明它不是我们认识的，直接生成一个相应的<code>badCharacter</code>类型的对象。</p>
+<h2>生成Java类</h2>
+<p>在<code>pubspec.flex</code>文件上点右键，选中<code>Run JFlex Generator</code>，插件会自动下载所需要的<code>jflex.jar</code>和<code>idea-flex.skeleton</code>文件，放在我们指定的位置，然后生成两个Java文件。</p>
+<p>一个是<code>_PubSpecLexer</code>，主要的逻辑都在里面，代码很长，是典型的C风格代码（为了性能）。</p>
+<p>另一个是<code>PubSpecLexer</code>，这是一个包装类，继承了IDEA提供的<code>FlexAdapter</code>类，供我们使用，其内容如下：</p>
+<pre><code>package com.thoughtworks.pli.pub_editor.parser;
 
 import com.intellij.lexer.FlexAdapter;
 
@@ -7166,17 +7393,12 @@ public class PubSpecLexer extends FlexAdapter {
         super(new _PubSpecLexer((Reader) null));
     }
 }
-
-
-注意这个类可能有编译错误，改成上面的就行了。下次再生成时，这个类不会重新生成。
-
-## 如何使用
-
-生成的代码如何使用呢？这里先不考虑插件如何使用，而是从普通调用的方式考虑。
-
-这里给出示例代码：
-
-package com.thoughtworks.pli.pub_editor.parser;
+</code></pre>
+<p>注意这个类可能有编译错误，改成上面的就行了。下次再生成时，这个类不会重新生成。</p>
+<h2>如何使用</h2>
+<p>生成的代码如何使用呢？这里先不考虑插件如何使用，而是从普通调用的方式考虑。</p>
+<p>这里给出示例代码：</p>
+<pre><code>package com.thoughtworks.pli.pub_editor.parser;
 
 public class TryLexer {
 
@@ -7190,13 +7412,10 @@ public class TryLexer {
         }
     }
 }
-
-
-需要注意的是，这种用法是IDEA修改后的JFlex代码的使用方法，而不是原始方法，这一点在本文最前面的那个问题里，已经说明了。
-
-它会打印出以下内容：
-
-Comment (#!!!!!)
+</code></pre>
+<p>需要注意的是，这种用法是IDEA修改后的JFlex代码的使用方法，而不是原始方法，这一点在本文最前面的那个问题里，已经说明了。</p>
+<p>它会打印出以下内容：</p>
+<pre><code>Comment (#!!!!!)
 NewLine
 Comment (#????)
 NewLine
@@ -7206,16 +7425,11 @@ BadCharacter (c)
 null
 null
 null
-
-
-可以看出，的确可以正确匹配上各Token.
-
-## 源代码
-
-源代码地址：
-
-https://github.com/freewind/PubEditor
 </code></pre>
+<p>可以看出，的确可以正确匹配上各Token.</p>
+<h2>源代码</h2>
+<p>源代码地址：</p>
+<p>https://github.com/freewind/PubEditor</p>
 <p>可以checkout出这个标签：<code>5_jflex_skeleton</code></p>
 <p>下一篇将会完善我们的词法定义。</p>
 ]]></description>
@@ -7230,7 +7444,7 @@ https://github.com/freewind/PubEditor
                 <guid isPermaLink="false">2580</guid>
                 <description><![CDATA[<p>pubspec.yaml在本质上是一个YAML文件，所以它的语法遵守YAML的规定。但同时它的内容又比较简单，因为它规定了哪些配置项是有效的，其它的都会被自动忽略。</p>
 <p>全部有效选项如下：</p>
-<pre><code>name: newtify
+<pre><code class="yaml">name: newtify
 version: 1.2.3
 description: &gt;
   Have you been turned into a newt?  Would you like to be?
@@ -7274,30 +7488,25 @@ dependency_overrides:
 </ul>
 <h2>文件图标</h2>
 <p>当我们将某种类型的文件识别为一种语言时，Idea可以让我们为它提供一个自定义的图标。这个图标将会显示在文件树中文件名节点的左边，以及编辑器标题的左边。</p>
-<p>文件大小为16&#215;16，格式为png。</p>
+<p>文件大小为16x16，格式为png。</p>
 <p>我使用一个<a href="http://www.uupoop.com/">在线版photoshop</a>，生成了下面这个图标:</p>
 <p><img src="/user_images/2509-0.png" alt="pub" /></p>
 <p>取名为<code>pub_file.png</code></p>
 <h2>自定义Language</h2>
 <p>这个PubEditor实际上就是一个小型的自定义语言插件。对于这类插件，我们需要定义一个Language子类：</p>
-<pre><code>package com.thoughtworks.pli.pub_editor
+<pre><code class="scala">package com.thoughtworks.pli.pub_editor
 
 import com.intellij.lang.Language
 
 class PubLanguage extends Language("pub")
 
 object PubLanguage extends PubLanguage
-
-
-代码很简单，只需要继承`Language`即可。其中的"pub"参数是照着教程来的，不太清楚到底有什么用（Idea源代码还没下完，看不了），不过写成"pub"应该没什么问题。
-
-`object PubLanguage`是一个单例，方便在其它类中直接引用。
-
-## 自定义FileType
-
-我们还需要自定义一个LanguageFileType，提供名称、描述和图标：
-
-package com.thoughtworks.pli.pub_editor
+</code></pre>
+<p>代码很简单，只需要继承<code>Language</code>即可。其中的"pub"参数是照着教程来的，不太清楚到底有什么用（Idea源代码还没下完，看不了），不过写成"pub"应该没什么问题。</p>
+<p><code>object PubLanguage</code>是一个单例，方便在其它类中直接引用。</p>
+<h2>自定义FileType</h2>
+<p>我们还需要自定义一个LanguageFileType，提供名称、描述和图标：</p>
+<pre><code class="scala">package com.thoughtworks.pli.pub_editor
 
 import com.intellij.openapi.fileTypes.LanguageFileType
 import org.jetbrains.annotations.NotNull
@@ -7322,25 +7531,16 @@ class PubFileType extends LanguageFileType(PubLanguage) {
 }
 
 object PubFileType extends PubFileType
-
-
-其中的`getDescription`，会在关联某种文件时，显示在列表中：
-
-![QQ20140407-27](/user_images/2509-1.png)
-
-而`getDefaultExtension`是说默认把哪种后缀名的文件与该插件关联起来。由于我们需要对`pubspec.yaml`这个完整的文件名，而不是某个后缀名进行关联，所以我只好把它留空。
-
-`getIcon`会让我们提供一个自定义的图标供使用：
-
-![QQ20140407-28](/user_images/2509-2.png)
-
-而`getName`我也不知道有什么用，可能是用来标识这种类型的文件，就叫`Pub`吧。
-
-## 自定义FileTypeFactory
-
-我们还需要提供一个`FileTypeFactory`子类，用来把我们的定义的`FileType`与某种类型的文件关联起来。同时还要把它注册到插件配置文件里。
-
-package com.thoughtworks.pli.pub_editor
+</code></pre>
+<p>其中的<code>getDescription</code>，会在关联某种文件时，显示在列表中：</p>
+<p><img src="/user_images/2509-1.png" alt="QQ20140407-27" /></p>
+<p>而<code>getDefaultExtension</code>是说默认把哪种后缀名的文件与该插件关联起来。由于我们需要对<code>pubspec.yaml</code>这个完整的文件名，而不是某个后缀名进行关联，所以我只好把它留空。</p>
+<p><code>getIcon</code>会让我们提供一个自定义的图标供使用：</p>
+<p><img src="/user_images/2509-2.png" alt="QQ20140407-28" /></p>
+<p>而<code>getName</code>我也不知道有什么用，可能是用来标识这种类型的文件，就叫<code>Pub</code>吧。</p>
+<h2>自定义FileTypeFactory</h2>
+<p>我们还需要提供一个<code>FileTypeFactory</code>子类，用来把我们的定义的<code>FileType</code>与某种类型的文件关联起来。同时还要把它注册到插件配置文件里。</p>
+<pre><code class="scala">package com.thoughtworks.pli.pub_editor
 
 import com.intellij.openapi.fileTypes.{FileNameMatcher, FileTypeConsumer, FileTypeFactory}
 import org.jetbrains.annotations.NotNull
@@ -7357,27 +7557,18 @@ class PubFileTypeFactory extends FileTypeFactory {
     })
   }
 }
-
-
-可以看到只有当文件名为`pubspec.yaml`时，才会把它与PubEditor关联起来。
-
-然后在`plugin.xml`中注册：
-
-&lt;extensions defaultExtensionNs="com.intellij"&gt;
+</code></pre>
+<p>可以看到只有当文件名为<code>pubspec.yaml</code>时，才会把它与PubEditor关联起来。</p>
+<p>然后在<code>plugin.xml</code>中注册：</p>
+<pre><code class="xml">&lt;extensions defaultExtensionNs="com.intellij"&gt;
     &lt;fileTypeFactory implementation="com.thoughtworks.pli.pub_editor.PubFileTypeFactory"/&gt;
 &lt;/extensions&gt;
-
-
-## 运行
-
-运行效果如下图。当我创建了一个`pubspec.yaml`文件时，IDEA立刻识别出来，并显示了我们自定义的图标。而创建了其它的文件，如`abc.yaml`，则关联上了其它的编辑器：
-
-![QQ20140407-29](/user_images/2509-3.png)
-
-## 源代码
-
-http://github.com/freewind/PubEditor
 </code></pre>
+<h2>运行</h2>
+<p>运行效果如下图。当我创建了一个<code>pubspec.yaml</code>文件时，IDEA立刻识别出来，并显示了我们自定义的图标。而创建了其它的文件，如<code>abc.yaml</code>，则关联上了其它的编辑器：</p>
+<p><img src="/user_images/2509-3.png" alt="QQ20140407-29" /></p>
+<h2>源代码</h2>
+<p>http://github.com/freewind/PubEditor</p>
 <p>切换到<code>3_associate_pubspec_yaml</code>标签即可。</p>
 <p>本篇关联的编辑器是默认的文本编辑器，功能有限。而<code>pubspec.yaml</code>使用了<code>yaml</code>格式，下一篇将让我们的编辑器基于yaml插件。</p>
 ]]></description>
@@ -7402,7 +7593,7 @@ http://github.com/freewind/PubEditor
 <p>如果你对Idea下的scala配置不熟悉，需要多一些时间摸索，我也是连蒙带猜弄好的。</p>
 <h2>用Scala重写</h2>
 <p>删除原来的<code>HelloWorldAction.java</code>，新建一个<code>HelloWorldAction.scala</code>，内容如下：</p>
-<pre><code>package com.thoughtworks.pli.pub_editor
+<pre><code class="scala">package com.thoughtworks.pli.pub_editor
 
 import com.intellij.openapi.actionSystem.{CommonDataKeys, AnAction, AnActionEvent}
 import com.intellij.openapi.project.Project
@@ -7427,16 +7618,12 @@ class HelloWorldAction extends AnAction {
   }
 
 }
-
-
-可以看到代码跟以前很相似，有一个重要的不同是这一行：
-
-val project = event.getData(CommonDataKeys.PROJECT)
-
-
-以前的Java版是这样的：
-
-Project project = event.getData(PlatformDataKeys.PROJECT);
+</code></pre>
+<p>可以看到代码跟以前很相似，有一个重要的不同是这一行：</p>
+<pre><code>val project = event.getData(CommonDataKeys.PROJECT)
+</code></pre>
+<p>以前的Java版是这样的：</p>
+<pre><code>Project project = event.getData(PlatformDataKeys.PROJECT);
 </code></pre>
 <p>其中<code>PROJECT</code>的确是在<code>CommonDataKeys</code>类中声明的，而<code>PlatformDataKeys</code>继承了<code>CommonDataKeys</code>。在Java中可以在子类中访问父类中的<code>static</code>属性，而Scala中就不行。</p>
 <h2>运行</h2>
@@ -7470,7 +7657,7 @@ Project project = event.getData(PlatformDataKeys.PROJECT);
 <h3>入门教程</h3>
 <p>首先是IDEA plugin开发入门，非常值得一看，了解一下背景知识。</p>
 <p>http://confluence.jetbrains.com/display/IDEADEV/PluginDevelopment</p>
-<p>但是其中关于<a href="http://confluence.jetbrains.com/display/IDEADEV/Getting+Started+with+Plugin+Development#GettingStartedwithPluginDevelopment-anchor2">如何建立项目</a>的一节讲得太繁琐，根本看不懂。不过好在没不是很复杂，跟着本文走就行了。</p>
+<p>但是其中关于<a href="http://confluence.jetbrains.com/display/IDEADEV/Getting+Started+with+Plugin+Development#GettingStartedwithPluginDevelopment-anchor2">如何建立项目</a>的一节讲得太繁琐，根本看不懂。不过好在不是很复杂，跟着本文走就行了。</p>
 <p>另外，上面列出的内容比较多，我没有全部看完，只看了前几篇，足够把本篇的任务完成。</p>
 <h3>下载IDEA</h3>
 <p>如果临时试一下，下载IDEA的社区版或企业版都行，也不需要下载源代码。但如果深入开发，就只能使用社区版，因为它可以跟源代码结合起来，方便调试。</p>
@@ -7479,44 +7666,26 @@ Project project = event.getData(PlatformDataKeys.PROJECT);
 <h3>下载source</h3>
 <p>不论是社区版还是企业版，里面都自带插件开发工具，可以直接用。但是为了以后调试的方便，还需要下载idea的源代码，将它们关联起来，就可以单步了。</p>
 <p>使用git下载社区版对应的源代码：</p>
-<pre><code>git clone git://git.jetbrains.org/idea/community.git idea --depth 1
-
-
-这是一个非常大的库，就算添加了`--depth 1`的参数，下载的源代码打成.tar.gz包后也超过了1G。由于代码库在国外，对于我们大部分人来说，这不是一天两天能完成的任务。
-
-这几天访问国外网络非常不稳定，所以我只好在一个国外的vpn上下载完代码，然后打包传过来。gz包的大小为1.18G，还要传19个小时。。。
-
-### 启用Plugin DevKit插件
-
-Idea中默认自带了`Plugin DevKit`插件，但是没有开启。首先我们需要将它开启:
-
-[![QQ20140406-16](/user_images/2503-1.png)](/user_images/2503-1.png)
-
-然后激动人心的时刻就要开始了！
-
-## 创建项目
-
-打开Idea，创建一个新项目，记得要选左右要选"Intellij Plugin Platform"类型：
-
-![QQ20140406-4](/user_images/2503-2.png)
-
-然后输入项目名，我选的是`PubEditor`:
-
-![QQ20140406-5](/user_images/2503-3.png)
-
-创建完成后，就自动打开项目，注意在`META-INF`下有一个`plugin.xml`文件：
-
-![QQ20140406-6](/user_images/2503-4.png)
-
-这个plugin.xml文件是一个重要的配置文件，用于向IDEA平台注册我们的提供的功能。如果你开发过eclipse插件，会知道那边也有一个类似的文件。
-
-## 添加Action
-
-我打算实现一个功能：在菜单最后添加一项"Pub Editor"，里面有一个"Hello world"的子菜单。当点击它以后，会提示一个对话框，让我们输入自己的名字，然后弹出欢迎的信息。
-
-首先我们需要实现一个`AnAction`的子类，用于实现触发之后的功能：
-
-package com.thoughtworks.pli.pub_editor;
+<pre><code>git clone git://git.jetbrains.org/idea/community.git idea --depth 1    
+</code></pre>
+<p>这是一个非常大的库，就算添加了<code>--depth 1</code>的参数，下载的源代码打成.tar.gz包后也超过了1G。由于代码库在国外，对于我们大部分人来说，这不是一天两天能完成的任务。</p>
+<p>这几天访问国外网络非常不稳定，所以我只好在一个国外的vpn上下载完代码，然后打包传过来。gz包的大小为1.18G，还要传19个小时。。。</p>
+<h3>启用Plugin DevKit插件</h3>
+<p>Idea中默认自带了<code>Plugin DevKit</code>插件，但是没有开启。首先我们需要将它开启:</p>
+<p><a href="/user_images/2503-1.png"><img src="/user_images/2503-1.png" alt="QQ20140406-16" /></a></p>
+<p>然后激动人心的时刻就要开始了！</p>
+<h2>创建项目</h2>
+<p>打开Idea，创建一个新项目，记得要选左右要选"Intellij Plugin Platform"类型：</p>
+<p><img src="/user_images/2503-2.png" alt="QQ20140406-4" /></p>
+<p>然后输入项目名，我选的是<code>PubEditor</code>:</p>
+<p><img src="/user_images/2503-3.png" alt="QQ20140406-5" /></p>
+<p>创建完成后，就自动打开项目，注意在<code>META-INF</code>下有一个<code>plugin.xml</code>文件：</p>
+<p><img src="/user_images/2503-4.png" alt="QQ20140406-6" /></p>
+<p>这个plugin.xml文件是一个重要的配置文件，用于向IDEA平台注册我们的提供的功能。如果你开发过eclipse插件，会知道那边也有一个类似的文件。</p>
+<h2>添加Action</h2>
+<p>我打算实现一个功能：在菜单最后添加一项"Pub Editor&rdquo;，里面有一个"Hello world"的子菜单。当点击它以后，会提示一个对话框，让我们输入自己的名字，然后弹出欢迎的信息。</p>
+<p>首先我们需要实现一个<code>AnAction</code>的子类，用于实现触发之后的功能：</p>
+<pre><code class="java">package com.thoughtworks.pli.pub_editor;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -7545,70 +7714,41 @@ public class HelloWorldAction extends AnAction {
                 Messages.getInformationIcon());
     }
 }
-
-
-可以看到，它实现了父类`AnAction`中的`actionPerformed`方法，提供了自己的逻辑。一个是弹出一个`inputDialog`让用户输入自己的名字，另一个是弹出一个`messageDialog`显示欢迎信息。
-
-## 在plugin.xml中注册
-
-只提供上面的类还不够，还需要在plugin.xml中添加一些注册信息。
-
-打开plugin.xml，找到其中的`&lt;actions&gt;`一节，添加：
-
-&lt;group id="PubEditorPlugin.Menu" text="_Pub Editor" description="Pub Editor Menu"&gt;
+</code></pre>
+<p>可以看到，它实现了父类<code>AnAction</code>中的<code>actionPerformed</code>方法，提供了自己的逻辑。一个是弹出一个<code>inputDialog</code>让用户输入自己的名字，另一个是弹出一个<code>messageDialog</code>显示欢迎信息。</p>
+<h2>在plugin.xml中注册</h2>
+<p>只提供上面的类还不够，还需要在plugin.xml中添加一些注册信息。</p>
+<p>打开plugin.xml，找到其中的<code>&lt;actions&gt;</code>一节，添加：</p>
+<pre><code class="xml">&lt;group id="PubEditorPlugin.Menu" text="_Pub Editor" description="Pub Editor Menu"&gt;
     &lt;add-to-group group-id="MainMenu" anchor="last"/&gt;
     &lt;action id="PubEditorPlugin.HelloWorldAction" 
             class="com.thoughtworks.pli.pub_editor.HelloWorldAction"
             text="_Hello world" description="Hello world from PubEditor"/&gt;
 &lt;/group&gt;
-
-
-这是一段信息量很大的配置代码。外面的`group`指定了菜单组的位置`last`，显示的内容为`Pub Editor`，它前面的`_`表示可用快捷键`p`访问。里面的`action`指定了菜单项显示的内容为`Hello world`，对应的类为我们刚创建的`HelloWorldAction`类。
-
-## 代码部分结束
-
-代码部分就结束了，东西不多，过程还是很轻松的。我的项目文件是这样的：
-
-![QQ20140406-17](/user_images/2503-5.png)
-
-下面是运行效果了。
-
-## 运行插件
-
-不能直接运行，而要先建立一个配置。打开菜单"Run"-&gt;"Configuration"，点击左上角的"+"新建，选择"Plugin"，如图：
-
-![QQ20140406-18](/user_images/2503-6.png)
-
-基本上不用改什么，我就只把名字设成了"Pub Editor"，然后点击"OK".
-
-这时右上角运行栏处会变成这样：
-
-![QQ20140406-19](/user_images/2503-7.png)
-
-点击绿色小三角即可。
-
-它会打开一个新的IDEA。如果你运行的是企业版，可能会提示你输入license等信息，可以选择“继续试用”，进入开始界面：
-
-![QQ20140406-20](/user_images/2503-8.png)
-
-由于我们添加的菜单只能在进入项目后才能看到，所以我们需要随便创建一个项目。我建的是"TestPlugin"，进去后可以看到上面的菜单最右边多了一项"Pub Editor"，以及"Hello world":
-
-![QQ20140406-22](/user_images/2503-9.png)
-
-点击"Hello world"后，会弹出对话框，提示我们输入名称：
-
-![QQ20140406-23](/user_images/2503-10.png)
-
-输入名字后，会弹出一个新的信息框：
-
-![QQ20140406-24](/user_images/2503-11.png)
-
-## 源代码
-
-作为Hello world，本文到此就结束了。源代码已经上传至:
-
-http://github.com/freewind/PubEditor
 </code></pre>
+<p>这是一段信息量很大的配置代码。外面的<code>group</code>指定了菜单组的位置<code>last</code>，显示的内容为<code>Pub Editor</code>，它前面的<code>_</code>表示可用快捷键<code>p</code>访问。里面的<code>action</code>指定了菜单项显示的内容为<code>Hello world</code>，对应的类为我们刚创建的<code>HelloWorldAction</code>类。</p>
+<h2>代码部分结束</h2>
+<p>代码部分就结束了，东西不多，过程还是很轻松的。我的项目文件是这样的：</p>
+<p><img src="/user_images/2503-5.png" alt="QQ20140406-17" /></p>
+<p>下面是运行效果了。</p>
+<h2>运行插件</h2>
+<p>不能直接运行，而要先建立一个配置。打开菜单"Run&rdquo;->&ldquo;Configuration&rdquo;，点击左上角的&rdquo;+&ldquo;新建，选择"Plugin&rdquo;，如图：</p>
+<p><img src="/user_images/2503-6.png" alt="QQ20140406-18" /></p>
+<p>基本上不用改什么，我就只把名字设成了"Pub Editor&rdquo;，然后点击"OK&rdquo;.</p>
+<p>这时右上角运行栏处会变成这样：</p>
+<p><img src="/user_images/2503-7.png" alt="QQ20140406-19" /></p>
+<p>点击绿色小三角即可。</p>
+<p>它会打开一个新的IDEA。如果你运行的是企业版，可能会提示你输入license等信息，可以选择“继续试用”，进入开始界面：</p>
+<p><img src="/user_images/2503-8.png" alt="QQ20140406-20" /></p>
+<p>由于我们添加的菜单只能在进入项目后才能看到，所以我们需要随便创建一个项目。我建的是"TestPlugin&rdquo;，进去后可以看到上面的菜单最右边多了一项"Pub Editor&rdquo;，以及"Hello world&rdquo;:</p>
+<p><img src="/user_images/2503-9.png" alt="QQ20140406-22" /></p>
+<p>点击"Hello world"后，会弹出对话框，提示我们输入名称：</p>
+<p><img src="/user_images/2503-10.png" alt="QQ20140406-23" /></p>
+<p>输入名字后，会弹出一个新的信息框：</p>
+<p><img src="/user_images/2503-11.png" alt="QQ20140406-24" /></p>
+<h2>源代码</h2>
+<p>作为Hello world，本文到此就结束了。源代码已经上传至:</p>
+<p>http://github.com/freewind/PubEditor</p>
 <p>本文所对应的tag为"1_hello_world&rdquo;，你可以checkout它运行一下看结果。</p>
 ]]></description>
             </item>
@@ -10532,27 +10672,19 @@ library mytest;
 <li>使用maven, gradle等构建工具</li>
 </ul>
 <p>今天我尝试从零开始，使用最简单的gradle代码来解决这个麻烦，结果让人开心，比较方便。</p>
-<h3>下载gradle</h3>
+<h2>下载gradle</h2>
 <p>在mac下使用brew:</p>
-<pre><code> brew install gradle
-
-
-然后可输入：
-
-gradle
-
-
-看看是否安装成功。
-
-在linux下有apt-get或yum可用，windows可能也有类似工具，不过多数时候还是手动下载了。
-
-这是个一次性的工作，麻烦一次即可。
-
-### 在项目下建立build.gradle文件
-
-然后输入内容：
-
-apply plugin: 'java'
+<pre><code>brew install gradle
+</code></pre>
+<p>然后可输入：</p>
+<pre><code>gradle    
+</code></pre>
+<p>看看是否安装成功。</p>
+<p>在linux下有apt-get或yum可用，windows可能也有类似工具，不过多数时候还是手动下载了。</p>
+<p>这是个一次性的工作，麻烦一次即可。</p>
+<h2>在项目下建立build.gradle文件</h2>
+<p>然后输入内容：</p>
+<pre><code class="groovy">apply plugin: 'java'
 
 repositories {
     mavenCentral()
@@ -10568,65 +10700,60 @@ dependencies {
         'junit:junit:4.11'
     )
 }
-
-
-依赖就定义好了。
-
-小技巧：需要jar包时，可到 http://search.maven.org 上搜一下，将上面的格式写过来就行了
-
-### 生成idea或eclipse项目文件
-
-对于intellij-idea，加入：
-
-apply plugin: 'idea'
-
-
-然后到项目根目录，输入：
-
-gradle idea
-
-
-它就会自动下载依赖并生成idea需要的文件，全部搞定。
-
-如果是eclipse，则加入:
-
-apply plugin: 'eclipse'
-
-
-再进行：
-
-gradle eclipse
+</code></pre>
+<p>依赖就定义好了。</p>
+<p>小技巧：需要jar包时，可到 <a href="http://search.maven.org">http://search.maven.org</a> 上搜一下，将上面的格式写过来就行了</p>
+<h2>生成idea或eclipse项目文件</h2>
+<h3>Idea</h3>
+<p>对于intellij-idea，加入：</p>
+<pre><code>apply plugin: 'idea'
+</code></pre>
+<p>然后到项目根目录，输入：</p>
+<pre><code>gradle idea
+</code></pre>
+<p>它就会自动下载依赖并生成idea需要的文件，全部搞定。</p>
+<h3>Eclipse</h3>
+<p>如果是eclipse，则加入:</p>
+<pre><code>apply plugin: 'eclipse'
+</code></pre>
+<p>再进行：</p>
+<pre><code>gradle eclipse
 </code></pre>
 <p>即可。</p>
 <p>上面的内容相当简单，背下来即可。如果不要求更多，这些内容就够用了。</p>
-<p>Jetty</p>
+<h2>Jetty</h2>
 <p>如果我们的项目是一个web项目，可以添加jetty插件，快速启动一个jetty server。</p>
 <p>只需要在build.gradle中添加：</p>
-<p>apply plugin: &#8220;jetty&rdquo;</p>
+<pre><code>apply plugin: "jetty"
+</code></pre>
 <p>即可。然后执行：</p>
-<p>gradle jettyRun</p>
+<pre><code>gradle jettyRun
+</code></pre>
 <p>就会启动server，默认以8080端口提供http服务。</p>
-<p>wrapper</p>
+<h2>wrapper</h2>
 <p>有时候我们希望在项目中提供一个gradle脚本，这样用户在clone下代码库后，就算机器上没有装gradle，也可以快速执行。</p>
-<p>我们需要在build.gradle中添加一个task:</p>
-<p>task wrapper(type: Wrapper) {</p>
-<p>gradleVersion = '1.11&#8242;</p>
-<p>}</p>
+<p>我们需要在<code>build.gradle</code>中添加一个task:</p>
+<pre><code class="groovy">task wrapper(type: Wrapper) {
+
+gradleVersion = '1.11';
+
+}
+</code></pre>
 <p>里面可以指定使用的gradle版本，我这里写的是最新版1.11</p>
 <p>然后在命令行执行：</p>
-<p>gradle wrapper</p>
+<pre><code>gradle wrapper
+</code></pre>
 <p>就会自动在项目下生成几个文件：</p>
 <ul>
-<li><p>gradlew</p>
-</li>
-<li><p>gradlew.bat</p>
-</li>
+<li>gradlew</li>
+<li>gradlew.bat</li>
 </ul>
 <p>以及相应的jar。</p>
 <p>把这些文件都提交到服务器上即可。</p>
 <p>用户使用时，需要使用当前项目中的gradlew命令去执行gradle操作，比如：</p>
-<p>./gradlew idea</p>
-<p>./gradlew jettyRun</p>
+<pre><code>./gradlew idea
+./gradlew jettyRun
+</code></pre>
 ]]></description>
             </item>
 
@@ -11833,7 +11960,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#58;&#119;&#101;&#98;&#x2d;&#x75;&#105;&#x2d;d&#101;&#x76;&#x40;&#x64;&#x61;&#x72;&#116;&#108;&#97;&#x6e;&#x67;&#46;&#111;&#x72;&#x67;">&#119;&#x65;&#98;&#45;u&#105;&#x2d;&#100;&#101;&#x76;&#x40;&#x64;&#97;&#114;&#116;&#x6c;&#97;&#x6e;&#103;.&#x6f;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#x77;&#x65;&#98;&#45;&#x75;&#105;&#45;d&#x65;v&#64;&#100;&#x61;&#114;&#116;&#x6c;&#97;&#x6e;&#103;&#x2e;&#x6f;&#114;&#103;">&#x77;&#101;&#x62;&#45;&#117;&#105;&#x2d;&#x64;&#x65;&#118;&#x40;&#x64;&#x61;&#x72;&#116;&#x6c;&#x61;&#x6e;&#103;&#x2e;&#111;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9

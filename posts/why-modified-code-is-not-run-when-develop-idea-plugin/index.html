@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>自己动手写IDEA plugin – PubEditor (4) pubspec.yaml文件语法</title>
+    <title>在开发Idea Plugin时，为什么修改的代码没有生效？</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
 
@@ -22,7 +22,7 @@
 <body>
 
 <h1>
-    (2014-04-10) 自己动手写IDEA plugin – PubEditor (4) pubspec.yaml文件语法
+    (2014-09-27) 在开发Idea Plugin时，为什么修改的代码没有生效？
 </h1>
 
 <div>
@@ -33,30 +33,11 @@
 <hr/>
 
 <div>
-    <p>pubspec.yaml在本质上是一个YAML文件，所以它的语法遵守YAML的规定。但同时它的内容又比较简单，因为它规定了哪些配置项是有效的，其它的都会被自动忽略。</p>
-<p>全部有效选项如下：</p>
-<pre><code class="yaml">name: newtify
-version: 1.2.3
-description: &gt;
-  Have you been turned into a newt?  Would you like to be?
-  This package can help: it has all of the
-  newt-transmogrification functionality you've been looking
-  for.
-author: Nathan Weizenbaum &lt;nweiz@google.com&gt;
-homepage: http://newtify.dartlang.org
-documentation: http://docs.newtify.com
-dependencies:
-  efts: '&gt;=2.0.4 &lt;3.0.0'
-  transmogrify: '&gt;=0.4.0 &lt;1.0.0'
-dev_dependencies:
-  unittest: '&gt;=0.6.0'
-dependency_overrides:
-  transmogrify:
-    path: ../transmogrify_patch/
-</code></pre>
-<p>其中只有<code>name</code>项是在所有情况下都必须的，<code>version</code>和<code>description</code>只有当要发布时才是必须的，其它的都是可选的。除它们以外的内容都会被忽略。</p>
-<p>上面是一个简化的模板，实际上很多选项还有更复杂的用法。更详细的内容，请参考官方文档：<a href="https://www.dartlang.org/tools/pub/pubspec.html">https://www.dartlang.org/tools/pub/pubspec.html</a></p>
-<p>我原以为IDEA中有可直接使用的YAML插件，但是发现竟然没有！而YAML语法实际上还有比较复杂的，对于我这次的任务来说，提供完整的YAML支持有点不太现实，所以我打算仅仅按pubspec.yaml的定义来实现部分YAML功能。</p>
+    <p>今天打算开发一个新的Idea插件，发现一个奇怪的问题：我在代码中所做的任何修改，运行时都没有生效。</p>
+<p>这个问题浪费了我很多时间，因为我不知道是Idea的问题，还是我的代码写的不对。经过反复排查，终于找到了原因：</p>
+<p>我正在编写的这个插件，是灰色的，而且右边的复选框没有被勾上！也就是说，我的插件没有被启用。</p>
+<p>导致这个原因，是因为中途有一次，修改<code>plugin.xml</code>文件时写错了，导致插件没法正常启动，Idea便自动把它禁用了。哪怕我后来重新修好了代码，它也不会自动启用。</p>
+<p>所以在开发过程中一定要注意，如果什么时候觉得不对劲，一定要来看看这个插件是否处于启用状态。</p>
 
 </div>
 
@@ -64,7 +45,7 @@ dependency_overrides:
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
-    var disqus_identifier = '2580';
+    var disqus_identifier = '2791';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

@@ -36,181 +36,183 @@
     <p>YAML是一种看起来很易读、格式简单的语法格式，但实际上，它的<a href="www.yaml.org/spec/1.2/spec.html">语言规范</a>相当复杂，甚至连读一遍文档都是非常痛苦的事情。同时在IDEA上也没有找到可用的YAML插件，这让我很头痛，看起来一个很简单的任务突然变得复杂到无法实现。</p>
 <h2>简化的文法</h2>
 <p>经过短暂的纠结，我决定按照pubspec.yaml上给出的例子，实现一个简化的YAML语法规则，只支持以下几种格式：</p>
-<ul>
-<li><p>注释，如</p>
+<h3>注释</h3>
+<p>如</p>
 <pre><code># this is comment
 </code></pre>
-</li>
-<li><p>单行key value，如
-<br  />key: value</p>
-</li>
-<li><p>嵌套key value, 如
-<br  />key:
-<br  />key1: value1
-<br  />key2:</p>
-<pre><code>key3: value3
-key4: value4
+<h3>单行key value</h3>
+<p>如</p>
+<pre><code>key: value
 </code></pre>
-</li>
-<li><p>多行文本，如
-<br  />key: >
-<br  />this is
-<br  />multiline
-<br  />string</p>
+<h3>嵌套key value, 如</h3>
+<pre><code>key:
+  key1: value1
+  key2:
+    key3: value3
+    key4: value4
+</code></pre>
+<h3>多行文本，如</h3>
+<pre><code>key: &gt;
+  this is
+  multiline
+  string
+</code></pre>
 <p>对于其它格式的内容，直接当作不识别的文本处理，这样简化后，词法规则的规模小了很多。</p>
 <h2>缩进处理</h2>
 <p>但是马上又遇到另一个头疼的问题：YAML的文法实际上并不完全是“上下文无关”的，因为它的很多词法成分实际上跟它前面的缩进数量是相关的。而我使用的词法生成器工具JFlex只支持“上下文无关”文法，必须对缩进进行一些额外的处理才行。</p>
 <p>好在看到了一篇文章，讲如何在JFlex中处理缩进，对于我要实现的简化的缩进来说，还是可行的: <a href="http://matt.might.net/articles/standalone-lexers-with-lex/">http://matt.might.net/articles/standalone-lexers-with-lex/</a></p>
 <h2>JFlex规则</h2>
 <p>经过两天的努力和反复的尝试，终于实现了以下规则：</p>
-<p>package com.thoughtworks.pli.pub_editor.parser;</p>
-<p>import com.intellij.lexer.FlexLexer;
-<br  />import com.intellij.psi.tree.IElementType;
-<br  />import java.util.*;</p>
-<p>%%</p>
-<p>%class _PubSpecLexer
-<br  />%implements FlexLexer
-<br  />%unicode
-<br  />%type IElementType
-<br  />%function advance
-<br  />//%debug
-<br  />%{
-<br  />IndentationStack indentationStack = new IndentationStack();
-<br  />public int currentIndentation() { return indentationStack.current(); }
-<br  />public List<Integer> allIndentations() { return indentationStack.all(); }
-<br  />%}</p>
-<p>Comment = &ldquo;#&rdquo; .<em>
-<br  />LineSeparator = \r\n | \r | \n
-<br  />Indentation = {WhiteSpace}+
-<br  />WhiteSpace = [\ ]
-<br  />NonWhiteSpace = [<sup>\ ]
-<br  />BlankChar = [\ \t\f]
-<br  />NonBlankChar = [</sup>\ \r\n\t\f]
-<br  />ParentKey = {NonBlankChar}+ &ldquo;:&rdquo; {BlankChar}</em> {LineSeparator}
-<br  />InlineKey = {NonBlankChar}+ &ldquo;:&rdquo; {BlankChar}+
-<br  />InlineValue = .+
-<br  />MultiLineStringKey = {NonBlankChar}+ &ldquo;:&rdquo; {BlankChar}* &ldquo;>&rdquo; {LineSeparator}</p>
-<p>%state $newLine
-<br  />%state $value
-<br  />%state $multiLineString
-<br  />%state $multiLineStringAfterIndentation
-<br  />%state $inlineValue
-<br  />%state $multiChildren</p>
-<p>%%
-<br  /><YYINITIAL> {</p>
-<pre><code>{Indentation}    { indentationStack.push(yytext().length()); return PubTokenTypes.Indentation(); }
-{Comment}        { return PubTokenTypes.Comment(); }
-{ParentKey}      { yybegin(YYINITIAL);return PubTokenTypes.ParentKey(); }
-{InlineKey}      { yybegin($inlineValue); return PubTokenTypes.InlineKey(); }
-{MultiLineStringKey} { yybegin($multiLineString); return PubTokenTypes.MultiLineStringKey(); }
-{LineSeparator}  { return PubTokenTypes.LineSeparator(); }
-</code></pre>
-<p>}
-<br  /><$inlineValue> {</p>
-<pre><code>{InlineValue}    { yybegin(YYINITIAL); return PubTokenTypes.InlineValue(); }
-</code></pre>
-<p>}
-<br  /><$multiLineString> {</p>
-<pre><code>{Indentation}    {
-                     int currentIndent = yytext().length();
-                     if(currentIndent &gt;= indentationStack.current()) {
-                     yybegin($multiLineStringAfterIndentation);
-                         return PubTokenTypes.Indentation();
-                     } else {
-                         yypushback(currentIndent);
-                         yybegin(YYINITIAL);
-                     }
-                 }
-{NonWhiteSpace}+ { yypushback(yytext().length()); yybegin(YYINITIAL); }
-&lt;$multiLineStringAfterIndentation&gt; {
-    {NonBlankChar}+ {  return PubTokenTypes.OneLineOfMultiLineString(); }
-    {LineSeparator} {  yybegin($multiLineString); return PubTokenTypes.LineSeparator(); }
+<pre><code>package com.thoughtworks.pli.pub_editor.parser;
+
+import com.intellij.lexer.FlexLexer;
+import com.intellij.psi.tree.IElementType;
+import java.util.*;
+
+%%
+
+%class _PubSpecLexer
+%implements FlexLexer
+%unicode
+%type IElementType
+%function advance
+//%debug
+%{
+IndentationStack indentationStack = new IndentationStack();
+public int currentIndentation() { return indentationStack.current(); }
+public List&lt;Integer&gt; allIndentations() { return indentationStack.all(); }
+%}
+
+Comment = "#" .*
+LineSeparator = \r\n | \r | \n
+Indentation = {WhiteSpace}+
+WhiteSpace = [\ ]
+NonWhiteSpace = [^\ ]
+BlankChar = [\ \t\f]
+NonBlankChar = [^\ \r\n\t\f]
+ParentKey = {NonBlankChar}+ ":" {BlankChar}* {LineSeparator}
+InlineKey = {NonBlankChar}+ ":" {BlankChar}+
+InlineValue = .+
+MultiLineStringKey = {NonBlankChar}+ ":" {BlankChar}* "&gt;" {LineSeparator}
+
+%state $newLine
+%state $value
+%state $multiLineString
+%state $multiLineStringAfterIndentation
+%state $inlineValue
+%state $multiChildren
+
+%%
+&lt;YYINITIAL&gt; {
+    {Indentation}    { indentationStack.push(yytext().length()); return PubTokenTypes.Indentation(); }
+    {Comment}        { return PubTokenTypes.Comment(); }
+    {ParentKey}      { yybegin(YYINITIAL);return PubTokenTypes.ParentKey(); }
+    {InlineKey}      { yybegin($inlineValue); return PubTokenTypes.InlineKey(); }
+    {MultiLineStringKey} { yybegin($multiLineString); return PubTokenTypes.MultiLineStringKey(); }
+    {LineSeparator}  { return PubTokenTypes.LineSeparator(); }
 }
+&lt;$inlineValue&gt; {
+    {InlineValue}    { yybegin(YYINITIAL); return PubTokenTypes.InlineValue(); }
+}
+&lt;$multiLineString&gt; {
+    {Indentation}    {
+                         int currentIndent = yytext().length();
+                         if(currentIndent &gt;= indentationStack.current()) {
+                         yybegin($multiLineStringAfterIndentation);
+                             return PubTokenTypes.Indentation();
+                         } else {
+                             yypushback(currentIndent);
+                             yybegin(YYINITIAL);
+                         }
+                     }
+    {NonWhiteSpace}+ { yypushback(yytext().length()); yybegin(YYINITIAL); }
+    &lt;$multiLineStringAfterIndentation&gt; {
+        {NonBlankChar}+ {  return PubTokenTypes.OneLineOfMultiLineString(); }
+        {LineSeparator} {  yybegin($multiLineString); return PubTokenTypes.LineSeparator(); }
+    }
+}
+.                    { return PubTokenTypes.BadCharacter(); }
 </code></pre>
-<p>}
-<br  />.                    { return PubTokenTypes.BadCharacter(); }</p>
 <p>可以看到对于这小小的文法，居然需要这么多定义和代码。除去文法相关的定义，有不少代码是关于处理缩进的。不过由于上面的代码比较直白，所以就不多解释，如果看起来有不明白的地方，最好再看一遍JFlex的文档：<a href="http://jflex.de/manual.html">http://jflex.de/manual.html</a></p>
 <h2>测试</h2>
 <p>最后上一个测试：</p>
-<p>String input = &ldquo;#!!!!!\n&rdquo; +</p>
-<pre><code>    "#????\n" +
-    "abc: \"sss\"\n" +
-    "xxx:\n" +
-    "  aaa: 111\n" +
-    "  bbb: 222\n" +
-    "yyy: &gt;\n" +
-    "  1111111111111\n" +
-    "    2222222222222\n" +
-    "  3333333333333\n" +
-    "zzz: ZZZ\n" +
-    "  ccc: This line actually is invalid\n" +
-    "???";
-</code></pre>
-<p>PubSpecLexer lexer = new PubSpecLexer();
-<br  />lexer.start(input);
-<br  />while (true) {</p>
-<pre><code>IElementType tokenType = lexer.getTokenType();
-if (tokenType == null) {
-    System.out.println("--- end ---");
-    return;
-}
+<pre><code>String input = "#!!!!!\n" +
+        "#????\n" +
+        "abc: \"sss\"\n" +
+        "xxx:\n" +
+        "  aaa: 111\n" +
+        "  bbb: 222\n" +
+        "yyy: &gt;\n" +
+        "  1111111111111\n" +
+        "    2222222222222\n" +
+        "  3333333333333\n" +
+        "zzz: ZZZ\n" +
+        "  ccc: This line actually is invalid\n" +
+        "???";
+PubSpecLexer lexer = new PubSpecLexer();
+lexer.start(input);
+while (true) {
+    IElementType tokenType = lexer.getTokenType();
+    if (tokenType == null) {
+        System.out.println("--- end ---");
+        return;
+    }
 
-System.out.println(tokenType + "(" + lexer.getTokenText() + ")");
-lexer.advance();
+    System.out.println(tokenType + "(" + lexer.getTokenText() + ")");
+    lexer.advance();
+}
 </code></pre>
-<p>}</p>
 <p>运行结果如下：</p>
-<p>Comment(#!!!!!)
-<br  />LineSeparator(
-<br  />)
-<br  />Comment(#????)
-<br  />LineSeparator(
-<br  />)
-<br  />InlineKey(abc: )
-<br  />InlineValue(&ldquo;sss&rdquo;)
-<br  />LineSeparator(
-<br  />)
-<br  />ParentKey(xxx:
-<br  />)
-<br  />Indentation(  )
-<br  />InlineKey(aaa: )
-<br  />InlineValue(111)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(  )
-<br  />InlineKey(bbb: )
-<br  />InlineValue(222)
-<br  />LineSeparator(
-<br  />)
-<br  />MultiLineStartFlag(yyy: >
-<br  />)
-<br  />Indentation(  )
-<br  />OneLineOfMultiLineString(1111111111111)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(    )
-<br  />OneLineOfMultiLineString(2222222222222)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(  )
-<br  />OneLineOfMultiLineString(3333333333333)
-<br  />LineSeparator(
-<br  />)
-<br  />InlineKey(zzz: )
-<br  />InlineValue(ZZZ)
-<br  />LineSeparator(
-<br  />)
-<br  />Indentation(  )
-<br  />InlineKey(ccc: )
-<br  />InlineValue(This line actually is invalid)
-<br  />LineSeparator(
-<br  />)
-<br  />BadCharacter(?)
-<br  />BadCharacter(?)
-<br  />BadCharacter(?)
-<br  />&mdash; end &mdash;</p>
-</li>
-</ul>
+<pre><code>Comment(#!!!!!)
+LineSeparator(
+)
+Comment(#????)
+LineSeparator(
+)
+InlineKey(abc: )
+InlineValue("sss")
+LineSeparator(
+)
+ParentKey(xxx:
+)
+Indentation(  )
+InlineKey(aaa: )
+InlineValue(111)
+LineSeparator(
+)
+Indentation(  )
+InlineKey(bbb: )
+InlineValue(222)
+LineSeparator(
+)
+MultiLineStartFlag(yyy: &gt;
+)
+Indentation(  )
+OneLineOfMultiLineString(1111111111111)
+LineSeparator(
+)
+Indentation(    )
+OneLineOfMultiLineString(2222222222222)
+LineSeparator(
+)
+Indentation(  )
+OneLineOfMultiLineString(3333333333333)
+LineSeparator(
+)
+InlineKey(zzz: )
+InlineValue(ZZZ)
+LineSeparator(
+)
+Indentation(  )
+InlineKey(ccc: )
+InlineValue(This line actually is invalid)
+LineSeparator(
+)
+BadCharacter(?)
+BadCharacter(?)
+BadCharacter(?)
+--- end ---
+</code></pre>
 <h2>源代码</h2>
 <p>代码在<a href="http://github.com/freewind/PubEditor">http://github.com/freewind/PubEditor</a>，标签为<code>6_other_basic_rules</code></p>
 

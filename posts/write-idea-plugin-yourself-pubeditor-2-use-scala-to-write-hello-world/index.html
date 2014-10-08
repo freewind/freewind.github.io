@@ -45,7 +45,7 @@
 <p>如果你对Idea下的scala配置不熟悉，需要多一些时间摸索，我也是连蒙带猜弄好的。</p>
 <h2>用Scala重写</h2>
 <p>删除原来的<code>HelloWorldAction.java</code>，新建一个<code>HelloWorldAction.scala</code>，内容如下：</p>
-<pre><code>package com.thoughtworks.pli.pub_editor
+<pre><code class="scala">package com.thoughtworks.pli.pub_editor
 
 import com.intellij.openapi.actionSystem.{CommonDataKeys, AnAction, AnActionEvent}
 import com.intellij.openapi.project.Project
@@ -70,16 +70,12 @@ class HelloWorldAction extends AnAction {
   }
 
 }
-
-
-可以看到代码跟以前很相似，有一个重要的不同是这一行：
-
-val project = event.getData(CommonDataKeys.PROJECT)
-
-
-以前的Java版是这样的：
-
-Project project = event.getData(PlatformDataKeys.PROJECT);
+</code></pre>
+<p>可以看到代码跟以前很相似，有一个重要的不同是这一行：</p>
+<pre><code>val project = event.getData(CommonDataKeys.PROJECT)
+</code></pre>
+<p>以前的Java版是这样的：</p>
+<pre><code>Project project = event.getData(PlatformDataKeys.PROJECT);
 </code></pre>
 <p>其中<code>PROJECT</code>的确是在<code>CommonDataKeys</code>类中声明的，而<code>PlatformDataKeys</code>继承了<code>CommonDataKeys</code>。在Java中可以在子类中访问父类中的<code>static</code>属性，而Scala中就不行。</p>
 <h2>运行</h2>
