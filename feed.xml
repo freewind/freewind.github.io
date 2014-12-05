@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.github.io/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.github.io</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Mon, 01 Dec 2014 23:53:56 CST</lastBuildDate>
+        <lastBuildDate>Fri, 05 Dec 2014 22:46:35 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -8231,15 +8231,16 @@ set req.backend = someServer;
 <p>现实举例：</p>
 <ol>
 <li>我们在火车票代售点买票：“我要买一张明天中午从西安到北京的火车票”</li>
-<li>我们托人从海外代购：“帮我在美国买一个nexus5手机”</li>
+<li>我们托人从海外代购：“某某某，能帮我从美国买一个nexus5手机吗”</li>
+<li>发快递：“快递员，请帮我把这个东西发到某个地方”</li>
 </ol>
 <h2>反向代理</h2>
 <p>我们访问某个网址，它在自己的域名下提供了很多内容，看起来都像是它自己的。我们以为自己访问的就是原始的网站，实际上它只是一个代理服务器。它根据我们的请求路径，从某一个我们不知道的地方拿到了内容，然后当成它自己的东西提供给我们。</p>
-<p>在反射代理中，代理服务器是主角，内容提供者是助手，通常我们并不知道自己正在访问一个代理服务器。</p>
+<p>在反向代理中，代理服务器是主角，内容提供者是助手，通常我们并不知道自己正在访问一个代理服务器。</p>
 <p>现实举例：</p>
 <ol>
-<li>我们在超市买东西：买了很多，各个牌子都有，但是我们不知道它们从哪儿来的，只知道超市有卖</li>
-<li>我们把项目外包给某人做：我们要求在规定时间能完成，但他是自己做还是转包给别人，我们并不清楚</li>
+<li>我们在超市买东西：买了很多，各个牌子都有，但是我们不知道它们从哪儿来的，只知道超市有卖，好像是超市提供的似的</li>
+<li>我们把项目外包给某人做：我们要求在规定时间能完成，但他是自己做还是转包给别人，我们并不清楚，只知道他能帮我完成</li>
 </ol>
 <h2>结论</h2>
 <p>对于公司项目，我们是想用varnish作为前端，让用户在同一个域名下访问所有的内容。而varnish会根据请求路径的不同，到不同的服务器和网站中拿到相应内容，提供给用户。</p>
@@ -12220,7 +12221,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#119;&#101;&#x62;&#x2d;&#117;&#105;&#x2d;&#100;&#x65;&#x76;&#x40;&#100;&#x61;&#114;&#116;&#108;&#x61;&#x6e;&#x67;&#x2e;&#111;&#114;&#x67;">&#119;&#101;&#x62;&#x2d;&#117;&#x69;&#45;&#x64;&#101;&#x76;&#64;&#100;&#97;&#x72;&#116;&#108;&#x61;&#x6e;&#x67;&#46;&#x6f;&#x72;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#111;&#x3a;&#x77;&#x65;&#98;&#45;&#117;&#x69;&#45;&#x64;&#101;&#x76;&#x40;&#x64;&#97;&#114;&#116;&#108;&#x61;&#x6e;&#103;&#x2e;&#111;&#114;&#103;">&#119;&#x65;&#x62;&#x2d;&#117;i&#x2d;&#x64;&#101;&#118;&#64;&#x64;&#97;&#114;t&#x6c;&#97;&#110;&#x67;&#x2e;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
