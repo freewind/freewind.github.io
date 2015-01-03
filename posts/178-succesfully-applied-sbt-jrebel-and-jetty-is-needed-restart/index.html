@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>sbt+jrebel成功，jetty不用再重启</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) sbt+jrebel成功，jetty不用再重启
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>首先打消各位scala开发者的疑虑：jrebel对scala是免费的！大家只需要去申请一个licence即可（注意，如果gmail收不到，可试其它邮箱）：
+<br  /><p><a href="http://sales.zeroturnaround.com/">http://sales.zeroturnaround.com/</a>
+<br  /><p>下载并安装之后，修改sbt的启动文件(在windows下，通常是sbt.bat)，增加以下参数:
+<br  /><pre class="csharpcode">-noverify -javaagent:E:/java/jrebel/jrebel.jar```
+<br  /><p>如果启动sbt时，看到jrebel的提示信息，就说明jrebel已经启用了。还差一步：修改项目的配置文件，让jetty不再自动重启（否则jrebel就白忙活了）。</p>
+<p>修改/project/build/config.scala，增加：
+<br  /><pre class="csharpcode">override def scanDirectories = Nil```
+<br  /><style type="text /css">.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }
+<br  /></style>
+<br  /><p>禁止jetty检查文件改变。</p>
+<p>再使用sbt时，输入的命令变为：
+<br  /><pre class="csharpcode">> sbt</p>
+<blockquote><p>jetty-run
+<br  />~compile```
+<br  /><p>当我们修改了任一scala文件后，马上就能看到它被编译的信息，而jetty却没有重新载入。刷新页面看，就能看到改动过的效果了，每次修改都可以节省几秒钟。</p>
+</blockquote>
+<p>该方法在sbt 0.7.x上测试通过</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '178';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

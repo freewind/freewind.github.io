@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lift项目零散笔记</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-05-09) Lift项目零散笔记
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <h2>SBT</h2>
+<ol>
+<li>alias</li>
+</ol>
+<p>alias rr=;container:stop;container:start</p>
+<p>还没找怎么把它放到sbt的全局文件中</p>
+<h2>lift</h2>
+<ol>
+<li>想在lift关闭时执行一些操作（如关闭数据库连接池），可以Boot.boot中加入LiftRules.unloadHook.append(&hellip;)</li>
+<li>可使用field(&hellip;)代替addField(&hellip;)</li>
+</ol>
+<h2>druid</h2>
+<ol>
+<li>druid是阿里的项目，它的特点是性能好，监控功能强（还未试），有sql parser解析检查sql注入、统计等（这个有点变态），官网上说parser是手写的，比用javacc/antlr生成的效率要高很多</li>
+<li>在lift中使用druid，需要以编程构造一个datasource，传入<code>SquerylRecord.initWithSquerylSession(Session.create(DruidInitializer.ds.getConnection(), adapter))</code></li>
+<li>druid会先找依次找log4j及其它logger，如果发现哪个找不到，就会把ClassNotFound异常打印到console，这个做法有点邪门，因为我还以为哪里出错了，找了一圈，最后看到源代码(LogFactory.tryImplementation)才知道。它起码应该加个提示信息才对。</li>
+<li>druid的统计信息，是通过filter扩展进去的，还要注册一个MBean，才能在jconsole中查看到实时信息（需验证）</li>
+<li>还可以定制druid的logger，比如打印哪些数据（需验证）</li>
+</ol>
+<h2>scala</h2>
+<ol>
+<li>java: <code>void close()</code>, scala: <code>append( ()=&gt; unit)</code>，则可以<code>append(close _)</code></li>
+<li><span style="font-family: monospace;">XML字面量<a></a><b></b>的类型是NodeSeq</span></li>
+</ol>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2108';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

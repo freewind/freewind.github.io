@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>形如abc_=的函数，有什么用？</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) 形如abc_=的函数，有什么用？
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p><pre class="csharpcode"><span class="kwrd">class</span> A {</p>
+<pre><code>&lt;span class="kwrd"&gt;private&lt;/span&gt; var _a = &lt;span class="str"&gt;""&lt;/span&gt;
+def a = _a
+def a_=(newValue:String) { _a = newValue }
+</code></pre>
+<p>}```
+<br  /><p>其中的a<em>=函数，是方便我们赋值，见下例：
+<br  /><pre class="csharpcode">val a = <span class="kwrd">new</span> A
+<br  />a.a <span class="rem">// -> &ldquo;&ldquo;</span>
+<br  />a.a = <span class="str">&ldquo;x&rdquo;</span> <span class="rem">// invoke a</em>=</span>
+<br  />a.a <span class="rem">// -> &ldquo;x&rdquo;</span></p>
+<pre><code>&lt;p&gt;如果不是需要在赋值或取值的时候需要做一些转换的操作，一般没有必要这样做。事实上，scala已经把所有的属性隐藏起来了。
+
+例如：
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;class&lt;/span&gt; A{
+    var id: Int = _
+}```
+&lt;p&gt;看上去我们定义了一个公开的属性id,实际上属性id是被隐藏起来的（private可见），这里只是定义了两个方法
+&lt;pre class="csharpcode"&gt;def id : Int
+def id_=(v: Int)```
+</code></pre>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '197';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

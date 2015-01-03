@@ -1,0 +1,337 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>自己动手写模板引擎 – SharkDart (3) – 常用标签设计</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-03-18) 自己动手写模板引擎 – SharkDart (3) – 常用标签设计
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>大大催了，得赶紧写，这一系列大概还要五六篇。</p>
+<p>在前一篇中定义了我定义了Shark中标签的通用结构，它有两种形态，主要区别在参数上。</p>
+<p>结构1：涉及到参数的传递，形如：</p>
+<pre><code>@mytag(type1 var1: desc1, type2 var2: desc2) {
+    body
+}
+
+
+结构2：对一段代码进行操作，如对值进行判断等，形如：
+
+@mytag(some dart code) {
+    body
+}
+
+
+注意参数块`(...)`和主体块`{...}`都是可选的，但至少要提供一个。
+
+我们可能会有一个疑问：使用这两种结构，是否可以设计出优雅好用的标签？
+
+为了回答这个问题，我找了一些在模板引擎中常用的标签，按上面两种结构来定义，以验证可行性。
+
+## 常用标签
+
+流程控制：
+</code></pre>
+<ul>
+<li><p>if</p>
+</li>
+<li><p>elseif</p>
+</li>
+<li><p>else</p>
+</li>
+<li><p>for</p>
+<p>模板交互：</p>
+</li>
+<li><p>params</p>
+</li>
+<li><p>extends</p>
+</li>
+<li><p>renderBody</p>
+</li>
+<li><p>render</p>
+<p>文本内嵌:</p>
+</li>
+<li><p>dart</p>
+</li>
+<li><p>plainText</p>
+<p>上面这些基本的标签，再加上表达式：</p>
+<p>@simpleVar
+<br  />@{complexVar.more.more()}</p>
+<p>基本上就可以满足各常用的需求了。如果有更复杂的需求，我们还可以有两种做法：</p>
+</li>
+<li><p>使用dart标签，内嵌一些dart代码，如函数定义等。Shark并不禁止在模板中嵌入代码，该出手时就出手</p>
+</li>
+<li><p>自定义标签。注意上面的这些标签对于模板来说，都不是侵入式的，我们甚至可以用自己的实现替代它们。Shark将提供强大的自定义标签功能，让我们实现复杂的功能</p>
+<h2>标签api设计</h2>
+<p>下面我们将从用户角度考虑这些标签的设计，先不管它们如何实现，甚至是否能实现。</p>
+<h3>if</h3>
+<p>功能不用多说，它可以用结构2实现：</p>
+<p>@if(name=='Shark') {</p>
+<pre><code>&lt;div&gt;Hello, @name&lt;/div&gt;
+</code></pre>
+<p>}</p>
+<p>@if(name.startsWith(&ldquo;thought&rdquo;)) {</p>
+<pre><code>&lt;div&gt;@{name}works&lt;/div&gt;
+</code></pre>
+<p>}</p>
+<p>@if (names.where((name) => name.startsWith(&ldquo;X&rdquo;)).isNotEmpty) {</p>
+<pre><code>&lt;div&gt;There is at least one name starts with X&lt;/div&gt;
+</code></pre>
+<p>}</p>
+<h3>elseif</h3>
+<p>它基本上跟@if一模一样：</p>
+<p>@if(num==1) {</p>
+<pre><code>...
+</code></pre>
+<p>} @elseif(num==2) {</p>
+<pre><code>...
+</code></pre>
+<p>}</p>
+<h3>else</h3>
+<p>这个不需要参数，最简单</p>
+<p>@if(ok) {</p>
+<pre><code>...
+</code></pre>
+<p>} @else {</p>
+<pre><code>...
+</code></pre>
+<p>}</p>
+<p>在很多类似的模板引擎中，对于这种情况，<code>else</code>前面的<code>@</code>是不需要的：</p>
+<p>@if(ok) { &hellip; } else { &hellip; }</p>
+<p>看起来更简洁一些。但对于Shark来说，稍麻烦一点，但也不是很难接受。</p>
+<h3>for</h3>
+<p><code>for</code>在dart中的语法形如：</p>
+<p>for(int i=0; i<10; i++) { ... }
+<br  />for(var name in names) { &hellip; }</p>
+<p>虽然照搬也可以，但如果采用类似于java的形式，可能更简单一些：</p>
+<p>@for(name: names) {</p>
+<pre><code>...
+</code></pre>
+<p>}</p>
+<p><code>index</code>哪儿去了？在这里，我参考了play中的模板语法，将会在body内生成一些特别的变量，提供更丰富的信息：</p>
+<p>@for(name: names) {</p>
+<pre><code>Following varaibles are valid in the body:
+- @name_index
+- @name_isFirst
+- @name_isLast
+- @name_isOdd
+- @name_isEven
+</code></pre>
+<p>}</p>
+<p>这样就是一个功能超强的for了。</p>
+<p>还要再为它增加一个自动添加分隔符的功能，这在生成JSON数据时特别有用:</p>
+<p>[
+<br  />@for(name: names, separator: ',') {
+<br  />{ &ldquo;name&rdquo;: &ldquo;@name&rdquo; }
+<br  />}
+<br  />]</p>
+<p>假如<code>names</code>值为<code>['Shark', 'Bird', 'Chicken']</code>，它将会生成：</p>
+<p>[
+<br  />{ &ldquo;name&rdquo;: &ldquo;Shark&rdquo; },
+<br  />{ &ldquo;name&rdquo;: &ldquo;Bird&rdquo; },
+<br  />{ &ldquo;name&rdquo;: &ldquo;Chicken&rdquo; }
+<br  />]</p>
+<p>注意它会在两个元素之间自动添加上指定的separator，不多不少。</p>
+<p>对了，<code>for</code>还可以跟<code>else</code>搭配：</p>
+<p>@for(user: users) {</p>
+   <div>User: @user</div>
+<p>} @else {</p>
+   <div>Sorry, no user found!</div>
+<p>}</p>
+<h3>params</h3>
+<p>这个标签一般放在页首，用来指定当前模板可以传入哪些参数，比如：</p>
+<p>user.shark</p>
+<p>@params(String name, String blog) {</p>
+<pre><code>&lt;div&gt;User: @name, blog: @blog&lt;/div&gt;
+</code></pre>
+<p>}</p>
+<p>如果我们要写很长的html，还可以选择忽略<code>{}</code>符号：</p>
+<p>@params(String name, String blog)</p>
+<div>
+  Very long content
+  Many lines here
+  You don't want it to be wrapped in a `{}` block
+</div>
+<p>由于模板文件<code>user.shark</code>将被编译为<code>user.dart</code>，则我们可以这样调用它：</p>
+<p>import &ldquo;user.dart&rdquo; as view$user;</p>
+<p>showUser(User user) {</p>
+<pre><code>return view$user.render(name: user.name, blog: user.blog);
+</code></pre>
+<p>}</p>
+<h3>extends</h3>
+<p>对于网站来说，将页面划分为布局页和内容页是很常用的需求，所以我们会提供<code>extends</code>标签实现这个功能。</p>
+<p>布局页：layout.shark</p>
+<p><html>
+<br  /><head>&hellip;</head>
+<br  /><body></p>
+<pre><code>&lt;div&gt;@renderBody()&lt;/div&gt;
+</code></pre>
+<p></body>
+<br  /></html></p>
+<p>内容页: index.shark</p>
+<p>@extends(layout) {</p>
+<pre><code>&lt;div&gt;main content of index page&lt;/div&gt;
+</code></pre>
+<p>}</p>
+<p>这样在渲染index模板时，它会自动把它的内容嵌入到layout.shark中的<code>@renderBody()</code>处。</p>
+<p>同<code>@params</code>一样，<code>@extends</code>的<code>{}</code>也可以省略：</p>
+<p>@extends(layout)</p>
+<div>
+  Very long content
+  Many lines here
+  You don't want it to be wrapped in a `{}` block
+</div>
+<p>并且还可以向layout.shark中传参数：</p>
+<p>layout.shark</p>
+<p>@params(String pageTitle)
+<br  /><html>
+<br  /><head></p>
+<pre><code>&lt;title&gt;@pageTitle&lt;/title&gt;
+</code></pre>
+<p></head>
+<br  /><body>@renderBody()</body>
+<br  /></html></p>
+<p>index.shark</p>
+<p>@extends(layout, pageTitle: 'Index page, welcome')</p>
+<div>
+  Very long content
+</div>
+<p>标签参数中的paramDescription位置，实际上可以传入多种类型的参数：</p>
+</li>
+<li><p>另一个变量名</p>
+</li>
+<li><p>以单引号括起来的字符串</p>
+</li>
+<li><p>以双引号括起来的字符串</p>
+</li>
+<li><p>以<code>{}</code>括起来的一块内容</p>
+<p>这么规定，是考虑到有时候我们需要向另一个标签中传入丰富的内容，比如一个复杂的extends:</p>
+<p>@extends(layout,
+<br  />name: someName,
+<br  />pageTitle: 'Index page',
+<br  />pageCopyright: &ldquo;Copyright&rdquo;,
+<br  />moreJs: {</p>
+<pre><code> &lt;script src="..."&gt;&lt;/script&gt;
+ &lt;script src="..."&gt;&lt;/script&gt;
+</code></pre>
+<p>}
+<br  />)</p>
+<div>
+  content
+</div>
+<h3>renderBody</h3>
+<p>这个标签在前面已经出现过，它是个占位符。如果有另一个页面继承或调用它所在的模板，则会用另一个模板的内容填充它。它实际上不需要任何额外信息，但为了表示它是一个标签，所以我们会在后面加个<code>()</code></p>
+<p>layout.shark</p>
+<p><html>
+<br  /><body>@renderBody()</body>
+<br  /></html></p>
+<h3>render</h3>
+<p>有时候我们想把一个大页面分解为多个小页面，以获得更清晰的结构；有时候我们想定义一些小页面，在多个大页面中复用，这时候可以使用<code>render</code>标签。</p>
+<p>先定义两个小页面：</p>
+<p>left.shark</p>
+<p>@param(List<String> operations)</p>
+<ul>
+  @for(op: operations) {
+    <li>@op</li>
+  }
+</ul>
+<p>big.shark</p>
+<div>
+  @renderBody()
+</div>
+<p>然后在大页面中调用:</p>
+<p>@!dart {
+<br  />var operations = ['add', 'delete', 'update'];
+<br  />}</p>
+<p>@render(left, operations: operations)
+<br  />@render(big) {
+<br  />More content
+<br  />}</p>
+<h3>dart</h3>
+<p>有时候我们需要在页面中嵌入一些dart代码，实现一些复杂的功能，如定义一个函数，初始化一些数据等，这时可使用<code>dart</code>标签。</p>
+<p>@!dart {
+<br  />here is all kinds of dart code
+<br  />}</p>
+<p>由于主体中的内容是dart代码，一般应该当成纯文本看待，不应该对其内容进行任何解析或转义，所以我们通常会有<code>@</code>后加上<code>!</code>，用来告诉解析器，请把<code>{}</code>中的代码当作纯文本看待。</p>
+<p>同时，由于<code>{}</code>中内容为纯文本，它可以包含任意字符，所以很可能出现一个<code>}</code>，让<code>{}</code>提早结束。为了避免这种情况，我们可以重复<code>{</code>和<code>}</code>，只要它们个数相等：</p>
+<p>@!dart {{{</p>
+<p>hello() { world() {
+<br  />}}</p>
+<p>}}}</p>
+<p>被dart标签包起来的内容，将会当作dart代码嵌入到生成的dart文件中。</p>
+<h3>plainText</h3>
+<p>有时候只想把一大段内容原封不动的嵌入到最终生成的文本中，这时候可以使用plainText标签。</p>
+<p>@!plainText(trim: true) {</p>
+<p>A lot of text here</p>
+<p>}</p>
+</li>
+</ul>
+<p>加上trim参数，可以控制是否把文本两边的空白去掉，默认为false</p>
+<h2>这不是使用教程吗</h2>
+<p>通过上面对各常用标签的解释，可以认为开头定义的两种标签通用结构是可行的，下一篇我们将利用PetitParser来解析它。而这些常用标签的实现过程，将在后面与编译相关的内容中实现。</p>
+<p>PS:</p>
+<p>另外，写到最后，有没有发现这简直就是SharkDart的使用教程？没错，对于开发者来说，这是设计，但对用户来说，就和教程差不多了。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2383';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>windows7 x64上安装oracle11g过程</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-12-25) windows7 x64上安装oracle11g过程
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>为了在windows 7 x64上安装oracle，折腾了两天，下载了几次文件，都提示各种错误，如操作系统不支持等。最后终于成功，特记录下来。</p>
+<p><strong>一、下载最新的oralce11gR2，只有该版本才支持windows7 x64。</strong></p>
+<p>之前的版本包括11G，在安装时都会提示操作系统不支持。虽然可通过设置让它不要验证操作系统，但对于新手来说，还是有点难度。</p>
+<p>下载后可得到两个文件：</p>
+<ol>
+<li>win64_11gR2_database_1of2.zip</li>
+<li>win64_11gR2_database_2of2.zip</li>
+</ol>
+<p>一共2G。解压在一起，得到一个database目录。</p>
+<p><span id="more-635"></span>
+<br  /><p><strong>二、保证该database的路径中没有中文，最好也不要有空格，否则安装时会出错</strong></p>
+<p><strong>三、运行setup.exe</strong></p>
+<p><a href="/user_images/635-1.png"><img src="/user_images/635-1.png" alt="image" title="image" /></a></p>
+<p>第1步，让填电子邮件，因为我是安装在本机用于开发，所以没必要写。去掉“我希望通过…接收安全通知”前的勾</p>
+<p><a href="/user_images/635-3.png"><img src="/user_images/635-3.png" alt="image" title="image" /></a></p>
+<p>第2步，选择安装哪些，默认选中第一个</p>
+<p><a href="/user_images/635-5.png"><img src="/user_images/635-5.png" alt="image" title="image" /></a></p>
+<p>第3步：选择是桌面类还是服务器类，选前者</p>
+<p><a href="/user_images/635-7.png"><img src="/user_images/635-7.png" alt="image" title="image" /></a></p>
+<p>第4步：路径及参数设置</p>
+<p><a href="/user_images/635-9.png"><img src="/user_images/635-9.png" alt="image" title="image" /></a></p>
+<p>因为我填的密码为system，太简单了，oracle提示我是否改为复杂的密码。直接选否。</p>
+<p><a href="/user_images/635-11.png"><img src="/user_images/635-11.png" alt="image" title="image" /></a></p>
+<p>第5步：检查环境是否满足要求</p>
+<p><a href="/user_images/635-13.png"><img src="/user_images/635-13.png" alt="image" title="image" /></a></p>
+<p>第6步：显示前面填写的信息的汇总，供确认</p>
+<p><a href="/user_images/635-15.png"><img src="/user_images/635-15.png" alt="image" title="image" /></a></p>
+<p>第7步：开始安装，大约要五到十分钟。</p>
+<p><a href="/user_images/635-17.png"><img src="/user_images/635-17.png" alt="image" title="image" /></a></p>
+<p>中途防火墙会提示，选择“允许访问”</p>
+<p><a href="/user_images/635-19.png"><img src="/user_images/635-19.png" alt="image" title="image" /></a></p>
+<p>创建数据库等最后的操作，需要十几分钟</p>
+<p><a href="/user_images/635-21.png"><img src="/user_images/635-21.png" alt="image" title="image" /></a></p>
+<p>经过漫长的等待，终于提示以下的信息，说明安装成功。</p>
+<p><a href="/user_images/635-23.png"><img src="/user_images/635-23.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-25.png"><img src="/user_images/635-25.png" alt="image" title="image" /></a></p>
+<p><strong>四、新建数据库实例</strong></p>
+<ol>
+<li>打开“数据库配置助手”：</li>
+</ol>
+<p><a href="/user_images/635-27.png"><img src="/user_images/635-27.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-29.png"><img src="/user_images/635-29.png" alt="image" title="image" /></a></p>
+<p>点击下一步：</p>
+<p><a href="/user_images/635-31.png"><img src="/user_images/635-31.png" alt="image" title="image" /></a></p>
+<p>默认选择第一个即可：</p>
+<p><a href="/user_images/635-33.png"><img src="/user_images/635-33.png" alt="image" title="image" /></a></p>
+<p>输入数据库名，SID会自动输入，也可修改：</p>
+<p><a href="/user_images/635-35.png"><img src="/user_images/635-35.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-37.png"><img src="/user_images/635-37.png" alt="image" title="image" /></a></p>
+<p>偷懒，所有用户使用同一口令：</p>
+<p><a href="/user_images/635-39.png"><img src="/user_images/635-39.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-41.png"><img src="/user_images/635-41.png" alt="image" title="image" /></a></p>
+<p>因为仅用来开发，所以去掉了“快速恢复区”：</p>
+<p><a href="/user_images/635-43.png"><img src="/user_images/635-43.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-45.png"><img src="/user_images/635-45.png" alt="image" title="image" /></a></p>
+<p>内存默认为3G多，太大了，调小一点：</p>
+<p><a href="/user_images/635-47.png"><img src="/user_images/635-47.png" alt="image" title="image" /></a></p>
+<p>字符集默认为GBK，改为UTF8：</p>
+<p><a href="/user_images/635-49.png"><img src="/user_images/635-49.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-51.png"><img src="/user_images/635-51.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-53.png"><img src="/user_images/635-53.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/635-55.png"><img src="/user_images/635-55.png" alt="image" title="image" /></a></p>
+<p>点击“确定”后，又是漫长的等待：</p>
+<p><a href="/user_images/635-57.png"><img src="/user_images/635-57.png" alt="image" title="image" /></a></p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '635';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

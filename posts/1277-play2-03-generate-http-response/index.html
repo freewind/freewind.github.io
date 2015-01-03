@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>03. 生成Http响应</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-01) 03. 生成Http响应
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>(本文译者是爱国者)</p>
+<h4>修改Content-Type</h4>
+<p>当你使用Play提供的工具函数生成Http响应，Play会为<code>Content-Type</code>选择一个合适的值. 比如<code>Ok("Hello World")</code>函数会将<code>Content-Type</code>的值设为<code>text/plain</code>,<code>Ok(&lt;message&gt;Hello world&lt;/message&gt;)</code>会将<code>Content-Type</code>的值设为</p>
+<pre><code>// set Content-Type to text/plain
+val textResult = Ok("Hello World!")
+
+// set Content-Type to text/xml
+val xmlResult = Ok(&lt;message&gt;Hello World!&lt;/message&gt;)
+&gt; **提示：** Play实际上是使用`play.api.http.ContentTypeOf`来完成`Content-Type`的类型选择
+
+你也可以使用`as(newContentType)`显式指定`Content-Type`的值：
+
+val htmlResult = Ok(&lt;h1&gt;Hello World!&lt;/h1&gt;).as("text/html")
+
+或者
+
+val htmlResult = Ok(&lt;h1&gt;Hello World!&lt;/h1&gt;).as(HTML)
+&gt; **注意:** 使用`HTML`辅助函数的好处是Play会自动为你添加html页面的字符编码，也就说`Content-Type`的值会被设置成形如`text/html; charset=UTF-8`
+
+#### 修改Http响应头
+
+Play提供了工具函数让你随意添加和修改Http响应头
+
+Ok("Hello World!").withHeaders(
+  CACHE_CONTROL -&gt; "max-age=3600", 
+  ETAG -&gt; "xx"
+)
+&gt; **注意：**, 添加或修改的Http响应头会覆盖之前或默认的值
+
+#### 设置和删除cookies
+
+Cookie是一种特殊的Http响应头。Play提供了一组工具函数方便设置Cookies，比如：
+
+Ok("Hello world").withCookies(
+  Cookie("theme", "blue")
+)
+
+要删除某个cookie，可以这样做：
+
+Ok("Hello world").discardingCookies("theme")
+
+#### 修改响应文本的字符集
+
+给响应文本设置正确的字符集是非常重要的。Play默认采用UTF-8字符集
+
+这里所说的字符集，有两个用途。一是用于将响应文本转换成字节流，然后通过网络传输给浏览器, 二是用于设置`Content-Type`的字符集。你可以选择其他字符集，比如ISO-8859-1：
+
+object Application extends Controller {
+
+  implicit val myCustomCharset = Codec.javaSupported("iso-8859-1")
+
+  def index = Action {
+    Ok(&lt;h1&gt;Hello World!&lt;/h1&gt;).as(HTML)
+  }
+
+}
+
+这里我们定义了一个隐式字符集变量值(`myCustomCharset`)，它会被`Ok(..)`函数用于将XML文本转成`ISO-8859-1`编码的字节流，被HTML函数将`Content-Type`的值设置为`text/html; charset=iso-8859-1`
+
+实际上HTML函数是这样定义的：
+
+def HTML(implicit codec: Codec) = {
+  "text/html; charset=" + codec.charset
+}
+</code></pre>
+<p>当然你可以显式指定字符集（而不采用隐式转换的方法）</p>
+<blockquote><p>译者：我认为恰当使用隐式转换可以让代码更简洁</p>
+</blockquote>
+<p>原文： <a href="https://github.com/playframework/Play20/wiki/ScalaResults">https://github.com/playframework/Play20/wiki/ScalaResults</a></p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1277';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

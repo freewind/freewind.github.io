@@ -1,0 +1,513 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>04. 指令</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-01) 04. 指令
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <h4>指令(directive)</h4>
+<p>指令(directive)是教会HTML新技能的方法。在DOM编译期间，与HTML相匹配的指令会执行。这样，我们就可以利用指令来注册一些动作，或者执行转换DOM的操作。</p>
+<p>Angular内置了一些非常有用、并且可被扩展的指令，这样我们就能把HTML变身为DSL（可声明的领域专用语言）。</p>
+<h4>从HTML中调用指令</h4>
+<p>指令的命名方式采用驼峰式，如'ngBind'。但在调用时，可采用“蛇行式”，以及特定的分隔符：<code>:</code>, <code>-</code>, <code>_</code>。甚至可以在它们前面加上<code>x-</code>或<code>data-</code>以便通过HTML格式验证。</p>
+<p>这里举几个有效的例子：</p>
+<p><code>ng:bind</code>, <code>ng-bind</code>, <code>ng_bind</code>, <code>x-ng-bind</code>, <code>data-ng-bind</code>。</p>
+<p>指令可被放置于以下位置：</p>
+<ol>
+<li>元素名称2.  属性名称3.  css类名称4.  注释</li>
+</ol>
+<p>以下几个例子都是完全相同的调用指令<code>myDir</code>的方法。（不过大多数情况，我们仅会使用属性式指令）</p>
+<pre><code class="html">&lt;span my-dir="exp"&gt;&lt;/span&gt;
+&lt;span class="my-dir: exp;"&gt;&lt;/span&gt;
+&lt;my-dir&gt;&lt;/my-dir&gt;
+&lt;!-- directive: my-dir exp --&gt;
+</code></pre>
+<p>指令可被多种不同的方式调用，但在下面例子的测试代码中，它们是完全相同的。</p>
+<h4>Demo Source Code</h4>
+<p><strong>index.html</strong></p>
+<pre><code class="html">&lt;!doctype html&gt;
+&lt;html ng-app&gt;
+  &lt;head&gt;
+    &lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div ng-controller="Ctrl1"&gt;
+      Hello &lt;input ng-model='name'&gt; &lt;hr/&gt;
+      &lt;span ng:bind="name"&gt; &lt;span ng:bind="name"&gt;&lt;/span&gt; &lt;br/&gt;
+      &lt;span ng_bind="name"&gt; &lt;span ng_bind="name"&gt;&lt;/span&gt; &lt;br/&gt;
+      &lt;span ng-bind="name"&gt; &lt;span ng-bind="name"&gt;&lt;/span&gt; &lt;br/&gt;
+      &lt;span data-ng-bind="name"&gt; &lt;span data-ng-bind="name"&gt;&lt;/span&gt; &lt;br/&gt;
+      &lt;span x-ng-bind="name"&gt; &lt;span x-ng-bind="name"&gt;&lt;/span&gt; &lt;br/&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>script.js</strong></p>
+<pre><code class="js">function Ctrl1($scope) {
+  $scope.name = 'angular';
+}
+</code></pre>
+<p>End to end test</p>
+<pre><code class="js">it('should show off bindings', function() {
+  expect(element('div[ng-controller="Ctrl1"] span[ng-bind]').text()).toBe('angular');
+});
+</code></pre>
+<p>你可以在jsfiddle上<a href="http://jsfiddle.net/api/post/library/pure/">查看并修改</a>该示例</p>
+<h4>字符串插补(interpolation)</h4>
+<p>在编译阶段，编译器使用<code>$interpolate</code>服务来匹配文本和属性，检查它们是否嵌入了表达式。这些表达式注册为“观察者”，在digest周期中将被更新。</p>
+<p>以下是一个<code>interpolation</code>的例子：</p>
+<p><img src="img /{{username}}.jpg">Hello {{username}}!</img></p>
+<h4>编译过程和指令(directive)匹配</h4>
+<p>HTML的编译过程，发生在三处：</p>
+<ol>
+<li><p>首先HTML由标准浏览器api解析为DOM。认识到这一点很重要，因为模板代码必须为可解析的HTML。多数模板系统操作字符串，与它们不同的是，angularjs操作DOM元素。</p>
+</li>
+<li><p>使用<code>$compile()</code>方法对DOM进行编译。该方法遍历DOM和寻找可匹配的指令(directive)，找到后则把它加到该DOM关联的指令列表中。一旦某DOM所有的指令都被找到，则按照指令中定义的优先级对它们进行排序，并调用它们的<code>@compile()</code>方法。该编译方法有机会修改DOM结构，并且有责任提供一个<code>link()</code>函数（将在后面解释）。<code>$compile()</code>方法返回一组连接(linking)方法，它们是一个集合，由该DOM关联的所有指令返回的link函数组成。</p>
+</li>
+<li><p>调用在上一步中返回的连接(link)函数，将模板与域对象(scope)连接起来。这将依次调用每一个指令(directvie)的连接函数，允许它们在元素上注册任意的监听器(listener)。结果将得到一个在域对象与DOM之间的实时绑定(live binding)。当域对象(scope)变化了，将立刻反映到DOM上。</p>
+<p>var $compile = &hellip;; // injected into your code
+<br  />var scope = &hellip;;</p>
+<p>var html = '<div ng-bind='exp'></div>';</p>
+<p>// Step 1: parse HTML into DOM element
+<br  />var template = angular.element(html);</p>
+<p>// Step 2: compile the template
+<br  />var linkFn = $compile(template);</p>
+<p>// Step 3: link the compiled template with the scope.
+<br  />linkFn(scope);</p>
+</li>
+</ol>
+<h4>为什么要把编译(compile)与链接(link)分开</h4>
+<p>现在你也许会好奇，为什么我们要把编译过程分解为编译和连接两个步骤。为了理解这点，让我们看一下真实世界中的<code>repeater</code>的例子：</p>
+<pre><code class="html">Hello {{user}}, you have these actions:
+&lt;ul&gt;
+  &lt;li ng-repeat="action in user.actions"&gt;
+    {{action.description}}
+  &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<p>简单来说，只要当模型类改变时需要更新DOM结构（就像repeater），我们就需要将编译与连接分开。</p>
+<p>上面的例子在编译时，编译器访问每一个节点来寻找指令(directive)。<code>{{user}}</code>是插补指令的一个例子，<code>ngRepeat</code>是另一种。</p>
+<p>但<code>ngRepeat</code>有一个困境：它需要为<code>user.actions</code>中的每一个action快速生成一个新的<code>&lt;li&gt;</code>，这表示它需要持有<code>li</code>元素的一个干净的copy用来复制，每当有新的actions插入时，<code>li</code>模板元素需要被快速复制被插入到<code>ul</code>中。</p>
+<p>但是仅仅复制是不够的，它还需要编译<code>li</code>，所以它的指令（如<code>{{action.descriptions}}</code>也需要在正确的域(scope)中执行一遍。有一种很天真的处理方式是简单地插入一个<code>li</code>元素的copy并编译它。但是编译每一个li元素会很慢，因为编译过程需要遍历DOM树并寻找指令还要运行它们。如果我们把编译过程放在一个需要展示100个元素的repeater里，我们很快就会遇到性能问题。</p>
+<p>解决方案是把编译过程分解为两步：第一步编译，寻找所有的指令并给它们按优先级排序；第二步连接，将把<code>li</code>的某实例与<code>scope</code>的某实例连接起来。</p>
+<p><code>ngRepeat</code>的运行方式不是把编译过程下放到<code>li</code>元素中，而是它们分开编译。结果是得到一个连接函数，它包括了<code>li</code>元素中所有将被附加到某一个指定的li的复制体上的指令。在运行期，ngRepeat会监视表达式，每当有新的元素添加到数组中时，它将复制li元素，为它创建一个新的域对象，并调用li元素上的连接函数。</p>
+<p>总结:</p>
+<ul>
+<li>编译(compile)函数 - 在指令(directive)中相对较少使用，因为大多数指令只在某一个指定的DOM元素实例上执行，而不会对模板DOM元素进行转换。所有需要在指令实例间进行共享的操作，因为性能原因应该放在本函数中</li>
+<li>连接(link)函数 - 指令基本上都会用到连接函数。连接函数允许指令在指定的DOM元素的复制体上注册监听器，也可以从scope中复制一些内容到DOM中。</li>
+</ul>
+<h4>编写指令（精简版）</h4>
+<p>在本例中，我们将创建一个显示当前时间的指令。</p>
+<h4>源代码</h4>
+<p>index.html</p>
+<pre><code class="html">&lt;!doctype html&gt;
+&lt;html ng-app="time"&gt;
+  &lt;head&gt;
+    &lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div ng-controller="Ctrl2"&gt;
+      Date format: &lt;input ng-model='format'&gt; &lt;hr/&gt;
+      Current time is: &lt;span my-current-time="format"&gt;&lt;/span
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>script.js</p>
+<pre><code class="js">function Ctrl2($scope) {
+  $scope.format = 'M/d/yy h:mm:ss a';
+}
+
+angular.module('time', [])
+  // Register the 'myCurrentTime' directive factory method.
+  // We inject $timeout and dateFilter service since the factory method is DI.
+  .directive('myCurrentTime', function($timeout, dateFilter) {
+    // return the directive link function. (compile function not needed)
+    return function(scope, element, attrs) {
+      var format,  // date format
+          deferId; // deferId, so that we can cancel the time updates
+
+      // used to update the UI
+      function updateTime() {
+        element.text(dateFilter(new Date(), format));
+      }
+
+      // watch the expression, and update the UI on change.
+      scope.$watch(attrs.myCurrentTime, function(value) {
+        format = value;
+        updateTime();
+      });
+
+      // schedule update in one second
+      function updateLater() {
+        // save the deferId for canceling
+        deferId = $timeout(function() {
+          updateTime(); // update DOM
+          updateLater(); // schedule another update
+        }, 1000);
+      }
+
+      // listen on DOM destroy (removal) event, and cancel the next UI update
+      // to prevent updating time ofter the DOM element was removed.
+      element.bind('$destroy', function() {
+        $timeout.cancel(deferId);
+      });
+
+      updateLater(); // kick of the UI update process.
+    }
+  });
+</code></pre>
+<p>上例可在jsfiddle上<a href="http://jsfiddle.net/api/post/library/pure/">查看效果及修改</a></p>
+<h4>编写指令（完整版）</h4>
+<p>这里是一个指令的结构骨架，完整的解释在后面。</p>
+<p>var myModule = angular.module(&hellip;);</p>
+<p>myModule.directive('directiveName', function factory(injectables) {
+<br  />var directiveDefinitionObject = {</p>
+<pre><code>priority: 0,
+template: '&lt;div&gt;&lt;/div&gt;',
+templateUrl: 'directive.html',
+replace: false,
+transclude: false,
+restrict: 'A',
+scope: false,
+compile: function compile(tElement, tAttrs, transclude) {
+  return {
+    pre: function preLink(scope, iElement, iAttrs, controller) { ... },
+    post: function postLink(scope, iElement, iAttrs, controller) { ... }
+  }
+},
+link: function postLink(scope, iElement, iAttrs) { ... }
+</code></pre>
+<p>};
+<br  />return directiveDefinitionObject;
+<br  />});</p>
+<p>在大多数情况下，你不需要如此彻底的控制，所以上面的例子可以简化。所以与本示例不同的地方，将在下面几节中讲解。在本节我们仅仅对该示例感兴趣。</p>
+<p>第一步是简化代码，尽管使用默认值。所以上面的代码可以简化为：</p>
+<p>var myModule = angular.module(&hellip;);</p>
+<p>myModule.directive('directiveName', function factory(injectables) {
+<br  />var directiveDefinitionObject = {</p>
+<pre><code>compile: function compile(tElement, tAttrs) {
+  return function postLink(scope, iElement, iAttrs) { ... }
+}
+</code></pre>
+<p>};
+<br  />return directiveDefinitionObject;
+<br  />});</p>
+<p>大多数指令只关系它们自己的实例，而不关心模板的转换，所以可以进一步简化为：</p>
+<p>var myModule = angular.module(&hellip;);</p>
+<p>myModule.directive('directiveName', function factory(injectables) {
+<br  />return function postLink(scope, iElement, iAttrs) { &hellip; }
+<br  />});</p>
+<h4>工厂方法</h4>
+<p>工厂方法的责任是创建指令。它只会在编译器第一次匹配到某指令时，被调用一次。你可以在这里执行任意的初始化操作。该方法被<code>$injector.invoke</code>调用，所以可被注入(injectable)，并遵守injection注解的所有规则。</p>
+<h4>指令定义对象</h4>
+<p>指令定义对象为编译器提供了一些必要信息。有以下属性：</p>
+<ul>
+<li><p>name - 当前域(scope)对象的名称。默认与注册时使用的名称相同</p>
+</li>
+<li><p>priority - 优先级。当一个DOM元素上有多个指令时，有时候很有必要指定指令的顺序。优先级(priority)用来在编译函数调用之前来对它们进行排序。数字大的排在前面，数字相同的顺序不确定。</p>
+</li>
+<li><p>terminal - 是否为终结。如果设为true，则与当前priority相同的指令将在最后一批执行（该批中的各指令也将被执行，因为priority相同的指令运行顺序不确定）</p>
+</li>
+<li><p>scope - 域对象。如果设为</p>
+<pre><code>*   `true` - 则会为该指令创建一个新的scope。如果在同一元素上的多个指令同时要求创建新scope，则只会创建一个scope。该规则不适用于模板的root，因为root总是创建一个新scope。
+</code></pre>
+<ul>
+<li><p><code>{}</code>(object hash) - 创建一个新的'孤立'的scope。该scope与普通的scope不同的是，它不会以原型方式从上级scope中继承内容。它对于创建一些可利用的组件很有用，因为它不会让我们意外修改了上级scope中的数据。该'孤立'的scope将上级scope中的属性复制到本地的一个object hash中。这些本地属性可为模板提供数据。本地变量的定义是一个由源到本地属性的hash:</p>
+<pre><code>    *   `@` 或 `@attr` - 将scope的一个本地属性绑定到DOM属性。由于DOM属性都是字符串，所以它的值总是字符串。如果属性名称没有指定，则本地变量名称与属性名称一致。假设给定`&lt;widget my-attr="hello {{name}}"&gt;`以及定义：`{localName:'@myAttr'}`，则widget scope的属性`localName`将会反映到`hello, {{name}}`中。反过来也一样，如果`name`变了，则`localName`的值也会变。其中`name`是从上级scope中读取的（而不是在当前的组件中）。
+
+    *   `=` 或 `=attr` - 在本地scope与上级scope的属性之间设置双向绑定。如果`attr`的值没有设置，则本地与上级scope的属性名相同。假设给定`&lt;widget my-attr="parentModel"&gt;`以及定义`{scope: { localModel:'=myAttr'}`,则当`localName`的值变了，`parentModel`会跟着变，反之亦然。
+</code></pre>
+</li>
+<li><p><code>&amp;</code> 或 <code>&amp;attr</code> - （这一段原文有问题，等修正后再翻译）</p>
+</li>
+</ul>
+</li>
+<li><p><code>controller</code> - Controller的构造函数。该controller将在pre-linking阶段前被初始化，并且可被多个directives通过名称引用共享(参考 <code>require</code>属性). 因此我们利用它在不同的directives之间通信或改变行为。controller可注入以下对象：</p>
+<pre><code>*   `$scope` - 当前元素关联的scope*   `$element` - 当前元素*   `$attrs` - 当前元素对应的属性对象*   `$transclude` - A transclude linking function pre-bound to the correct transclusion scope:`function(cloneLinkingFn)`.（这一句没理解）
+</code></pre>
+</li>
+<li><p><code>require</code> - 要求将另一个controller传入到当前的linking function中。<code>require</code>要求传入一个controller的名称。如果找不到，则可以控制是否抛出一个异常。controller名称可有以下前缀：</p>
+<pre><code>*   `?` - 不抛异常（所以依赖的controller为可选）*   `^` - 继续向上级元素中寻找
+</code></pre>
+</li>
+<li><p><code>restrict</code> - <code>EACM</code>这四个字母中的一个或多个，默认为'A'。</p>
+<pre><code>*   `E` - **E**lement name: `&lt;my-directive&gt;&lt;/my-directive&gt;`
+</code></pre>
+<ul>
+<li><code>A</code> - <strong>A</strong>ttribute: <code>&lt;div my-directive="exp"&gt; &lt;/div&gt;</code></li>
+<li><code>C</code> - <strong>C</strong>lass: <code>&lt;div class="my-directive: exp;"&gt;&lt;/div&gt;</code></li>
+<li><code>M</code> - Co<strong>m</strong>ment: <code>&lt;!-- directive: my-directive exp --&gt;</code></li>
+</ul>
+</li>
+<li><p><code>template</code> - 模板。将使用该模板来替换HTML的内容。该替换过程将把旧元素中的attribute/classes迁移到新元素中（TODO未理解）。参考下面的“创建widget”一节。</p>
+</li>
+<li><p><code>templateUrl</code> - 与<code>template</code>相同但是从指定的URL导入内容。由于导入是异步，所以compilation/linking过程将被暂停直到模板导入成功。</p>
+</li>
+<li><p><code>replace</code> - 如果设为<code>true</code>则用前面替换当前元素，否则在后面添加。</p>
+<p>（这一段很难，完全没看懂）</p>
+</li>
+<li><p><code>transclude</code> - compile the content of the element and make it available to the directive. Typically used with<code>ngTransclude</code>. The advantage of transclusion is that the linking function receives a transclusion function which is pre-bound to the correct scope. In a typical setup the widget creates an <code>isolate</code> scope, but the transclusion is not a child, but a sibling of the <code>isolate</code> scope. This makes it possible for the widget to have private state, and the transclusion to be bound to the parent (pre-<code>isolate</code>) scope.</p>
+<pre><code>*   `true` - transclude the content of the directive.*   `'element'` - transclude the whole element including any directives defined at lower priority.
+</code></pre>
+</li>
+<li><p><code>compile</code> - 编译函数，将在下节讲。</p>
+</li>
+<li><p><code>link</code>: 连接函数，将在下节讲。只有当compile属性没有定义时，才会使用本属性。</p>
+<h4>编译函数</h4>
+<p>function compile(tElement, tAttrs, transclude) { &hellip; }</p>
+<p>编译函数用来转换模板DOM。由于多数directives不需要模板转换，所以它不常用。什么时候才会用到呢？比如像<code>ngRepeat</code>这样需要转换模板的directive，或者像<code>ngView</code>这样需要异步导入模板的。</p>
+<p>编译函数有以下参数：</p>
+</li>
+<li><p><code>tElement</code> - 模板元素(template element)，即directive被声明的那个元素。在各操作中，只有在元素（或子元素）上进行模板转换的操作才是安全的。</p>
+</li>
+<li><p><code>tAttrs</code> - 模板属性(template attributes)。在元素上声明的属性集，它在该元素上所有的directives编译函数中共享。参看Attributes</p>
+</li>
+<li><p><code>transclude</code> - A transclude linking function: <code>function(scope, cloneLinkingFn)</code>.（未理解）</p>
+<p>注意：如果模板被cloned，则template示例与instance实例可能不再相同。所以在编译函数中进行除DOM转换以外的任何操作都是不安全的。特别是，“DOM监听器注册”的操作应该在linking函数中，而不是在compile函数中。</p>
+<p>编译函数可以返回一个函数，或者是一个object。</p>
+</li>
+<li><p>函数： 相当于使用了<code>link</code>属性且保持<code>compile</code>为空*   object: 如果包含了<code>pre</code>或<code>post</code>属性，则可以用来控制linking函数何时被调用。详细内容参考下面内容。</p>
+<h4>连接函数</h4>
+<p>function link(scope, iElement, iAttrs, controller) { &hellip; }</p>
+<p>Link函数用来注册DOM监听器或更新DOM，当模板被cloned之后被调用。多数时候在这里放置directive的逻辑代码。</p>
+</li>
+<li><p><code>scope</code> - 让directive用它来注册watches</p>
+</li>
+<li><p><code>iElement</code> - instance element - directive使用的元素实例。只有在<code>postLink</code>中维护当前元素的子元素才是安全的，因为子元素已经被link了。</p>
+</li>
+<li><p><code>iAttrs</code> - instance attributes - 在元素上声明的属性集，它在该元素上所有的directives编译函数中共享。See Attributes</p>
+</li>
+<li><p><code>controller</code> - 一个controller实例 - 如果该元素上至少有一个directive定义了controller。它在不同的directives之间共享，可当作它们互相通信的通道。</p>
+<h5>Pre-linking函数</h5>
+<p>在子元素被link之前调用。不要进行DOM转换的操作，因为可能导致编译器的linking函数找不到正确的元素而失败。</p>
+<h5>Post-linking函数</h5>
+<p>在子元素被link之后调用。在这里执行DOM转换操作是安全的。</p>
+<h4>Attributes</h4>
+<p>属性对象可当作<code>link()</code>和<code>compile()</code>函数的参数传过去 ，它提供了一种访问方式：</p>
+</li>
+<li><p>规范化之后的属性名：由于一个directive可使用多种方式来声明（如<code>ng:bind</code>,<code>x-ng-bind</code>），所以该对象提供了一种规范的方式来访问</p>
+</li>
+<li><p>directive内部通信：元素上所有的directive共享同一个atrribute object，所以可用经作为directive的内部通信载体</p>
+</li>
+<li><p>支持插补：（TODO）</p>
+</li>
+<li><p>监听插补属性：使用<code>$observe</code>来监听包含了表达式的属性的变化（如<code>src="{{bar}}"</code>）。这种方式不但高效，而且是得到其值的唯一方法，因为在linking阶段插补的值还没有被执行，所以这个值在当前还是<code>undefined</code>.
+<br  />function linkingFn(scope, elm, attrs, ctrl) {
+<br  />// get the attribute value
+<br  />console.log(attrs.ngModel);</p>
+<p>// change the attribute
+<br  />attrs.$set('ngModel', 'new value');</p>
+<p>// observe changes to interpolated attribute
+<br  />attrs.$observe('ngModel', function(value) {</p>
+<pre><code>console.log('ngModel has changed value to ' + value);
+</code></pre>
+<p>});
+<br  />}</p>
+<h4>理解transclusion和scopes</h4>
+<p>我们都想要可复用的组件。下面是一个简化的对话框组件的假想工作方式。</p>
+<p><div>
+<br  /><button ng-click="show=true">show</button>
+<br  />&lt;dialog title=&ldquo;Hello {{username}}.&rdquo;</p>
+<pre><code>      visible="show"
+      on-cancel="show = false"
+      on-ok="show = false; doSomething()"&gt;
+ Body goes here: {{username}} is {{title}}.
+</code></pre>
+<p></dialog></p>
+<p>点击“show"按钮，将打开对话框。该对话框包含一个标题，其数据被绑定到<code>username</code>上。它还包含一个body，将被我们transclude到dialog中。</p>
+<p>下面是为该对话框部件准备的模板代码示例：</p>
+<div ng-show="show()">
+  <h3>{{title}}</h3>
+  <div class="body" ng-transclude></div>
+  <div class="footer">
+    <button ng-click="onOk()">Save changes</button>
+    <button ng-click="onCancel()">Close</button>
+  </div>
+</div>
+<p>这段代码还不能正确的渲染，除非我们来点魔术。</p>
+<p>我们需要解决的每一个问题是dialog要有一个title，并且它要与<code>username</code>绑定。另外在scope中，还需要有<code>onOk</code>和<code>onCancel</code>函数。这都将限制该widget的用途。为了解决这些问题，我们将使用<code>locals</code>来创建一些本地变量，与模板相匹配：</p>
+<p>scope: {
+<br  />title: 'bind',          // set up title to accept data-binding
+<br  />onOk: 'expression',     // create a delegate onOk function
+<br  />onCancel: 'expression', // create a delegate onCancel function
+<br  />show: 'accessor'        // create a getter/setter function for visibility.
+<br  />}</p>
+<p>但在widget的scope上创建本地属性，会产生两个问题：</p>
+</li>
+<li><p>isolation - 如果用户忘了给title设置，dialog会尝试到上级scope中寻找。这会产生未知的问题。</p>
+</li>
+<li><p>transclusion - transcluded DOM可以看到widget的本地变量，可能会覆盖transclusion用来数据绑定的属性。在我们的例子中，widget的<code>title</code>属性就会灭掉transclusion的title属性。(TODO：翻译有问题)</p>
+<p>为了解决第一个问题，directive将声明一个新的isolated scope。一个isolated scope不会以原型方式从子类中继承属性，所以我们不用担心意味损坏了数据。</p>
+<p>但isolated scope又带来了一个新问题：如果transcluded DOM是该widget的isolated scope的子域，则它不会继承到任何数据。因此，transcluded scope是原scope的子，并在widget创建的isolated scope之前。于是，transcluded与widget两者的isolated scope成了兄弟。</p>
+<p>这看起来有点复杂，不过这可以让widget用户和开发者尽量不会觉得意外。</p>
+<p>因此，最终的directive的声明看起来如下：</p>
+<p>transclude: true,
+<br  />scope: {
+<br  />title: 'bind',          // set up title to accept data-binding
+<br  />onOk: 'expression',     // create a delegate onOk function
+<br  />onCancel: 'expression', // create a delegate onCancel function
+<br  />show: 'accessor'        // create a getter/setter function for visibility.
+<br  />}</p>
+<h4>创建组件</h4>
+<p>我们通常想使用复杂一些的DOM结构来代替单一的directive。This allows the directives to become a short hand for reusable components from which applications can be built.（这句怎么翻？）</p>
+<p>下面是一个创建可复用的widget的例子。</p>
+<h4>Source</h4>
+<p><strong>index.html</strong></p>
+<p><!doctype html>
+<br  /><html ng-app="zippyModule">
+<br  /><head></p>
+<pre><code>&lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<br  /><body></p>
+<pre><code>&lt;div ng-controller="Ctrl3"&gt;
+  Title: &lt;input ng-model="title"&gt; &lt;br&gt;
+  Text: &lt;textarea ng-model="text"&gt;&lt;/textarea&gt;
+  &lt;hr&gt;
+  &lt;div class="zippy" zippy-title="Details: {{title}}..."&gt;{{text}}&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p></body>
+<br  /></html></p>
+<p><strong>style.css</strong></p>
+<p>.zippy {
+<br  />border: 1px solid black;
+<br  />display: inline-block;
+<br  />width: 250px;
+<br  />}
+<br  />.zippy.opened > .title:before { content: '▼ '; }
+<br  />.zippy.opened > .body { display: block; }
+<br  />.zippy.closed > .title:before { content: '► '; }
+<br  />.zippy.closed > .body { display: none; }
+<br  />.zippy > .title {
+<br  />background-color: black;
+<br  />color: white;
+<br  />padding: .1em .3em;
+<br  />cursor: pointer;
+<br  />}
+<br  />.zippy > .body {
+<br  />padding: .1em .3em;
+<br  />}</p>
+<p><strong>script.js</strong></p>
+<p>function Ctrl3($scope) {
+<br  />$scope.title = 'Lorem Ipsum';
+<br  />$scope.text = 'Neque porro quisquam est qui dolorem ipsum quia dolor&hellip;';
+<br  />}</p>
+<p>angular.module('zippyModule', [])
+<br  />.directive('zippy', function(){</p>
+<pre><code>return {
+  restrict: 'C',
+  // This HTML will replace the zippy directive.
+  replace: true,
+  transclude: true,
+  scope: { title:'@zippyTitle' },
+  template: '&lt;div&gt;' +
+              '&lt;div class="title"&gt;{{title}}&lt;/div&gt;' +
+              '&lt;div class="body" ng-transclude&gt;&lt;/div&gt;' +
+            '&lt;/div&gt;',
+  // The linking function will add behavior to the template
+  link: function(scope, element, attrs) {
+        // Title element
+    var title = angular.element(element.children()[0]),
+        // Opened / closed state
+        opened = true;
+
+    // Clicking on title should open/close the zippy
+    title.bind('click', toggle);
+
+    // Toggle the closed/opened state
+    function toggle() {
+      opened = !opened;
+      element.removeClass(opened ? 'closed' : 'opened');
+      element.addClass(opened ? 'opened' : 'closed');
+    }
+
+    // initialize the zippy
+    toggle();
+  }
+}
+</code></pre>
+<p>});</p>
+<p><strong>End to end test</strong></p>
+<p>it('should bind and open / close', function() {
+<br  />input('title').enter('TITLE');
+<br  />input('text').enter('TEXT');
+<br  />expect(element('.title').text()).toEqual('Details: TITLE&hellip;');
+<br  />expect(binding('text')).toEqual('TEXT');</p>
+<p>expect(element('.zippy').prop('className')).toMatch(/closed/);
+<br  />element('.zippy > .title').click();
+<br  />expect(element('.zippy').prop('className')).toMatch(/opened/);
+<br  />});</p>
+</li>
+</ul>
+<p><a href="http://jsfiddle.net/api/post/library/pure/">http://jsfiddle.net/api/post/library/pure/</a></p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1226';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

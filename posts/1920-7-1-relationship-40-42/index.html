@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>7.1 关系及其性质 40 ~ 49</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-07) 7.1 关系及其性质 40 ~ 49
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <h2>题目 40-42</h2>
+<p><a href="/user_images/1920-1.png"><img src="/user_images/1920-1.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1920-3.png"><img src="/user_images/1920-3.png" alt="image" title="image" /></a></p>
+<p><a href="/user_images/1920-5.png"><img src="/user_images/1920-5.png" alt="image" title="image" /></a></p>
+<h2>解答 40-42</h2>
+<h3>40</h3>
+<p>A = { 0, 1 }</p>
+<p>则 A x A = { (0,0), (0,1), (1,0), (1,1) }</p>
+<p>共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E4%7D" alt="{2^4}" />共16种不同的关系：</p>
+<ol>
+<li><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%5Cemptyset%20" alt="\emptyset " /></li>
+<li>{ (0,0) }</li>
+<li>{ (0,0), (0,1) }</li>
+<li>{ (0,0), (1,0) }</li>
+<li>{ (0,0), (1,1) }</li>
+<li>{ (0,0), (0,1), (1,0) }</li>
+<li>{ (0,0), (0,1), (1,1) }</li>
+<li>{ (0,0), (1,0), (1,1) }</li>
+<li>{ (0,0), (0,1), (1,0), (1,1) }</li>
+<li>{ (0,1) }</li>
+<li>{ (0,1), (1,0) }</li>
+<li>{ (0,1), (1,1) }</li>
+<li>{ (0,1), (1,0), (1,1) }</li>
+<li>{ (1,0) }</li>
+<li>{ (1,0), (1,1) }</li>
+<li>{ (1,1) }</li>
+</ol>
+<h3>41</h3>
+<p>8个。
+
+### 42
+
+自反的：5, 7, 8, 9
+
+反自反的：1,10, 11, 14
+
+对称的：1,2,5,6,9,11,13,16
+
+反对称的：1,2,3,4,5,7,8,10,12,14,15,16
+
+非对称的：1,10,14
+
+传递的：1,2,3,4,5,7,8,9,10,12,14,15,16
+</p>
+<hr />
+<h2>题目 43</h2>
+<p><a href="/user_images/1928-1.png"><img src="/user_images/1928-1.png" alt="image" title="image" /></a></p>
+<h2>解答 43</h2>
+<p>a) 共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B4%5E2%7D%7D%7D" alt="{2^{{4^2}}}" />=65536个</p>
+<p>b) 共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B4%5E2%7D%20-%201%7D%7D%20%3D%20%7B2%5E%7B15%7D%7D" alt="{2^{{4^2} - 1}} = {2^{15}}" />=32768个</p>
+<hr />
+<h2>题目 44</h2>
+<p><a href="/user_images/1933-1.png"><img src="/user_images/1933-1.png" alt="image" title="image" /></a></p>
+<h2>解答 44</h2>
+<p>a) S上共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D" alt="{2^{{n^2}}}" />个关系。因为对于S上的关系来说，(a,b)有一半的机会出现，所以包含(a,b)的关系共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%201%7D%7D" alt="{2^{{n^2} - 1}}" />个。</p>
+<p>b) 同上，共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%201%7D%7D" alt="{2^{{n^2} - 1}}" />个</p>
+<p>c) 满足题意的关系，可看作是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28S%20-%20%5C%7B%20a%5C%7D%20%29%20%5Ctimes%20S" alt="(S - \{ a\} ) \times S" />，故共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%28n%20-%201%29n%7D%7D" alt="{2^{(n - 1)n}}" />个关系</p>
+<p>d) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%28n%20-%201%29n%7D%7D" alt="{2^{{n^2}}} - {2^{(n - 1)n}}" />个</p>
+<p>e) 满足题意的关系，可看作是<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28S%20-%20%5C%7B%20a%5C%7D%20%29%20%5Ctimes%20%28S%20-%20%5C%7B%20b%5C%7D%20%29" alt="(S - \{ a\} ) \times (S - \{ b\} )" />，故共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7B%7B%28n%20-%201%29%7D%5E2%7D%7D%7D" alt="{2^{{{(n - 1)}^2}}}" />个关系</p>
+<p>f) <img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%7B%7B%28n%20-%201%29%7D%5E2%7D%7D%7D" alt="{2^{{n^2}}} - {2^{{{(n - 1)}^2}}}" /></p>
+<hr />
+<h2>题目 45</h2>
+<p><a href="/user_images/1937-1.png"><img src="/user_images/1937-1.png" alt="image" title="image" /></a></p>
+<h2>解答 45</h2>
+<h3>a)</h3>
+<p>在一个对称的集合中，(a,b)和(b,a)总是成对出现，所以我们可以把它们当成一类，只考虑(a,b)出现的次数。</p>
+<p>设集合为A，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中的元素共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D" alt="{n^2}" />个。其中(a,a)这样的有n个，(a,b)且a不等于b这样的元素有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个。因为对于每一个(a,b)，<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />都有一个(b,a)，如果我们只考虑其中一种，则有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2" alt="({n^2} - n)/2" />个。再加上(a,a)这样的，一共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2%20%2B%20n" alt="({n^2} - n)/2 + n" />个元素需要考虑。</p>
+<p>所以在A上，对称的关系的总个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%20%2B%20n%7D%7D" alt="{2^{({n^2} - n)/2 + n}}" />个。</p>
+<h3>b)</h3>
+<p>将<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=A%20%5Ctimes%20A" alt="A \times A" />中的元素分为两类考虑，一类是全等关系<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />中的元素，一类是(a,b)和(b,a)，其中a不等于b。</p>
+<p>对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，它可以出现，可以不出现，所以有两种情况。</p>
+<p>对于每对(a,b)与(b,a)，它们至多出现一个，所以有三种情况。</p>
+<p>综合起来，一共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5En%7D%7B3%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D" alt="{2^n}{3^{({n^2} - n)/2}}" />个。</p>
+<h3>c)</h3>
+<p>非对称中不能出现(a,a)这样的元素，所以可考虑的元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29" alt="({n^2} - n)" />个。其中每对(a,b)与(b,a)中，每次至多只能出现其中一个，所以有3种情况。这样就有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B3%5E%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D" alt="{3^{({n^2} - n)/2}}" />个</p>
+<h3>d)</h3>
+<p>反自反关系中，不能出现(a,a)这样的元素，所以需考虑的元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个，关系总个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D" alt="{2^{{n^2} - n}}" />个</p>
+<h3>e)</h3>
+<p>先不考虑(a,a)这样的元素，剩下的每两个(a,b)与(b,a)看作一组，则有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28%7Bn%5E2%7D%20-%20n%29%2F2" alt="({n^2} - n)/2" />个元素需要考虑。它们的关系总个数为</p>
+<p><img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B_%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D%7D" alt="{2^{_{({n^2} - n)/2}}}" />个。然后在每个关系里加上<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，即满足要求。所以共<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B_%7B%28%7Bn%5E2%7D%20-%20n%29%2F2%7D%7D%7D" alt="{2^{_{({n^2} - n)/2}}}" />个。</p>
+<h3>f)</h3>
+<p>先不考虑<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />，则元素个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7Bn%5E2%7D%20-%20n" alt="{n^2} - n" />个，关系个数为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D" alt="{2^{{n^2} - n}}" />个。然后再考虑<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BI_A%7D" alt="{I_A}" />中的元素，除去全选和全不选的情况，配合前面的关系，就能满足题意。所以共有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7B2%5E%7B%7Bn%5E2%7D%20-%20n%7D%7D%20%5Ctimes%20%28%7B2%5En%7D%20-%202%29%7B%5Crm%7B%20%3D%20%7D%7D%7B%7B%5Crm%7B2%7D%7D%5E%7B%7Bn%5E2%7D%7D%7D%20-%20%7B2%5E%7B%7Bn%5E2%7D%20-%20n%20%2B%201%7D%7D" alt="{2^{{n^2} - n}} \times ({2^n} - 2){\rm{ = }}{{\rm{2}}^{{n^2}}} - {2^{{n^2} - n + 1}}" />个关系。</p>
+<hr />
+<h2>题目 46</h2>
+<p><a href="/user_images/1944-1.png"><img src="/user_images/1944-1.png" alt="image" title="image" /></a></p>
+<h2>解答 46</h2>
+<h3>a)</h3>
+<p>当n=1时，集合上的关系总数为2个：空集和{{1,1}}，这两个都是传递的，所以有2个传递关系</p>
+<h3>b)</h3>
+<p>用图的方式说明方便一些。一个图上有两个点a和b，如下：</p>
+<p><a href="/user_images/1944-3.png"><img src="/user_images/1944-3.png" alt="image" title="image" /></a></p>
+<p>可以分为三种情况考虑：</p>
+<ol>
+<li>A与B之间没有边。此时不论A与B上有没有环，都是传递的，所以4种2.  A与B之间有单边。从A到B或者从B到A，不论A与B上有没有环，都是传递的，所以有2&#215;4=8种。3.  A与B之间有双边。此时只有A与B都有环，才是传递的，有1种。</li>
+</ol>
+<p>共有13种。</p>
+<h3>c)</h3>
+<p>如下图，有三个点A,B,C：</p>
+<p><a href="/user_images/1944-5.png"><img src="/user_images/1944-5.png" alt="image" title="image" /></a></p>
+<p>分多种情况考虑：</p>
+<ol>
+<li>没有任何边。此时不论这三点上有没有环，都是传递的，所以有2x2x2共8种。      2.  有一条单边。共有6种单边，此时不论三点有没有环，都是传递的，有6&#215;8=48种。3.  有一条双边。有3种双边。当两点间有双边时，此两点上都必须有环，另一点上有没有环都行。所以共有3&#215;2=6种。4.  有两条单边。共有12种情况。其中有6种情况类似于(a,b),(b,c)，这时不论点上有没有环，都不是传递的。另外6种情况，不论点上有没有环，都是传递的。所以共有6&#215;8=48种。5.  有两边双边。此时不论点上有没有环，都不是传递的。6.  有一条单边一条双边。此时不可能传递。</li>
+<li>有三条单边。共有8种情况。回路有2种，此时不是传递的。其它情况有6种，不论点上有没有环，都是传递的。所以共有6&#215;8=48种。8.  有三条双边。此时只有三点上都有环，才是传递的，共有1种情况。9.  有一条单边，两条双边。都不是传递的。</li>
+<li>有一条双边，两条单边。分12种情况。其中当两条单边顺次相连（如(a,b),(b,c)），不论点上有没有环，都不是传递的，少了一半。其它6情况，双边的两点必须有环，另一点有没有环都一样传递。所以共6&#215;2=12种。</li>
+</ol>
+<p>综上，共有171种。</p>
+<p>不用程序来做会死人。</p>
+<hr />
+<h2>题目 47</h2>
+<p><a href="/user_images/1947-1.png"><img src="/user_images/1947-1.png" alt="image" title="image" /></a></p>
+<h2>解答 47</h2>
+<p>有问题的地方在于这一句“取元素<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=b%20%5Cin%20A" alt="b \in A" />，使得<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />”。因为对于A上的任意一个点，可能并不存在一个b使<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />。</p>
+<hr />
+<h2>题目 48</h2>
+<p><a href="/user_images/1950-1.png"><img src="/user_images/1950-1.png" alt="image" title="image" /></a></p>
+<h2>解答 48</h2>
+<ul>
+<li>因为R是A上的自反关系，所以R包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Ccup%20S" alt="R \cup S" />包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以它是自反的。</li>
+<li>因为R和S都是A上的自反关系，所以R和S都包含了所有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Ccap%20S" alt="R \cap S" />是自反的</li>
+<li>因为<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Coplus%20S" alt="R \oplus S" />不包含它们的交集，所以不包含(x,x)，所以它是反自反的。</li>
+<li>因为R-S不包含它们的交集，所以不包含(x,x)，所以它是反自反的。</li>
+<li>因为R和S都是A上的自反关系，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=S%20%5Ccirc%20R" alt="S \circ R" />也包含所有的<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28x%2Cx%29%20%5Cin%20R" alt="(x,x) \in R" />，所以它也是自反的。</li>
+</ul>
+<hr />
+<h2>题目 49</h2>
+<p><a href="/user_images/1971-1.png"><img src="/user_images/1971-1.png" alt="image" title="image" /></a></p>
+<h2>解答 49</h2>
+<p>若R是对称的，则对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20R" alt="(b,a) \in R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(a,b) \in {R^{ - 1}}" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%5Csubseteq%20%7BR%5E%7B%20-%201%7D%7D" alt="R \subseteq {R^{ - 1}}" />。类似的，由于R是对称的，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D" alt="{R^{ - 1}}" />也是对称的，可以求出<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E%7B%20-%201%7D%7D%20%5Csubseteq%20R" alt="{R^{ - 1}} \subseteq R" />，所以<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7B%20-%201%7D%7D" alt="R = {R^{ - 1}}" />。</p>
+<p>对于<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28a%2Cb%29%20%5Cin%20R" alt="(a,b) \in R" />，有<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20%7BR%5E%7B%20-%201%7D%7D" alt="(b,a) \in {R^{ - 1}}" />。如果<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=R%20%3D%20%7BR%5E%7B%20-%201%7D%7D" alt="R = {R^{ - 1}}" />，则<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%28b%2Ca%29%20%5Cin%20R" alt="(b,a) \in R" />。所以R是对称的。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1920';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

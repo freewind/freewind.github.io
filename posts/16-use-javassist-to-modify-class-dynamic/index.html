@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>动态改变类：Javassist</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-12) 动态改变类：Javassist
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>这个是从playframework里看到的，作者使用了这个Javassist的库，对代码进行了动态增加，实现了很多非常便捷的功能。</p>
+<p>这个javassist，可以让我们修改一个java类的字节码。我们知道这样的工具不少，但是它的优点，是可以让我们用文本写一段java代码，然后就插到已有的字节码里去了。</p>
+<p>比如说，已经有一个类叫Hello，定义如下：</p>
+<pre><code>public class Hello() {
+    public String hi() {return "hi";}
+}
+</code></pre>
+<p>我们可以得到这个类编译后的字节码，然后使用javassist给它增加一个函数：</p>
+<pre><code>CtClass ctClass = getBytecodeOf("Hello");
+   String bye = "public static String bye() { return \"bye\" }";
+   ctClass.addMethod(CtMethod.make(bye, ctClass));
+}
+</code></pre>
+<p>这样，这个Hello类实际上就有了一个bye()的函数了。</p>
+<p>play使用它，成功地实现了"充血模型&rdquo;，使我们不需要dao。基本思路是：</p>
+<p>定义一个基类，叫Model，里面定义了一些函数如find(), save(), delete()，但是为空，它们的作用就像接口一样，只是为了让我们在程序中可以调用这些函数。我们定义的model都继承于它。当这些model导入时，使用javassist对这些类进行增强，把之前为空的代码都换成事先定义好的代码。这样，我们即可以调用它们，又实现了真正所需的功能，这个做法真的是非常方便。</p>
+<p>这只是其中的一个例子。可以说play的基础就是javassist，它的很多魔术般的功能都来自于它。一旦理解之后，我们也可以自己实现一些方便好用的功能。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '16';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

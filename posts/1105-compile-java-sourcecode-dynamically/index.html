@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>动态编译java源代码</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2012-11-16) 动态编译java源代码
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>如何在运行时，动态将一个由java源代码组成的字符串编译为Java类？</p>
+<p>注意，全部的操作都需要在内存中完成，不能把字符串保存到磁盘上。</p>
+<h2>题目：</h2>
+<p><pre class="csharpcode">package compiles;</p>
+<p>import java.lang.reflect.Method;</p>
+<p><span class="rem">/*<em></span>
+<br  /><span class="rem"> * User: Freewind</span>
+<br  /><span class="rem"> * Blog: http://freewind.me</span>
+<br  /><span class="rem"> * Date: 12-11-16</span>
+<br  /><span class="rem">  </em>/</span>
+<br  /><span class="kwrd">public</span> <span class="kwrd">class</span> CreateClassFromString {</p>
+<pre><code>&lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; final String JAVA_SOURCE = &lt;span class="str"&gt;"public class Hello {"&lt;/span&gt;
+        + &lt;span class="str"&gt;"    public void say() {"&lt;/span&gt;
+        + &lt;span class="str"&gt;"        System.out.println(\"world!\");"&lt;/span&gt;
+        + &lt;span class="str"&gt;"    }"&lt;/span&gt;
+        + &lt;span class="str"&gt;"}"&lt;/span&gt;;
+
+&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; main(String[] args) throws Exception {
+    Class dynaCls = compile(JAVA_SOURCE);
+    Method say = dynaCls.getMethod(&lt;span class="str"&gt;"say"&lt;/span&gt;);
+    say.invoke(dynaCls.newInstance());
+
+    &lt;span class="rem"&gt;// it will print "world!" on the console&lt;/span&gt;
+}
+
+&lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; Class compile(String source) {
+    &lt;span class="rem"&gt;// compile the source to a class&lt;/span&gt;
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; &lt;span class="kwrd"&gt;null&lt;/span&gt;;
+}
+</code></pre>
+<p>}```</p>
+<h2>解决方案一：使用由Jdk1.6提供的JavaCompiler</h2>
+<p>在jdk1.6中，提供了一个JavaCompiler接口，它可以方便的将java源代码编译为字节码。</p>
+<p>思路如下：</p>
+<ol>
+<li>通过ToolProvider.getSystemJavaCompiler()得到系统javac</li>
+<li>通过compiler.getTask(&hellip;)创建一个编译任务，需传入一些参数，如java源文件等</li>
+<li>调用task.call()，进行编译</li>
+<li>loadClass(&hellip;)载入刚编译出来的类，进行操作</li>
+</ol>
+<p>额外操作：</p>
+<ol>
+<li>传入-g参数，使得生成的字节码不会改变变量名等</li>
+<li>两类互调：源代码一同传入getTask(&hellip;)</li>
+<li>调用第三方库中的代码。只要将第三方库的jar加入到项目的classpath中</li>
+</ol>
+<p>代码如下：</p>
+<p><pre class="csharpcode">package compiles;</p>
+<p>import javax.tools.FileObject;
+<br  />import javax.tools.ForwardingJavaFileManager;
+<br  />import javax.tools.JavaCompiler;
+<br  />import javax.tools.JavaFileManager;
+<br  />import javax.tools.JavaFileObject;
+<br  />import javax.tools.SimpleJavaFileObject;
+<br  />import javax.tools.StandardJavaFileManager;
+<br  />import javax.tools.ToolProvider;
+<br  />import java.io.ByteArrayOutputStream;
+<br  />import java.io.IOException;
+<br  />import java.io.OutputStream;
+<br  />import java.net.URI;
+<br  />import java.security.SecureClassLoader;
+<br  />import java.util.ArrayList;
+<br  />import java.util.HashMap;
+<br  />import java.util.List;
+<br  />import java.util.Map;</p>
+<p><span class="kwrd">public</span> <span class="kwrd">class</span> DynaCompTest {</p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; main(String[] args) throws Exception {
+    &lt;span class="rem"&gt;// Full name of the class that will be compiled.&lt;/span&gt;
+    &lt;span class="rem"&gt;// If class should be in some package, fullName should contain it too (ex. "testpackage.DynaClass")&lt;/span&gt;
+    String fullName = &lt;span class="str"&gt;"DynaClass"&lt;/span&gt;;
+
+    &lt;span class="rem"&gt;// Here we specify the source code of the class to be compiled&lt;/span&gt;
+    StringBuilder src = &lt;span class="kwrd"&gt;new&lt;/span&gt; StringBuilder();
+    src.append(&lt;span class="str"&gt;"public class DynaClass {\n"&lt;/span&gt;);
+    src.append(&lt;span class="str"&gt;"    public void setName(String name) {}\n"&lt;/span&gt;);
+    src.append(&lt;span class="str"&gt;"    public void invokeAnother() { System.out.println(new DynaClass1()); }\n"&lt;/span&gt;);
+    src.append(&lt;span class="str"&gt;"    public String toString() {\n"&lt;/span&gt;);
+    src.append(&lt;span class="str"&gt;"        return \"Hello, I am \" + this.getClass().getSimpleName();\n"&lt;/span&gt;);
+    src.append(&lt;span class="str"&gt;"    }\n"&lt;/span&gt;);
+    src.append(&lt;span class="str"&gt;"}\n"&lt;/span&gt;);
+
+    String fullName1 = &lt;span class="str"&gt;"DynaClass1"&lt;/span&gt;;
+    StringBuilder src1 = &lt;span class="kwrd"&gt;new&lt;/span&gt; StringBuilder();
+    src1.append(&lt;span class="str"&gt;"public class DynaClass1 {\n"&lt;/span&gt;);
+    src1.append(&lt;span class="str"&gt;"    public void invokeAnother() { System.out.println(new DynaClass()); }\n"&lt;/span&gt;);
+    src1.append(&lt;span class="str"&gt;"    public String toString() {\n"&lt;/span&gt;);
+    src1.append(&lt;span class="str"&gt;"        org.apache.commons.lang.StringUtils.trim(\" a \");\n"&lt;/span&gt;);
+    src1.append(&lt;span class="str"&gt;"        return \"Hello, I am \" + this.getClass().getSimpleName();\n"&lt;/span&gt;);
+    src1.append(&lt;span class="str"&gt;"    }\n"&lt;/span&gt;);
+    src1.append(&lt;span class="str"&gt;"}\n"&lt;/span&gt;);
+
+    &lt;span class="rem"&gt;// We get an instance of JavaCompiler. Then we create a file manager (our custom implementation of it)&lt;/span&gt;
+    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    JavaFileManager fileManager = &lt;span class="kwrd"&gt;new&lt;/span&gt; ClassFileManager(compiler.getStandardFileManager(&lt;span class="kwrd"&gt;null&lt;/span&gt;, &lt;span class="kwrd"&gt;null&lt;/span&gt;, &lt;span class="kwrd"&gt;null&lt;/span&gt;));
+
+    &lt;span class="rem"&gt;// Dynamic compiling requires specifying&lt;/span&gt;
+    &lt;span class="rem"&gt;// a list of "files" to compile. In our case this is a list containing one "file" which is in our case&lt;/span&gt;
+    &lt;span class="rem"&gt;// our own implementation (see details below)&lt;/span&gt;
+    List&lt;JavaFileObject&gt; jfiles = &lt;span class="kwrd"&gt;new&lt;/span&gt; ArrayList&lt;JavaFileObject&gt;();
+    jfiles.add(&lt;span class="kwrd"&gt;new&lt;/span&gt; CharSequenceJavaFileObject(fullName, src));
+    jfiles.add(&lt;span class="kwrd"&gt;new&lt;/span&gt; CharSequenceJavaFileObject(fullName1, src1));
+
+    &lt;span class="rem"&gt;// We specify a task to the compiler. Compiler should use our file manager and our list of "files".&lt;/span&gt;
+    &lt;span class="rem"&gt;// Then we run the compilation with call()&lt;/span&gt;
+    &lt;span class="kwrd"&gt;if&lt;/span&gt; (compiler.getTask(&lt;span class="kwrd"&gt;null&lt;/span&gt;, fileManager, &lt;span class="kwrd"&gt;null&lt;/span&gt;, &lt;span class="kwrd"&gt;null&lt;/span&gt;, &lt;span class="kwrd"&gt;null&lt;/span&gt;, jfiles).call()) {
+        &lt;span class="rem"&gt;// Creating an instance of our compiled class and running its toString() method&lt;/span&gt;
+        Object instance = fileManager.getClassLoader(&lt;span class="kwrd"&gt;null&lt;/span&gt;).loadClass(fullName1).newInstance();
+        System.&lt;span class="kwrd"&gt;out&lt;/span&gt;.println(instance);
+    } &lt;span class="kwrd"&gt;else&lt;/span&gt; {
+        System.&lt;span class="kwrd"&gt;out&lt;/span&gt;.println(&lt;span class="str"&gt;"### failed"&lt;/span&gt;);
+    }
+
+}
+</code></pre>
+<p>}</p>
+<p><span class="kwrd">class</span> CharSequenceJavaFileObject extends SimpleJavaFileObject {</p>
+<pre><code>&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * CharSequence representing the source code to be compiled</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>&lt;span class="kwrd"&gt;private&lt;/span&gt; CharSequence content;
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * This constructor will store the source code in the internal &ldquo;content&rdquo; variable and register it as a source code,</span>
+<br  /><span class="rem">     * using a URI containing the class full name</span>
+<br  /><span class="rem">     <em></span>
+<br  /><span class="rem">     * @param className name of the public class in the source code</span>
+<br  /><span class="rem">     * @param content   source code to compile</span>
+<br  /><span class="rem">     </em>/</span></p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; CharSequenceJavaFileObject(String className, CharSequence content) {
+    super(URI.create(&lt;span class="str"&gt;"string:///"&lt;/span&gt; + className.replace(&lt;span class="str"&gt;'.'&lt;/span&gt;, &lt;span class="str"&gt;'/'&lt;/span&gt;) + Kind.SOURCE.extension), Kind.SOURCE);
+    &lt;span class="kwrd"&gt;this&lt;/span&gt;.content = content;
+}
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Answers the CharSequence to be compiled. It will give the source code stored in variable &ldquo;content&rdquo;</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>@Override
+&lt;span class="kwrd"&gt;public&lt;/span&gt; CharSequence getCharContent(boolean ignoreEncodingErrors) {
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; content;
+}
+</code></pre>
+<p>}</p>
+<p><span class="kwrd">class</span> JavaClassObject extends SimpleJavaFileObject {</p>
+<pre><code>&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Byte code created by the compiler will be stored in this ByteArrayOutputStream</span>
+<br  /><span class="rem">     * so that we can later get the byte array out of it and put it in the memory as an instance of our class.</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>&lt;span class="kwrd"&gt;protected&lt;/span&gt; final ByteArrayOutputStream bos = &lt;span class="kwrd"&gt;new&lt;/span&gt; ByteArrayOutputStream();
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Registers the compiled class object under URI containing the class full name</span>
+<br  /><span class="rem">     <em></span>
+<br  /><span class="rem">     * @param name Full name of the compiled class</span>
+<br  /><span class="rem">     * @param kind Kind of the data. It will be CLASS in our case</span>
+<br  /><span class="rem">     </em>/</span></p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; JavaClassObject(String name, Kind kind) {
+    super(URI.create(&lt;span class="str"&gt;"string:///"&lt;/span&gt; + name.replace(&lt;span class="str"&gt;'.'&lt;/span&gt;, &lt;span class="str"&gt;'/'&lt;/span&gt;) + kind.extension), kind);
+}
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Will be used by our file manager to get the byte code that can be put into memory to instantiate our class</span>
+<br  /><span class="rem">     <em></span>
+<br  /><span class="rem">     * @return compiled byte code</span>
+<br  /><span class="rem">     </em>/</span></p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;byte&lt;/span&gt;[] getBytes() {
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; bos.toByteArray();
+}
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Will provide the compiler with an output stream that leads to our byte array.</span>
+<br  /><span class="rem">     * This way the compiler will write everything into the byte array that we will instantiate later</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>@Override
+&lt;span class="kwrd"&gt;public&lt;/span&gt; OutputStream openOutputStream() throws IOException {
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; bos;
+}
+</code></pre>
+<p>}</p>
+<p><span class="kwrd">class</span> ClassFileManager extends ForwardingJavaFileManager {</p>
+<pre><code>&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Instance of JavaClassObject that will store the compiled bytecode of our class</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>&lt;span class="kwrd"&gt;private&lt;/span&gt; Map&lt;String, JavaClassObject&gt; map = &lt;span class="kwrd"&gt;new&lt;/span&gt; HashMap&lt;String, JavaClassObject&gt;();
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Will initialize the manager with the specified standard java file manager</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; ClassFileManager(StandardJavaFileManager standardManager) {
+    super(standardManager);
+}
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Will be used by us to get the class loader for our compiled class.</span>
+<br  /><span class="rem">     * It creates an anonymous class extending the SecureClassLoader which uses the byte code created by the compiler</span>
+<br  /><span class="rem">     * and stored in the JavaClassObject, and returns the Class for it</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>@Override
+&lt;span class="kwrd"&gt;public&lt;/span&gt; ClassLoader getClassLoader(Location location) {
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; &lt;span class="kwrd"&gt;new&lt;/span&gt; SecureClassLoader() {
+        @Override
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; Class&lt;?&gt; findClass(String name) throws ClassNotFoundException {
+            JavaClassObject jclassObject = map.get(name);
+            &lt;span class="kwrd"&gt;byte&lt;/span&gt;[] b = jclassObject.getBytes();
+            &lt;span class="kwrd"&gt;return&lt;/span&gt; super.defineClass(name, jclassObject.getBytes(), 0, b.length);
+        }
+    };
+}
+
+&lt;span class="rem"&gt;/**&lt;/span&gt;
+</code></pre>
+<p><span class="rem">     * Gives the compiler an instance of the JavaClassObject so that the compiler can write the byte code into it.</span>
+<br  /><span class="rem">     */</span></p>
+<pre><code>@Override
+&lt;span class="kwrd"&gt;public&lt;/span&gt; JavaFileObject getJavaFileForOutput(Location location, String className, JavaFileObject.Kind kind, FileObject sibling)
+        throws IOException {
+    map.put(className, &lt;span class="kwrd"&gt;new&lt;/span&gt; JavaClassObject(className, kind));
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; map.get(className);
+}
+</code></pre>
+<p>}```
+<br  /><style type="text /css">
+<br  />.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style>
+<br  /><style type="text /css">
+<br  /><p>.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style></p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1105';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>折腾Fedora之五 wine以及windows程序</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-12) 折腾Fedora之五 wine以及windows程序
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在Fedora中，使用QQ是一件相当麻烦的事情。腾讯在09年出了一个满是bug的linux版QQ之后，就再也不管了。我费尽力气把它安装成功之后，再也不想运行它，宁愿使用webqq或air版的QQ。</p>
+<p>现在我想常试一下，使用wine能否在linux下正常使用QQ2010或2011。经过一整天的试验，结论是无法在linux上运行QQ（天杀的TX，逼着我们用webqq）。</p>
+<p>意外发现是，很多windows程序还是可以正常运行，比如一些小游戏zuma，以及植物大战僵尸（就是太卡了）</p>
+<p>一、安装wine</p>
+<pre><code>$ sudo yum install wine
+</code></pre>
+<p>共下载15M左右的程序</p>
+<p>二、一个辅助程序winestricks</p>
+<pre><code>$ wget http://www.kegel.com/wine/winetricks
+$ chmod +x winetricks
+$ ./winetricks
+</code></pre>
+<p>它会提示安装一个gecko的引擎，安装成功后，会出现一个窗口，可以让我们选择一些选项，如安装一些windows下的组件和库等。</p>
+<p>三、wine乱码</p>
+<p>如果程序上有中文，会出现乱码，变成一个个的小方块，可惜我弄了一天也没办法解决。</p>
+<p>四、运行.exe程序</p>
+<pre><code>$ wine zuma.exe
+</code></pre>
+<p>如果缺少库，它会在窗口上提示，我们只需要使用winestricks下载相应的库即可。正常情况，那些exe程序会运行，比如祖玛这个游戏。</p>
+<p>五、QQ安装不上，迅雷没试，但是从网上的文章来看，问题也是很多。所以我觉得，最好还是安装一个虚拟机，用来解决这些问题。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '10';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

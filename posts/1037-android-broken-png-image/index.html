@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Android步步惊心 之 破碎的渐变色图片(png格式)</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2012-10-30) Android步步惊心 之 破碎的渐变色图片(png格式)
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>最初遇到此问题时，我以为是我那500元的廉价Android手机屏幕有问题，显示的颜色种类不够，导致一张渐变色的png图片，变成了条状：</p>
+<p><a href="/user_images/1037-1.png"><img src="/user_images/1037-1.png" alt="image" title="image" /></a></p>
+<p>一边暗自诅咒“便宜没好货”，一边打开了手机上的浏览器连到电脑上，查看该图片，没想到一切正常：</p>
+<p><a href="/user_images/1037-3.png"><img src="/user_images/1037-3.png" alt="image" title="image" /></a></p>
+<p>原始图片是什么样子呢？如下：</p>
+<p><a href="/user_images/1037-5.png"><img src="/user_images/1037-5.png" alt="image" title="image" /></a></p>
+<p>注意看最右边的颜色要比左边深一点，平滑的渐变色。</p>
+<p>意料之中，又是意料之中，我又遇到了一个android bug。其实完全说bug也不对，这是android为了减少渲染图片的时间，默认这么处理的。但坑爹之处在于，你到是给个简单的设置让我们选择如何渲染啊。根据不完全统计，有以下这些方式可以解决这个问题：</p>
+<ol>
+<li><strike>在xml中，为图片创建一个xml格式的drawable，然后把dither设为true。</strike> （经测试无效）2.  在java代码中，取得该图片，并设为true。（未测试）3.  <strike>getWindow().setFormat(PixelFormat.RGBA_8888);</strike> （经测试无效）</li>
+</ol>
+<p>可以看出这还应该算是一个bug，不然怎么会有这么多五花八门的解决方案呢。</p>
+<p>最终成功的解决方法，相当之诡异：</p>
+<blockquote><p>把该图片的透明度设为99%，重新保存。其它什么也不用动。</p>
+</blockquote>
+<p>则一切正常。</p>
+<p>不能不承认，能想到此方法的人真是天才，这得经过多少次的推测与尝试，才能找到这个方法。据说它之所以能成功解决，是因为满足了两个条件：</p>
+<ol>
+<li>png图片中开启了alpha通道（透明）2.  至少有一个像素使用了该alpha通道</li>
+</ol>
+<p>于是，干脆直接把整张图片直接设为99%，简单粗暴。反正人眼也是看不出那1%的透明度的。</p>
+<p><a href="/user_images/1037-7.png"><img src="/user_images/1037-7.png" alt="image" title="image" /></a></p>
+<p>连正常显示一张图片的功能都能做得如此跌宕起伏，android，真有你的！</p>
+<p>参考资料：</p>
+<ol>
+<li><a href="http://stackoverflow.com/questions/13137735/why-android-lose-image-quality-when-displaying-a-png-file/13138028#13138028">Why android lose image quality when displaying a png file?</a>2.  <a href="http://stackoverflow.com/questions/4769885/androiddither-true-does-not-dither-whats-wrong">android:dither=“true” does not dither, what's wrong?</a>3.  <a href="http://www.curious-creature.org/2010/12/08/bitmap-quality-banding-and-dithering/">Bitmap quality, banding and dithering</a></li>
+</ol>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1037';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

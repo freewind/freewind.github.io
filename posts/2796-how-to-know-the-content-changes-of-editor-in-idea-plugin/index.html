@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在IdeaPlugin中如何知道当前editor中的内容发生了变化？</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-09-27) 在IdeaPlugin中如何知道当前editor中的内容发生了变化？
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>每一个文件打开后，都会有一个对应的<code>com.intellij.openapi.fileEditor.FileEditor</code>实例。它有一个方法<code>getEditor</code>可以拿到一个<code>com.intellij.openapi.editor.Editor</code>实例。<code>Editor</code>实例中，有一个<code>getDocument</code>方法，可以拿到一个<code>Document</code>实例。在这个实例中，我们可以添加一些<code>DocumentListener</code>，实时监视内容的变化。</p>
+<p>示例代码如下（假设我们有一个editor）：</p>
+<pre><code class="scala">editor.getDocument.addDocumentListener(new DocumentListener {
+
+  override def beforeDocumentChange(event: DocumentEvent) {
+    println("## beforeDocumentChanged: " + event)
+  }
+
+  override def documentChanged(event: DocumentEvent) {
+    println("## documentChanged: " + event)
+  }
+
+}
+</code></pre>
+<p>可以看到，每当文档中有内容发生变化时，这两个回调方法都会被调用，一个在前一个在后。其参数<code>DocumentEvent</code>会告诉我们，文档发生了什么变化。</p>
+<p>比如，我在文档中输入了一个字母<code>a</code>后，会打印出两条信息：</p>
+<pre><code>## beforeDocumentChanged: DocumentEventImpl[myOffset=73, myOldLength=0, myNewLength=1, myOldString='', myNewString='a'].
+## documentChanged: DocumentEventImpl[myOffset=73, myOldLength=0, myNewLength=1, myOldString='', myNewString='a'].
+</code></pre>
+<p>它会告诉我们哪个位置的内容发生了变化，以及改变的内容是什么样子的。</p>
+<h2>editor从哪里来</h2>
+<h3>直接拿到当前被选中的editor</h3>
+<p>我知道有两种方法，一个是全局的用来拿到“当前被选中的editor”：</p>
+<pre><code>FileEditorManager.getInstance(project).getSelectedTextEditor
+</code></pre>
+<p>这个方法可以直接拿到当前project中被选中的那个TextEditor，其类型为<code>Editor</code>.</p>
+<p>但是对于我想做的事情来说，这个方法用不上。我想给每一个“当前”editor添加一个<code>DocumentListener</code>。由于每个文件都可以被多次打开、关闭，我必须想办法准确拿到当前操作的editor。</p>
+<h3>通过监听editor切换事件</h3>
+<p>我们可以通过添加一个<code>FileEditorManager</code>去监听当前项目各editor之间切换、开关的事件：</p>
+<pre><code class="scala">val connection: MessageBusConnection = project.getMessageBus.connect(project)
+connection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerAdapter {
+  override def fileOpened(@NotNull source: FileEditorManager, @NotNull file: VirtualFile) {}
+
+  override def fileClosed(source: FileEditorManager, file: VirtualFile) {}
+
+  override def selectionChanged(event: FileEditorManagerEvent) {
+    val oldEditor = Option(event.getOldEditor)
+    val newEditor = Option(event.getNewEditor)
+
+    oldEditor match {
+      case Some(x: TextEditor) =&gt; removeDocumentListener(x.getEditor)
+      case _ =&gt;
+    }
+    newEditor match {
+      case Some(x: TextEditor) =&gt; addDocumentListener(x.getEditor)
+      case _ =&gt;
+    }
+  }
+})
+</code></pre>
+<p>当我们在<code>selectionChanged</code>回调中，通过事件对象拿到发生切换的两个<code>FileEditor</code>后，就可以拿到每一个相应的<code>Editor</code>实例，为其添加或者移除listener.</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2796';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

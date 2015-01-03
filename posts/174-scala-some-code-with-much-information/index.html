@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>解析一句信息量很大的代码</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) 解析一句信息量很大的代码
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在scalatra的RichRequest类中，发现了一句信息量很大的代码，值得分析。代码如下：</p>
+<pre><code>import scala.collection.{Map =&gt; CMap}
+
+case class RichRequest(r: HttpServletRequest) extends AttributesMap {
+
+  def multiCookies: CMap[String, Seq[String]] =
+    Option(r.getCookies).getOrElse(Array()).toSeq.
+      groupBy { _.getName }.
+      transform { case(k, v) =&gt; v map { _.getValue }}.
+      withDefaultValue(Seq.empty)
+}
+</code></pre>
+<p>其中r.getCookies()将返回一个Cookie[].</p>
+<p><span id="more-174"></span>
+<br  /><p>multiCookies的作用，是把request的cookies转换成一个Map[String,Seq[String]]，其中key为cookie的name，值为cookie的value的序列。因为可能有多个同名的cookie，所以是个序列。另外，如果请求的cookie不存在，返回一个空序列。</p>
+<pre><code>Option(r.getCookies) // -&gt; 把cookies变成一个Option，方便后面的操作
+  .getOrElse(Array()) // -&gt; 得到cokkies，如果为空，得到一个空数组
+  .toSeq // -&gt; 把数组变成序列，方便后面操作
+  .groupBy { _.getName } // 按name，将序列中的元素分组，得到一个Map[String, Seq[Cookie]]
+  .transform { case(k,v) =&gt; v map { _.getValue } // -&gt; 得到一个新Map，key为原key，值变成原值的value
+  .withDefaultValue(Seq.empty) // -&gt; 设定对于不存在的key，返回一个Seq.empty
+</code></pre>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '174';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

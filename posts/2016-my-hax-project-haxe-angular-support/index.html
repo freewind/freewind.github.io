@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>发布了一个Haxe的小项目：HaxeAngularSupport</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-22) 发布了一个Haxe的小项目：HaxeAngularSupport
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>经过几天的奋斗，终于把这个小项目做出来了：<a href="https://github.com/freewind/HaxeAngularSupport">https://github.com/freewind/HaxeAngularSupport</a></p>
+<p>这个东西是一个haxe的宏，它的作用是在编译时期改变我们的代码结构，自动生成一些手写麻烦的代码，让我们写起来简单一些。这个项目的代码之前不是这个样子的，但由于一个关于宏的bug还未修复，之前的想法无法实现。好在今天发现了另一种简单的办法，绕开了那个问题，终于成功。</p>
+<p>现在haxe官方发布的稳定版是2.10，近期将要发布3.0版。其中有关宏的api正在大幅增强，所以有bug是难免的，期待3.0的发布。</p>
+<p>下面讲讲这个AngularSupport的宏的作用。之前我们用haxe写angularjs的代码，使用的是传统方式（也是angularjs推荐的方式）：</p>
+<pre><code>class MyCtrl implements Public {
+    public static function __init__() {
+        js.Lib.eval("MyCtrl.$inject = ['$scope', '$http'];");
+    }
+    function new(scope:Scope, http:Dynamic) {
+        scope.name = "Freewind";
+        scope.hello = function() {
+            js.Lib.alert(scope.name);
+        }
+    }
+}
+private typedef Scope = {
+    name:String,
+    hello: Void -&gt; Void
+}
+
+这种结构对于javascript来说是比较理想的，因为完全没有"this"的调用，减少了混乱，所有的操作都是针对scope来进行的。但是放在haxe中，则有点不太好：
+</code></pre>
+<ol>
+<li><p>我们需要在最下面另外定义一个typedef，指明Scope所有可用的字段和方法，以获得静态类型的检验和编辑器的提示</p>
+</li>
+<li><p>没有利用到class结构中的字段与方法，所有的操作都是在构造函数中完成的。这样我们无法在编辑器的“大纲”视图中看到类结构，以及快速定位到某字段或方法</p>
+</li>
+<li><p>每次增加一个字段或方法，都需要修改两处</p>
+<p>我希望按普通的方式来写：</p>
+<p>class MyCtrl implements Public, implements AngularSupport {</p>
+<pre><code>@AngularSupport({inject:['$scope', '$http'], scope:'$scope'})
+function new(scope:Dynamic, http:Dynamic) {
+    this.http = http;
+    // don't need to assign "scope" to anything
+}
+var http:Dynamic;
+var name = "Freewind";
+function hello() {
+    js.Lib.alert(name);
+}
+</code></pre>
+<p>}</p>
+</li>
+</ol>
+<p>你可以看到，以前放在scope上的东西，现在全都以field/method的方式放在class中了。我们对数据进行操作时，都指向this，而不必像之前那样，必须写个"scope.xxx&rdquo;。</p>
+<p>最大的好处是结构更加清楚了，当代码多起来的时候，感觉就会比较明显了。</p>
+<p>这段代码实现了接口"AngularSupport&rdquo;，所有实现该接口的类，都会在编译期得到增强。</p>
+<p>由于它使用了最新的macro api，所以在稳定版的2.10 haxe上用不了，需要下载最新的nightly-build。对于遗留项目有风险，所以最好等到3.0正式发布后再在生产项目中使用，尝鲜的话无所谓了。</p>
+<p>具体要求和用法，请参考项目的README：<a href="https://github.com/freewind/HaxeAngularSupport">https://github.com/freewind/HaxeAngularSupport</a></p>
+<p>(更多理论上的内容，可参考：http://blog.csdn.net/rocks_lee/article/details/9129319)</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2016';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

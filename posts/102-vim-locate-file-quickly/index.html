@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>vim快速定位文件，花了一天才搞定</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) vim快速定位文件，花了一天才搞定
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>eclipse里有一个很好用的功能：按Ctrl+Shift+R后，会出来一个“文件查询框”，可以非常方便的找到当前所有项目中的某一个文件，快速定位。</p>
+<p>vim中有没有呢？找到这样几个插件：</p>
+<ol>
+<li>FuzzyFinder : buffer/file/command/tag/etc explorer with fuzzy matching</li>
+</ol>
+<p><a href="http://www.vim.org/scripts/script.php?script_id=1984">http://www.vim.org/scripts/script.php?script_id=1984</a></p>
+<ol>
+<li>Command-T : Fast file navigation for VIM</li>
+</ol>
+<p><a href="http://www.vim.org/scripts/script.php?script_id=3025">http://www.vim.org/scripts/script.php?script_id=3025</a></p>
+<ol>
+<li>lookupfile : Lookup files using Vim7 ins-completion</li>
+</ol>
+<p><a href="http://www.vim.org/scripts/script.php?script_id=1581">http://www.vim.org/scripts/script.php?script_id=1581</a></p>
+<ol>
+<li>FuzzyFinder_textmate</li>
+</ol>
+<p><a href="http://github.com/jamis/fuzzyfinder_textmate">http://github.com/jamis/fuzzyfinder_textmate</a></p>
+<p>然而，坏消息是，这四个都有这样那样的问题：</p>
+<p><span id="more-102"></span></p>
+<p>FuzzyFinder找深层的文件不方便，Command-T在我这里（windowsxp+ruby1.8.7+gvim7.2)怎么也装不上，好像是ruby的问题，弄了一天也没解决。lookupfile需要用linux下的一个程序生成特定格式的索引，而FuzzyFinder_textmate由于它所依赖的FuzzyFinder不断变化，作者已经停止维护。</p>
+<p>郁闷得吐血，但是这个功能由于太常用，所以还是不能放弃。最后找到了这样一篇文章：</p>
+<p><a href="http://intraspirit.net/scratchpad/a-simple-fuzzyfinder-improvement/">http://intraspirit.net/scratchpad/a-simple-fuzzyfinder-improvement/</a></p>
+<p>作者给FuzzyFinder里增加了一小段代码，让它也可以查找深层的文件了。虽然只改动了一点点，但是的确方便了很多。（不过实话说，跟eclipse的相比，还是差一点）</p>
+<p>在没有找到更好的插件之前，先用这个方法了。</p>
+<p>打开vim/vim72/autoload/fuf/file.vim，找到function fuf#file#onInit()，增加一行：</p>
+<p>call fuf#defineLaunchCommand('FufFileRecursive', s:MODE_NAME, '&ldquo;**/&ldquo;')</p>
+<p>然后定义快捷键，在_vimrc中增加：</p>
+<p>" FuzzyFinder - Ctrl + Shift + R</p>
+<p>map <C-S-R> :FufFileRecursive<CR></p>
+<p>这样，在vim中，按下Ctrl+Shift+R，就可以快速查找文件了。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '102';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

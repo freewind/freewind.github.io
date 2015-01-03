@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Play2下载与安装</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2012-01-30) Play2下载与安装
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>这本来不应该成为一个问题，但是因为play2现在还处于beta阶段，有些地方不完善，所以想要“开始”都会遇到一些问题。</p>
+<p>除了直接从play官网下载已经打包好的70多M的解压包外，还可以直接从github上下载源代码并编译。后者的好处时，可以随时通过git获取最新的代码，不需要再下载那么大的解压包。</p>
+<p>但下载后，直接运行play，会报一些“找不到xxx库”这样的错误。几经搜索，终于找到正确的方式。</p>
+<p><strong>一、下载源代码</strong></p>
+<blockquote><p>git clone <a href="https://github.com/playframework/Play20.git" title="https://github.com/playframework/Play20.git">https://github.com/playframework/Play20.git</a> -depth=0</p>
+</blockquote>
+<p>最后一个参数是不要下载提交的历史记录，速度快一些。</p>
+<p><strong>二、build</strong></p>
+<blockquote><p><font style="background-color: #ffffff">cd Play20</font></p>
+<p><font style="background-color: #ffffff">cd framework</font></p>
+<p><font style="background-color: #ffffff">build publish-local</font></p>
+</blockquote>
+<p>这时play就会自动下载所需要的各jar并构建了。下载时间比较长，要等几十分钟。</p>
+<p>下载完后，将自动开始编译源代码，如果一切顺利，最后将看到[success]这样的提示</p>
+<p><strong>三、Play</strong></p>
+<p>回到play2根目录下，运行</p>
+<blockquote><p><font style="background-color: #ffffff">play</font></p>
+</blockquote>
+<p>将提示正常的信息：</p>
+<blockquote><p>E:\java\Play20>play
+<br  />Getting play console_2.9.1 2.0-RC1-SNAPSHOT &hellip;
+<br  />:: retrieving :: org.scala-tools.sbt#boot-app</p>
+<pre><code>    confs: [default]      
+    5 artifacts copied, 0 already retrieved (5560kB/40ms)      
+   _            _      
+</code></pre>
+<p><em> </em><em> | | </em><em> </em> <em>  </em>| |
+<br  />| '<em> \| |/ </em>' | || |<em>|
+<br  />|  </em><em>/|</em>|_<strong><em>|_</em> (<em>)
+<br  />|</em>|            |</strong>/</p>
+<p>play! 2.0-RC1-SNAPSHOT, <a href="http://www.playframework.org">http://www.playframework.org</a></p>
+</blockquote>
+<p>表明一切正常</p>
+<p><strong>四、将play加入到环境变量path中</strong></p>
+<p><strong>五、运行示例程序</strong></p>
+<blockquote><p>cd samples\scala\zentasks</p>
+<p>play run</p>
+</blockquote>
+<p>然后访问<a href="http://localhost:9000">http://localhost:9000</a>即可看到效果。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '724';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

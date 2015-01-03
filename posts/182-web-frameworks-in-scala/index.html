@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>基于scala的web框架搜集</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) 基于scala的web框架搜集
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p><strong>一、liftweb</strong></p>
+<p>网址：<a href="http://www.liftweb.net/">http://www.liftweb.net</a></p>
+<p>这是scala官方推荐的web框架，不仅包含mvc，也包含orm。在基于scala的各框架中，应该算是比较成熟的一个。不过据说不容易入门，因为它有自己的一套处理方式，叫view-first。我大略看了一下它的demo，感觉的确有点不太好看明白。但有些人特别喜欢这种模式，说代码编写很简洁。习惯了mvc的通常难以适应。</p>
+<p><strong>二、circumflex</strong></p>
+<p>网址：<a href="http://www.circumflex.ru/">http://www.circumflex.ru</a></p>
+<p>这是我现在正在研究的一个东西，包含了mvc、orm及其它的一些工具，支持freemarker和scalate。其orm的api设计得很好，用起来就像是在写sql，却可以让编译器对其进行验证，减少出错。mvc很简洁明了，看一遍就差不多明白怎么回事了。</p>
+<p><strong>三、scalatra</strong></p>
+<p>网址：<a href="https://github.com/scalatra/scalatra">https://github.com/scalatra/scalatra</a></p>
+<p>这个只是mvc层，也是很简单明了的风格，跟circumflex-mvc很像，支持scalate。没有提供orm，但可以和circumflex-orm或者squeryl结合使用。</p>
+<p><strong>四、playframework</strong></p>
+<p>网址：<a href="http://www.playframework.org/">http://www.playframework.org</a></p>
+<p>playframework是一个java的web框架，但现在的play2则完全基于scala。使用sbt代替了原来的python来执行命令，修改代码后，不需要重启（与以前一样），在中档电脑上需要大约3到4秒的时间。开发了新的基于scala的view层，大大提高了性能。还有新的orm层，叫anorm，有点类似于mybatis，但利用了scala的特性，让结果集与model类之间的匹配更加容易。我非常看好它的发展，欢迎加入play热情交流群：168013302</p>
+<p><strong>五、xitrum</strong></p>
+<p>网址：<a href="https://github.com/ngocdaothanh/xitrum">https://github.com/ngocdaothanh/xitrum</a></p>
+<p>xitrum内部使用netty作为服务器，可与jrebel结合，实现大多数修改无须重启。其view层直接使用scala的xml特性，可及时发现代码错误，但也限制了我们使用html编辑器对代码进行着色及提示。使用中感觉不太好的地方是，当代码出现错误时，只会在sbt控制台中显示，刷新页面时不会有提示（还显示之前的页面）。我们必须每次修改代码后，盯着sbt，才知道有没有出问题，很不方便。</p>
+<p><strong>六、arden推荐：brzy</strong></p>
+<p>网址：<a href="https://github.com/m410/brzy-webapp">https://github.com/m410/brzy-webapp</a></p>
+<p>未使用过，不评论。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '182';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

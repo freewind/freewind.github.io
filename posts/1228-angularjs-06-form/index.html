@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>06. 表单</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-01) 06. 表单
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>表单中有很多控件，如<code>input</code>, <code>select</code>, <code>textarea</code>等，是用来让用户输入数据的。</p>
+<p>如果表单支持验证，用户在输入了不合法的数据时，能得到实时提示（比如哪儿错了，如何修正等），会是一种很好的用户体验。需要明白的是，不论“客户端验证”对于提升用户的使用体验如何重要，也不要忘了在服务器端再次验证。因为用户可以绕过客户端验证直接向服务器端发送非法数据。</p>
+<h3>简单表单</h3>
+<p>理解双向绑定最关键的directive是<code>ng-model</code>这个directive。它通过model数据同步到view，以及将view变化同步到model的方式，提供了双向绑定。另外，它还通过<code>NgModelController</code>提供了用于改变其它directive的行为的API</p>
+<h3>源代码</h3>
+<p><strong>indexhtml</strong></p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html ng-app&gt;
+  &lt;head&gt;
+    &lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div ng-controller="Controller"&gt;
+      &lt;form novalidate class="simple-form"&gt;
+        Name: &lt;input type="text" ng-model="user.name" /&gt;&lt;br /&gt;
+        E-mail: &lt;input type="email" ng-model="user.email" /&gt;&lt;br /&gt;
+        Gender: &lt;input type="radio" ng-model="user.gender" value="male" /&gt;male
+        &lt;input type="radio" ng-model="user.gender" value="female" /&gt;female&lt;br /&gt;
+        &lt;button ng-click="reset()"&gt;RESET&lt;/button&gt;
+        &lt;button ng-click="update(user)"&gt;SAVE&lt;/button&gt;
+      &lt;/form&gt;
+      &lt;pre&gt;form = {{user | json}}```
+      &lt;pre&gt;master = {{master | json}}```
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+**script.js**
+
+function Controller($scope) {
+  $scope.master= {};
+
+  $scope.update = function(user) {
+    $scope.master= angular.copy(user);
+  };
+
+  $scope.reset = function() {
+    $scope.user = angular.copy($scope.master);
+  };
+
+  $scope.reset();
+}
+
+demo
+
+注意：`novalidate`用来关闭浏览器自己的form验证
+
+### 使用CSS classes
+
+为了让表单跟控件一样可以被修饰，`ngModel`提供了以下CSS classes:
+</code></pre>
+<ul>
+<li><p><code>ng-valid</code></p>
+</li>
+<li><p><code>ng-invalid</code></p>
+</li>
+<li><p><code>ng-pristine</code></p>
+</li>
+<li><p><code>ng-dirty</code></p>
+<p>下面这个例子，使用CSS来显示表单中每一个控件的合法性。其中<code>user.name</code>和<code>user.email</code>是必填的，但仅当它们被修改过才会显示红色背景。这样保证了用户仅仅在与某个控件交互过之后，才会在输入不合法的时候显示错误信息。</p>
+<h3>源代码</h3>
+<p><strong>index.html</strong></p>
+<p><!doctype html>
+<br  /><html ng-app>
+<br  /><head></p>
+<pre><code>&lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<br  /><body></p>
+<pre><code>&lt;div ng-controller="Controller"&gt;
+  &lt;form novalidate class="css-form"&gt;
+    Name:
+      &lt;input type="text" ng-model="user.name" required /&gt;&lt;br /&gt;
+    E-mail: &lt;input type="email" ng-model="user.email" required /&gt;&lt;br /&gt;
+    Gender: &lt;input type="radio" ng-model="user.gender" value="male" /&gt;male
+    &lt;input type="radio" ng-model="user.gender" value="female" /&gt;female&lt;br /&gt;
+    &lt;button ng-click="reset()"&gt;RESET&lt;/button&gt;
+    &lt;button ng-click="update(user)"&gt;SAVE&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/div&gt;
+
+&lt;style type="text/css"&gt;
+  .css-form input.ng-invalid.ng-dirty {
+    background-color: #FA787E;
+  }
+
+  .css-form input.ng-valid.ng-dirty {
+    background-color: #78FA89;
+  }
+&lt;/style&gt;
+</code></pre>
+<p></body>
+<br  /></html></p>
+<p><strong>scripts.js</strong></p>
+<p>function Controller($scope) {
+<br  />$scope.master= {};</p>
+<p>$scope.update = function(user) {</p>
+<pre><code>$scope.master= angular.copy(user);
+</code></pre>
+<p>};</p>
+<p>$scope.reset = function() {</p>
+<pre><code>$scope.user = angular.copy($scope.master);
+</code></pre>
+<p>};</p>
+<p>$scope.reset();
+<br  />}</p>
+<p>demo</p>
+<h3>绑定到表单与控件的状态</h3>
+<p>每一个表单都是<code>FormController</code>的一个实例。如果你给表单增加了一个<code>name</code>属性，则它自动会加到$scope中，方便引用。同样表单中的控件也可以使用<code>name</code>添加到$scope中（控件对应的controller是<code>NgModelController</code>）。这样我们在view中如果想引用某些表单或控制，检查它们的状态，就很方便了。</p>
+<p>我们利用这些特性来给前面的例子增加以下功能：</p>
+</li>
+<li><p>RESET按钮只有当表单发生了变化时，才可点2.  SAVE按钮只有当表单内容发生了<strong>合法的</strong>变化时，才可点3.  为<code>user.email</code>和<code>user.agree</code>添加自定义的错误信息</p>
+<h3>源代码</h3>
+<p><strong>index.html</strong></p>
+<p><!doctype html>
+<br  /><html ng-app>
+<br  /><head></p>
+<pre><code>&lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<br  /><body></p>
+<pre><code>&lt;div ng-controller="Controller"&gt;
+  &lt;form name="form" class="css-form" novalidate&gt;
+    Name:
+      &lt;input type="text" ng-model="user.name" name="uName" required /&gt;&lt;br /&gt;
+    E-mail:
+      &lt;input type="email" ng-model="user.email" name="uEmail" required/&gt;&lt;br /&gt;
+    &lt;div ng-show="form.uEmail.$dirty &amp;&amp; form.uEmail.$invalid"&gt;Invalid:
+      &lt;span ng-show="form.uEmail.$error.required"&gt;Tell us your email.&lt;/span&gt;
+      &lt;span ng-show="form.uEmail.$error.email"&gt;This is not a valid email.&lt;/span&gt;
+    &lt;/div&gt;
+
+    Gender: &lt;input type="radio" ng-model="user.gender" value="male" /&gt;male
+    &lt;input type="radio" ng-model="user.gender" value="female" /&gt;female&lt;br /&gt;
+
+    &lt;input type="checkbox" ng-model="user.agree" name="userAgree" required /&gt;
+    I agree: &lt;input ng-show="user.agree" type="text" ng-model="user.agreeSign"
+              required /&gt;&lt;br /&gt;
+    &lt;div ng-show="!user.agree || !user.agreeSign"&gt;Please agree and sign.&lt;/div&gt;
+
+    &lt;button ng-click="reset()" ng-disabled="isUnchanged(user)"&gt;RESET&lt;/button&gt;
+    &lt;button ng-click="update(user)"
+            ng-disabled="form.$invalid || isUnchanged(user)"&gt;SAVE&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+<p></body>
+<br  /></html></p>
+<p><strong>script.js</strong></p>
+<p>function Controller($scope) {
+<br  />$scope.master= {};</p>
+<p>$scope.update = function(user) {</p>
+<pre><code>$scope.master= angular.copy(user);
+</code></pre>
+<p>};</p>
+<p>$scope.reset = function() {</p>
+<pre><code>$scope.user = angular.copy($scope.master);
+</code></pre>
+<p>};</p>
+<p>$scope.isUnchanged = function(user) {</p>
+<pre><code>return angular.equals(user, $scope.master);
+</code></pre>
+<p>};</p>
+<p>$scope.reset();
+<br  />}</p>
+<p>jsfiddle demo</p>
+<h3>自定义验证</h3>
+<p>Angular已经为大多数常用的html5控件：<code>text</code>,<code>number</code>,<code>url</code>,<code>email</code>,<code>radio</code>,<code>checkbox</code>提供了基本的验证功能，比如这些directives(<code>required</code>,<code>pattern</code>,<code>minlength</code>,<code>maxlength</code>,<code>min</code>,<code>max</code>).</p>
+<p>你可以通过定义一些给<code>ngModel</code>(对应于<code>NgModelController</code>)添加自定义验证函数的directive来定义自己的验证器。</p>
+<p>为了取得相应的controller，directive需要指定一些依赖。在下面详述。</p>
+<p>验证可以发生在两个地方：</p>
+</li>
+<li><p>Model向View更新 - <code>NgModelController#$formatters</code>中的各函数是串联的，只要model发生了变化，每个formatter函数都有机会来格式化数据，并通过<code>NgModelController#$setValidity</code>来改变表单控件的验证状态。</p>
+</li>
+<li><p>View向model更新 - 同样，当用户操作控件后，其值发生了变化，控件后调用<code>NgModelController#$setViewValue</code>。它将继续调用<code>NgModelController#$parsers</code>中的每个函数，它们每个函数都有机会转换数据，并通过<code>NgModelController#$setValidity()</code>来改变表单控件的验证状态。</p>
+<p>下面的例子中，我们将创建两个指令。</p>
+</li>
+<li><p>第一个是<code>integer</code>，它用来验证输入是否是一个合法的integer. 例如<code>1.23</code>不合法。注意，我们会把验证函数放在数组的最前端，而不是最后面。这是因为我们想让这个验证器首先检查输入的值。</p>
+</li>
+<li><p>第二个是<code>smart-float</code>. 它可以把<code>1.2</code>和<code>1,2</code>（注意用的是逗号）都转换为一个合法的数字<code>1.2</code>。注意，我们不能使用html5中的<code>number</code>控件，因为它不会允许我们输入<code>1,2</code>。</p>
+<h3>源代码</h3>
+<p><strong>index.html</strong></p>
+<p><!doctype html>
+<br  /><html ng-app="form-example1">
+<br  /><head></p>
+<pre><code>&lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<br  /><body></p>
+<pre><code>&lt;div ng-controller="Controller"&gt;
+  &lt;form name="form" class="css-form" novalidate&gt;
+    &lt;div&gt;
+      Size (integer 0 - 10):
+      &lt;input type="number" ng-model="size" name="size"
+             min="0" max="10" integer /&gt;{{size}}&lt;br /&gt;
+      &lt;span ng-show="form.size.$error.integer"&gt;This is not valid integer!&lt;/span&gt;
+      &lt;span ng-show="form.size.$error.min || form.size.$error.max"&gt;
+        The value must be in range 0 to 10!&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;div&gt;
+      Length (float):
+      &lt;input type="text" ng-model="length" name="length" smart-float /&gt;
+      {{length}}&lt;br /&gt;
+      &lt;span ng-show="form.length.$error.float"&gt;
+        This is not a valid float number!&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+<p></body>
+<br  /></html></p>
+<p><strong>scripts.js</strong></p>
+<p>var app = angular.module('form-example1', []);</p>
+<p>var INTEGER_REGEXP = /^-?\d*$/;
+<br  />app.directive('integer', function() {
+<br  />return {</p>
+<pre><code>require: 'ngModel',
+link: function(scope, elm, attrs, ctrl) {
+  ctrl.$parsers.unshift(function(viewValue) {
+    if (INTEGER_REGEXP.test(viewValue)) {
+      // it is valid
+      ctrl.$setValidity('integer', true);
+      return viewValue;
+    } else {
+      // it is invalid, return undefined (no model update)
+      ctrl.$setValidity('integer', false);
+      return undefined;
+    }
+  });
+}
+</code></pre>
+<p>};
+<br  />});</p>
+<p>var FLOAT_REGEXP = /^-?\d+((.|\,)\d+)?$/;
+<br  />app.directive('smartFloat', function() {
+<br  />return {</p>
+<pre><code>require: 'ngModel',
+link: function(scope, elm, attrs, ctrl) {
+  ctrl.$parsers.unshift(function(viewValue) {
+    if (FLOAT_REGEXP.test(viewValue)) {
+      ctrl.$setValidity('float', true);
+      return parseFloat(viewValue.replace(',', '.'));
+    } else {
+      ctrl.$setValidity('float', false);
+      return undefined;
+    }
+  });
+}
+</code></pre>
+<p>};
+<br  />});</p>
+<p>jsfiddle上的demo</p>
+<h3>使用(<code>ngModel</code>)来自定义表单控件</h3>
+<p>Angular实现了所有的基本控件，比如：<code>input</code>, <code>select</code>, <code>textarea</code>，大多数情况下够用了。但如果你需要更灵活的功能，你可以使用directive来创建属于自己的表单控件。</p>
+<p>为了让你自定义的控件能与<code>ngModel</code>一起工作，并且还能“双向绑定”，你需要：</p>
+</li>
+<li><p>实现<code>render</code>方法。当它添加到<code>NgModelController#$formatters</code>后，它将会用来渲染数据。*   调用<code>$setViewValue</code>方法。每当用户与控件交互后，model都需要被更新，使用这个方法。通常这放在一个DOM事件的listener中完成。</p>
+<p>参见<code>$compileProvider</code>了解更深入的内容。</p>
+<p>面的例子展示了如何给一个<code>contentEditable</code>元素添加“双向绑定”</p>
+<h3>源代码</h3>
+<p><strong>index.html</strong></p>
+<p><!doctype html>
+<br  /><html ng-app="form-example2">
+<br  /><head></p>
+<pre><code>&lt;script src="http://code.angularjs.org/angular-1.0.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<br  /><body></p>
+<pre><code>&lt;div contentEditable="true" ng-model="content" title="Click to edit"&gt;Some&lt;/div&gt;
+&lt;pre&gt;model = {{content}}```
+
+&lt;style type="text/css"&gt;
+  div[contentEditable] {
+    cursor: pointer;
+    background-color: #D0D0D0;
+  }
+&lt;/style&gt;
+</code></pre>
+<p></body>
+<br  /></html></p>
+<p><strong>script.js</strong></p>
+<p>angular.module('form-example2', []).directive('contenteditable', function() {
+<br  />return {</p>
+<pre><code>require: 'ngModel',
+link: function(scope, elm, attrs, ctrl) {
+  // view -&gt; model
+  elm.bind('blur', function() {
+    scope.$apply(function() {
+      ctrl.$setViewValue(elm.html());
+    });
+  });
+
+  // model -&gt; view
+  ctrl.render = function(value) {
+    elm.html(value);
+  };
+
+  // load init value from DOM
+  ctrl.$setViewValue(elm.html());
+}
+</code></pre>
+<p>};
+<br  />});</p>
+</li>
+</ul>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1228';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

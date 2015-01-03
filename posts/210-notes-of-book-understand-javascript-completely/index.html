@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>读“悟透JavaScript”</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-14) 读“悟透JavaScript”
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>学习JavaScript已经成为我无法逃避的问题。我发现，一个网站的开发时间，前端比后端用的还多，主要是因为组件不易复用、跨浏览器问题。解决这一问题的方法是，可以采用一些JavaScript UI库，如Jquery-UI, YUI, Ext-js, Qooxdoo, SmartClient, Ukijs等等。其中Ukijs我尤其推荐。</p>
+<p>我以前看过国人李战写的一些文章，叫“悟透JavaScript”，不长，但是写得非常好，后来出版了。当时觉得不错，现在有些地方模糊了，又把它找出来重读。这本书是我最为推荐的一本JavaScript书籍，任何一个想学JavaScript的人，都应该先认真地把这本书看一遍，然后再看别的。</p>
+<p>现在记得的几个要点是：</p>
+<ol>
+<li>放下“类型”。JavaScript是动态语言，所以变量没有类型。这可以做出很多静态语言难以做到的事情，比如动态改变类，增删属性或方法，把数据当作代码执行等。</li>
+<li>放下“自我”。function中的this，跟Java中的this不一样，并不总是指向自己。我们可以通过fun.call(other)，将other传进去，变成fun中的this。这样看来，javascript中的函数与groovy中的闭包相当相似。</li>
+<li>prototype继承。与面向对象语言中的继承不同，JavaScript用的是prototype。每一个类都有一个特殊的属性叫prototype，该类所有的对象共用它。当调用一个方法而本身没有时，则去prototype去找。利用它，我们可以设计出父类和子类的继承关系，即让子类的prototype属性指向父类。</li>
+<li>甘露模型。以实例说明，如何利用一个公用函数，优雅的模拟出面向对象语言中的继承语法，需要好好体会。</li>
+</ol>
+<p>看完这本书，我有种“听君一席话，胜读十年书”的感觉。只花短短几个小时，便学到了自学数月也难以理解到的JavaScript原理，真不愧“悟透”两字。像李战这样的作者，才算得上是深入浅出的高手。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '210';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

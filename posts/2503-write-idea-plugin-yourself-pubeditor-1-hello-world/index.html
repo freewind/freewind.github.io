@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>自己动手写IDEA plugin – PubEditor (1) Hello, world</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-04-06) 自己动手写IDEA plugin – PubEditor (1) Hello, world
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>我发现在实现编辑器功能时，比较容易用到编译原理方面的东西，比如高亮、格式化、代码提示、重构等，所以我打算通过开发一些编辑器插件来锻练。而IDEA是我们用的最多，也是我很喜欢的一个编辑器，所以就有了“自己动手写IDEA plugin”系列。</p>
+<h2>任务目标</h2>
+<p>这个任务的目标有：</p>
+<ol>
+<li>实现一个功能完善的IDEA plugin。包括格式化，高亮，代码提示等功能</li>
+<li>全面支持dart的pub。<a href="http://pub.dartlang.org">pub</a>是dart的依赖管理工具，可定义、下载、管理dart包依赖</li>
+<li>使用scala来实现</li>
+</ol>
+<p>基本上把我目前关注的几个方面都包括了。</p>
+<h2>本篇目标</h2>
+<p>作为开篇，我们将实现最基本的功能：创建一个最最基本的idea plugin，可以弹出一个Hello World的提示。</p>
+<p>为了方便，这里只使用Java实现，下一篇会改成scala的</p>
+<h2>准备工作</h2>
+<h3>入门教程</h3>
+<p>首先是IDEA plugin开发入门，非常值得一看，了解一下背景知识。</p>
+<p>http://confluence.jetbrains.com/display/IDEADEV/PluginDevelopment</p>
+<p>但是其中关于<a href="http://confluence.jetbrains.com/display/IDEADEV/Getting+Started+with+Plugin+Development#GettingStartedwithPluginDevelopment-anchor2">如何建立项目</a>的一节讲得太繁琐，根本看不懂。不过好在不是很复杂，跟着本文走就行了。</p>
+<p>另外，上面列出的内容比较多，我没有全部看完，只看了前几篇，足够把本篇的任务完成。</p>
+<h3>下载IDEA</h3>
+<p>如果临时试一下，下载IDEA的社区版或企业版都行，也不需要下载源代码。但如果深入开发，就只能使用社区版，因为它可以跟源代码结合起来，方便调试。</p>
+<p>下载IDEA: <a href="http://www.jetbrains.com/idea/download/">http://www.jetbrains.com/idea/download/</a></p>
+<p>随便下一个就行，不过为了方便，推荐社区版。</p>
+<h3>下载source</h3>
+<p>不论是社区版还是企业版，里面都自带插件开发工具，可以直接用。但是为了以后调试的方便，还需要下载idea的源代码，将它们关联起来，就可以单步了。</p>
+<p>使用git下载社区版对应的源代码：</p>
+<pre><code>git clone git://git.jetbrains.org/idea/community.git idea --depth 1    
+</code></pre>
+<p>这是一个非常大的库，就算添加了<code>--depth 1</code>的参数，下载的源代码打成.tar.gz包后也超过了1G。由于代码库在国外，对于我们大部分人来说，这不是一天两天能完成的任务。</p>
+<p>这几天访问国外网络非常不稳定，所以我只好在一个国外的vpn上下载完代码，然后打包传过来。gz包的大小为1.18G，还要传19个小时。。。</p>
+<h3>启用Plugin DevKit插件</h3>
+<p>Idea中默认自带了<code>Plugin DevKit</code>插件，但是没有开启。首先我们需要将它开启:</p>
+<p><a href="/user_images/2503-1.png"><img src="/user_images/2503-1.png" alt="QQ20140406-16" /></a></p>
+<p>然后激动人心的时刻就要开始了！</p>
+<h2>创建项目</h2>
+<p>打开Idea，创建一个新项目，记得要选左右要选"Intellij Plugin Platform"类型：</p>
+<p><img src="/user_images/2503-2.png" alt="QQ20140406-4" /></p>
+<p>然后输入项目名，我选的是<code>PubEditor</code>:</p>
+<p><img src="/user_images/2503-3.png" alt="QQ20140406-5" /></p>
+<p>创建完成后，就自动打开项目，注意在<code>META-INF</code>下有一个<code>plugin.xml</code>文件：</p>
+<p><img src="/user_images/2503-4.png" alt="QQ20140406-6" /></p>
+<p>这个plugin.xml文件是一个重要的配置文件，用于向IDEA平台注册我们的提供的功能。如果你开发过eclipse插件，会知道那边也有一个类似的文件。</p>
+<h2>添加Action</h2>
+<p>我打算实现一个功能：在菜单最后添加一项"Pub Editor&rdquo;，里面有一个"Hello world"的子菜单。当点击它以后，会提示一个对话框，让我们输入自己的名字，然后弹出欢迎的信息。</p>
+<p>首先我们需要实现一个<code>AnAction</code>的子类，用于实现触发之后的功能：</p>
+<pre><code class="java">package com.thoughtworks.pli.pub_editor;
+
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
+
+public class HelloWorldAction extends AnAction {
+
+    @Override
+    public void actionPerformed(AnActionEvent event) {
+        Project project = event.getData(PlatformDataKeys.PROJECT);
+        String userName = askForName(project);
+        sayHello(project, userName);
+    }
+
+    private String askForName(Project project) {
+        return Messages.showInputDialog(project,
+                "What is your name?", "Input Your Name",
+                Messages.getQuestionIcon());
+    }
+
+    private void sayHello(Project project, String userName) {
+        Messages.showMessageDialog(project,
+                String.format("Hello, %s!\n Welcome to PubEditor.", userName), "Information",
+                Messages.getInformationIcon());
+    }
+}
+</code></pre>
+<p>可以看到，它实现了父类<code>AnAction</code>中的<code>actionPerformed</code>方法，提供了自己的逻辑。一个是弹出一个<code>inputDialog</code>让用户输入自己的名字，另一个是弹出一个<code>messageDialog</code>显示欢迎信息。</p>
+<h2>在plugin.xml中注册</h2>
+<p>只提供上面的类还不够，还需要在plugin.xml中添加一些注册信息。</p>
+<p>打开plugin.xml，找到其中的<code>&lt;actions&gt;</code>一节，添加：</p>
+<pre><code class="xml">&lt;group id="PubEditorPlugin.Menu" text="_Pub Editor" description="Pub Editor Menu"&gt;
+    &lt;add-to-group group-id="MainMenu" anchor="last"/&gt;
+    &lt;action id="PubEditorPlugin.HelloWorldAction" 
+            class="com.thoughtworks.pli.pub_editor.HelloWorldAction"
+            text="_Hello world" description="Hello world from PubEditor"/&gt;
+&lt;/group&gt;
+</code></pre>
+<p>这是一段信息量很大的配置代码。外面的<code>group</code>指定了菜单组的位置<code>last</code>，显示的内容为<code>Pub Editor</code>，它前面的<code>_</code>表示可用快捷键<code>p</code>访问。里面的<code>action</code>指定了菜单项显示的内容为<code>Hello world</code>，对应的类为我们刚创建的<code>HelloWorldAction</code>类。</p>
+<h2>代码部分结束</h2>
+<p>代码部分就结束了，东西不多，过程还是很轻松的。我的项目文件是这样的：</p>
+<p><img src="/user_images/2503-5.png" alt="QQ20140406-17" /></p>
+<p>下面是运行效果了。</p>
+<h2>运行插件</h2>
+<p>不能直接运行，而要先建立一个配置。打开菜单"Run&rdquo;->&ldquo;Configuration&rdquo;，点击左上角的&rdquo;+&ldquo;新建，选择"Plugin&rdquo;，如图：</p>
+<p><img src="/user_images/2503-6.png" alt="QQ20140406-18" /></p>
+<p>基本上不用改什么，我就只把名字设成了"Pub Editor&rdquo;，然后点击"OK&rdquo;.</p>
+<p>这时右上角运行栏处会变成这样：</p>
+<p><img src="/user_images/2503-7.png" alt="QQ20140406-19" /></p>
+<p>点击绿色小三角即可。</p>
+<p>它会打开一个新的IDEA。如果你运行的是企业版，可能会提示你输入license等信息，可以选择“继续试用”，进入开始界面：</p>
+<p><img src="/user_images/2503-8.png" alt="QQ20140406-20" /></p>
+<p>由于我们添加的菜单只能在进入项目后才能看到，所以我们需要随便创建一个项目。我建的是"TestPlugin&rdquo;，进去后可以看到上面的菜单最右边多了一项"Pub Editor&rdquo;，以及"Hello world&rdquo;:</p>
+<p><img src="/user_images/2503-9.png" alt="QQ20140406-22" /></p>
+<p>点击"Hello world"后，会弹出对话框，提示我们输入名称：</p>
+<p><img src="/user_images/2503-10.png" alt="QQ20140406-23" /></p>
+<p>输入名字后，会弹出一个新的信息框：</p>
+<p><img src="/user_images/2503-11.png" alt="QQ20140406-24" /></p>
+<h2>源代码</h2>
+<p>作为Hello world，本文到此就结束了。源代码已经上传至:</p>
+<p>http://github.com/freewind/PubEditor</p>
+<p>本文所对应的tag为"1_hello_world&rdquo;，你可以checkout它运行一下看结果。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2503';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

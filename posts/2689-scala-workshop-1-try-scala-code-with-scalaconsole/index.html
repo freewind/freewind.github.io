@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scala热情workshop(1). 安装快速尝试scala代码的工具: scalaconsole</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-06-14) Scala热情workshop(1). 安装快速尝试scala代码的工具: scalaconsole
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <h2>Scala Console</h2>
+<p>为了快速尝试一段代码，我们有scala repl, eclipse, idea可用，但是在某些情况下，它们都不够好用。</p>
+<p>而scala console这个工具，为scala-repl提供了图形界面，代码高亮等支持，十分方便，实乃居家必备。</p>
+<h3>快速运行代码</h3>
+<p>上个主界面图：</p>
+<p><a href="/user_images/2689-1.png"><img src="/user_images/2689-1.png" alt="2638699" /></a></p>
+<p>左边是编辑区，可以贴scala代码，它提供了高亮、行号等。按”Cmd+R”后，将会在右边内嵌的一个scala-repl中显示结果。</p>
+<h3>快速添加依赖</h3>
+<p>这是一个非常有用的功能。有时候我们尝试一些库的功能，那会相当麻烦，通常我会这么做：</p>
+<p>写一个build.sbt文件，在里面写上所有的依赖，然后<code>sbt idea</code>生成，再打开idea写代码。</p>
+<p>但是有了scalaconsole，就很简单了：点击菜单中的Dependencies选项，将会出现如下界面</p>
+<p><a href="/user_images/2689-3.png"><img src="/user_images/2689-3.png" alt="487403" /></a></p>
+<p>我们输入关键字，双击右边列表中某个版本，它就会加到下面的列表中。点击OK后，它就会开始下载<img src="/user_images/2689-4.png" alt="9596797" /></p>
+<p>期间有半分钟左右没有输出变化，需要耐心等一下。完成后我们就可以直接用了：</p>
+<p><a href="/user_images/2689-6.png"><img src="/user_images/2689-6.png" alt="1042034" /></a></p>
+<h3>发布到gist</h3>
+<p>如果想与其它人讨论或者分享你的代码，可以点击菜单中的Post Anonymous Gist或者Post Gist with Account，快速发布。</p>
+<h2>项目信息</h2>
+<p>项目作者：老猪，”无水scala群（231809997）“的群主，是一件严肃而热情的技术高手。公司网站 <a href="http://gtan.com">http://gtan.com</a></p>
+<p>项目地址：<a href="http://git.oschina.net/43284683/scalaconsole">http://git.oschina.net/43284683/scalaconsole</a></p>
+<h3>下载安装</h3>
+<p>下载地址：<a href="http://git.oschina.net/43284683/scalaconsole/attach_files">http://git.oschina.net/43284683/scalaconsole/attach_files</a></p>
+<p>ScalaConsole-assembly-2.0.0-M5.jar，大约25M左右</p>
+<p>这个文件已经打包了所有需要的文件，你只需要运行：<code>java -jar ScalaConsole-assembly-$VERSION.jar</code>即可</p>
+<p>注意：由于scalaconsole使用了最新版的JavaFX，你需要安装jdk1.8才能正常运行。</p>
+<h3>启动脚本</h3>
+<p>你可以手动建立一个scalaconsole.sh，内容如下：</p>
+<pre><code>/path/to/jdk1.8/java -jar ~/dev/scala/ScalaConsole-assembly-2.0.0-M2.jar
+</code></pre>
+<p>然后把它加入到path中，就可以快速启动scalconsole了</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2689';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

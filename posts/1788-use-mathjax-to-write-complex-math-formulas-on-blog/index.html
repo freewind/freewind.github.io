@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>如何在博客上手写复杂数学公式? （MathJax）</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-07) 如何在博客上手写复杂数学公式? （MathJax）
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在伟大的<a href="http://math.stackoverflow.com">http://math.stackoverflow.com</a>上提问的时候，发现人们使用一种奇怪的语法来写数学符号和公式，比如这句：</p>
+<p><a href="/user_images/1788-1.png"><img src="/user_images/1788-1.png" alt="image" title="image" /></a></p>
+<p>对于我们来说，写那个“大于等于”和“属于”符号，是一件很困难的事。他们是怎么做的呢？看下源代码：</p>
+<pre><code>Relation $R$ is $xy\ge1$, and $x\in \mathbb{Z}$ and $y\in\mathbb{Z}$, is $R$ reflexive?
+
+注意里面有很多以`$`包围起来的符号，以及用斜线开头的词，如`\in`。而显示的时候，它们就自动变成了美观的数学符号，这是怎么做的？
+
+## MathJax和LaTeX
+
+在[http://math.stackexchange.com/faq](http://math.stackexchange.com/faq)介绍了做法，原来使用了一个叫[MathJax](http://www.mathjax.org/)的js库来渲染，语法是一个类似于[LaTeX](http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm)的语法：
+</code></pre>
+<ul>
+<li><p>MathJax: <a href="http://www.mathjax.org/" title="http://www.mathjax.org/">http://www.mathjax.org/</a>*   LaTeX-like syntax: <a href="http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm" title="http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm">http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm</a></p>
+<p>有了这两样，我们可以直接在文章中写公式，而不需要借助其它的工具。之前我用MathType，想把上面的公式弄到博客上，只能截图。又换了一种可以可以输入数学符号的输入法，但是要不断切换输入法，非常麻烦。Math.stackoverflow.com的这种方式非常好。</p>
+<h2>在博客上安装MathJax</h2>
+<p>如何在自己的博客上安装MathJax呢？过程比较简单。首先在下面的网址下载需要的js库</p>
+<p><a href="http://www.mathjax.org/download/">http://www.mathjax.org/download/</a></p>
+<p>大约为17.6M，有点大。它里面包含了很多东西，比如不同的语法，各种兼容什么的。解压后大得夸张，居然有133M，里面有3万多个文件！</p>
+<p>虽然不知道哪些要用哪些不需要，但为了保险，我还是把它们整个都传上去了。传3万多个文件太慢，所以我把整个压缩包上传上去，在服务端端解压，这样快了一下。</p>
+<p>这种方式对于很多人的博客不适用，毕竟133M太大了，可能博客空间也就两三百M。这时可使用由MathJax提供的另一种方式，直接使用它们的CDN，这样就不需要上传了，只在网页中增加一个js的引用即可，引用cdn中的文件。</p>
+<p>具体详情可参见：<a href="http://docs.mathjax.org/en/latest/configuration.html">http://docs.mathjax.org/en/latest/configuration.html</a></p>
+<h3>上传方式安装</h3>
+<p>如果选择的是上传到博客的方式来安装，可以这么做。</p>
+<p>首先把MathJax的zip上传到博客空间，通过服务端解压，把它们解压到自己的博客目录中，记下位置。</p>
+<p>然后在博客源代码中，添加以下代码（可添加在body的最后）：</p>
+<p><script type="text /x-mathjax-config">
+<br  />MathJax.Hub.Config({
+<br  />tex2jax: {inlineMath: [['$','$'], ['\(','\)']]}
+<br  />});
+<br  /></script>
+<br  /><script type="text /javascript" src="path-to-MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></p>
+<p>注意，如果你想让它能解析以<code>$</code>包起来的数学代码，则需要加上<code>Config</code>那段。</p>
+<h3>CDN方式安装</h3>
+<p>不需要上传MathJax，只添加引用即可。</p>
+<p><script type="text /x-mathjax-config">
+<br  />MathJax.Hub.Config({
+<br  />tex2jax: {inlineMath: [['$','$'], ['\(','\)']]}
+<br  />});
+<br  /></script>
+<br  /><script type="text /javascript"
+<br />src=&ldquo;<a href="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot;">http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&rdquo;</a>>
+<br  /></script></p>
+<h2>测试</h2>
+<p>在博客中写上下面的代码，它表示"q属于集合R&rdquo;</p>
+<p>$ q \in R $</p>
+</li>
+</ul>
+<p>如果一切正常，它会显示成：</p>
+<p><a href="/user_images/1788-3.png"><img src="/user_images/1788-3.png" alt="image" title="image" /></a></p>
+<p>上面这个是截的图片，再来一个真实版：</p>
+<p>$ q \in R $</p>
+<h2>LaTeX语法</h2>
+<p>详细文档在这里：<a href="http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm">http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm</a></p>
+<p>我把常用的一些总结在这里</p>
+<table border="1" cellspacing="0" cellpadding="2" width="533">
+<tbody>
+<tr>
+<td valign="top" width="116">图片</td>
+<td valign="top" width="177">MathJax效果</td>
+<td valign="top" width="238">代码</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-5.png "image")](/user_images/1788-5.png)</td>
+<td valign="top" width="177">$\emptyset$</td>
+<td valign="top" width="238">`\emptyset`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-7.png "image")](/user_images/1788-7.png)</td>
+<td valign="top" width="177">$q \in R$</td>
+<td valign="top" width="238">`q \in R`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-9.png "image")](/user_images/1788-9.png)</td>
+<td valign="top" width="177">$q \notin R$</td>
+<td valign="top" width="238">`q \notin R`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-11.png "image")](/user_images/1788-11.png)</td>
+<td valign="top" width="177">$A \subseteq B$</td>
+<td valign="top" width="238">`A \subseteq B`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-13.png "image")](/user_images/1788-13.png)</td>
+<td valign="top" width="177">$A \subset B$</td>
+<td valign="top" width="238">`A \subset B`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-15.png "image")](/user_images/1788-15.png)</td>
+<td valign="top" width="177"> </td>
+<td valign="top" width="238"> </td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-17.png "image")](/user_images/1788-17.png)</td>
+<td valign="top" width="177"> </td>
+<td valign="top" width="238"> </td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-19.png "image")](/user_images/1788-19.png)</td>
+<td valign="top" width="177"> </td>
+<td valign="top" width="238"> </td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-21.png "image")](/user_images/1788-21.png)</td>
+<td valign="top" width="177"> </td>
+<td valign="top" width="238"> </td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-23.png "image")](/user_images/1788-23.png)</td>
+<td valign="top" width="177"> </td>
+<td valign="top" width="238"> </td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-25.png "image")](/user_images/1788-25.png)</td>
+<td valign="top" width="177"> </td>
+<td valign="top" width="238"> </td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-27.png "image")](/user_images/1788-27.png)</td>
+<td valign="top" width="177">$\{x | x\in\Bbb Z\}$</td>
+<td valign="top" width="238">`\{x | x\in\Bbb Z\}`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-29.png "image")](/user_images/1788-29.png)</td>
+<td valign="top" width="177">$\forall x$</td>
+<td valign="top" width="238">`\forall x`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-31.png "image")](/user_images/1788-31.png)</td>
+<td valign="top" width="177">$\exists$</td>
+<td valign="top" width="238">`\exists`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-33.png "image")](/user_images/1788-33.png)</td>
+<td valign="top" width="177">$\gt$</td>
+<td valign="top" width="238">`\gt`</td>
+</tr>
+<tr>
+<td valign="top" width="116"> </td>
+<td valign="top" width="177">$\ge$</td>
+<td valign="top" width="238">`\ge`</td>
+</tr>
+<tr>
+<td valign="top" width="116"> </td>
+<td valign="top" width="177">$\geq$</td>
+<td valign="top" width="238">`\geq`</td>
+</tr>
+<tr>
+<td valign="top" width="116"> </td>
+<td valign="top" width="177">$\geqq$</td>
+<td valign="top" width="238">`\geqq`</td>
+</tr>
+<tr>
+<td valign="top" width="116"> </td>
+<td valign="top" width="177"> </td>
+<td valign="top" width="238"> </td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-35.png "image")](/user_images/1788-35.png)</td>
+<td valign="top" width="177">$\lnot$</td>
+<td valign="top" width="238">`\lnot`</td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-37.png "image")](/user_images/1788-37.png)</td>
+<td valign="top" width="177">$\lor$</td>
+<td valign="top" width="238"><var>`<var>\lor</var>`</var></td>
+</tr>
+<tr>
+<td valign="top" width="116">[![image](/user_images/1788-39.png "image")](/user_images/1788-39.png)</td>
+<td valign="top" width="177">$\land$</td>
+<td valign="top" width="238"><var>`<var>\land</var>`</var></td>
+</tr>
+</tbody>
+</table>
+<h2>后记</h2>
+<p>经过多次使用后，发现MathJax对于某些公式的显示有问题，比如<img src="http://chart.apis.google.com/chart?cht=tx&amp;chs=1x0&amp;chf=bg,s,FFFFFF00&amp;chco=000000&amp;chl=%7BR%5E2%7D" alt="{R^2}" />，会显示得乱七八糟。看了一下math.stackoverflow.com，发现它修改了MathJax的代码以解决这些问题。但我拿不到这些代码，自己也不知道怎么修正，所以只能暂时不再使用这种方式。</p>
+<p>现在的做法是，使用最新的MathType 6.8，它支持把公式拖到Live writer，感觉还不错。唯一有点担心的是，它利用了google的chart api来产生图形，这个服务在国内不稳定（你懂的）。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1788';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

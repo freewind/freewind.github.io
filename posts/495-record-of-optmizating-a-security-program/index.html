@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>证券转发程序的程序调优记录</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-10-25) 证券转发程序的程序调优记录
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>这些天一直在想办法优化证券转发程序的性能。</p>
+<p>终于跑起了Simulator和MDF程序，并使用jvisualvm检查了一下线程的运行情况，发现一切都挺正常的。</p>
+<p>这可找不到下手的地方了。于是决定从头开始，一点点猜测一点点验证。</p>
+<p>首先是我的电脑配置：</p>
+<ul>
+<li>cpu：AMD Athlon X2 4000+<em>   内存：4G</em>   操作系统：windows xp</li>
+</ul>
+<p>我一步步地猜想和测试：</p>
+<p>一、<strong>单机使用Socket来发送和接收数据，最大速度能达到多少呢？</strong></p>
+<p><span id="more-495"></span>
+<br  /><p></p>
+<p>我用socket写了一个最简单的Server和Client程序。Server不断向Client发送，每次10K。Client收到后直接丢弃，只计算收到的字节的数据，打印出来。</p>
+<p>代码如下：</p>
+<p>Server.java</p>
+<blockquote><p>public class SimpleServer {</p>
+<pre><code>public static void main(String[] args) throws Exception {       
+    ServerSocket server = new ServerSocket(6666);       
+    Socket socket = server.accept();       
+    OutputStream output = socket.getOutputStream(); 
+
+    byte[] bytes = new byte[32 * 1024]; // 32K      
+    while (true) {       
+        output.write(bytes);       
+    }       
+}       
+</code></pre>
+<p>}</p>
+</blockquote>
+<p>Client.java</p>
+<blockquote><p>public class SimpleClient {</p>
+<pre><code>public static void main(String[] args) throws Exception {       
+    Socket socket = new Socket("127.0.0.1", 6666);       
+    InputStream input = socket.getInputStream();       
+    long total = 0;       
+    long start = System.currentTimeMillis(); 
+
+    byte[] bytes = new byte[32 * 1024]; // 32K      
+    for (int i = 1;; i++) {       
+        total += input.read(bytes);       
+        if (i % 1000000 == 0) {       
+            long cost = System.currentTimeMillis() - start;       
+            System.out.printf("Read %,d bytes, speed: %,d MB/s%n", total, total / cost / 1000);       
+        }       
+    }       
+}       
+</code></pre>
+<p>}</p>
+</blockquote>
+<p>运行之后，发现速度稳定在<strong><font color="#ff0000">170MBytes/s</font></strong>。注意此处在计算时除以1000而不是1024来简化，对结果影响不大。</p>
+<p>由于在本机运行，数据不经过网卡，都是直接在内存中复制的，所以速度很快。因为此时没有网卡和网络的影响，cpu与内存占了主要因素，所以可见我的电脑的处理能力极限是这么多。</p>
+<p><strong>二、两台电脑间用百兆网卡连接，之间最大传输速度是多少</strong></p>
+<p>我用一根专用的网线将两台电脑连接起来。两台电脑的网卡都是100Mbits，没有路由器的损耗，可以认为两台电脑间的速度就是100Mbits/s。</p>
+<p>然后在一台电脑上运行Server，另一台运行Client，实际速度为<strong><font color="#ff0000">10.xMbytes/s</font></strong>。这个结果可认为完全用满了带宽。</p>
+<p><strong>三、在公司生产环境中进行以上两个测试，结果如何</strong></p>
+<p>服务器1（8核Cpu，2.2GHz； 8G内存，146G硬盘（15000转）），速度：2800MB/s</p>
+<p>服务器2（双核Cpu，2.4GHz；4G内存，73G硬盘（10000转）），速度：1800MB/s</p>
+<p>从服务器1到服务器2，速度：55MB/s，千兆网卡</p>
+<p>看来公司的服务器，配置还不错。</p>
+<p><strong>四、Simulator的最大发送速度是多少</strong></p>
+<p>我使用“一”中的Client在本机接收Simulator的数据（不经过网卡），以测试其性能，大约<strong><font color="#ff0000">22MB/s</font></strong>。因为Simulator的数据是实时从文件中读取的，而硬盘的读取速度差不多20多M，所以Simulator的性能应该还是不错的。如果预先把数据都放在内存中，可能速度会更高一些。</p>
+<p><strong>五、测试MDF的接收性能</strong></p>
+<p>MDF分为两个部分，一是接收，把数据保存在内存中，二是发送，把数据转发给客户端。这里先测试接收。</p>
+<p>我在一台电脑上放simulator，另一个放MDF，测试结果还不错，能达到10MB/s。看来接收端没有性能问题。（注：测试时一定要把log4j的Console去掉，不去的话，只有3M多）</p>
+<p><strong>六、测试MDF的发送性能</strong></p>
+<p>MDF的发送有点不太好测，这跟其内部实现有关。MDF接收的数据，并不是完全保存在内存中，而是只保存最近的5000条。之所以这样，一是因为当时开发时使用的是32位机，jvm中的Xmx最大只能设不到1G，如果把数据都放在内存中，可能不够。所以默认情况下，MDF只保存最近的5000条以快速发送（大多数时候够用），如果中途有新机加入取数据，则会从数据库中读取。</p>
+<p>但在测试时发现，很难把握好时间让MDF刚好用到内存中的数据。这是因为，如果开了simulator，会对MDF有影响。但不开simulator，则发送时只能从数据库中取数据。怎么测都得读数据库。测试结果为<strong><font color="#ff0000">6MB/s</font></strong>，没有用完带宽。使用jvisualvm进行监测，发现占用时间最多的函数是从数据库中读取数据。</p>
+<p>如果修改MDF的设置，让它保存最近400000条呢？这样就不需要从数据库中读了（因为当时信息总量为30多万条）。</p>
+<p>测试结果为<strong><font color="#ff0000">7MB/s</font></strong>左右。虽然比读数据库好一些，但还是没有用完带宽，为什么？</p>
+<p>使用jvisualvm监测，发现的确没有从数据库读取数据。另外，发现在发送信息的过程中，很多与Message类相关的方法被调用了很多次，如下图：</p>
+<p><a href="/user_images/495-1.png"><img src="/user_images/495-1.png" alt="image" title="image" /></a></p>
+<p>这些方法是否可以简化？直接把信息简化为二进制数组放在内存中，而不要使用一些InnerBytes之类给它套上？</p>
+<p>另外，在线程图页面，也发现了不少“阻塞”的线程：</p>
+<p><a href="/user_images/495-3.png"><img src="/user_images/495-3.png" alt="image" title="image" /></a></p>
+<p>虽然可以相信图中这么多红色是因为jvisualvm的Profiler抽样监测加大了阻塞的机率，但可以推测，在高并发状态下阻塞情况也会比较容易发生。可能正是因为它而导致发送速度变慢。现在从内存列表中取数据时，的确有一些synchronized操作。</p>
+<p>我们需要先修改代码，把所有数据放入内存之后，再优化这里的synchronized。</p>
+<p>至此，需要对MDF进行比较大的修改，才能继续测，一时半会儿改不完。改天再继续测。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '495';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

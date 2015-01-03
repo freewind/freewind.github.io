@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Android步步惊心 之 asyncTask.class.newInstance()报错（修正版）</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2012-10-31) Android步步惊心 之 asyncTask.class.newInstance()报错（修正版）
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>自建了一个AsyncTask，内容不是重点，示例如下：</p>
+<p><pre class="csharpcode"><span class="kwrd">private</span> <span class="kwrd">class</span> MyTask extends AsyncTask<Void, Integer, Void> {</p>
+<pre><code>@Override
+&lt;span class="kwrd"&gt;protected&lt;/span&gt; Void doInBackground(Void... &lt;span class="kwrd"&gt;params&lt;/span&gt;) {
+    &lt;span class="rem"&gt;// do something&lt;/span&gt;
+}
+</code></pre>
+<p>}```
+<br  /><style type="text /css"></p>
+<p>.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style>
+<br  /><p>在代码中，由于会取消并重建该Task，所以写了一个Helper方法：</p>
+<p><pre class="csharpcode">  <span class="kwrd">public</span> <span class="kwrd">static</span> <T extends AsyncTask> T createAsyncTask(T t, Class<T> cls) {</p>
+<pre><code>    &lt;span class="kwrd"&gt;if&lt;/span&gt; (t == &lt;span class="kwrd"&gt;null&lt;/span&gt; || t.isCancelled() || t.getStatus() == AsyncTask.Status.FINISHED) {
+        &lt;span class="kwrd"&gt;try&lt;/span&gt; {
+            &lt;span class="kwrd"&gt;return&lt;/span&gt; cls.newInstance();
+        } &lt;span class="kwrd"&gt;catch&lt;/span&gt; (Exception e) {
+            &lt;span class="kwrd"&gt;throw&lt;/span&gt; &lt;span class="kwrd"&gt;new&lt;/span&gt; RumtimeException(e);
+        }
+    }
+    &lt;span class="kwrd"&gt;return&lt;/span&gt; t;
+}```
+</code></pre>
+<p>于是可在自己的代码中这么调用：</p>
+<p><pre class="csharpcode"><span class="kwrd">private</span> MyTask mytask;</p>
+<p><span class="kwrd">private</span> MyTask getOrCreateMyTask() {</p>
+<pre><code>mytask = Helper.createAsyncTask(mytask);
+&lt;span class="kwrd"&gt;return&lt;/span&gt; mytask;
+</code></pre>
+<p>}```</p>
+<p>运行时发现经常出错，报这个错：</p>
+<pre><code>java.lang.InstantiationException: MyTask
+</code></pre>
+<p>错误位于return cls.newInstance()这一行。</p>
+<p>经过反复测试，发现第一次调用这行代码，正常返回一个MyTask实例，第二次再调用时，就会报错。而且错误信息只能得到cls.newInstance()出错，再往里就是native代码，没法调了。</p>
+<p>我开始以为是我的代码有问题，反复调试，查看AsyncTask的源代码，都没发现可疑之处。万般无奈之下，去掉了这个助手方法，而是直接写在getOrCreateMyTask()方法中：</p>
+<p><pre class="csharpcode"><span class="kwrd">private</span> AsyncTask getOrCreateMyTask() {</p>
+<pre><code>&lt;span class="kwrd"&gt;if&lt;/span&gt; (mytask == &lt;span class="kwrd"&gt;null&lt;/span&gt; || mytask.isCancelled() || mytask.getStatus() == AsyncTask.Status.FINISHED) {
+    mytask = &lt;span class="kwrd"&gt;new&lt;/span&gt; MyTask();
+}
+&lt;span class="kwrd"&gt;return&lt;/span&gt; mytask;
+</code></pre>
+<p>}```</p>
+<p>不同之处在于，这次使用 new MyTask() 而不是 cls.newInstance()。再试，一切正常！再也没有出现那个错误了。</p>
+<p>然后，我又把MyTask换成了一个普通的类，使用cls.newInstance()一切正常。</p>
+<p><strike>实在没想到，连cls.newInstance()这样基本的方法，在android中都有可能出错。</strike></p>
+<p><strong>修正：</strong></p>
+<p>非常抱歉，这完全不是android的错，而是我的错。</p>
+<p>之所以无法cls.newIntance()，是因为该MyTask是一个private inner类，在此情况下无法通过该方法创建。</p>
+<p>可以把它改为：</p>
+<p><pre class="csharpcode"><span class="kwrd">private</span> <span class="kwrd">static</span> <span class="kwrd">class</span> MyTask extends AsyncTask<Void, Integer, Void> {</p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; MyTask() {}
+</code></pre>
+<p>}```
+<br  /><style type="text /css">
+<br  />.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style></p>
+<p>或者：</p>
+<p><pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">static</span> <span class="kwrd">class</span> MyTask extends AsyncTask<Void, Integer, Void> {
+<br  />}```
+<br  /><style type="text /css">
+<br  />.csharpcode, .csharpcode pre
+<br  />{</p>
+<pre><code>font-size: small;
+color: black;
+font-family: consolas, "Courier New", courier, monospace;
+background-color: #ffffff;
+/*white-space: pre;*/
+</code></pre>
+<p>}
+<br  />.csharpcode pre { margin: 0em; }
+<br  />.csharpcode .rem { color: #008000; }
+<br  />.csharpcode .kwrd { color: #0000ff; }
+<br  />.csharpcode .str { color: #006080; }
+<br  />.csharpcode .op { color: #0000c0; }
+<br  />.csharpcode .preproc { color: #cc6633; }
+<br  />.csharpcode .asp { background-color: #ffff00; }
+<br  />.csharpcode .html { color: #800000; }
+<br  />.csharpcode .attr { color: #ff0000; }
+<br  />.csharpcode .alt
+<br  />{</p>
+<pre><code>background-color: #f4f4f4;
+width: 100%;
+margin: 0em;
+</code></pre>
+<p>}
+<br  />.csharpcode .lnum { color: #606060; }</style></p>
+<p>由于这段时间开发android应用，遇到了太多莫名其妙的错误，所以遇到与自己所知不同的问题时，会首先想到是android有bug。以后要更加谨慎一些。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1038';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

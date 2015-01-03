@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session: 轻快的SBT</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+
+    <script src='/assets/slide/js/slides.js'></script>
+    <script src='/assets/slide/js/slide-resize.js'></script>
+</head>
+
+<style>
+    /* Your individual styles here, or just use inline styles if that’s what you want. */
+</style>
+
+<body style='display: none'>
+
+<section class='slides layout-regular template-default'>
+    <!-- Your slides (<article>s) go here. Delete or comment out the slides below. -->
+
+    <!-- <article class='biglogo'></article> -->
+
+    
+        <article>
+            <p><h1>轻快的SBT</h1>
+<p>Sbt是当前Scala项目的标准构建工具</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>Session目的</h2>
+<ol>
+<li>了解sbt中让人感觉轻松愉快的部分</li>
+<li>以最小的学习成本帮助我们处理scala项目</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>http://scala-sbt.org</h2>
+<p><em></em> The interactive build tool <em></em></p>
+<blockquote><p>Use Scala to define your tasks. Then run them in parallel from the shell.</p>
+</blockquote>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>Sbt 全称</h2>
+<ol>
+<li>Simple Build Tool</li>
+<li>Scala Build Tool</li>
+<li>The interactive build tool</li>
+</ol>
+<p>or</p>
+<p><strong>S(i) B(ian) T(ai)</strong></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>Sbt的复杂来源于</h2>
+<ol>
+<li>糟糕的文档: 没有实例，抽象描述，冗长，不准确</li>
+<li>初学者不友好: 无向导工具，无模板项目</li>
+<li>混乱的版本: sbt &amp; scala</li>
+<li>各种奇怪操作符: <code>:=</code>, <code>+=</code>, <code>++=</code>, <code>&lt;&lt;=</code></li>
+<li>混乱的结构: <code>*.sbt</code>, <code>project/*.scala</code>, <code>~/.sbt/0.13/plugins/*</code></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>以及</h2>
+<ol>
+<li>各种编译错误: Sbt是一套类型安全的scala DSL</li>
+<li>复杂的key机制: <code>settingKey</code>, <code>taskKey</code>, <code>inputKey</code></li>
+<li>复杂的scope: <code>project scope</code>, <code>config scope</code>, <code>inkey scope</code></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>Sbt很努力，只是Scala世界很复杂</h2>
+<p>让我们开始SBT轻快之旅吧！</p>
+</p>
+        </article>
+    
+        <article>
+            <p><ol>
+<li>一条命令SBT安装</li>
+<li>零配置运行一个Scala程序</li>
+<li>一条命令生成新项目</li>
+<li>快速添加依赖</li>
+<li>快速生成Idea项目</li>
+<li>一条命令让项目内置sbt脚本</li>
+<li>Sbt好插件</li>
+<li>轻松支持多项目</li>
+<li>轻松解读配置文件基本规则</li>
+<li>自定义极简单的任务</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>1. SBT安装</h2>
+<p>安装：</p>
+<pre><code>brew install sbt
+</code></pre>
+<p>升级：</p>
+<pre><code>brew update sbt
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>2. 零配置运行一个Scala程序</h2>
+<pre><code>touch Hello.scala
+</code></pre>
+<p>内容如下：</p>
+<pre><code class="scala">object Hello extends App {
+    println("Hello, sbt!")
+}
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><p>运行：</p>
+<pre><code>$ sbt run
+Hello, sbt!
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>3. 一条命令生成新项目</h2>
+<p><strong>~/.sbt/0.13/plugins/np.sbt</strong></p>
+<pre><code class="scala">resolvers += Resolver.url("sbt-np",
+  url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(
+    Resolver.ivyStylePatterns)
+
+addSbtPlugin("me.lessis" % "np" % "0.2.0")
+</code></pre>
+<p><strong>~/.sbt/0.13/np.sbt</strong></p>
+<pre><code class="scala">seq(npSettings: _*)
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code>$ sbt np
+</code></pre>
+<p>生成：</p>
+<pre><code>├── build.sbt
+└── src
+    ├── main
+    │   ├── resources
+    │   └── scala
+    └── test
+        ├── resources
+        └── scala
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><p><strong>build.sbt</strong></p>
+<pre><code class="scala">organization := "mytest"
+
+name := "default"
+
+version := "0.1-SNAPSHOT"
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>4. 快速添加依赖</h2>
+<p><strong>build.sbt</strong></p>
+<pre><code class="scala">resolvers ++= Seq(
+  "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
+  "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases"
+)
+
+libraryDependencies ++= Seq(
+  "org.scalaz" %% "scalaz-core" % "7.1.0",
+  "org.specs2" %% "specs2" % "2.3.13" % "test"
+)
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code>$ sbt
+&gt; update
+&gt; gen-idea
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>5. 快速生成Idea项目</h2>
+<p><strong>~/.sbt/0.13/plugins/sbt-idea.sbt</strong></p>
+<pre><code class="scala">addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><p>不下载源代码</p>
+<pre><code>$ sbt gen-idea
+</code></pre>
+<p>下载源代码：</p>
+<pre><code>$ sbt 
+&gt; gen-idea sbt-classifiers
+</code></pre>
+<p>用idea打开：</p>
+<pre><code>idea .
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>6. 一条命令让项目内置sbt脚本</h2>
+<pre><code>curl -s https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt &gt; sbt
+chmod 0755 sbt
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code>$ ./sbt
+Downloading sbt launcher for 0.13.6:
+  From  http://typesafe.artifactoryonline.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.6/sbt-launch.jar
+    To  /Users/freewind/.sbt/launchers/0.13.6/sbt-launch.jar
+Getting org.scala-sbt sbt 0.13.6 ...
+:: retrieving :: org.scala-sbt#boot-app
+    confs: [default]
+    44 artifacts copied, 0 already retrieved (13750kB/150ms)
+[info] Loading global plugins from /Users/freewind/.sbt/0.13/plugins
+[info] Updating {file:/Users/freewind/.sbt/0.13/plugins/}global-plugins...
+[info] Resolving org.scala-sbt.ivy#ivy;2.3.0-sbt-14d4d23e25f354cd296c73bfff40554[info] Resolving org.fusesource.jansi#jansi;1.4 ...
+[info] Done updating.
+[info] Set current project to default (in build file:/private/tmp/mytest/)
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>7. Sbt好插件</h2>
+<ol>
+<li>创建新项目: https://github.com/softprops/np</li>
+<li>生成IDEA项目：https://github.com/mpeltonen/sbt-idea</li>
+<li>显示dependency: https://github.com/jrudolph/sbt-dependency-graph</li>
+<li>查看项目文件数量统计：https://github.com/orrsella/sbt-stats</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><ol>
+<li>Git支持：https://github.com/sbt/sbt-git</li>
+<li>把build.sbt中信息自动生成scala: https://github.com/sbt/sbt-buildinfo</li>
+<li>打包成一个jar: https://github.com/sbt/sbt-assembly</li>
+</ol>
+<p><strong>更多：</strong></p>
+<p>http://www.scala-sbt.org/0.13/docs/Community-Plugins.html</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>8. 轻松支持多项目</h2>
+<pre><code>$ sbt
+&gt; np name:root
+&gt; np name:core dir:core
+&gt; np name:util dir:util
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code>├── build.sbt
+├── src
+│   ├── main
+│   │   ├── resources
+│   │   └── scala
+│   └── test
+│       ├── resources
+│       └── scala
+├── core
+│   ├── build.sbt
+│   └── src
+└── util
+    ├── build.sbt
+    └── src
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>添加对子项目的引用</h2>
+<p><strong>build.sbt</strong></p>
+<pre><code class="scala">lazy val core = project
+
+lazy val util = project
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>9. 轻松解读配置文件基本规则</h2>
+<p><strong>build.sbt</strong></p>
+<pre><code class="scala">name := "hello"
+
+version := "1.0"
+
+organization := "org.my"
+
+scalaVersion := "2.11.0"
+
+sbtVersion := "0.13.5"
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>规则</h2>
+<ol>
+<li>以空行分隔两个定义</li>
+<li>可使用预定义的key，也可以自定义key</li>
+<li>使用<code>:=</code>给一个key赋值</li>
+<li>可以将一个key定义成一个task</li>
+<li>会将<code>*.sbt</code>, <code>*.scala</code>, <code>project/*.sbt</code>, <code>project/*.scala</code>内容合并</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>10. 自定义极简单的任务</h2>
+<pre><code class="scala">lazy val hello = taskKey[Unit]("An example task")
+
+hello := { println("Hello, world") }
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>运行</h2>
+<pre><code>$ sbt
+&gt; hello
+Hello, world!
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>Task：显示根目录下的文件</h2>
+<pre><code class="scala">lazy val showRootFiles = taskKey[Unit]("Show root files")
+
+showRootFiles := {
+  baseDirectory.value.listFiles.foreach(println)
+}
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>运行</h2>
+<pre><code>$ sbt
+&gt; showRootFiles
+/private/tmp/mytest/.idea
+/private/tmp/mytest/.idea_modules
+/private/tmp/mytest/.sbt
+/private/tmp/mytest/build.sbt
+/private/tmp/mytest/core
+/private/tmp/mytest/project
+/private/tmp/mytest/src
+/private/tmp/mytest/target
+/private/tmp/mytest/util
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>更多文档（后面的简单，从最后一个看起）</h2>
+<ol>
+<li><a href="http://freewind.github.io/posts/understand-the-output-of-sbt-inspect">sbt中读懂inspect的输出</a></li>
+<li><a href="http://freewind.github.io/posts/understand-sbt-scopes">理解sbt的scopes</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-create-a-simple-sbt-plugin">如何创建一个简单的sbt插件</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-invoke-objects-defined-in-scala-files-in-build-sbt">如何在build.sbt中调用其它scala中定义的值</a></li>
+<li><a href="http://freewind.github.io/posts/define-multi-sub-projects-in-build-scala-in-sbt">在Build.scala中定义多个子项目</a></li>
+<li><a href="http://freewind.github.io/posts/build-sbt-in-sub-projects-will-be-combined-to-root-project-in-sbt">sbt多个子项目的build.sbt是如何处理的</a></li>
+<li><a href="http://freewind.github.io/posts/config-in-build-sbt-for-multi-sub-projects">使用build.sbt配置多个子项目</a></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><ol>
+<li><a href="http://freewind.github.io/posts/use-build-sbt-and-build-scala-in-one-sbt-project">sbt中build.sbt和Build.scala配合使用</a></li>
+<li><a href="http://freewind.github.io/posts/create-a-simplest-build-scala-in-sbt">sbt中如何创建一个最简单的Build.scala</a></li>
+<li><a href="http://freewind.github.io/posts/download-source-jar-when-declaring-dependency-in-sbt">在sbt中声明依赖时同时下载源代码</a></li>
+<li><a href="http://freewind.github.io/posts/use-a-jar-not-inside-a-maven-repo-as-dependency-in-sbt">在sbt中使用一个不在maven库中的jar作为依赖</a></li>
+<li><a href="http://freewind.github.io/posts/run-initailization-code-in-build-sbt">如何在build.sbt中执行一段初始化代码</a></li>
+<li><a href="http://freewind.github.io/posts/the-operators-for-keys-in-build-sbt">build.sbt中有哪些操作符可用</a></li>
+<li><a href="http://freewind.github.io/posts/the-sbt-shell-for-project">可放在项目代码中的sbt脚本</a></li>
+<li><a href="http://freewind.github.io/posts/use-shell-to-create-sbt-dirs-quickly">用脚本快速初始化一个sbt项目的结构</a></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><ol>
+<li><a href="http://freewind.github.io/posts/use-simple-sbt-config-to-run-scala-program">基本的build.sbt配置</a></li>
+<li><a href="http://freewind.github.io/posts/use-sbt-to-run-scala-program-directly">无需任何配置，直接使用sbt运行一个scala文件</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-use-value-of-another-key-in-sbt-task">如何在定义sbt任务时，使用其它key的值</a></li>
+<li><a href="http://freewind.github.io/posts/how-to-define-a-simplest-hello-word-task-in-sbt">如何在sbt中定义一个最简单的hello world任务</a></li>
+<li><a href="http://freewind.github.io/posts/sbt-keys">sbt预定义的keys</a></li>
+</ol>
+</p>
+        </article>
+    
+
+</section>
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

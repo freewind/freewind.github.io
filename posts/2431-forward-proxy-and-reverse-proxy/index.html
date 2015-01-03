@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>正向代理与反向代理</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-03-23) 正向代理与反向代理
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>前两天在配置varnish的时候，我看到配置文件中有不少后端服务器的设置，觉得这是在配“反向代理”，但同事说这是“正向代理”。我不确定哪个对，以及它们之间有何区别，便查了一下。</p>
+<p>网上资料很多，便不再重复。我自己的理解是这样的：</p>
+<h2>正向代理</h2>
+<p>我们想访问某个网站，但是访问不了，需要借助另一台服务器的帮助。比如我们番羽墙时会设一些代理服务器(http的，socks的等），然后输入我们要访问的网站，代理服务器便会替我们把内容取回来。这些代理服务器所做的事情就是“正向代理”。</p>
+<p>在正向代理中，目标网站是主角，代理服务器是助手，通常我们都知道自己正在使用代理。</p>
+<p>现实举例：</p>
+<ol>
+<li>我们在火车票代售点买票：“我要买一张明天中午从西安到北京的火车票”</li>
+<li>我们托人从海外代购：“帮我在美国买一个nexus5手机”</li>
+</ol>
+<h2>反向代理</h2>
+<p>我们访问某个网址，它在自己的域名下提供了很多内容，看起来都像是它自己的。我们以为自己访问的就是原始的网站，实际上它只是一个代理服务器。它根据我们的请求路径，从某一个我们不知道的地方拿到了内容，然后当成它自己的东西提供给我们。</p>
+<p>在反射代理中，代理服务器是主角，内容提供者是助手，通常我们并不知道自己正在访问一个代理服务器。</p>
+<p>现实举例：</p>
+<ol>
+<li>我们在超市买东西：买了很多，各个牌子都有，但是我们不知道它们从哪儿来的，只知道超市有卖</li>
+<li>我们把项目外包给某人做：我们要求在规定时间能完成，但他是自己做还是转包给别人，我们并不清楚</li>
+</ol>
+<h2>结论</h2>
+<p>对于公司项目，我们是想用varnish作为前端，让用户在同一个域名下访问所有的内容。而varnish会根据请求路径的不同，到不同的服务器和网站中拿到相应内容，提供给用户。</p>
+<p>对于这种需求，很明显就是“反向代理”了。</p>
+<p>同时，在varnish的文档上写着：</p>
+<blockquote><p>Varnish is a reverse HTTP proxy, sometimes referred to as a HTTP accelerator or a web accelerator.</p>
+</blockquote>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2431';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Xtext：自定义DSL语言（同时拥有完善的编辑器支持）</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) Xtext：自定义DSL语言（同时拥有完善的编辑器支持）
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>今天看到了一个很惊艳的东西：<a href="http://www.eclipse.org/Xtext/">http://www.eclipse.org/Xtext/</a>
+<br  /><p>这是eclipse的一个项目，可以运行在eclipse3.7上。它是一个让我们可以“自己建立一个编程语言或者DSL的框架”。需要做的只是定义一些语法规则，然后，你的新语言或者DSL就出来了。
+<br  /><p>仅仅这样，还不足以让人觉得惊艳，而是因为它天生具有了eclipse中那些代码高亮、语法检查、实时查错、代码提示等高级功能。看一下主页上提供的那些flash演示，那些自定义的语言在编辑时就好像是在eclipse中写java似的，只是语法、关键字和结构等不一样。
+<br  /><p>以我不深入的了解来看，可以使用它简化我们在开发中经常做的事情。比如定义JPA或hibernate的实体bean时，我们以前是通过xml或者注解来给一个javabean增加上各种描述关系。不能不说的是，这样的做法很繁琐、很别扭，但是如果设计出一个专门的DSL呢？其实已经有了，在演示文件中，已经可以看到这种DSL的用法，相当的方便。
+<br  /><p>我现在在想，不知道能不能使用它，来造出一个自己的Java出来。比如我们可以不用等到java8出来，也不需要转向别的语言，自己使用Xtext给java增加上闭包之类的功能。如果再强撼一些，弄出个scala。估计是不可能做到的，但是应该可以实现出一些简单的东西。
+<br  /><p>比如我现在就希望，可以用它定义出一个单元测试生成器DSL。只需要定义一些规则出来，就能智能生成一大堆的单元测试，这样我做topcoder就可以省下很多时间了。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '76';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

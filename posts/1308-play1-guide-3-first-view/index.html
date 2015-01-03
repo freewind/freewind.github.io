@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3. 构建第一个视图</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-01) 3. 构建第一个视图
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>(本文译者是CQS)</p>
+<h4>构建第一个页面</h4>
+<p>现在我们已经建立了第一个数据模型,是时候去创建第一个应用页面了.这个页面将展示最新发的博文,同时也展示了旧的博文链接列表.</p>
+<p>下面这张图片就是我们要看的页面效果原型:</p>
+<p><a href="/user_images/1308-1.png"><img src="/user_images/1308-1.png" alt="image" title="image" /></a></p>
+<h4>用默认的数据引导程序</h4>
+<hr />
+<p>事实上，在写第一个页面前，我们需要做件事情先.写一个没有测试数据的网页应用是不爽的.你不能对你的应用做任何测试.因为我们不曾创建了博文发布的页面，所以我们不能自己发布博文.</p>
+<p>为了得到数据，我们可以在应用载入的时候,去载入一个fixture文件并读取默认的数据。为了执行这个操作，我们新建一个引导任务（Bootstrap Job）.一个Play任务(Job)即在任何Http 请求外执行一些操作，比如说在应用起始时或者间断性地执行周期任务.</p>
+<p>现在让我们创建<code>/yabe/app/Bootstrap.java</code>任务去使用<code>Fixtures</code>载入默认数据.</p>
+<pre><code>import play.*;
+import play.jobs.*;
+import play.test.*;
+
+import models.*;
+
+@OnApplicationStart
+public class Bootstrap extends Job {
+
+public void doJob() {
+    // Check if the database is empty
+        if(User.count() == 0) {
+        Fixtures.loadModels("initial-data.yml");
+        }
+    }
+}
+
+我们用&lt;code&gt;@OnApplicationStart&lt;/code&gt;去注释这个Job是为了告诉Play在应用启动时并同步的执行这个任务.
+
+&gt; 事实上，Play 任务在DEV 和PROD 模式下是不同的.在Dev模式下，Play会等待第一个请求，才会启动应用.所以这个任务也会在第一次请求是同步执行.这种情况下，如果你的任务执行失败，你将在浏览器得到错误信息。在PROD模式下，这个任务会在应用开始就被执行（和`play run`命令同步）同时Play会在发生错误时阻止应用启动.
+
+你需要在`/yabe/conf`目录下创建一个`initial-data.yml`文件.当然你也可以重新使用我们之前用来测试的数据内容`data.yml`.
+
+现在用`play run`命令启动这个应用吧，在浏览器输入[http://localhost:9000/](http://localhost:9000/)查看页面.
+
+#### 构建博客主页
+
+* * *
+
+这次，我们可是要真开始编写博客主页了.
+
+你还记得第一个页面如何显示的吗？先在routes配置文件中规定`/` URL地址去调用`controller.Application.index()`action方法.然后这个方法会调用`render()`并执行`/yabe/app/views/Application/index.html`模板.
+
+我们将保留这些组件，并填添加代码，让它们载入博文列表并展示.
+
+打开`/yabe/app/controllers/Application.java`这个控制器(controller)文件并修改这个`index()`方法去载入博文列表,如下代码：
+
+package controllers;
+
+import java.util.*;
+
+import play.*;
+import play.mvc.*;
+
+import models.*;
+
+public class Application extends Controller {
+
+    public static void index() {
+        Post frontPost = Post.find("order by postedAt desc").first();
+        List&lt;Post&gt; olderPosts = Post.find(
+        "order by postedAt desc"
+        ).from(1).fetch(10);
+        render(frontPost, olderPosts);
+    }
+
+}
+
+你看见如何传递对象给`render()`方法了吗？它允许对应的模板文件使用同名去读取对象。就这个例子而言，变量`frontPost`和`olderPosts`即可以在模板中使用.
+
+打开模板`/yabe/app/views/Application/index.html`并修改去展示这些对象.
+
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+#{if frontPost}
+    &lt;div class="post"&gt;
+    &lt;h2 class="post-title"&gt;
+        &lt;a href="#"&gt;${frontPost.title}&lt;/a&gt;
+    &lt;/h2&gt;
+    &lt;div class="post-metadata"&gt;
+        &lt;span class="post-author"&gt;by ${frontPost.author.fullname}&lt;/span&gt;
+        &lt;span class="post-date"&gt;${frontPost.postedAt.format('MMM dd')}&lt;/span&gt;
+        &lt;span class="post-comments"&gt;
+            &amp;nbsp;|&amp;nbsp; 
+            ${frontPost.comments.size() ?: 'no'} 
+            comment${frontPost.comments.size().pluralize()}
+            #{if frontPost.comments}
+                , latest by ${frontPost.comments[-1].author}
+            #{/if}
+        &lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="post-content"&gt;
+        ${frontPost.content.nl2br()}
+    &lt;/div&gt;
+&lt;/div&gt;
+
+#{if olderPosts}
+    &lt;div class="older-posts"&gt;    
+        &lt;h3&gt;Older posts &lt;span class="from"&gt;from this blog&lt;/span&gt;&lt;/h3&gt;
+
+        #{list items:olderPosts, as:'oldPost'}
+            &lt;div class="post"&gt;
+                &lt;h2 class="post-title"&gt;
+                    &lt;a href="#"&gt;${oldPost.title}&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class="post-metadata"&gt;
+                    &lt;span class="post-author"&gt;
+                        by ${oldPost.author.fullname}
+                    &lt;/span&gt;
+                    &lt;span class="post-date"&gt;
+                        ${oldPost.postedAt.format('dd MMM yy')}
+                    &lt;/span&gt;
+                    &lt;div class="post-comments"&gt;
+                        ${oldPost.comments.size() ?: 'no'} 
+                        comment${oldPost.comments.size().pluralize()}
+                        #{if oldPost.comments}
+                            - latest by     ${oldPost.comments[-1].author}
+                        #{/if}
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        #{/list}
+    &lt;/div&gt;
+
+#{/if}
+
+#{/if}
+
+#{else}
+&lt;div class="empty"&gt;
+    There is currently nothing to read here.
+&lt;/div&gt;
+#{/else}
+
+你可以在Templates章节查看下模板是如何工作的.基本上，它允许你动态读取Java对象.我们使用Groovy驱动模板引擎.大部分简洁的构建正如你所见的如`?:`操作，都是来自Groovy.但是你并不需要去了解如何用Groovy写Play模板.如果你已经对其他模板语言例如JSP（用JSTL驱动)够熟悉的话，你就不用慌，够用了.
+
+好的，现在可以刷新你的博客主页了.
+
+[![image](/user_images/1308-3.png "image")](/user_images/1308-3.png)
+
+虽不靓，但已跑起.
+
+不爽的是你发现你已经在码重复的代码了.因为我们展示多个形式的展示博文（完整的，完整带评论，博文摘要），我们将创建一个类函数的东西可以被多个模板调用.这个东西做的便是Play tag的职能。
+
+创建一个标签，只需要在`/yabe/app/views/tags/`下创建一个`display.html`文件.标签其实另一种模板.它含有参数(像一个函数).这个`#{display/}`标签有两个参数:一个是要被展示的Post对象，另个是展示的模式(`home`，`teaser`，`full`三者之一).
+
+*{ Display a post in one of these modes: 'full', 'home' or 'teaser' }*
+
+&lt;div class="post ${_as == 'teaser' ? 'teaser' : ''}"&gt;
+&lt;h2 class="post-title"&gt;
+    &lt;a href="#"&gt;${_post.title}&lt;/a&gt;
+&lt;/h2&gt;
+&lt;div class="post-metadata"&gt;
+    &lt;span class="post-author"&gt;by ${_post.author.fullname}&lt;/span&gt;,
+    &lt;span class="post-date"&gt;${_post.postedAt.format('dd MMM yy')}&lt;/span&gt;
+    #{if _as != 'full'}
+        &lt;span class="post-comments"&gt;
+            &amp;nbsp;|&amp;nbsp; ${_post.comments.size() ?: 'no'} 
+            comment${_post.comments.size().pluralize()}
+            #{if _post.comments}
+                , latest by ${_post.comments[-1].author}
+            #{/if}
+        &lt;/span&gt;
+    #{/if}
+&lt;/div&gt;
+#{if _as != 'teaser'}
+    &lt;div class="post-content"&gt;
+        &lt;div class="about"&gt;Detail: &lt;/div&gt;
+        ${_post.content.nl2br()}
+    &lt;/div&gt;
+#{/if}
+&lt;/div&gt;
+
+#{if _as == 'full'}
+&lt;div class="comments"&gt;
+    &lt;h3&gt;
+        ${_post.comments.size() ?: 'no'} 
+        comment${_post.comments.size().pluralize()}
+    &lt;/h3&gt;
+
+    #{list items:_post.comments, as:'comment'}
+        &lt;div class="comment"&gt;
+            &lt;div class="comment-metadata"&gt;
+                &lt;span class="comment-author"&gt;by ${comment.author},&lt;/span&gt;
+                &lt;span class="comment-date"&gt;
+                    ${comment.postedAt.format('dd MMM yy')}
+                &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class="comment-content"&gt;
+                &lt;div class="about"&gt;Detail: &lt;/div&gt;
+                ${comment.content.escape().nl2br()}
+            &lt;/div&gt;
+        &lt;/div&gt;
+    #{/list}
+
+&lt;/div&gt;
+#{/if}
+
+现在就可以使用Play标签去重写刚才那带有重复代码的主页了.
+
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+#{if frontPost}
+
+#{display post:frontPost, as:'home' /}
+
+#{if olderPosts.size()}
+
+    &lt;div class="older-posts"&gt;
+        &lt;h3&gt;Older posts &lt;span class="from"&gt;from this blog&lt;/span&gt;&lt;/h3&gt;
+
+        #{list items:olderPosts, as:'oldPost'}
+            #{display post:oldPost, as:'teaser' /}
+        #{/list}
+    &lt;/div&gt;
+
+#{/if}
+
+#{/if}
+
+#{else}
+&lt;div class="empty"&gt;
+    There is currently nothing to read here.
+&lt;/div&gt;
+#{/else}
+
+刷新一下页面,页面OK.
+
+#### 改善布局
+
+* * *
+
+正如你所见，`index.html`模板从`main.html`处继承。因为我们要提供一个通用的布局给所有带有博文标题和登录链接的博文页面，我们需要修改`main.html`文件。 编辑这个`/yable/app/views/main.html`文件
+
+&lt;!DOCTYPE html &gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;#{get 'title' /}&lt;/title&gt;        
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"/&gt;
+    &lt;link rel="stylesheet" type="text/css" media="screen" 
+        href="@{'/public/stylesheets/main.css'}" /&gt;
+    &lt;link rel="shortcut icon" type="image/png" 
+        href="@{'/public/images/favicon.png'}" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;div id="header"&gt;
+        &lt;div id="logo"&gt;
+            yabe.
+        &lt;/div&gt;
+        &lt;ul id="tools"&gt;
+            &lt;li&gt;
+                &lt;a href="#"&gt;Log in to write something&lt;/a&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;div id="title"&gt;
+            &lt;span class="about"&gt;About this blog&lt;/span&gt;
+            &lt;h1&gt;&lt;a href="#"&gt;${blogTitle}&lt;/a&gt;&lt;/h1&gt;
+            &lt;h2&gt;${blogBaseline}&lt;/h2&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div id="main"&gt;
+        #{doLayout /} 
+    &lt;/div&gt;
+
+    &lt;p id="footer"&gt;
+        Yabe is a (not that) powerful blog engine built with the 
+        &lt;a href="http://www.playframework.org"&gt;Play framework&lt;/a&gt;
+        as a tutorial application.
+    &lt;/p&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+刷新并确认结果.发现这个页面Ok了,除了`blogTitle`和`blogBaseline`这两个变量没有被正确显示。因为我们没有在`render(...)`中传递它们。当然我们可以在`index`action方法中的`render()`中添加.因为`main.html`文件被作为其他所有方法模板的基本模板，我并不乐意在每天调用时都传递这两个变量.
+
+有一种方法可以执行同样的效果，即让contoller文件中的每个action都做同样的操作，只需定义一个`@Before`拦截方法。
+
+我们添加一个`addDefaults()`方法到Application controller文件.
+
+@Before
+static void addDefaults() {
+    renderArgs.put("blogTitle", Play.configuration.getProperty("blog.title"));
+    renderArgs.put("blogBaseline", Play.configuration.getProperty("blog.baseline"));
+}
+&gt; 你需要在`Application.java`文件中导入`play.Play`.
+
+在`renderArgs`范围中添加的所有变量都可以被模板获取。你会发现这个方法从`Play.configuration`对象中读取这些变量值.而这个对象包含了`/yabe/conf/application.conf`文件中所有配置的键值(key).
+
+在这个配置文件中添加两个键值:
+
+# Blog engine configuration
+# ~~~~~
+blog.title=Yet another blog
+blog.baseline=We will write about nothing
+
+重新载入这个主页，确认它Ok了.
+
+[![image](/user_images/1308-5.png "image")](/user_images/1308-5.png)
+
+#### 添加一些风格
+
+* * *
+
+现在这个博客主页差不多了，但是它并不美观。我们需要添加一些风格让它更美观些.你会发现这个main 模板文件`main.html`包含了`/public/stylesheets/maim.css`样式表.我们将保留这句话，并在CSS文件中添加样式.
+
+你可以点击[这里](http://shuzu.org:9000/play/books/tutorial/articles/www.playframework.org/documentation/1.2.5/files/main.css)下载，然后复制内容到`/public/stylesheets/main.css`文件下.
+
+刷新这个页面，你就可以看到样式化的页面了.
+
+[![image](/user_images/1308-7.png "image")](/user_images/1308-7.png)
+
+#### 提交工作
+
+* * *
+
+现在这个主页完成了。和往常一样，我们需要提交这个博客版本到bazaar：
+
+$ bzr st
+$ bzr add
+$ bzr commit -m "Home page"
+</code></pre>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1308';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在同一台电脑上运行的socket server和client之间传数据，最大速度为多少？</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-10-26) 在同一台电脑上运行的socket server和client之间传数据，最大速度为多少？
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>我对于Java的socket性能，其实一直都没有一个数值上的概念。比如，写一个最简单的socket server和client，它们什么也不做，就是server不断向client发数据，client收到后就丢弃，只计数算速度。</p>
+<p>那么速度应该是多少呢？</p>
+<p>注意，如果server和client在同一台电脑上，其速度不受网卡限制，因为数据不经过网卡，直接在内存中复制。没有了IO等待，测试的就是Java socket的性能。</p>
+<p>在我的电脑上，最大值为170MBytes/s。我的电脑配置：</p>
+<blockquote><p>AMD Athlon X2 4000+
+<br  />4G DDR2 667 Ram
+<br  />500G Seagate 7200转</p>
+</blockquote>
+<p>朋友的电脑比我要好一些，大约是200MBytes/s。这个速度还是让人觉得不够快，毕竟是内存操作。</p>
+<p><span id="more-497"></span>
+<br  /><p>我在stackoverflow上提了问：<a href="http://stackoverflow.com/questions/7903013/the-speed-of-socket-is-120mb-s-on-a-computer-is-it-normal">http://stackoverflow.com/questions/7903013/the-speed-of-socket-is-120mb-s-on-a-computer-is-it-normal</a></p>
+<p>其中一位牛人的测试结果是：</p>
+<blockquote><p>Read 25,586,204,672 bytes, speed: 5,245 MB/s
+<br  />Read 53,219,426,304 bytes, speed: 5,317 MB/s
+<br  />Read 85,018,968,064 bytes, speed: 5,416 MB/s
+<br  />Read 117,786,968,064 bytes, speed: 5,476 MB/s</p>
+</blockquote>
+<p>你没有看错，5GBytes/s，是我的30倍。他贴出了自己的电脑配置：</p>
+<blockquote><p>I am using an ASUS Maximus IV, i7 2700K at 4.6 GHz, 16 GB of 1600 MHz DDR3, OCZ Vertex 3 240GB SSD, with Centos 5.7.</p>
+</blockquote>
+<p>这配置真让我羡慕：顶级的CPU、内存，还有固态硬盘！</p>
+<p>注：今天终于了解了内存后面的667是什么意思，原来是频率，即667MHz。它与内存带宽的关系是：</p>
+<blockquote><p>内存带宽=频率*内存位宽/8</p>
+</blockquote>
+<p>如果是双通道内存，则位宽为128，单通道为64。所以DDR2 667的带宽为：667*128/8=10672MBytes=10.4GBytes</p>
+<p>但这里引申出来一个问题：DDR2 667的内存的带宽已经这么大，够用了，那么我换成更高频率的内存，CPU不变，对我的程序速度是不是没有任何帮助？</p>
+<p>自如说内存的频率跟CPU是配套的，电脑城装电脑的小弟们才需要知道这些。我觉得我还应该补补这方面的课，因为我对主频外频什么的，一直都不太明白。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '497';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

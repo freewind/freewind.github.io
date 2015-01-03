@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>关于mongodb的使用</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-20) 关于mongodb的使用
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>mongodb是NOSQL数据库中的一种，它是一种文档数据库，其特点是：每一个文档（相当于关系数据库中的一条记录）就像一个json，它的结构是可以完全自定义的；同一个集合（相当于关系数据库中的表）中的所有文档都可以互相不同。这一特点给了mongodb极大的自由，完全不像在关系数据库中那样，必须先规定好每一个表的所有字段。</p>
+<p>自由不一定就是力量，要看用在哪里。</p>
+<p><span id="more-332"></span>
+<br  /><p>我在一个问答网中使用了mongodb，设计了如users, questions, answers, comments等表，在使用中并没有感觉到什么方便之处。相反，因为管理程序的不成熟，在后台维护数据时非常不方便，比如根据条件搜索一些数据，都很难做到。因为mongodb使用的json结构的查询语句，与SQL相比实在太难用了。另外，因为mongodb不要求每个文档的结构相同，也不进行检查，我有时候重构了代码后，发现mongodb的表中居然保存了几种不同结构的数据，还得一个个去检查，改成一样的。</p>
+<p>用过一段时间之后很后悔，如果不是暂停开发，我一定会把它换回postgres。</p>
+<p>后来看到不少朋友都想在项目中尝试使用mongodb。大家都是在尝鲜，并不清楚会带来什么好处。我劝他们不要用，因为得不偿失。</p>
+<p>那么，应该在什么时候使用mongodb呢？我一直在思考，却没有答案。</p>
+<p>直到前两天，跟群里一个朋友聊天，看了他写的一个OA系统，才恍然大悟：原来mongodb应该用于数据结构非常灵活多变的程序中。比如设计表单，每一个表单的结构都是不同的，还可能比较复杂（大表套小表）。如果使用关系数据库，非常麻烦，因为一个表单就需要设计好几个表，表与表之间还可能有复杂的关系。之后的增删改查和统计，都会是非常麻烦的事情。</p>
+<p>然而使用mongodb，一切都变得非常轻松自然。我们需要做的，仅仅是使用json定义一个表单结构，不管多复杂，一个json就搞定了。增删改查也非常简单。所以朋友的系统功能强大，但是代码量很少，表也很少。在实际开发中，效率比同类型的软件高出一个数量级。非常感谢朋友的无私分享，让我学到了。</p>
+<p>再引申出来一个问题：我们可以在关系数据库中的字段里存储json字符串，载入时再把它转换为对象，这样不是也能达到mongodb的效果。我们是不是可以在关系数据库中这样做？</p>
+<p>我的看法是，如果有这种需求，还是直接使用mongodb比较好。因为它不仅仅可以存储类似json的数据，还可以对其中的每一个节点进行查询、排序等，这一点是无法模拟出来的。另外，它在性能上也占有绝对优势。</p>
+<p>最终结论就是：如果你的程序要求数据表结构固定，不会轻易变动，请继续使用传统的关系数据库，不用考虑mongodb；如果相反，则考虑mongodb，会让开发更容易一些。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '332';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

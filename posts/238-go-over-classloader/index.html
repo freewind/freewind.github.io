@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>复习ClassLoader</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-15) 复习ClassLoader
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>这两天在尝试把activejdbc集成到play中。因为两者都需要对类进行增强，有冲突，所以不能直接使用。经过一晚上的反复尝试，终于能让activejdbc在play上跑起来了。但是，很快发现，一旦model类被修改，play重新载入后会报错。</p>
+<p>源代码为：</p>
+<p><pre class="csharpcode"><font color="#ff0000"><strong><span class="kwrd">for</span> (User user : users) {
+<br  /></strong></font>     System.err.println(<span class="str">&ldquo;&raquo;> &ldquo;</span> + user);
+<br  />}```</p>
+<p>红色那行报错为：</p>
+<blockquote><p><strong>ClassCastException</strong> occured : models.User cannot be cast to models.User</p>
+</blockquote>
+<p>一个"models.User"不能转换为另一个"models.User&rdquo;，只能说明一种情况：这个类被两个不同classloader导入了。</p>
+<p>为了完全解决这个问题，我需要好好复习一下Java的classloader机制以及play的classloader运作原理。</p>
+<p><span id="more-238"></span>
+<br  /><p><strong>几篇不错的资料</strong></p>
+<ol>
+<li><a href="http://blog.csdn.net/turkeyzhou/article/details/2776752">http://blog.csdn.net/turkeyzhou/article/details/2776752</a>
+<br  /><li><a href="http://wolfware.bokee.com/3412061.html">http://wolfware.bokee.com/3412061.html</a></li>
+</ol>
+<p>看完这两个，再随便找点别的看看，差不多就能明白个大概了：</p>
+<ol>
+<li>Jvm已经提供了三个级别的ClassLoader，分别是boot -> ext -> app
+<br  /><li>双亲委托：即在找一个类之前，先交给上级，上级搞不定，再自己动手
+<br  /><li>全盘负责：如果自己动手，导入一个类时，它所引用的其它类也由自己导入（导入过程中，遵守双亲委托规则）
+<br  /><li>共享ClassLoader：通过Thread.currentThread().set/getContextClassLoader()
+<br  /><li>两个classloader导入同一个类，不能互相转换。JVM把它们当作不同的类</li>
+</ol>
+<p><strong>JVM默认提供的ClassLoader</strong></p>
+<p><pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">class</span> Test {</p>
+<pre><code>&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; main(String[] args) {
+    &lt;span class="rem"&gt;// AppClassLoader&lt;/span&gt;
+    ClassLoader app = Test.&lt;span class="kwrd"&gt;class&lt;/span&gt;.getClassLoader();
+    System.&lt;span class="kwrd"&gt;out&lt;/span&gt;.println(app);
+
+    ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+    System.&lt;span class="kwrd"&gt;out&lt;/span&gt;.println(systemClassLoader);
+
+    &lt;span class="rem"&gt;// Ext&lt;/span&gt;
+    ClassLoader ext = systemClassLoader.getParent();
+    System.&lt;span class="kwrd"&gt;out&lt;/span&gt;.println(ext);
+
+    &lt;span class="rem"&gt;// Boot&lt;/span&gt;
+    ClassLoader boot = ext.getParent();
+    System.&lt;span class="kwrd"&gt;out&lt;/span&gt;.println(boot);
+
+    &lt;span class="rem"&gt;// Context&lt;/span&gt;
+    ClassLoader context = Thread.currentThread().getContextClassLoader();
+    System.&lt;span class="kwrd"&gt;out&lt;/span&gt;.println(context);
+}
+</code></pre>
+<p>}```</p>
+<p>打印结果如下：</p>
+<p><pre class="csharpcode"><a href="mailto:sun.misc.Launcher$AppClassLoader@addbf1sun.misc.Launcher$AppClassLoader@addbf1sun.misc.Launcher$ExtClassLoader@42e816nullsun.misc.Launcher$AppClassLoader@addbf1">sun.misc.Launcher$AppClassLoader@addbf1 <br  />sun.misc.Launcher$AppClassLoader@addbf1 <br  />sun.misc.Launcher$ExtClassLoader@42e816 <br  /><span class="kwrd">null</span> <br  />sun.misc.Launcher$AppClassLoader@addbf1</a>```</p>
+<p>从中可以看到，我们通常都是在跟AppClassLoader打交道。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '238';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

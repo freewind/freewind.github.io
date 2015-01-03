@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>设置linux的”最大打开文件数量</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-22) 设置linux的”最大打开文件数量
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>通过<code>ulimit -n</code>可以看到linux"最大打开文件数量"的默认值是<code>1024</code>。对于一些程序，如web服务，太小不够用。由于建立SOCKET会占用一个系统句柄，效果类似于打开了一个文件。LINUX默认的最大文件打开个数是1024（可能不同内核版本不一样），所以如果并发太多连接时就会报错。</p>
+<p><span id="more-351"></span>
+<br  /><p>可通过下面几个步骤修改：</p>
+<ol>
+<li><p>vi /etc/pam.d/login</p>
+<p>添加:</p>
+<pre><code>session required /lib/security/pam_limits.so
+</code></pre>
+</li>
+</ol>
+<p>注意看这个文件的注释</p>
+<ol>
+<li><p><code>vi /etc/security/limits.conf</code></p>
+<p>在最后添加：</p>
+</li>
+<li><ul>
+<li>nofile 819200</li>
+<li><ul>
+<li>nproc 819200</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><code>*</code>表示所有用户，如果想仅设置某一个用户，则换成其登录名，如<code>www</code>。</p>
+<pre><code>设置的数值与硬件配置有关，别设置太大了。
+</code></pre>
+<ol>
+<li><p><code>vi /etc/sysctl.conf</code></p>
+<p>在最后添加：</p>
+<pre><code>fs.file-max = 819200
+</code></pre>
+</li>
+</ol>
+<p>然后启用：</p>
+<pre><code>```
+</code></pre>
+<p>sysctl -p</p>
+<pre><code>4.  查看 `ulimit -a`，注意其中的`-n`那一行
+
+    设置：
+
+    ```
+ulimit -n 819200
+</code></pre>
+<ol>
+<li><p><code>echo 819200 &gt; /proc/sys/fs/file-max</code></p>
+<p>查看:</p>
+<pre><code>cat /proc/sys/fs/file-max 
+</code></pre>
+</li>
+</ol>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '351';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

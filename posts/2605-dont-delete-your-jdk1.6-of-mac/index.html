@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>不要删你mac上的jdk1.6</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-04-26) 不要删你mac上的jdk1.6
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>今天早上打开电脑，发现Idea启动不了了！Eclipse也启动不了！</p>
+<p>经过两个多小时的修复，终于找到了原因：我昨天升级jdk后，把Mac自带的jdk1.6删了，而Idea它们就找不到了。</p>
+<p>虽然我已经把<code>/usr/bin/java</code>设成了最新的java路径，后来还在<code>~/.profile</code>和<code>~/.zshrc</code>里都设置了:</p>
+<pre><code>export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+export JDK_HOME=`/usr/libexec/java_home -v 1.7`
+</code></pre>
+<p>还是不行。</p>
+<p>经过搜索，在<a href="https://intellij-support.jetbrains.com/entries/23455956-Selecting-the-JDK-version-the-IDE-will-run-under">https://intellij-support.jetbrains.com/entries/23455956-Selecting-the-JDK-version-the-IDE-will-run-under</a>里找到了一段话：</p>
+<blockquote><p>Mac OS X</p>
+<p>At the moment all our products require Apple JDK 1.6 to be installed in order to run on Mac. JDK 1.7 from Oracle is not officially supported yet and has known problems that stop us from using it by default. Oracle JDK 1.7.0_40 has added support for Retina and works much better than previous versions on Mac. You are welcome to give it a try in case you have any problems with Apple JDK.</p>
+<p>To force running under JDK 1.7 edit /Applications/<Product>.app/Contents/Info.plist file, change JVMVersion from 1.6<em> to 1.7</em> :</p>
+<pre><code>&lt;key&gt;JVMVersion&lt;/key&gt;
+&lt;string&gt;1.7*&lt;/string&gt;
+</code></pre>
+</blockquote>
+<p>似乎IDEA在mac上，默认情况只支持jdk1.6，除非把<code>JVMVersion</code>的值改成<code>1.7*</code>。我改了以后，的确可以启动了，但是也不能每个程序都这么改吧。</p>
+<p>于是只好重装jdk1.6。在java的官网上，还找不到mac里1.6的安装包，最后在这里找到了：</p>
+<p>http://support.apple.com/kb/DL1573</p>
+<p>安装好以后，idea/eclipse就可以正常启动了。</p>
+<p><em></em> jdk路径 <em></em></p>
+<p>Mac里jdk安装的路径还会变，比如曾经jdk1.6，会安装在：</p>
+<pre><code>/System/Library/Java/JavaVirtualMachines/1.6.0.jdk
+</code></pre>
+<p>而jdk1.7和1.8，就会安装在：</p>
+<pre><code>/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk
+/Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk
+</code></pre>
+<p>而且好像一般的java程序还只认第一个。所以为了减少麻烦，最好不要删除你mac上的jdk1.6</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2605';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

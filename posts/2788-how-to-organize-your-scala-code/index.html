@@ -1,0 +1,991 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>如何组织你的Scala代码</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+
+    <script src='/assets/slide/js/slides.js'></script>
+    <script src='/assets/slide/js/slide-resize.js'></script>
+</head>
+
+<style>
+    /* Your individual styles here, or just use inline styles if that’s what you want. */
+</style>
+
+<body style='display: none'>
+
+<section class='slides layout-regular template-default'>
+    <!-- Your slides (<article>s) go here. Delete or comment out the slides below. -->
+
+    <!-- <article class='biglogo'></article> -->
+
+    
+        <article>
+            <p><h1>如何组织你的Scala代码</h1>
+<p>无关“设计模式”</p>
+<p>核心是能否找到一些方式“优雅的支持依赖注入”，并且“利用Scala的丰富特性”，还“不准用框架”</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>如果&hellip;</h2>
+<ol>
+<li>如果我们的代码不使用依赖注入，直接<code>new</code>，代码结构就会简单随意到不需要考虑这些问题</li>
+<li>如果scala特性不丰富（如同Java），那我们选择不多，就不用想太多了</li>
+<li>如果使用某些DI框架，可沿用框架制定的规则（如<code>Macwire</code>, <code>Scaldi</code>），也不需要考虑太多</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>但是&hellip;</h2>
+<p>Scala中有:</p>
+<ol>
+<li><code>trait</code></li>
+<li><code>implicit</code></li>
+<li><code>函数式</code></li>
+<li><code>Monad</code></li>
+<li>&hellip;</li>
+</ol>
+<p>我们是否能找到一种只利用语言本身特性，以尽量优雅的方式来实现依赖注入，同时让我们的代码拥有良好的结构。</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>取材</h2>
+<ol>
+<li>实际项目<ul>
+<li><strong>Constructor parameters</strong></li>
+<li><strong>Objects as functions</strong></li>
+<li>implicit method parameters</li>
+</ul>
+</li>
+<li>杨云的Scala培训代码<ul>
+<li><strong>(simple cake) <code>trait</code> and <code>self type annotation</code></strong></li>
+</ul>
+</li>
+<li>考虑过但是未在项目中使用的<ul>
+<li>Reader monad</li>
+</ul>
+</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>用例说明</h2>
+<ul>
+<li>输入：一个网页的url</li>
+<li>输出：网页上包含的所有图片地址</li>
+</ul>
+<p><br /></p>
+<p>为了实现该功能，我们将会访问网络，取回页面的html内容，然后对其包含的<code>&lt;img&gt;</code>标签进行解析，取出图片的地址。</p>
+<p>(将会使用java/scala内置的或者第三方类库，简化实现)</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>如果不进行依赖注入</h2>
+<p>根据url取回网页html代码</p>
+<pre><code class="scala">import scala.sys.process._
+import scala.util.Try
+
+class PageFetcher {
+  def fetch(url: String): Try[String] = Try {
+    val output = new ByteArrayOutputStream
+    (new URL(url) #&gt; output).!!
+    output.toString("UTF-8")
+  }
+}
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><p>从html代码中，找出所有图片地址</p>
+<pre><code class="scala">import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+
+class ImageExtractor {
+  def extractImages(html: String): List[String] = {
+    val doc = Jsoup.parse(html)
+    val imgs = doc.select("img").listIterator()
+               .asInstanceOf[JIterator[Element]].toList
+    imgs.map(_.attr("src"))
+  }
+}
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>组合在一起：</h2>
+<pre><code class="scala">class MyImageFinder {
+  val pageFetcher = new PageFetcher
+  val imageExtractor = new ImageExtractor
+
+  def find(url: String): Try[List[String]] = {
+    pageFetcher.fetch(url).map(html =&gt; imageExtractor.extractImages(html))
+  }
+}
+</code></pre>
+<p>注意<code>pageFetcher</code>和<code>imageExtractor</code>都是直接<code>new</code>出来的，而不是注入进来的</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>问题</h2>
+<p>我们没有办法对<code>MyImageFinder</code>进行单元测试，只能：</p>
+<ol>
+<li>提供一个真实的url，通过网络取回数据，进行测试</li>
+<li>在本地启动一个http server</li>
+</ol>
+<p>复杂、不可靠、甚至不可能</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h1>为了让我们更容易的编写单元测试并且利用Scala的各种豪华特性来体验Scala的强大灵活就让我们想尽各种办法来注入你的依赖吧</h1>
+</p>
+        </article>
+    
+        <article>
+            <p><h1>使用contructor parameters进行注入</h1>
+<p>这种熟悉的方式，我们在Java里经常这么干</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">class MyImageFinder(pageFetcher: PageFetcher, 
+                    imageExtractor: ImageExtractor) {
+  def find(url: String): Try[List[String]] = {
+    pageFetcher.fetch(url).map(html =&gt; imageExtractor.extractImages(html))
+  }
+}
+</code></pre>
+<p><code>pageFetcher</code>与<code>imageExtractor</code>通过构造参数注入进来</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>在入口处组装</h2>
+<pre><code class="scala">object Main {
+  val pageFetcher = new PageFetcher
+  val imageExtractor = new ImageExtractor
+  val myImageFinder = new MyImageFinder(pageFetcher, imageExtractor)
+
+  def main(args: Array[String]) {
+    val url = args.head
+    myImageFinder.find(url)
+  }
+}
+</code></pre>
+<p>（这样的入口类不用写单元测试）</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>测试</h2>
+<pre><code class="scala">trait Mocking extends Scope {
+  val pageFetcher = mock[PageFetcher]
+  val imageExtractor = mock[ImageExtractor]
+  val imageFinder = new MyImageFinder(pageFetcher, imageExtractor)
+}
+</code></pre>
+<p>用一个<code>trait</code>，把各mock类圈起来，方便后面使用</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">class MyImageFinderSpec extends Specification with Mockito {
+
+  "MyImageFinder" should {
+    "return images successfully if ..." in new Mocking {
+
+      pageFetcher.fetch("test-url") returns Success("some-html")
+      imageExtractor.extractImages("some-html") returns List("a.png", "b.png")
+
+      val images = imageFinder.find("test-url")
+
+      images must beASuccessfulTry(List("a.png", "b.png"))
+    }
+  }
+
+}
+</code></pre>
+<p>在<code>new Mocking</code>中，可以直接使用前面定义的mock</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>总结</h2>
+<p><strong>优点</strong></p>
+<ul>
+<li>简单，容易理解</li>
+<li>很成熟</li>
+<li>大多数情况下推荐使用</li>
+</ul>
+<p><strong>问题</strong></p>
+<ul>
+<li>我们是在写scala吗？</li>
+</ul>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>回顾及提问</h2>
+<ol>
+<li>不使用依赖注入</li>
+<li><font color="green">利用构造参数注入依赖</font></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h1>Objects as Functions</h1>
+<p>如果一个类中只有一个方法，为什么不把它变成一个函数？</p>
+</p>
+        </article>
+    
+        <article>
+            <p><p>通常的类定义是这样的（包含有一个或多个方法）：</p>
+<pre><code class="scala">class PageFetcher {
+  def fetch(url: String): Try[String] = Try {
+    ...
+  }
+}
+</code></pre>
+<p>对于这里定义的<code>fetch</code>，我们要调用它的时候，要写成这样：</p>
+<pre><code class="scala">pageFetcher.fetch("some-url")
+</code></pre>
+<p>即：<code>名词.动词(参数)</code></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>存在的问题</h2>
+<ol>
+<li>表达重复: <code>pageFetcher.fetch</code></li>
+<li>多个职责: <code>obj.method1</code>, <code>obj.method2</code>, <code>obj.method3</code></li>
+<li>无法很好利用scala对函数的支持，因为<code>obj.method</code>是方法</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>如何解决</h2>
+<p>每个<code>class</code>或者<code>object</code>都定义为函数类型</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>定义一个函数类型的FetchPage</h2>
+<pre><code class="scala">object FetchPage extends (String =&gt; Try[String]) {
+  def apply(url: String) = Try {
+    val output = new ByteArrayOutputStream
+    (new URL(url) #&gt; output).!!
+    output.toString("UTF-8")
+  }
+}
+</code></pre>
+<p>（后面详细讲解）</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">object FetchPage extends (String =&gt; Try[String]) {
+    ...
+}
+</code></pre>
+<ol>
+<li>Scala中，每一个函数都有类型</li>
+<li>Scala定义了大量trait用来表示函数类型：<ul>
+<li><code>Function0[R]</code>: <code>() =&gt; R</code></li>
+<li><code>Function1[P1,R]</code>: <code>P1 =&gt; R</code></li>
+<li><code>Function2[P1,P2,R]</code>: <code>(P1, P2) =&gt; R</code></li>
+</ul>
+</li>
+<li><code>String =&gt; Try[String]</code>是<code>Function1[String, Try[String]]</code>的语法糖</li>
+<li>我们可以继承一个函数类型，它本身或者它的实例也将是一个函数</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">object FetchPage extends (String =&gt; Try[String]) {
+  def apply(url: String) = Try {
+    ...
+  }
+}
+</code></pre>
+<ol>
+<li>我们可以继承一个函数类型，实现其<code>apply</code>方法，提供自己的逻辑</li>
+<li><code>FetchPage</code>是个函数，所以把它命名为一个<strong>动词</strong></li>
+<li>可直接调用<code>FetchPage("some-url")</code>，等价于<code>FetchPage.apply("some-url")</code></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">object FetchPage extends (String =&gt; Try[String]) {
+  def apply(url: String) = Try { ... }
+}
+</code></pre>
+<p><code>FetchPage</code>是一个如假包换的函数，意味着：</p>
+<ol>
+<li>我们可以这样调用: <code>FetchPage("some-url")</code></li>
+<li>我们可以这样组合：<code>FetchPage andThen (s:String)=&gt;s.doSomething</code></li>
+<li>我们可以依赖<code>String =&gt; Try[String]</code>这种通用的类型，而不依赖<code>FetchPage</code>这种具体的类型</li>
+<li>我们可以方便的构造出一些函数帮助测试: <code>_ =&gt; "some-html"</code></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>ExtractImages</h2>
+<pre><code class="scala">object ExtractImages extends (String =&gt; List[String]) {
+  def apply(html: String): List[String] = {
+    val doc = Jsoup.parse(html)
+    val imgs = doc.select("img").listIterator().asInstanceOf[JIterator[Element]].toList
+    imgs.map(_.attr("src"))
+  }
+}
+</code></pre>
+<p><code>ExtractImages</code>继承自<code>String =&gt; List[String]</code>，实现了<code>apply</code>方法，它是一个函数</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>FindMyImages</h2>
+<pre><code class="scala">class FindMyImages(fetchPage: String =&gt; Try[String], 
+    extractImages: String =&gt; List[String]) 
+    extends (String =&gt; Try[List[String]]) {
+  def apply(url: String): Try[List[String]] = {
+    fetchPage(url).map(extractImages)
+  }
+}
+</code></pre>
+<p>注意：<code>FindMyImages</code>依赖于通用的<code>String =&gt; Try[String]</code>类型，而不是具体的<code>FetchPage</code>类型</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">fetchPage: String =&gt; Try[String], extractImages: String =&gt; List[String]
+</code></pre>
+<p>由于<code>fetchPage</code>和<code>extractImages</code>都是函数，我们在需要时可以调用它们的<code>andThen/compose</code>等方法，组合多个函数:</p>
+<pre><code class="scala">func1 andThen func2
+func2 compose func1
+</code></pre>
+<p>（这里的例子没有体现）</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>组装</h2>
+<pre><code class="scala">object MainObjectAsFunctions {
+
+  val findMyImages = new FindMyImages(FetchPage, ExtractImages)
+
+  def main(args: Array[String]) {
+    val url = args.head
+    findMyImages(url)
+  }
+
+}
+</code></pre>
+<p>直接把<code>FetchPage</code>和<code>ExtractImage</code>传进去，因为它们都是<code>object</code></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>测试</h2>
+<pre><code class="scala">class FindMyImagesSpec extends Specification {
+  "MyImageFinder" should {
+    "return a failure if pageFetcher can't get the page" in {
+      val findMyImages = new FindMyImages(
+        _ =&gt; Failure(new Throwable("test-connection-error")),
+        _ =&gt; ???
+      )
+      val images = findMyImages("any-url")
+      images must beAFailedTry.which(_.getMessage === "test-connection-error")
+    }
+  }
+}
+</code></pre>
+<p>注意到那两个mock出来的函数了吗？</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">class FindMyImagesSpec extends Specification {
+
+  "MyImageFinder" should {
+    "return images successfully if ..." in {
+      val findMyImages = new FindMyImages(
+        { case "test-url" =&gt; Success("some-html-code-contains-images")},
+        { case "some-html-code-contains-images" =&gt; List("a.png", "b.png")}
+      )
+
+      val images = findMyImages("test-url")
+
+      images must beASuccessfulTry(List("a.png", "b.png"))
+    }
+  }
+
+}
+</code></pre>
+<p>如果你要求传入特定的参数，使用<code>{case =&gt;}</code>声明一个偏函数</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>问题：缺少线索</h2>
+<pre><code class="scala">object FetchPage extends (String =&gt; Try[String])
+
+object ExtractImages extends (String =&gt; List[String])
+
+class FindMyImages(fetchPage: String =&gt; Try[String], 
+    extractImages: String =&gt; List[String]) 
+    extends (String =&gt; Try[List[String]])
+</code></pre>
+<p>这么多<code>String =&gt; Try[String]</code>, <code>String =&gt; List[String]</code>，我已经晕了</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>type alias 和 package object</h2>
+<pre><code class="scala">package object some_package {
+  type FetchPage = String =&gt; Try[String]
+  type ExtractImages = String =&gt; List[String]
+  type FindMyImages = String =&gt; Try[List[String]]
+}
+</code></pre>
+<p>这里声明了一个<code>package object</code>，名为<code>some_package</code>。所有位于<code>some_package</code>下的类，可以直接访问这里定义的各type alias</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">package some_package
+
+object FetchPage extends FetchPage
+object ExtractImages extends ExtractImages
+class WillFindMyImages(fetchPage: FetchPage, extractImages: ExtractImages)
+    extends FindMyImages
+</code></pre>
+<p>这里我们可以引用前面定义的type alias了，看起来是不是清楚了许多？</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>总结</h2>
+<p><strong>优点</strong></p>
+<ul>
+<li>最大程度利用了scala对函数的支持</li>
+<li>一个类或object只实现一个单一功能，职责明确</li>
+<li>测试时的mock方式非常给力</li>
+</ul>
+</p>
+        </article>
+    
+        <article>
+            <p><p><strong>问题</strong></p>
+<ul>
+<li>当多个函数的类型一致时，容易误传，不会提示编译错误</li>
+<li>IDEA不能显示某个<code>type alias</code>有哪些子类，跳转不便</li>
+<li><code>type alias</code>的声明通常放在<code>package object</code>中，而不能放在实现类的旁边，不方便查看（Scala不支持在top level声明type alias)</li>
+</ul>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>回顾及提问</h2>
+<ol>
+<li>不使用依赖注入</li>
+<li>利用构造参数注入依赖</li>
+<li><font color="green">定义函数对象，把函数当依赖注入</font></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h1>你听过说Cake pattern吗</h1>
+<p>利用scala提供的<code>trait</code>和<code>self type annotation</code>来注入依赖</p>
+</p>
+        </article>
+    
+        <article>
+            <p><p><br /><br /><br /></p>
+<p><a href="http://jonasboner.com/2008/10/06/real-world-scala-dependency-injection-di/">http://jonasboner.com/2008/10/06/real-world-scala-dependency-injection-di/</a></p>
+<p><br /></p>
+<blockquote><p>This pattern is first explained in Martin Oderskys’ paper <a href="http://lamp.epfl.ch/~odersky/papers/ScalableComponent.pdf">Scalable Component Abstractions</a> (which is an excellent paper that is highly recommended) as the way he and his team structured the Scala compiler</p>
+</blockquote>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>Simple Cake</h2>
+<p>但是对于普通的项目来说，Cake Pattern过于复杂，所以出现了很多简化的方案，比如:</p>
+<ul>
+<li>thin cake: <a href="http://java.dzone.com/articles/using-scala-traits-modules-or">http://java.dzone.com/articles/using-scala-traits-modules-or</a></li>
+</ul>
+<p><br /></p>
+<p>由于我们这里的方案与<strong>thin-cake</strong>有所不同，所以我使用了一个不同的名字<strong>simple-cake</strong></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>来自“通过构造参数注入”的普通例子</h2>
+<pre><code class="scala">class PageFetcher { 
+    def fetch(url:String):Try[String] = ???
+}
+class ImageExtractor {
+    def extractImages(html:String):List[String] = ???
+}
+class MyImageFinder(pageFetcher: PageFetcher, imageExtractor: ImageExtractor) {
+    def find(url:String):Try[List[String]] = {
+        pageFetcher.fetch(url).map(html =&gt; imageExtractor.extractImages(html))
+    }
+}
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>Simple Cake改写后的代码</h2>
+<pre><code class="scala">trait PageFetcher { 
+    def fetch(url:String):Try[String] = ???
+}
+trait ImageExtractor {
+    def extractImages(html:String):List[String] = ???
+}
+trait MyImageFinder {
+  self: PageFetcher with ImageExtractor =&gt;
+  def find(url: String): Try[List[String]] = {
+    fetch(url).map(html =&gt; extractImages(html))
+  }
+}
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>特点</h2>
+<ol>
+<li>各小功能都使用<code>trait</code>定义</li>
+<li>每个<code>trait</code>中只声明<strong>方法</strong></li>
+<li>通过<code>self type annotation</code>语法声明依赖：<code>self: PageFetcher with ImageExtractor =&gt;</code></li>
+<li>直接调用依赖中的方法来实现新的功能</li>
+<li>在入口处混入所有需要的<code>trait</code>（见下页）</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>组装</h2>
+<pre><code class="scala">object Main extends MyImageFinder with PageFetcher with ImageExtractor {
+
+  def main(args: Array[String]) {
+    val url = args.head
+    find(url)
+  }
+}
+</code></pre>
+<p>注意直接在<code>Main</code>上混入了所有的<code>trait</code>，不需要手动注入依赖</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>测试</h2>
+<pre><code class="scala">"MyImageFinder" should {
+  "return images successfully if ..." in {
+    val imageFinder = new MyImageFinder with PageFetcher with ImageExtractor {
+      override def fetch(url: String) = url match {
+        case "test-url" =&gt; Success("some-html") }
+      override def extractImages(html: String) = html match {
+        case "some-html" =&gt; List("a.png", "b.png") }
+    }
+    val images = imageFinder.find("test-url")
+    images must beASuccessfulTry(List("a.png", "b.png"))
+  }
+}
+</code></pre>
+<p>通过<code>with</code>和<code>override</code>，不需要使用<code>mockito</code></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>特点</h2>
+<p><strong>优点</strong></p>
+<ol>
+<li>易实现、易理解</li>
+<li>巧妙利用了scala的语言特性</li>
+<li>mock方式比较简单</li>
+</ol>
+<p><strong>问题</strong></p>
+<ol>
+<li>需要注意多个trait中是否同名方法（通过更有描述性的命名和测试来保证正确性）</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>回顾及提问</h2>
+<ol>
+<li>不使用依赖注入</li>
+<li>利用构造参数注入依赖</li>
+<li>定义函数对象，把函数当依赖注入</li>
+<li><font color="green">利用<code>trait</code>和<code>self type annotation</code>注入依赖</font></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>通过方法参数注入依赖</h2>
+<p>我不喜欢向类的构造器中注入依赖，因为如果有多个方法，我不知道它们将被哪个方法调用</p>
+<p>我希望依赖出现在方法的参数列表中</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">class MyService(dep1: Dep1, dep2: Dep2, dep3: Dep3) {
+  def method1(s:String) = dep1.doIt(s)
+  def method2(s:String) = dep2.doIt(dep3.doIt(s))
+}
+</code></pre>
+<p><code>method1</code>只使用了<code>dep1</code>，<code>method2</code>只使用了<code>dep2/dep3</code>，但是我需要同时向<code>MyService</code>注入所有的依赖。</p>
+<p>如果不看实现，我不知道<code>method1</code>和<code>method2</code>有哪些依赖。</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>把依赖移到每个方法中</h2>
+<pre><code class="scala">class MyService {
+  def method1(s:String, dep1: Dep1) = dep1.doIt(s)
+  def method2(s:String, dep2: Dep2, dep3: Dep3) = dep2.doIt(dep3.doIt(s))
+}
+</code></pre>
+<p><code>MyService</code>没有构造参数了，它们都移到了相应的方法中</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>存在的问题</h2>
+<ol>
+<li>很多方法可能都有长长的参数列表</li>
+<li>如果一个方法调用多个方法，那么它需要提供所有需要的参数（更长了）</li>
+<li>难以分清哪些参数是依赖，哪些是我们真正要处理的</li>
+<li>向一个方法中增删依赖时，会递归影响所有调用它的方法（以及测试），修改量巨大</li>
+<li>在调用一个方法时必须显式传入所有的依赖，影响阅读</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>curry 和 implicit</h2>
+<pre><code class="scala">class MyService {
+  def method1(s:String)(implicit dep1: Dep1) = dep1.doIt(s)
+  def method2(s:String)(implicit dep2: Dep2, dep3: Dep3) = dep2.doIt(dep3.doIt(s))
+}
+</code></pre>
+<ol>
+<li>第一个括号里是我们要处理的参数，第二个括号里是要注入的依赖</li>
+<li>第二个括号标记为<code>implicit</code>，意味着我们有办法避免显式传入参数</li>
+<li><code>implicit</code>作用于所有括号中的全部参数，并不只针对<code>dep1</code>或<code>dep2</code></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>PageFetcher</h2>
+<pre><code class="scala">class PageFetcher {
+  def fetch(url: String)(implicit dep1: Dep1, dep2: Dep2): Try[String] = Try {
+    val output = new ByteArrayOutputStream
+    (new URL(url) #&gt; output).!!
+    output.toString("UTF-8")
+  }
+}
+</code></pre>
+<p>为了突出依赖的个数，我额外定义了几个依赖<code>Dep1</code>, <code>Dep2</code>, <code>Dep3</code>。注意它们被声明为<code>implicit</code></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>ImageExtractor</h2>
+<pre><code class="scala">class ImageExtractor {
+  def extractImages(html: String)(implicit dep2: Dep2, dep3: Dep3): List[String] = {
+    val doc = Jsoup.parse(html)
+    val imgs = doc.select("img").listIterator().asInstanceOf[JIterator[Element]].toList
+    imgs.map(_.attr("src"))
+  }
+}
+</code></pre>
+<p>同样将<code>dep2</code>和<code>dep3</code>声明为<code>implicit</code></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>MyImageFinder</h2>
+<pre><code class="scala">object MyImageFinder {
+  def find(url: String)(implicit pageFetcher: PageFetcher, imageExtractor: ImageExtractor, dep1: Dep1, dep2: Dep2, dep3: Dep3): Try[List[String]] = {
+    pageFetcher.fetch(url).map(html =&gt; imageExtractor.extractImages(html))
+  }
+}
+</code></pre>
+<p>注意，有一大堆参数都声明为<code>implicit</code>了。</p>
+<p>由于<code>dep1/dep2/dep3</code>都声明为<code>implicit</code>了，我们不需要<strong>显式</strong>把它们传给<code>pageFetcher.fetch(url)</code>以及<code>imageExtractor.extractImages(html)</code>，编译器会帮我们。</p>
+</p>
+        </article>
+    
+        <article>
+            <p><p>如果没有<code>implicit</code>，我们必须写成：</p>
+<pre><code class="scala">pageFetcher.fetch(url)(dep1,dep2)
+  .map(html =&gt; imageExtractor.extractImages(html)(dep2,dep3))
+</code></pre>
+<p>注意注入的<code>(dep1,dep2)</code>和<code>(dep2,dep3)</code>是否影响阅读？</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>组装</h2>
+<pre><code class="scala">object Main {
+  implicit val pageFetcher = new PageFetcher
+  implicit val imageExtractor = new ImageExtractor
+  implicit val dep1 = new Dep1
+  implicit val dep2 = new Dep2
+  implicit val dep3 = new Dep3
+
+  def main(args: Array[String]) {
+    var url = args.head
+    MyImageFinder.find(url)
+  }
+}
+</code></pre>
+<p>依赖都声明为<code>implicit</code>，不需要显式传给<code>find</code></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>测试</h2>
+<pre><code class="scala">trait Mocking extends Scope {
+  implicit val pageFetcher: PageFetcher = mock[PageFetcher]
+  implicit val imageExtractor: ImageExtractor = mock[ImageExtractor]
+  implicit val dep1: Dep1 = mock[Dep1]
+  implicit val dep2: Dep2 = mock[Dep2]
+  implicit val dep3: Dep3 = mock[Dep3]
+}
+</code></pre>
+<p>注意：当我们在trait中声明<code>implicit</code>值时，最好显式给出类型，不然在某些情况下会因为scala的类型推断而报错</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">class MyImageFinderSpec extends Specification with Mockito {
+
+  "MyImageFinder" should {
+    "return images successfully if ..." in new Mocking {
+      pageFetcher.fetch("test-url") returns Success("some-html")
+      imageExtractor.extractImages("some-html") returns List("a.png", "b.png")
+
+      val images = MyImageFinder.find("test-url")
+
+      images must beASuccessfulTry(List("a.png", "b.png"))
+    }
+  }
+}  
+</code></pre>
+<p>在<code>new Mocking</code>内部调用<code>fetch</code>、<code>extractImages</code>和<code>find</code>时，不需要显式传入依赖</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>总结</h2>
+<p><strong>优点</strong></p>
+<ol>
+<li>依赖声明在方法的参数列表中，方便查看当前方法的依赖</li>
+<li>测试某方法时只需要给出它所需要的依赖</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><p><strong>问题</strong></p>
+<ol>
+<li><code>implicit</code>难以追踪：可以从函数参数中找，也可以从所在的类及<code>import</code>中找</li>
+<li>因为调用其它方法时不需要显式传入依赖，所以不知道哪个依赖被谁用了</li>
+<li>难以知道某个依赖是否已经没有用，是否可以删掉</li>
+</ol>
+<p>与“通过构造参数注入依赖”的方式相比，这种方式并没有带来更多的好处（不推荐）</p>
+<p>改进方案：<code>Reader monad</code>?</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>回顾及提问</h2>
+<ol>
+<li>不使用依赖注入</li>
+<li>利用构造参数注入依赖</li>
+<li>定义函数对象，把函数当依赖注入</li>
+<li>利用<code>trait</code>和<code>self type annotation</code>注入依赖</li>
+<li><font color="green">通过方法的implicit参数注入依赖</font></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h1>我是函数式死忠，我要用Monad</h1>
+<p>试试<code>Reader monad</code>?</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>随便讲，随便听</h2>
+<p><code>Reader monad</code>可看作是对“通过implicit注入依赖”的一种改进</p>
+<p>在所有方法拥有一个共同的单一依赖的情况下，使用<code>Reader</code>看起来是一种很优雅的方案。</p>
+<p>但是，一旦不同的方法有不同的依赖，或者有不同的返回值时，就会遇到各种各样的麻烦。</p>
+<p>而解决方案对于不熟悉函数式及Manod的人（e.g. 我）来说，如同天书一般。</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>一个抄来的简单例子</h2>
+<p>来自于下面这篇讲解<code>Reader</code>的博客：</p>
+<p><a href="http://blog.originate.com/blog/2013/10/21/reader-monad-for-dependency-injection/">http://blog.originate.com/blog/2013/10/21/reader-monad-for-dependency-injection/</a></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>基础类</h2>
+<pre><code class="scala">case class User(email: String, 
+                supervisorId: Int, 
+                firstName: String, 
+                lastName: String)
+
+trait UserRepository {
+  def get(id: Int): User
+  def find(username: String): User
+}
+</code></pre>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>有些方法需要依赖</h2>
+<pre><code class="scala">import scalaz.Reader
+trait Users {
+  def getUser(id: Int) = Reader((userRepository: UserRepository) =&gt;
+    userRepository.get(id)
+  )
+  def findUser(username: String) = Reader((userRepository: UserRepository) =&gt;
+    userRepository.find(username)
+  )
+}
+</code></pre>
+<p>在需要注入依赖的地方，定义一个新的函数，用<code>Reader(...)</code>包起来，返回一个<code>Reader monad</code>.</p>
+</p>
+        </article>
+    
+        <article>
+            <p><pre><code class="scala">object UserInfo extends Users {
+  def userEmail(id: Int) = getUser(id) map (_.email)
+  def userInfo(username: String) =
+    for {
+      user &lt;- findUser(username)
+      boss &lt;- getUser(user.supervisorId)
+    } yield Map(
+      "fullName" -&gt; s"${user.firstName} ${user.lastName}",
+      "email" -&gt; s"${user.email}",
+      "boss" -&gt; s"${boss.firstName} ${boss.lastName}"
+    )
+}
+</code></pre>
+<p>可以使用<code>for表达式</code>的<code>&lt;-</code>语法对<code>Reader</code>类型的值进行操作，条理清晰，且不需要传入依赖</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>注入依赖</h2>
+<pre><code class="scala">val userRepository = getUserPepositoryFromSomeWhere()
+
+UserInfo.userEmail(123)(userRepository)
+UserInfo.userInfo("Freewind")(userRepository)
+</code></pre>
+<p>只需在最终使用的地方传入依赖即可。</p>
+<p>避免了“implicit参数注入依赖”方式中的很多问题，但是只在这种极为简单的情况下看起来很简单。</p>
+<p>当情况复杂的时候，会变得很复杂（见下页）</p>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>如果你想了解更多</h2>
+<ol>
+<li><a href="http://blog.originate.com/blog/2013/10/21/reader-monad-for-dependency-injection/">介绍Reader的文章，也是前面例子的出处</a></li>
+<li><a href="https://thenewcircle.com/s/post/1108/dependency_injection_in_scala">Functional programming in scala作者关于Reader的一个演讲视频</a></li>
+<li>我遇到困难后，在stackoverflow上提的一些问题：<ul>
+<li><a href="http://stackoverflow.com/questions/25949608/how-to-handle-reader-monad-and-try">How to handle <code>Reader</code> monad and <code>Try</code>?</a></li>
+<li><a href="http://stackoverflow.com/questions/25947783/how-to-inject-multi-dependencies-when-i-use-reader-monad-for-dependency-inject">How to inject multi dependencies when I use “Reader monad” for dependency injection?</a></li>
+</ul>
+</li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>回顾及提问</h2>
+<ol>
+<li>不使用依赖注入</li>
+<li>利用构造参数注入依赖</li>
+<li>定义函数对象，把函数当依赖注入</li>
+<li>利用<code>trait</code>和<code>self type annotation</code>注入依赖</li>
+<li>通过方法的implicit参数注入依赖</li>
+<li><font color="green">Reader Monad</font></li>
+</ol>
+</p>
+        </article>
+    
+        <article>
+            <p><h2>示例源代码</h2>
+<p><a href="http://github.com/freewind/scala-code-organize">http://github.com/freewind/scala-code-organize</a></p>
+</p>
+        </article>
+    
+        <article>
+            <p><h1>谢谢</h1>
+</p>
+        </article>
+    
+
+</section>
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

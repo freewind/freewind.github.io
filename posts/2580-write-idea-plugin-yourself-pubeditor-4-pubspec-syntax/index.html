@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>自己动手写IDEA plugin – PubEditor (4) pubspec.yaml文件语法</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-04-10) 自己动手写IDEA plugin – PubEditor (4) pubspec.yaml文件语法
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>pubspec.yaml在本质上是一个YAML文件，所以它的语法遵守YAML的规定。但同时它的内容又比较简单，因为它规定了哪些配置项是有效的，其它的都会被自动忽略。</p>
+<p>全部有效选项如下：</p>
+<pre><code class="yaml">name: newtify
+version: 1.2.3
+description: &gt;
+  Have you been turned into a newt?  Would you like to be?
+  This package can help: it has all of the
+  newt-transmogrification functionality you've been looking
+  for.
+author: Nathan Weizenbaum &lt;nweiz@google.com&gt;
+homepage: http://newtify.dartlang.org
+documentation: http://docs.newtify.com
+dependencies:
+  efts: '&gt;=2.0.4 &lt;3.0.0'
+  transmogrify: '&gt;=0.4.0 &lt;1.0.0'
+dev_dependencies:
+  unittest: '&gt;=0.6.0'
+dependency_overrides:
+  transmogrify:
+    path: ../transmogrify_patch/
+</code></pre>
+<p>其中只有<code>name</code>项是在所有情况下都必须的，<code>version</code>和<code>description</code>只有当要发布时才是必须的，其它的都是可选的。除它们以外的内容都会被忽略。</p>
+<p>上面是一个简化的模板，实际上很多选项还有更复杂的用法。更详细的内容，请参考官方文档：<a href="https://www.dartlang.org/tools/pub/pubspec.html">https://www.dartlang.org/tools/pub/pubspec.html</a></p>
+<p>我原以为IDEA中有可直接使用的YAML插件，但是发现竟然没有！而YAML语法实际上还有比较复杂的，对于我这次的任务来说，提供完整的YAML支持有点不太现实，所以我打算仅仅按pubspec.yaml的定义来实现部分YAML功能。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2580';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>关键字type</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) 关键字type
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在看scalatra源代码时，看到它在一段代码中，使用了type关键字，如下：
+<br  /><pre class="csharpcode">type Attributes = {</p>
+<pre><code>def getAttribute(name: String): AnyRef
+def getAttributeNames(): java.util.Enumeration[_]
+def setAttribute(name: String, &lt;span class="kwrd"&gt;value&lt;/span&gt;: AnyRef): Unit
+def removeAttribute(name: String): Unit
+</code></pre>
+<p>}```
+<br  /><p>这个type是干什么用的呢？</p>
+<p><span id="more-193"></span>
+<br  /><p>@爱国者给了一段代码，解答了这个问题，如下：
+<br  /><pre class="csharpcode">type A = {</p>
+<pre><code>def func : Int
+</code></pre>
+<p>}
+<br  />val a: A = <span class="kwrd">new</span>{
+<br  />def func = 2;
+<br  />}</p>
+<p><span class="kwrd">class</span> B{</p>
+<pre><code>def func = 20
+def print = println(&lt;span class="str"&gt;"hello world"&lt;/span&gt;)
+</code></pre>
+<p>}</p>
+<p>val b = <span class="kwrd">new</span> B
+<br  />var bb: A = b</p>
+<pre><code>&lt;p&gt;看起来，type定义的，就像是一个接口。然后神奇的地方在于，class B，与type A看起来并没有任何关系，但是它却能赋给A！仅仅是因为A定义的函数，B也有
+
+这和动态语言中的duck type非常相似，即只要你的函数签名与我期望的一样，我就可以把你当作另一个类型来使用。不同的是，scala还让它拥有了静态编译的优点。
+
+真没想到，原以为动态语言中才能有的特性，在scala中也可以实现。
+</code></pre>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '193';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

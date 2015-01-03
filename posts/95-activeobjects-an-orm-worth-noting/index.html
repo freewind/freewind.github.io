@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ActiveObjects – 值得一看的orm</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) ActiveObjects – 值得一看的orm
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p><a href="http://www.javalobby.org/articles/activeobjects">http://www.javalobby.org/articles/activeobjects</a></p>
+<p>这篇文章，讲述了一个故事，悬念重重，引人入胜，看得非常过瘾。技术文章写成这样，作者可真是厉害。</p>
+<p>他一步步的讲述了现在的ORM有哪些问题，RoR的ActiveRecord有哪些优点可以借鉴。同时因为java语言本身的限制，无法做到和ActionRecord一模一样，但是可以根据java中的一些语言特点，采用迂回战术，做到八分满意。于是，ActiveObjects诞生了。</p>
+<p>可以说这篇文章看完后，基本上就知道ActiveObjects怎么用了。与Hibernate等相比，真的是相当的简单，半小时内应该就可以掌握。我下载了它的包看了一下，里面的包和类都比较少，很简洁。有空的时候，一定要好好研究一下。<span id="more-95"></span></p>
+<p><a href="/user_images/95-1.jpg"><img src="/user_images/95-1.jpg" alt="image" title="image" /></a></p>
+<p>项目地址：</p>
+<p><a href="https://activeobjects.dev.java.net/">https://activeobjects.dev.java.net/</a></p>
+<p>今天又仔细地想了想，觉得ActiveObjects中有一个地方，还是让人用起来不太舒服。看这里：</p>
+<p>// Person.java</p>
+<p>public interface Person extends Entity {</p>
+<p>public String getName();</p>
+<p>public void setName(String name);</p>
+<p>public int getAge();</p>
+<p>public void setAge(int age);</p>
+<p>@SQLType(Types.CLOB)</p>
+<p>public String getComment();</p>
+<p>@SQLType(Types.CLOB)</p>
+<p>public void setComment(String comment);</p>
+<p>public Family getFamily();</p>
+<p>public void setFamily();</p>
+<p>@ManyToMany(PersonToPerson.class)</p>
+<p>public Person[] getPeople();</p>
+<p>}</p>
+<p>定义一个实体的时候，用的是interface，这里倒好理解和接受，关键是，它用的是getter/setter来对应数据库中的字段。这个写起来会比较麻烦，因为通常我们都是利用编辑器来自动生成的，快速且不易出错。而现在全得手动去写，错一个字母到时候查错就很麻烦。同时因为它是在一个接口里，就算我们先利用编辑器生成getter/setter，还是得把每个方法体的括号什么的都删掉，这也挺麻烦的。</p>
+<p>我想ActiveObjects为什么不在接口里定义一些常量，比如：</p>
+<p>public interface Person extends Entity {</p>
+<p>public String name;</p>
+<p>}</p>
+<p>调用者直接使用Person.name = &#8220;sss"这样的方式来赋值，ActiveObjects在后台把它变为getter/setter呢？结果一尝试，发现这样是行不通的，因为接口中的常量都是final，无法再赋值，所以ActiveObjects只好使用getter/setter来做。</p>
+<p>我觉得如果不用接口而用类来做，就可以实现只使用字段不用getter/setter，可以简化很多，像play中就是这么做的。可是这样需要使用cglib的库去动态改变字节码，而ActiveObjects强调它们不想使用这样的方式，所以只好用接口。</p>
+<p>如果你能接受这样稍稍的麻烦，ActiveObjects还是一个很不错的ORM框架，值得尝试。如果不喜欢这样的方式，可以再看看这个叫Siena的东西。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '95';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Play2中如何实现play1中的Job?</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-01) Play2中如何实现play1中的Job?
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在play1中，我们可以这样定义一些Job，让它们在后台执行：</p>
+<pre><code>@OnApplicationStart
+@Every("1h")
+public class MyJob extends Job {
+    public void doJob() {
+        println("Hello world");
+    }
+}
+
+以上代码将每小时向控制台输出一次`Hello world`。
+
+但在play2中找不到`OnApplicationStart`和`Every`了，应该怎么实现该功能？
+
+**回答：**
+
+`OnApplicationStart`的功能移到`GlobalSettings`中了。我们需要在根包下建立一个`Global`类继承于它，并覆盖其`onStart`方法。
+
+而`Every`这样的`Job`功能，现在使用Akka来处理了。我们需要向Akka提交一些异步任务。
+
+代码如下：
+
+import akka.actor.ActorSystem;
+import akka.actor.Scheduler;
+import akka.util.Duration;
+import akka.util.FiniteDuration;
+import java.util.concurrent.TimeUnit;
+import play.Application;
+import play.GlobalSettings;
+import play.libs.Akka;
+
+class Global extends GlobalSettings {
+    public void onStart(Application app) {
+        Akka.system().scheduler().schedule(
+            Duration.create(0, TimeUnit.MILLISECONDS),
+            Duration.create(1, TimeUnit.HOURS),
+            new Runnable() {
+                public void run() {
+                    System.out.println("Hello world");
+                }
+            }
+        );
+    }
+}
+</code></pre>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1286';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

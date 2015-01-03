@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>折腾Fedora之三 安装显卡驱动</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-12) 折腾Fedora之三 安装显卡驱动
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>到目前为止，我们还是在使用默认的驱动程序。在我的24寸的显示器上，它只能使用中间大约19寸的面积，周围全是黑边。而且字也很大个，反应也慢，必须升级驱动程序。</p>
+<p>在Fedora上安装显卡驱动是一件很麻烦且很有技术含量的东西，在安装过程中一定要十分小心，不然可能连桌面都进不了了。真怀念windows下的安装过程，那简直太方便了。</p>
+<p><strong>一、查看显卡类型</strong></p>
+<p>$ lspci | grep VGA</p>
+<p>结果如下：</p>
+<p>05:00.0 VGA compatible controller: nVidia Corporation G86 [GeForce 8500 GT] (rev a1)<span id="more-8"></span></p>
+<p><strong>二、去官网找驱动</strong></p>
+<p>http://www.nvidia.cn/Download/index.aspx?lang=cn</p>
+<p>根据我的型号找到了一个驱动：</p>
+<p>$ wget http://cn.download.nvidia.com/XFree86/Linux-x86/280.13/NVIDIA-Linux-x86-280.13.run</p>
+<p>它其实是一个脚本程序，有30多M。注意不要用firefox直接打开（firefox会卡死）</p>
+<p>下载后，保存在一个没有中文的路径下，因为一会儿要在文本模式下使用。</p>
+<p><em></em></p>
+<p><em></em></p>
+<p><strong>三、下载kernel源代码</strong></p>
+<p>kernel的源代码将在安装驱动时用到，需要先下载下来。</p>
+<p>首先查看当前的kernel版本号：</p>
+<p>$ uname -a</p>
+<p>得到：</p>
+<p>Linux freewind 2.6.40.3-0.fc15.i686 #1 SMP Tue Aug 16 04:24:09 UTC 2011 i686 i686 i386 GNU/Linux</p>
+<p>可以看出，linux内核是2.6.40.3-0.fc15.i686</p>
+<p>$ sudo yum install kernel-devel</p>
+<p>注意看它找到的源代码的版本号是否与当前系统相同，如果相同可以直接安装。</p>
+<p><em></em></p>
+<p><em></em></p>
+<p><strong>四、编辑grub文件，禁用当前的驱动</strong></p>
+<h1>vim /boot/grub/grub.conf</h1>
+<p>打开后可能看到多个不同版本的linux配置（因为刚才yum update的缘故），我们找到与当前版本号相同的那个（2.6.40），再找到rhgh quiet后，添加rdblacklist=nouveau</p>
+<p><em></em></p>
+<p><em></em></p>
+<p><strong>五、编辑blacklist.conf</strong></p>
+<h1>vim /etc/modprobe.d/blacklist.conf</h1>
+<p>在最后增加：blacklist nouveau</p>
+<p><strong>六、运行命令：</strong></p>
+<h1>setsebool -P allow_execstack on</h1>
+<p><strong>七、安装缺少的库</strong></p>
+<h1>sudo yum install binutils gcc</h1>
+<p><strong>八、重启，进入grub页面</strong></p>
+<p>此时按e将进入修改模式，找到版本号为2.6.40的那个，再按e，直到出现可以修改内容的界面。然后找到quiet，在后面输入3（前后要有空格）。后退，按b启动（将进入文本模式），使用管理员帐号登录。</p>
+<p><strong>九、安装驱动</strong></p>
+<h1>cd /home/freewind/Downloads/</h1>
+<h1>chmod +x ./NVIDIA-Linux-x86-280.13.run</h1>
+<h1>./NVIDIA-Linux-x86-280.13.run -k $(uname -r) -kernel-source-path=/usr/src/kernels/2.6.40.3-0.fc15.i686</h1>
+<p>将会出现一个安装画面，按提示选择，顺利的话很快可以安装完成。此处需要强调的是，如果你下载的驱动文件放在了一个中文目录下，那就悲剧了，因为显示为方块，没法输入。</p>
+<p><strong>十、重启</strong></p>
+<p>安装成功后将会重启，进入桌面后，整个界面焕然一些。24寸的屏幕全被占满了，界面更漂亮，操作更简便，非常爽快。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '8';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>基本的build.sbt配置</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2014-09-12) 基本的build.sbt配置
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>有时候我们想快速执行一些scala代码，但是它又依赖第三方的库，这时可以使用下面的sbt配置来快速执行：</p>
+<h2>build.sbt</h2>
+<pre><code class="scala">name := "hello"
+
+version := "1.0"
+
+organization := "org.my"
+
+scalaVersion := "2.11.0"
+
+sbtVersion := "0.13.5"
+
+resolvers ++= Seq(
+  "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
+  "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases"
+)
+
+libraryDependencies ++= Seq(
+  "org.apache.commons" % "commons-lang3" % "3.3.2",
+  "commons-io" % "commons-io" % "2.4",
+  "com.google.guava" % "guava" % "18.0",
+  "org.scalaz" %% "scalaz-core" % "7.1.0",
+  "io.argonaut" %% "argonaut" % "6.1-M4",
+  "net.databinder" %% "unfiltered" % "0.8.1",
+  "net.databinder" %% "unfiltered-filter-async" % "0.8.1",
+  "net.databinder" %% "unfiltered-jetty" % "0.8.1",
+  "ch.qos.logback" % "logback-classic" % "1.1.2",
+  "org.slf4j" % "slf4j-api" % "1.7.7",
+  "org.commonjava.googlecode.markdown4j" % "markdown4j" % "2.2-cj-1.0",
+  "com.github.spullara.mustache.java" % "compiler" %    "0.8.16",
+  "org.jsoup" % "jsoup" % "1.7.3",
+  "org.specs2" %% "specs2" % "2.4.2" % "test"
+)
+</code></pre>
+<p><code>libraryDependencies</code>里加的东西比较多，可以自行删减或增加。</p>
+<p>然后运行：</p>
+<pre><code class="shell">$ sbt
+&gt; update
+</code></pre>
+<p>将会下载各依赖。</p>
+<h2>生成idea项目</h2>
+<p>在项目目录下创建<code>project/plugins.sbt</code>文件，内容如下：</p>
+<pre><code class="scala">resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+
+addSbtPlugin("com.github.mpeltonen" %% "sbt-idea" % "1.7.0-SNAPSHOT")
+</code></pre>
+<p>然后执行：</p>
+<pre><code class="shell">$ sbt
+&gt; gen-idea sbt-classifiers
+</code></pre>
+<p>将会生成idea所需的配置文件，可以直接使用idea打开。</p>
+<p>其中参数<code>sbt-classifiers</code>是指同时下载源代码和文档，如果不需要可以去掉。它还有很多参数可使用。</p>
+<p>如果觉得每次都设置idea插件很麻烦，可以把它设为全局的，参看: TODO Add link</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2762';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

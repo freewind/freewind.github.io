@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>type A=B不等于import {A=&gt;B}</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-09-13) type A=B不等于import {A=&gt;B}
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>今天被一个问题折磨了很久，最后才想明白。</p>
+<p>在检查代码的时候，发现不少类为了使用mutable的map，都进行了这样的导入:</p>
+<pre><code>import scala.collection.mutable.{ Map =&gt; MMap }
+</code></pre>
+<p>然后这样使用：</p>
+<pre><code>val map = MMap[String,String]
+</code></pre>
+<p>于是想，何不把它放到一个package object中，这样就不需要到处导入了。于是：</p>
+<pre><code>package org
+package object scalaeye {
+    type MMap[K,V] = scala.collection.mutable.Map[K,V]
+}
+</code></pre>
+<p>然后去掉了其它类中的import {Map=>MMap}的导入声明。结果发现编译时，所有使用了MMap的类，都报错：找不到type MMap。</p>
+<p><span id="more-183"></span>
+<br  /><p>MMap明明已经定义了，为什么找不到呢？简化问题为：</p>
+<pre><code>class Test {
+    type MMap[K,V] = scala.collection.mutable.{Map=&gt;MMap}
+    val data = MMap[String,String]()
+}
+</code></pre>
+<p>还是报找不到MMap，可是明明就在前面定义了！</p>
+<p>调试了好久，突然想起之前问过这个问题，答案也差不多想起来了。</p>
+<pre><code>type MMap[K,V] = scala.collection.mutable.Map[K,V]
+
+import scala.collection.mutable.{ Map =&gt; MMap }
+</code></pre>
+<p>这两者右边的Map是不一样的。第一个是trait Map，第二个是object Map。第一个像是一个接口，并没有apply()函数可让我们调用，所以MMap()出错。而第二个，实际上还是object Map，我们可以调用它的()函数</p>
+<p>下面是唐古拉山的回贴：</p>
+<pre><code>import scala.collection.mutable.{ Map =&gt; MMap }
+-&gt; Map trait及其伴生对象都可见了
+</code></pre>
+<p>如:</p>
+<pre><code>classOf[MMap[_,_]]
+MMap()
+</code></pre>
+<p>scala 知道什么时候是trait，什么时候object
+<br  />看看Predef里对immuable.Map的导入</p>
+<pre><code>...
+type Map[A, +B] = collection.immutable.Map[A, B] //类型别名
+val Map = collection.immutable.Map //引用对象
+...
+</code></pre>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '183';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

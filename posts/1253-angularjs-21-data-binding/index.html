@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>21. Angular中的数据绑定</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-01) 21. Angular中的数据绑定
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p><a href="https://github.com/angular/angular.js/blob/master/docs/content/guide/dev_guide.templates.databinding.ngdoc"> <br  />https://github.com/angular/angular.js/blob/master/docs/content/guide/dev_guide.templates.databinding.ngdoc</a></p>
+<p>Angular web程序中的数据绑定可自动将model和view间的数据同步。Angular实现数据绑定的方式，可以让我们把model当作程序中唯一可信的数据来源。view始终是model的投影。当model发生变化时，会自动反映到view上，反之亦然。</p>
+<h4>经典模板系统中的数据绑定</h4>
+<p><a href="/user_images/1253-1.png"><img src="/user_images/1253-1.png" alt="image" title="image" /></a></p>
+<p>大多数模板系统中的数据绑定都是单向的：它们把模板与model合并在一起变成view，如上图所示。如果在合并之后，model发生了变化，不会自动反映到view上。更糟的是，用户在view上的交互也不会反映到model中。这表示开发者必须写大量代码不断地在view与model之间同步数据。</p>
+<h4>Anguar模板中的数据绑定</h4>
+<p><a href="/user_images/1253-3.png"><img src="/user_images/1253-3.png" alt="image" title="image" /></a></p>
+<p>Angular模板的工作方式不同，与上图所示。它们之所以不同，是因为，首先模板（由HTML和附加的markup和directive组成）是在浏览器中编译的，其次，在编译阶段产生了一个实时更新(live)的视图。我们说它是“live"是因为不论在model或是view上发生了变化，都会立刻反映到对方。这样让model成为程序中唯一真实的数据来源，极大地简化了开发者需要处理的编程模型。你可以认为view是model的实时投影。</p>
+<p>由于view只是投影，controller完全与view分开，完全无视它的存在。这样让测试很容易，因为它让你的controller在一个与DOM/浏览器无关的独立状态下进行测试。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1253';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

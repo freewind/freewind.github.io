@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>项目中的一处java代码，是否应该使用继承？</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-12-21) 项目中的一处java代码，是否应该使用继承？
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在项目中遇到过几次使用了继承的情形，有的是别人用了但我认为不该用，有的是我用的但别人认为不该用。对于这些代码，虽然我有一些思考，但还是很不确定，所以记录下来，希望与更多的人交流。</p>
+<p>由于项目有保密要求，所以我对代码进行了一些修改，让它们成为更能用的问题。</p>
+<h2>例一</h2>
+<p>项目中使用了一个第三方存储设备，它提供了一些api供保存和读取。我们先定义了一个通用的存取类：<code>StorageService</code>:</p>
+<pre><code>public class StorageService {
+    public void save(String key, String content) { ... }
+    public String get(String key) { ... }
+}
+
+
+可以看出这是一个很通用的服务类，可以根据key保存或读取一些文本。
+
+项目中定义了很多module，都要用到这个StorageService，但要提供一些跟自己module相关的方法供调用，通常会提供与module相关的key。比如有一个`UserStorageService`:
+
+public class UserStorageService extends StorageService {
+    public void saveUser(String userId, String userInfoInXmlFormat) {
+        super.save("user.info." + userId, userInfoInXmlFormat);
+    }
+    public String getUser(String userId) {
+        return super.get("user.info." + userId);
+    }
+}
+
+
+可以看到，`UserStorageService`继承了`StorageService`，同时提供了自己的方法供调用。看到这段代码时，我感觉似乎没有必要使用“继承”。如果是我的话，我会这么来写：
+
+public class UserStorageService {
+    private StorageService storageService = new StorageService();
+    public void saveUser(String userId, String userInfoInXmlFormat) {
+        storageService.save("user.info." + userId, userInfoInXmlFormat);
+    }
+    public String getUser(String userId) {
+        return storageService.get("user.info." + userId);
+    }
+}
+</code></pre>
+<p>这里使用了“组合”（我不知道是不是该用这个词，如果有误请指正）。相对于前面用继承的代码，它有两个好处：</p>
+<ol>
+<li>用户只能调用<code>saveUser</code>和<code>getUser</code>这两个作用非常明确的方法。如果是继承的版本，则用户还可以调用<code>save</code>和<code>get</code>这两个通用的方法，会让人疑惑及误用</li>
+<li><code>UserStorageService</code>还有机会继承其它的类，因为在java中，只能单继承</li>
+</ol>
+<p>但是这两个好处是不是决定性的因素呢？如果<code>StorageService</code>中还提供了一些其它需要被调用的方法，或者我们根本不需要让<code>UserService</code>继承别的类，是不是这两种方案的优劣对比就不明显了呢？</p>
+<p>老猪说，判断是否该使用继承要看"is_a&rdquo;，是否该用组合要看"has_a&rdquo;。但<code>UserStorageService</code>与<code>StorageService</code>的关系，是"is_a&rdquo;，还是"has_a"呢？我好像也没法确定。</p>
+<p>（注：本文本来有两个例子，由于内容增加，并且例子的差别较大，我分成了两篇）</p>
+<h2>一些评论</h2>
+<h3>杨博</h3>
+<p>两种做法都可以。但StorageService里的两个方法应该标上final关键字。</p>
+<h3>Steve Hsu</h3>
+<p>关于是否使用继承的问题, 可以从需要 instance 生成的时机点跟多线调用的方向来思考. 跟整个系统设计有很大的关联。</p>
+<p>如果基类只是用做一个接口应用而不存在壮态资讯，那就没有必要每次生成新的 instance， 但是仍需考虑多线程的调用冲突。</p>
+<p>如果基类存在了许多状态资讯，那就要看该类状态资讯是属于那一端的，比如说是 storage 的，而继承类是为了保留 user 端状态的，则因为状态属性不同，用组合较好。但如果继承类也是要留存 storage 状态，只是针对不同使用者，当然是使用继承较合适。如果没有保留状态则用接口或静态类去做，对于多线程，优化，除错等都有较大的好处。</p>
+<p>总之针对单一功能很难去判断该用何种方式，反之应该去回推系统设计时是否有做更为严谨与灵活的考虑。</p>
+<p>漏了instance生成时机，这比较难说明，简单来说组合或继承的写法对 vm 有着完全不同的意义。可以去看bytecode得知，两者对memory heap及stack等运用完全不同，在空间与效率的取舍中，还是要看整个系统架构的。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2241';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

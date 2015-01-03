@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AutoHotkey小试</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2012-04-24) AutoHotkey小试
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>今天尝试了一下auto hotkey这个工具，可以方便地定义一些快捷键，实现某些方便操作。</p>
+<p>比如在xtend中，它用了两个奇怪的符号«»在文本中引用xtend代码。它们在xtend的编辑器中很好输入，直接按ctrl+shift+,即可。但在其它地方怎么输呢？</p>
+<p>方法是这样的，按alt+171和alt+187，够麻烦的。</p>
+<p>所以我定义了一个auto hotkey的脚本，来实现同样功能。</p>
+<blockquote><p>^+,::
+<br  />sendinput, «»
+<br  />sendinput, {Left}
+<br  />return</p>
+<p>^+.::
+<br  />sendinput, »
+<br  />return</p>
+</blockquote>
+<p>另外，还想实现这个功能：当我在eclipse中按了ctrl+s时，会自动刷新浏览器。思路时，先找到firefox/chrome/ie等，激活它们的窗口，发送刷新命令，然后再切回到eclipse。</p>
+<p>代码如下：</p>
+<blockquote><p>$^s::                                       ; only capture actual keystrokes
+<br  />SetTitleMatchMode, 2                        ; match anywhere in the title
+<br  />IfWinActive, Eclipse                        ; find Sublime Text
+<br  />{</p>
+<pre><code>Send ^s                                 ; send save command       
+IfWinExist, Mozilla Firefox             ; find firefox       
+{       
+    WinActivate                         ; use the window found above       
+    Send ^r                             ; send browser refresh       
+    WinActivate, Eclipse                ; get back to Sublime Text       
+}       
+IfWinExist, Google Chrome               ; find Chrome       
+{       
+    WinActivate                         ; use the window found above       
+    Send ^r                             ; send browser refresh       
+    WinActivate, Eclipse                ; get back to Sublime Text       
+}       
+IfWinExist, Internet Explorer            ; find IE       
+{       
+    WinActivate                         ; use the window found above       
+    Send ^r                             ; send browser refresh       
+    WinActivate, Eclipse                ; get back to Sublime Text       
+}       
+</code></pre>
+<p>}
+<br  />else
+<br  />{</p>
+<pre><code>Send ^s                                 ; send save command       
+</code></pre>
+<p>}
+<br  />return</p>
+</blockquote>
+<p><font color="#666666"></font>
+</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '783';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

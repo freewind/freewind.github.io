@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Node.js与cloud9小试</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2012-04-28) Node.js与cloud9小试
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>Node.js使用了google提供的性能强劲的v8引擎，让我们真正可以使用js在服务器端编程。使用它写简单的web程序异常简单，而且它特有的基于事件回调的处理方式，拥有很高的吞吐量。</p>
+<p>推荐一本叫《Node.js入门》的电子书，由国人翻译，质量很高，是极好的入门材料。其使用的代码位于：<a href="https://github.com/ManuelKiessling/NodeBeginnerBook/tree/master/code/application" title="https://github.com/ManuelKiessling/NodeBeginnerBook/tree/master/code/application">https://github.com/ManuelKiessling/NodeBeginnerBook/tree/master/code/application</a></p>
+<p>我本在win7 x64下，安装nodejs没有问题，但是某些第三方模块不支持windows，所以最好在其它系统如linux下使用node.js。我安装了一个linux的虚拟机，专门用于学习node.js。</p>
+<p>这么麻烦？我机器很慢的，装虚拟机跑不动，我不会用linux。。。</p>
+<p>好吧，试试cloud9。</p>
+<p>当然还有很多其他类似的在线编程环境，直接支持node.js，还有基于浏览器的编程器，还有git，还能直接运行，还免费。这么好的事情，还不去试试？</p>
+<p>cloud9的网址是<a href="http://c9.io">http://c9.io</a>，对于开源项目免费，可支持将github.com和bitbucket.org中的代码库clone过来。直接在线编辑，运行，提交至代码库，非常完美。</p>
+<p>上个图看看：</p>
+<p><a href="/user_images/793-1.png"><img src="/user_images/793-1.png" alt="image" title="image" /></a></p>
+<p>怎么样，像模像样吧？项目管理、语法高亮、debug，甚至还有Deploy可发布到第三方server。使用起来的感觉，跟本地的IDE，几乎没有差别。</p>
+<p>点个debug试试：</p>
+<p><a href="/user_images/793-3.png"><img src="/user_images/793-3.png" alt="image" title="image" /></a></p>
+<p>看到提示信息，Server has started，说明成功启动，访问它提供的链接：<a href="http://testnodejs.freewind.c9.io/" title="http://testnodejs.freewind.c9.io/">http://testnodejs.freewind.c9.io/</a>即可看到如下图：</p>
+<p><a href="/user_images/793-5.png"><img src="/user_images/793-5.png" alt="image" title="image" /></a></p>
+<p>完美。</p>
+<p>这意味着什么？意味着我们的电脑只要能上网，有个浏览器，就能直接编程了！还有什么比这更惬意的事？</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '793';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

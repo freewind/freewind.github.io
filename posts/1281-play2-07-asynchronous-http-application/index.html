@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>07. 编写异步的Http应用</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2013-01-01) 07. 编写异步的Http应用
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>(本文译者是爱国者)</p>
+<h3>处理异步响应</h3>
+<h4>为什么要使用异步处理?</h4>
+<p>目前为止，我们都是采用同步方式处理Http请求。但在某些情况下，比如需要调用一个Web Service或执行一段耗时的运算来生成最终的Http响应结果，同步处理方式会暴露出严重的性能问题，导致Play应用无法响应更多的Http请求。</p>
+<p>正因为如此，action代码块应该能被快速执行，尽量不要出现阻塞操作。但如果无法立即产生最终的结果，比如需要调用一个Web Service或执行一段长时间的运算，那么我们应该如何做呢？答案是，返回一个result的承诺(a promise of result), 即承诺在将来某个时间点产生最终的result。（译者：类似于JDK 5的Future对象)</p>
+<p>Play使用<code>Promise[Result]</code>来表示一个result的承诺. 让Action返回<code>Promise[Resut]</code>可以避免因为某些长时间的操作而使程序陷入阻塞。等最终的Result生成后，Play再从<code>Promise[Result]</code>中找回result。</p>
+<p>虽然在响应结果(result)被产生之前客户端仍要等待，但不会对对服务器造成阻塞，服务器仍能继续响应其他Http请求。</p>
+<h4>如何创建<code>Promise[Result]</code></h4>
+<p>首先，我们看看<code>play.api.libs.concurrent.Promise[A]</code>的用法：</p>
+<pre><code>val promiseOfPIValue: Promise[Double] = computePIAsynchronously()
+val promiseOfResult: Promise[Result] = promiseOfPIValue.map { pi =&gt;
+  Ok("PI value computed: " + pi)    
+}
+
+这里我们使用`computePIAsynchronously()`自定义函数计算圆周率(pi)。 为了不阻塞当前线程，`computePIAsynchronously()`函数快速返回一个`Promise[Double]`类型的对象。然后我们再把`Promise[Double]`转换成`Promise[Result]`。 至于`computePIAsynchronously()`的内部实现，可能是创建一个异步的计算任务交给执行器执行。
+
+需要注意的是，所有Play 2.0的异步API都返回`Promise[A]`类型的对象。 比如当你使用`play.api.libs.ws.WS`调用一个Web Service，或者使用`play.api.libs.concurrent.Akka`创建一个异步的任务，API函数都会立即返回一个`Promise`，避免当前执行线程阻塞。只有当尝试从`Promise`取回最终的结果时，才会阻塞当前执行线程。
+
+下面我们看看如何使用`play.api.libs.concurrent.Akka`提供的辅助函数来创建一个异步的任务。
+
+val promiseOfInt: Promise[Int] = Akka.future {
+  intensiveComputation()  
+}
+
+这里把耗时的计算（`intensiveComputation()`函数）放在另一个线程里执行，也可以使用Akka remote将计算任务放在后端集群服务器上执行。
+
+#### 异步结果
+
+当你创建一个异步的计算任务时，需要向客户端返回一个`AsyncResult`对象来包装`SimpleResult`
+
+def index = Action {
+  val promiseOfInt = Akka.future { intensiveComputation() }
+  Async {
+    promiseOfInt.map(i =&gt; Ok("Got result: " + i))
+  }
+}
+
+这里的`Async{ ... }`是一个根据`Promise[Result]`构建`AsyncResult`的辅助函数
+
+#### 超时的处理
+
+提供超时响应是有用的，因为它可以避免因为某些不可预知的错误而导致线程陷入长时间的阻塞或等待。 你可以指定一个超时阀值，当尝试从`Promise`取回最终值时，如果等待时间超过指定的阀值，则返回一个预设的值。
+
+
+def index = Action {
+  val promiseOfInt = play.api.libs.concurrent.Akka.future { intensiveComputation() }
+  Async {
+    promiseOfInt.orTimeout("Oops", 1000).map { eitherIntOrTimeout =&gt;
+      eitherIntOrTimeout.fold(
+        i =&gt; Ok("Got result: " + i),
+        timeout =&gt; InternalServerError(timeout)
+      )    
+    }  
+  }
+}
+</code></pre>
+<p>原文：<a href="https://github.com/playframework/Play20/wiki/ScalaAsync">https://github.com/playframework/Play20/wiki/ScalaAsync</a></p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '1281';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

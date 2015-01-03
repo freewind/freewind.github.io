@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>windows上安装node+npm+coffeescript的悲催之路</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+
+<h1>
+    (2011-10-21) windows上安装node+npm+coffeescript的悲催之路
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在linux上，安装它们都相当容易，步骤如下：</p>
+<ul>
+<li>下载node(v0.4.12)的源代码，以标准方式安装(./configure &amp; make &amp; make install)</li>
+<li>npm更简单：curl <a href="http://npmjs.org/install.sh">http://npmjs.org/install.sh</a> | sh</li>
+<li>coffeescript：npm install -g coffee-script</li>
+</ul>
+<p>一切搞定，运行coffee就可以看到它的提示符，可以输入一些coffee代码试验。</p>
+<p>但是在windows上，相当麻烦。首先，你不能使用cygwin来安装npm，见<a href="http://npmjs.org/doc/README.html">http://npmjs.org/doc/README.html</a></p>
+<blockquote><p>Installing on Cygwin
+<br  />Don't.</p>
+<p>It's not supported, and terrible. Use the windows native approach, or use a Linux or Solaris virtual machine in VMWare or VirtualBox.</p>
+</blockquote>
+<p>所以我们也不能使用cygwin来安装node了。（我是在花了一下午的时间在cygwin下安装好node后，才发现这一点的）</p>
+<p><span id="more-452"></span>
+<br  /><p>按"Installing on Windows"所写的方式，直接下载node.exe(v0.5.8)，再设置一堆属性，再安装npm，成功。</p>
+<p>再安装coffeescript，使用<code>npm install -g coffee-script</code>安装成功，但是！</p>
+<p>输入coffee后，进行coffee的提示符后，随便输入点什么，比如<code>a=2</code>，出错：</p>
+<blockquote><p>coffee> a=2
+<br  />Error: require.paths is removed. Use node_modules folders, or the NODE_PATH environment variable instead.
+<br  />at Function.<anonymous> (module.js:360:11)
+<br  />at Object.eval (D:\home\lib\node_modules\coffee-script\lib\coffee-script.js:97:32)
+<br  />at Interface.<anonymous> (D:\home\lib\node_modules\coffee-script\lib\repl.js:44:34)
+<br  />at Interface.emit (events.js:67:17)
+<br  />at Interface.<em>onLine (readline.js:153:10)
+<br  />at Interface.</em>line (readline.js:408:8)
+<br  />at Interface._ttyWrite (readline.js:585:14)
+<br  />at ReadStream.<anonymous> (readline.js:73:12)
+<br  />at ReadStream.emit (events.js:70:17)
+<br  />at onKeypress (tty_win32.js:46:10)</p>
+</blockquote>
+<p>经过一番排查，发现原因是nodejs在0.5.x中改变了一些内部实现，导致coffeescript的代码无法正常工作。可是想安装nodejs 0.4.x的话，又没法安装npm。这可真让人纠结啊。</p>
+<p>最终，还是按照<a href="https://github.com/alisey/CoffeeScript-Compiler-for-Windows">https://github.com/alisey/CoffeeScript-Compiler-for-Windows</a>所讲的"Better solution&rdquo;，直接使用node.exe与coffee结合在一起，去掉npm。再次进入coffee环境，输入代码，一切正常。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '452';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>
