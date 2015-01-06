@@ -12,11 +12,113 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Sat, 03 Jan 2015 22:24:28 CST</lastBuildDate>
+        <lastBuildDate>Tue, 06 Jan 2015 21:50:58 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>选用一个Scala模板引擎</title>
+                <link>http://freewind.in/posts/2822-choose-a-scala-template-engine</link>
+                <pubDate>Tue, 06 Jan 2015 20:43:23 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2822</guid>
+                <description><![CDATA[&lt;p&gt;我的博客生成器是用Scala做的，既然是“生成器”，那就少不了模板，少不了模板引擎。&lt;/p&gt;
+&lt;p&gt;我在最开始的时候考虑了两个Scala的模板引擎：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Scalate: &lt;a href=&quot;http://scalate.github.io/scalate/&quot;&gt;http://scalate.github.io/scalate/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Twirl: &lt;a href=&quot;https://github.com/playframework/twirl&quot;&gt;https://github.com/playframework/twirl&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最开始对Scalate非常看好，因为印象中它是一个比较早也比较出名的Scala模板引擎，提供了多种语法，也有貌似很详细的文档。然而当我想项目中使用它的时候，惊讶地发现，它不知道什么时候变成了一个web framework。虽然提供了详细的语法文档，却找不到任何在普通Scala项目中使用它的办法！&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Twirl&lt;/code&gt;是将Playframework2.x内置的scala模板引擎，抽取出来单独发布了。&lt;code&gt;twirl&lt;/code&gt;是&lt;code&gt;@&lt;/code&gt;的一种发音，而该符号在模板中大量使用。它在文档中介绍了如何通过sbt插件来使用它，但是那时候我对SBT还不太熟悉，不知道如何下手，所以也没有采用。&lt;/p&gt;
+&lt;p&gt;最后选择的是一个Java版的mustache框架：&lt;a href=&quot;https://github.com/spullara/mustache.java&quot;&gt;mustachejava&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;但是在后来的使用中发现了一些问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;无类型。如果需要的数据没有提供，也不会报错，对于一个Scala项目来说，这种无静态类型的模板让人感觉很不适应&lt;/li&gt;
+&lt;li&gt;类型需要转换。有些Scala的类型（如集合），需要转成Java的&lt;/li&gt;
+&lt;li&gt;不能表达复杂的视图逻辑。比如显示一棵目录树，不太好实现&lt;/li&gt;
+&lt;li&gt;如果操作系统的字符集不是&lt;code&gt;utf8&lt;/code&gt;，则读取中文文件会变问号。原因是里面有一些读取文件的代码，没有指定字符集。&lt;a href=&quot;https://github.com/spullara/mustache.java/issues/120&quot;&gt;见我提的Issue&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最近实在无法忍受，决定把它换成&lt;code&gt;Twirl&lt;/code&gt;。现在已经成功了，因为你看到的这稿博客就是它生成的。&lt;/p&gt;
+&lt;p&gt;使用方法比较简单，直接照着它的&lt;a href=&quot;https://github.com/playframework/twirl/blob/master/README.md&quot;&gt;readme&lt;/a&gt;来就行了，这里记录一些需要注意的东西。&lt;/p&gt;
+&lt;h2&gt;文件后缀&lt;/h2&gt;
+&lt;p&gt;注意文件名形如&lt;code&gt;{name}.scala.{ext}&lt;/code&gt;，中间一定要有一个&lt;code&gt;scala&lt;/code&gt;，后缀是&lt;code&gt;html&lt;/code&gt;,&lt;code&gt;js&lt;/code&gt;, &lt;code&gt;xml&lt;/code&gt;,或者&lt;code&gt;txt&lt;/code&gt;之一。&lt;/p&gt;
+&lt;p&gt;我开始的时候忘了写&lt;code&gt;scala&lt;/code&gt;，结果怎么都出不来，反复检查之后才发现，一定要注意。&lt;/p&gt;
+&lt;h2&gt;如何编译成Scala代码&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Twirl&lt;/code&gt;的模板需要编译成scala源代码，以一个&lt;code&gt;object&lt;/code&gt;的方式供其它Scala代码使用。在Play中，这是自动的，但是对于普通Scala项目，我们必须手动操作。&lt;/p&gt;
+&lt;p&gt;在Sbt命令中行执行：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;compile
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它就会在&lt;code&gt;target/scala-version/twirl/&lt;/code&gt;下生成相应的Scala源文件，并且以后缀分组。&lt;/p&gt;
+&lt;p&gt;比如&lt;code&gt;index.scala.html&lt;/code&gt;会变成&lt;code&gt;html/index.scala&lt;/code&gt;，&lt;code&gt;user.scala.js&lt;/code&gt;会变成&lt;code&gt;js/user.scala&lt;/code&gt;。&lt;/p&gt;
+&lt;h2&gt;如何在Scala代码中调用&lt;/h2&gt;
+&lt;p&gt;Twirl生成的scala文件形如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;scala&quot;&gt;package html
+
+import play.twirl.api._
+import play.twirl.api.TemplateMagic._
+
+
+object category extends BaseScalaTemplate[HtmlFormat.Appendable,Format[HtmlFormat.Appendable]](HtmlFormat) with Template1[Category, HtmlFormat.Appendable] {
+
+  def apply(category:Category):HtmlFormat.Appendable = {
+    _display_ {
+        ...
+    }
+  }
+
+  def render(category:Category,):HtmlFormat.Appendable = apply(category)
+
+  def f:((Category) =&amp;gt; HtmlFormat.Appendable) = (category) =&amp;gt; apply(category)
+
+  def ref: this.type = this
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果我们想在普通的Scala代码中调用它，如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;val someCategory = new Category(&quot;Scala&quot;)
+val content = html.category.render(comeCategory).toString()
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;需要注意的是&lt;code&gt;html.category.render(comeCategory)&lt;/code&gt;的返回类型是&lt;code&gt;HtmlFormat.Appendable&lt;/code&gt;，需要调用它的&lt;code&gt;.toString()&lt;/code&gt;方法才能得到一个&lt;code&gt;String&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;与IDEA配合使用&lt;/h2&gt;
+&lt;p&gt;如果我们使用Sbt的命令行来编译，不会遇到任何问题，所有的twirl模板会被正确的编译为scala代码，而所有其它的Scala代码也能正确地找到它们。但是在IDEA中，模板并不会自动的转为Scala代码，所以如果我们直接在其它Scala代码中调用它们，将会报编译错误。&lt;/p&gt;
+&lt;p&gt;我们需要做两件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;把&lt;code&gt;target/scala-version/twirl&lt;/code&gt;设置为IDEA项目的“源目录”&lt;/li&gt;
+&lt;li&gt;同时在命令行上运行&lt;code&gt;sbt ~compile&lt;/code&gt;，当模板文件发生变化时，自动在后台编译&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这样IDEA才能及时获取编译后的scala模板文件。需要经常去看看有没有报一些编译错误，及时修正，否则IDEA看到的还是旧代码。稍有不便，但还可以接受。&lt;/p&gt;
+&lt;h2&gt;运行时依赖&lt;/h2&gt;
+&lt;p&gt;我们还需要在&lt;code&gt;build.sbt&lt;/code&gt;中添加额外的依赖，否则会报某些类找不到：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;scala&quot;&gt;libraryDependencies ++= Seq(
+  &quot;com.typesafe.play&quot; %% &quot;twirl-api&quot; % &quot;1.0.4&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;使用感受&lt;/h2&gt;
+&lt;p&gt;这是一套极为强大的Scala模板引擎，静态类型，与Scala相似的语法，功能很多，可以轻松实现出一些复杂的页面（比如通过在模板内定义一个嵌套的函数，生成树）：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;scala&quot;&gt;@showCategory(category:Category) = {
+    &amp;lt;ol class=&quot;posts&quot;&amp;gt;
+        &amp;lt;div class=&quot;category_title&quot;&amp;gt;@category.name&amp;lt;/div&amp;gt;
+        @for(post &amp;lt;- category.posts) {
+            &amp;lt;li&amp;gt;
+                @partials.html.post_title(post)
+            &amp;lt;/li&amp;gt;
+        }
+    &amp;lt;/ol&amp;gt;
+    @for(sub &amp;lt;- category.subCategories) {
+        @showCategory(sub) // 递归在这里!!!
+    }
+}
+
+@showCategory(category)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;目前唯一不方便的是，必须手动把它编译成scala文件才能使用，这样的话，我就没办法只提供一些单独的twirl模板直接使用了（而之前用mustachejava）就可以，用户可以随便改，马上用。&lt;/p&gt;
+&lt;p&gt;我想是有办法让它即时编译的，因为Play2自己就实现了。但是我现在对这个需求不强烈，因为只是自动使用，改完编译一下也不嫌麻烦，以后有需求时再考虑。&lt;/p&gt;
+]]></description>
+            </item>
         
             <item>
                 <title>2014总结</title>
@@ -109,7 +211,7 @@ Total allowance: 55600
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;第一次运行的时候，它会自动到远程下载一些必要的jar，可能会等时间稍长一些。如果卡住的话，说明有一些jar被墙了，请自行番羽墙或在公司运行。&lt;/p&gt;
 &lt;h2&gt;源代码&lt;/h2&gt;
-&lt;p&gt;https://github.com/freewind/expense_calc&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/freewind/expense_calc&quot;&gt;https://github.com/freewind/expense_calc&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;欢迎fork及pull request&lt;/p&gt;
 ]]></description>
             </item>
@@ -8279,15 +8381,16 @@ set req.backend = someServer;
 &lt;p&gt;现实举例：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;我们在火车票代售点买票：“我要买一张明天中午从西安到北京的火车票”&lt;/li&gt;
-&lt;li&gt;我们托人从海外代购：“帮我在美国买一个nexus5手机”&lt;/li&gt;
+&lt;li&gt;我们托人从海外代购：“某某某，能帮我从美国买一个nexus5手机吗”&lt;/li&gt;
+&lt;li&gt;发快递：“快递员，请帮我把这个东西发到某个地方”&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2&gt;反向代理&lt;/h2&gt;
 &lt;p&gt;我们访问某个网址，它在自己的域名下提供了很多内容，看起来都像是它自己的。我们以为自己访问的就是原始的网站，实际上它只是一个代理服务器。它根据我们的请求路径，从某一个我们不知道的地方拿到了内容，然后当成它自己的东西提供给我们。&lt;/p&gt;
-&lt;p&gt;在反射代理中，代理服务器是主角，内容提供者是助手，通常我们并不知道自己正在访问一个代理服务器。&lt;/p&gt;
+&lt;p&gt;在反向代理中，代理服务器是主角，内容提供者是助手，通常我们并不知道自己正在访问一个代理服务器。&lt;/p&gt;
 &lt;p&gt;现实举例：&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;我们在超市买东西：买了很多，各个牌子都有，但是我们不知道它们从哪儿来的，只知道超市有卖&lt;/li&gt;
-&lt;li&gt;我们把项目外包给某人做：我们要求在规定时间能完成，但他是自己做还是转包给别人，我们并不清楚&lt;/li&gt;
+&lt;li&gt;我们在超市买东西：买了很多，各个牌子都有，但是我们不知道它们从哪儿来的，只知道超市有卖，好像是超市提供的似的&lt;/li&gt;
+&lt;li&gt;我们把项目外包给某人做：我们要求在规定时间能完成，但他是自己做还是转包给别人，我们并不清楚，只知道他能帮我完成&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2&gt;结论&lt;/h2&gt;
 &lt;p&gt;对于公司项目，我们是想用varnish作为前端，让用户在同一个域名下访问所有的内容。而varnish会根据请求路径的不同，到不同的服务器和网站中拿到相应内容，提供给用户。&lt;/p&gt;
@@ -12268,7 +12371,7 @@ object Hanoi extends App {
 &lt;p&gt;pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;name: web_ui
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#x6d;&amp;#97;&amp;#105;&amp;#108;&amp;#116;&amp;#x6f;&amp;#x3a;&amp;#119;&amp;#101;&amp;#98;&amp;#45;&amp;#117;&amp;#x69;&amp;#45;&amp;#x64;&amp;#x65;&amp;#118;&amp;#x40;&amp;#100;a&amp;#x72;&amp;#116;&amp;#x6c;&amp;#97;&amp;#110;&amp;#x67;&amp;#46;&amp;#111;&amp;#114;g&quot;&gt;&amp;#x77;&amp;#101;&amp;#98;&amp;#45;&amp;#x75;&amp;#x69;&amp;#45;&amp;#100;&amp;#101;&amp;#118;&amp;#64;&amp;#x64;&amp;#x61;&amp;#114;&amp;#116;&amp;#x6c;&amp;#97;&amp;#110;&amp;#103;&amp;#46;&amp;#x6f;&amp;#x72;g&lt;/a&gt;&amp;rdquo;
+&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#x3a;&amp;#x77;&amp;#x65;&amp;#x62;&amp;#x2d;&amp;#117;&amp;#x69;&amp;#x2d;&amp;#100;&amp;#x65;&amp;#118;&amp;#64;&amp;#x64;&amp;#97;&amp;#114;&amp;#x74;&amp;#108;&amp;#97;&amp;#x6e;g&amp;#x2e;&amp;#x6f;&amp;#x72;&amp;#103;&quot;&gt;&amp;#119;&amp;#101;&amp;#x62;&amp;#x2d;&amp;#117;&amp;#105;&amp;#45;&amp;#100;&amp;#101;&amp;#118;&amp;#x40;&amp;#100;&amp;#97;&amp;#x72;&amp;#x74;&amp;#108;&amp;#97;&amp;#110;&amp;#x67;&amp;#x2e;&amp;#111;&amp;#x72;&amp;#x67;&lt;/a&gt;&amp;rdquo;
 &lt;br  /&gt;homepage: https://github.com/dart-lang/web-ui
 &lt;br  /&gt;description: An easy way to build web apps in Dart.
 &lt;br  /&gt;version: 0.4.9

@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>选用一个Scala模板引擎</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-01-06) 选用一个Scala模板引擎
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>我的博客生成器是用Scala做的，既然是“生成器”，那就少不了模板，少不了模板引擎。</p>
+<p>我在最开始的时候考虑了两个Scala的模板引擎：</p>
+<ol>
+<li>Scalate: <a href="http://scalate.github.io/scalate/">http://scalate.github.io/scalate/</a></li>
+<li>Twirl: <a href="https://github.com/playframework/twirl">https://github.com/playframework/twirl</a></li>
+</ol>
+<p>最开始对Scalate非常看好，因为印象中它是一个比较早也比较出名的Scala模板引擎，提供了多种语法，也有貌似很详细的文档。然而当我想项目中使用它的时候，惊讶地发现，它不知道什么时候变成了一个web framework。虽然提供了详细的语法文档，却找不到任何在普通Scala项目中使用它的办法！</p>
+<p><code>Twirl</code>是将Playframework2.x内置的scala模板引擎，抽取出来单独发布了。<code>twirl</code>是<code>@</code>的一种发音，而该符号在模板中大量使用。它在文档中介绍了如何通过sbt插件来使用它，但是那时候我对SBT还不太熟悉，不知道如何下手，所以也没有采用。</p>
+<p>最后选择的是一个Java版的mustache框架：<a href="https://github.com/spullara/mustache.java">mustachejava</a></p>
+<p>但是在后来的使用中发现了一些问题：</p>
+<ol>
+<li>无类型。如果需要的数据没有提供，也不会报错，对于一个Scala项目来说，这种无静态类型的模板让人感觉很不适应</li>
+<li>类型需要转换。有些Scala的类型（如集合），需要转成Java的</li>
+<li>不能表达复杂的视图逻辑。比如显示一棵目录树，不太好实现</li>
+<li>如果操作系统的字符集不是<code>utf8</code>，则读取中文文件会变问号。原因是里面有一些读取文件的代码，没有指定字符集。<a href="https://github.com/spullara/mustache.java/issues/120">见我提的Issue</a></li>
+</ol>
+<p>最近实在无法忍受，决定把它换成<code>Twirl</code>。现在已经成功了，因为你看到的这稿博客就是它生成的。</p>
+<p>使用方法比较简单，直接照着它的<a href="https://github.com/playframework/twirl/blob/master/README.md">readme</a>来就行了，这里记录一些需要注意的东西。</p>
+<h2>文件后缀</h2>
+<p>注意文件名形如<code>{name}.scala.{ext}</code>，中间一定要有一个<code>scala</code>，后缀是<code>html</code>,<code>js</code>, <code>xml</code>,或者<code>txt</code>之一。</p>
+<p>我开始的时候忘了写<code>scala</code>，结果怎么都出不来，反复检查之后才发现，一定要注意。</p>
+<h2>如何编译成Scala代码</h2>
+<p><code>Twirl</code>的模板需要编译成scala源代码，以一个<code>object</code>的方式供其它Scala代码使用。在Play中，这是自动的，但是对于普通Scala项目，我们必须手动操作。</p>
+<p>在Sbt命令中行执行：</p>
+<pre><code>compile
+</code></pre>
+<p>它就会在<code>target/scala-version/twirl/</code>下生成相应的Scala源文件，并且以后缀分组。</p>
+<p>比如<code>index.scala.html</code>会变成<code>html/index.scala</code>，<code>user.scala.js</code>会变成<code>js/user.scala</code>。</p>
+<h2>如何在Scala代码中调用</h2>
+<p>Twirl生成的scala文件形如：</p>
+<pre><code class="scala">package html
+
+import play.twirl.api._
+import play.twirl.api.TemplateMagic._
+
+
+object category extends BaseScalaTemplate[HtmlFormat.Appendable,Format[HtmlFormat.Appendable]](HtmlFormat) with Template1[Category, HtmlFormat.Appendable] {
+
+  def apply(category:Category):HtmlFormat.Appendable = {
+    _display_ {
+        ...
+    }
+  }
+
+  def render(category:Category,):HtmlFormat.Appendable = apply(category)
+
+  def f:((Category) =&gt; HtmlFormat.Appendable) = (category) =&gt; apply(category)
+
+  def ref: this.type = this
+
+}
+</code></pre>
+<p>如果我们想在普通的Scala代码中调用它，如下：</p>
+<pre><code>val someCategory = new Category("Scala")
+val content = html.category.render(comeCategory).toString()
+...
+</code></pre>
+<p>需要注意的是<code>html.category.render(comeCategory)</code>的返回类型是<code>HtmlFormat.Appendable</code>，需要调用它的<code>.toString()</code>方法才能得到一个<code>String</code></p>
+<h2>与IDEA配合使用</h2>
+<p>如果我们使用Sbt的命令行来编译，不会遇到任何问题，所有的twirl模板会被正确的编译为scala代码，而所有其它的Scala代码也能正确地找到它们。但是在IDEA中，模板并不会自动的转为Scala代码，所以如果我们直接在其它Scala代码中调用它们，将会报编译错误。</p>
+<p>我们需要做两件事：</p>
+<ol>
+<li>把<code>target/scala-version/twirl</code>设置为IDEA项目的“源目录”</li>
+<li>同时在命令行上运行<code>sbt ~compile</code>，当模板文件发生变化时，自动在后台编译</li>
+</ol>
+<p>这样IDEA才能及时获取编译后的scala模板文件。需要经常去看看有没有报一些编译错误，及时修正，否则IDEA看到的还是旧代码。稍有不便，但还可以接受。</p>
+<h2>运行时依赖</h2>
+<p>我们还需要在<code>build.sbt</code>中添加额外的依赖，否则会报某些类找不到：</p>
+<pre><code class="scala">libraryDependencies ++= Seq(
+  "com.typesafe.play" %% "twirl-api" % "1.0.4"
+)
+</code></pre>
+<h2>使用感受</h2>
+<p>这是一套极为强大的Scala模板引擎，静态类型，与Scala相似的语法，功能很多，可以轻松实现出一些复杂的页面（比如通过在模板内定义一个嵌套的函数，生成树）：</p>
+<pre><code class="scala">@showCategory(category:Category) = {
+    &lt;ol class="posts"&gt;
+        &lt;div class="category_title"&gt;@category.name&lt;/div&gt;
+        @for(post &lt;- category.posts) {
+            &lt;li&gt;
+                @partials.html.post_title(post)
+            &lt;/li&gt;
+        }
+    &lt;/ol&gt;
+    @for(sub &lt;- category.subCategories) {
+        @showCategory(sub) // 递归在这里!!!
+    }
+}
+
+@showCategory(category)
+</code></pre>
+<p>目前唯一不方便的是，必须手动把它编译成scala文件才能使用，这样的话，我就没办法只提供一些单独的twirl模板直接使用了（而之前用mustachejava）就可以，用户可以随便改，马上用。</p>
+<p>我想是有办法让它即时编译的，因为Play2自己就实现了。但是我现在对这个需求不强烈，因为只是自动使用，改完编译一下也不嫌麻烦，以后有需求时再考虑。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2822';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>
