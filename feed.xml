@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Wed, 14 Jan 2015 22:55:31 CST</lastBuildDate>
+        <lastBuildDate>Wed, 14 Jan 2015 22:59:05 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -38,10 +38,7 @@
 &lt;li&gt;确保部署后的机器，使用正确的jdk版本来运行&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;下面依次详述各部分的做法，以及遇到的问题。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;h2&gt;提供一个开关&lt;code&gt;java8&lt;/code&gt;，将jdk1.6和1.8完全分离&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2&gt;1.提供一个开关&lt;code&gt;java8&lt;/code&gt;，将jdk1.6和1.8完全分离&lt;/h2&gt;
 &lt;p&gt;我们的项目使用gradle来构建，我们在&lt;code&gt;build.gradle&lt;/code&gt;中，使用这样的方式来支持&lt;code&gt;java8&lt;/code&gt;开关&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;groovy&quot;&gt;ext.javaPackageName = &quot;java-1.6.0-sun&quot;
 ext.JAVA_VERSION = &quot;1.6&quot;
@@ -63,10 +60,7 @@ if (hasProperty(&quot;java8&quot;)) {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;当然此时也要保证当前使用的java版本为jdk1.8。&lt;/p&gt;
 &lt;p&gt;在做这一步时，要确定把所有需要变化的值抽出来，然后针对两个jdk版本提供两个值。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;h2&gt;升级jdk版本，以及其它必须升级的库&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2&gt;2.升级jdk版本，以及其它必须升级的库&lt;/h2&gt;
 &lt;p&gt;从上面可以看到我们升级了哪些库。其中jdk的升级是必须的，其它的库有很多是因为使用了&lt;code&gt;ASM&lt;/code&gt;这样的字节码工具（如gradle, spring等），必须升级成新的ASM版本才能支持jdk1.8。&lt;/p&gt;
 &lt;p&gt;还有一些是运行时报一些奇怪的错，可能对Java8支持不好，比如Apache http client。&lt;/p&gt;
 &lt;p&gt;另外，gradle本身也升级了，我们修改了&lt;code&gt;build.gradle&lt;/code&gt;中的&lt;code&gt;wrapper&lt;/code&gt;任务：&lt;/p&gt;
@@ -75,15 +69,9 @@ if (hasProperty(&quot;java8&quot;)) {
     }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;将它从&lt;code&gt;1.9&lt;/code&gt;升级到&lt;code&gt;1.10&lt;/code&gt;，之后不要忘了运行&lt;code&gt;./gradlew wrapper&lt;/code&gt;命令，生成新的&lt;code&gt;gradle-wrapper.jar&lt;/code&gt;和&lt;code&gt;gradle-wrapper.properties&lt;/code&gt;文件。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;h2&gt;升级&lt;code&gt;sourceCompatibility&lt;/code&gt;和&lt;code&gt;targetCompatibility&lt;/code&gt;&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2&gt;3.升级&lt;code&gt;sourceCompatibility&lt;/code&gt;和&lt;code&gt;targetCompatibility&lt;/code&gt;&lt;/h2&gt;
 &lt;p&gt;之前这两个值都是&lt;code&gt;1.6&lt;/code&gt;，现在在&lt;code&gt;java8&lt;/code&gt;开关打开的情况下，应该改成&lt;code&gt;1.8&lt;/code&gt;。这样以后才好使用jdk1.8中提供的新特性。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;h2&gt;修复Java代码中的编译错误，以及失败的测试&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2&gt;4.修复Java代码中的编译错误，以及失败的测试&lt;/h2&gt;
 &lt;p&gt;升级完版本后，很快发现了一些编译和测试错误。&lt;/p&gt;
 &lt;h3&gt;新版本中的接口增加了方法&lt;/h3&gt;
 &lt;p&gt;升级Spring后（由3.x到4.x），发现有一些类编译不过了，比如我们在代码中实现了接口&lt;code&gt;org.springframework.cache.Cache&lt;/code&gt;，而它在4.x中增加了两个方法。&lt;/p&gt;
@@ -139,10 +127,7 @@ private User user2;
 &lt;p&gt;最开始我们发现，当升级到jdk1.8.05时，测试不能正常执行，总会报一些奇怪的错误。后来在&lt;code&gt;build.gradle&lt;/code&gt;中的&lt;code&gt;test&lt;/code&gt;任务中，加入了针对JVM的选项&lt;code&gt;-noverify&lt;/code&gt;才能执行。&lt;/p&gt;
 &lt;p&gt;不过后来同事说，这似乎是一个jdk1.8中某些小版本的bug，使用其它的版本，就不需要加&lt;code&gt;-noverify&lt;/code&gt;了。&lt;/p&gt;
 &lt;p&gt;我们最后选择了合适的jdk1.8小版本，去掉了这个选项。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;h2&gt;修改打出来的rpm包，让它加上&lt;code&gt;_java8&lt;/code&gt;后缀&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2&gt;5.修改打出来的rpm包，让它加上&lt;code&gt;_java8&lt;/code&gt;后缀&lt;/h2&gt;
 &lt;p&gt;为了区分使用jdk1.8还是1.6编译的，我们将在jdk1.8下，打出来的包后面加上&lt;code&gt;_java8&lt;/code&gt;后缀，方便维护。&lt;/p&gt;
 &lt;p&gt;在这里遇到了一个开始没有考虑到的问题：我们以前正常运行的build pipeline，已经打出来很多包了，比如：&lt;code&gt;mylib-2-110.rpm&lt;/code&gt;, &lt;code&gt;mylib-2-111.rpm&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;而我们为了保证当前pipeline正常运行，所以新开了一条pipeline，结果build number从0开始了，很快我们就发现它打出来的包形如：&lt;code&gt;mylib-2-3_java8.rpm&lt;/code&gt;&lt;/p&gt;
@@ -152,17 +137,11 @@ private User user2;
 &lt;p&gt;它会默认对包名进行排序，找最新的包，所以我们的&lt;code&gt;mylib-2-3_java8.rpm&lt;/code&gt;永远都找不到。当然我们可以手动调大这个build number，但这就意味着我需要时刻关注这两条pipeline，保证它们每一次产生的rpm包都是“最新的”&lt;/p&gt;
 &lt;p&gt;还有一种方案，我们可以在jdk1.8这边，把base version改成3，这样我们的包就变成&lt;code&gt;mylib-3-3_java8.rpm&lt;/code&gt;。虽然现在可以找到了，但这意味着jdk1.6那边，永远拿不到最新的包了，因为它的base version是&lt;code&gt;2&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;通过各种权衡，因为我们现在的修改已经比较稳定了，没有必要再维护两个pipeline，所以我们最终决定把这两个pipeline合并在一起，通过开启或者关闭某些任务，来控制使用jdk1.6还是1.8。而它们生成的版本号总是变大的，就可以完美的解决这个问题。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;h2&gt;修改rpm包依赖，让它使用jdk1.8&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2&gt;6.修改rpm包依赖，让它使用jdk1.8&lt;/h2&gt;
 &lt;p&gt;这里要涉及到部署了。有一件事非常重要，但一开始我们没有注意到：我们生成的rpm包，也必须依赖于正确的jdk版本&lt;/p&gt;
 &lt;p&gt;通过检查&lt;code&gt;build.gradle&lt;/code&gt;，发现我们已经处理好了，在打rpm包时，会选择正确的jdk版本传进去。&lt;/p&gt;
 &lt;p&gt;最开始依赖的是&lt;code&gt;java-1.8.0-openjdk&lt;/code&gt;，后来改成了&lt;code&gt;java-1.8.0-oracle&lt;/code&gt;&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;h2&gt;确保部署后的机器，使用正确的jdk版本来运行&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h2&gt;7.确保部署后的机器，使用正确的jdk版本来运行&lt;/h2&gt;
 &lt;p&gt;部署之后，我们很快又发现一个新的问题：虽然我们依赖的jdk1.8 &lt;code&gt;java-1.8.0-openjdk&lt;/code&gt;正常安装了，但是运行的时候，还是用的java1.6，导致无法启动。&lt;/p&gt;
 &lt;p&gt;后来发现，我们要把它改成&lt;code&gt;java-1.8.0-oracle&lt;/code&gt;，它安装后会自动更新系统的&lt;code&gt;java&lt;/code&gt;命令，指向新版本，从而解决了这个问题。&lt;/p&gt;
 ]]></description>
@@ -12856,7 +12835,7 @@ object Hanoi extends App {
 &lt;p&gt;pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;name: web_ui
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#58;&amp;#119;&amp;#x65;&amp;#x62;&amp;#45;&amp;#x75;&amp;#105;&amp;#x2d;d&amp;#101;&amp;#118;&amp;#x40;&amp;#x64;&amp;#97;&amp;#x72;&amp;#x74;&amp;#x6c;&amp;#x61;&amp;#110;&amp;#x67;.&amp;#111;&amp;#x72;&amp;#x67;&quot;&gt;&amp;#x77;&amp;#101;&amp;#x62;&amp;#45;&amp;#117;&amp;#x69;&amp;#45;&amp;#100;&amp;#101;&amp;#x76;&amp;#64;&amp;#100;&amp;#x61;&amp;#114;&amp;#x74;&amp;#x6c;&amp;#x61;&amp;#x6e;&amp;#x67;&amp;#46;&amp;#x6f;&amp;#x72;&amp;#103;&lt;/a&gt;&amp;rdquo;
+&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#116;&amp;#x6f;&amp;#58;&amp;#119;&amp;#101;&amp;#98;-&amp;#x75;&amp;#105;&amp;#x2d;&amp;#100;&amp;#101;&amp;#118;&amp;#x40;&amp;#x64;&amp;#x61;&amp;#114;&amp;#x74;&amp;#108;&amp;#97;&amp;#x6e;&amp;#x67;&amp;#x2e;&amp;#111;&amp;#x72;&amp;#103;&quot;&gt;&amp;#119;&amp;#101;&amp;#x62;&amp;#45;&amp;#117;&amp;#x69;&amp;#45;&amp;#100;&amp;#x65;&amp;#118;&amp;#x40;&amp;#x64;&amp;#x61;&amp;#x72;&amp;#116;&amp;#x6c;&amp;#97;&amp;#110;&amp;#103;&amp;#x2e;&amp;#111;&amp;#x72;&amp;#103;&lt;/a&gt;&amp;rdquo;
 &lt;br  /&gt;homepage: https://github.com/dart-lang/web-ui
 &lt;br  /&gt;description: An easy way to build web apps in Dart.
 &lt;br  /&gt;version: 0.4.9
