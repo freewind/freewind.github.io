@@ -12,11 +12,301 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Sat, 10 Jan 2015 23:20:15 CST</lastBuildDate>
+        <lastBuildDate>Wed, 14 Jan 2015 22:55:31 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>将一个Jdk1.6项目升级到Jdk1.8</title>
+                <link>http://freewind.in/posts/2828-upgrade-jdk1_6-to-jdk1_8</link>
+                <pubDate>Wed, 14 Jan 2015 21:39:41 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2828</guid>
+                <description><![CDATA[&lt;p&gt;我们需要将一个已经长期运行的Jdk 1.6的项目升级到Jdk 1.8，大约花了两周时间完成，遇到了不少问题，特别记录一下。&lt;/p&gt;
+&lt;p&gt;虽说Java一向努力向下兼容，但是对于一个已经在线上正常运行的项目，贸然升级还是有很大风险的，所以我们提供了一个名为&lt;code&gt;java8&lt;/code&gt;的开关。如果打开，则全部使用Java8来编译、测试、部署，如果出错，则关掉它。等经过一段时间的测试后发现比较稳定时，再去掉这个开关，直接使用Java8。&lt;/p&gt;
+&lt;p&gt;这个任务分成了以下几个部分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;提供一个开关&lt;code&gt;java8&lt;/code&gt;，将jdk1.6和1.8完全分离&lt;/li&gt;
+&lt;li&gt;升级jdk版本，以及其它必须升级的库&lt;/li&gt;
+&lt;li&gt;升级&lt;code&gt;sourceCompatibility&lt;/code&gt;和&lt;code&gt;targetCompatibility&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;修复Java代码中的编译错误，以及失败的测试&lt;/li&gt;
+&lt;li&gt;修改打出来的rpm包，让它加上&lt;code&gt;_java8&lt;/code&gt;后缀&lt;/li&gt;
+&lt;li&gt;修改rpm包依赖，让它使用jdk1.8&lt;/li&gt;
+&lt;li&gt;确保部署后的机器，使用正确的jdk版本来运行&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;下面依次详述各部分的做法，以及遇到的问题。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;h2&gt;提供一个开关&lt;code&gt;java8&lt;/code&gt;，将jdk1.6和1.8完全分离&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我们的项目使用gradle来构建，我们在&lt;code&gt;build.gradle&lt;/code&gt;中，使用这样的方式来支持&lt;code&gt;java8&lt;/code&gt;开关&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;groovy&quot;&gt;ext.javaPackageName = &quot;java-1.6.0-sun&quot;
+ext.JAVA_VERSION = &quot;1.6&quot;
+ext.SPRING_VERSION = &quot;3.2.2.RELEASE&quot;
+ext.APACHE_HTTP_CLIENT_VERSION = &apos;4.1.3&apos;
+ext.ASM_VERSION = &quot;4.0&quot;
+
+if (hasProperty(&quot;java8&quot;)) {
+  ext.buildNumber = ext.buildNumber + &quot;_java8&quot;
+  ext.javaPackageName = &quot;java-1.8.0-oracle&quot;
+  ext.JAVA_VERSION = &quot;1.8&quot;
+  ext.SPRING_VERSION = &quot;4.1.3.RELEASE&quot;
+  ext.APACHE_HTTP_CLIENT_VERSION = &apos;4.3.6&apos;
+  ext.ASM_VERSION = &quot;5.0.3&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当我们需要打开&lt;code&gt;java8&lt;/code&gt;开关时，我们在调用&lt;code&gt;./gradlew&lt;/code&gt;命令时，需要传入&lt;code&gt;-Pjava8&lt;/code&gt;命令，如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;./gradlew test -Pjava8
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当然此时也要保证当前使用的java版本为jdk1.8。&lt;/p&gt;
+&lt;p&gt;在做这一步时，要确定把所有需要变化的值抽出来，然后针对两个jdk版本提供两个值。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;h2&gt;升级jdk版本，以及其它必须升级的库&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;从上面可以看到我们升级了哪些库。其中jdk的升级是必须的，其它的库有很多是因为使用了&lt;code&gt;ASM&lt;/code&gt;这样的字节码工具（如gradle, spring等），必须升级成新的ASM版本才能支持jdk1.8。&lt;/p&gt;
+&lt;p&gt;还有一些是运行时报一些奇怪的错，可能对Java8支持不好，比如Apache http client。&lt;/p&gt;
+&lt;p&gt;另外，gradle本身也升级了，我们修改了&lt;code&gt;build.gradle&lt;/code&gt;中的&lt;code&gt;wrapper&lt;/code&gt;任务：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;groovy&quot;&gt;    task wrapper(type: Wrapper) {
+        gradleVersion = &apos;1.10&apos;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将它从&lt;code&gt;1.9&lt;/code&gt;升级到&lt;code&gt;1.10&lt;/code&gt;，之后不要忘了运行&lt;code&gt;./gradlew wrapper&lt;/code&gt;命令，生成新的&lt;code&gt;gradle-wrapper.jar&lt;/code&gt;和&lt;code&gt;gradle-wrapper.properties&lt;/code&gt;文件。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;h2&gt;升级&lt;code&gt;sourceCompatibility&lt;/code&gt;和&lt;code&gt;targetCompatibility&lt;/code&gt;&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;之前这两个值都是&lt;code&gt;1.6&lt;/code&gt;，现在在&lt;code&gt;java8&lt;/code&gt;开关打开的情况下，应该改成&lt;code&gt;1.8&lt;/code&gt;。这样以后才好使用jdk1.8中提供的新特性。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;h2&gt;修复Java代码中的编译错误，以及失败的测试&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;升级完版本后，很快发现了一些编译和测试错误。&lt;/p&gt;
+&lt;h3&gt;新版本中的接口增加了方法&lt;/h3&gt;
+&lt;p&gt;升级Spring后（由3.x到4.x），发现有一些类编译不过了，比如我们在代码中实现了接口&lt;code&gt;org.springframework.cache.Cache&lt;/code&gt;，而它在4.x中增加了两个方法。&lt;/p&gt;
+&lt;p&gt;我们也必须实现这两个方法。因为它们从未使用过，所以直接在内部抛出&lt;code&gt;UnsupportedOperationException&lt;/code&gt;，并加上合适的注释：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    // We have to implement method `putIfAbsent` because we upgraded spring to new version(4.x)
+    // and the interface we depend on is changed with two new methods:
+    // - get(Object key, Class&amp;lt;T&amp;gt; type)
+    // - putIfAbsent(Object key, Object value)
+    // we are not using it in the code, so just make it throw a UnsupportedOperationException
+
+    // @Override
+    // Why we comment the `@Override` annotation here:
+    //   Next 2 methods are in the `Cache` interface in spring 4.x, but not in Spring 3.x,
+    //   but for now, we have to support Java1.6 &amp;amp; spring 3.x, so we need to comment it in order to make it compilable with Spring 3.x
+    // Note: If we remove the &quot;java8&quot; toggle and just run it with Java8, we should uncomment it.
+    public &amp;lt;T&amp;gt; T get(Object key, Class&amp;lt;T&amp;gt; type) {
+        throw new UnsupportedOperationException();
+    }
+
+    // @Override (see the comment of previous method why comment it)
+    public ValueWrapper putIfAbsent(Object key, Object value) {
+        throw new UnsupportedOperationException();
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里有个地方要注意：我们把&lt;code&gt;@Override&lt;/code&gt;给注释掉了。这是因为在jdk1.6下，因为接口中没有这两个方法，所以当我们加上&lt;code&gt;@Override&lt;/code&gt;后，它会有编译错误。注释之后在两个版本下都运行正常，但是当我们以后只使用&lt;code&gt;java8&lt;/code&gt;时，最好再把它弄回来。&lt;/p&gt;
+&lt;p&gt;针对这两个方法，我们也需要提供相应的测试，因为我们预期它们的行为就是抛出抛出异常。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Test(expected = UnsupportedOperationException.class)
+public void shouldNotSupportedMethodPutIfAbsentSinceWeAreNotUsingItButHaveToImplementIt() {
+    cache.putIfAbsent(null, null);
+}
+
+@Test(expected = UnsupportedOperationException.class)
+public void shouldNotSupportedMethodGetByKeyAndTypeSinceWeAreNotUsingItButHaveToImplementIt() {
+    cache.get(null, null);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Spring针对&lt;code&gt;@Autowired&lt;/code&gt;的行为发生了难以追踪的变化&lt;/h3&gt;
+&lt;p&gt;这个问题在另一篇文章中已有详细说明。主要是某个类中使用&lt;code&gt;@Autowired&lt;/code&gt;声明了两个拥有相同类型的字段，而没有指定名字，大约如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;@Autowired
+private User user1;
+@Autowired
+private User user2;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在spring3.x下，所有测试都正常。而在spring4.x下，部分测试正常，部分报“找不到合适的bean”这样的错误。加上&lt;code&gt;@Qualifier(&quot;bean-id&quot;)&lt;/code&gt;这样的 显式声明后，一切正常。&lt;/p&gt;
+&lt;h3&gt;Spring-MVC对于json类型的空body，行为发生了变化&lt;/h3&gt;
+&lt;p&gt;这个在另一篇博客中将会记录。大意是说，在3.x中，如果用户以&lt;code&gt;put&lt;/code&gt;方式请求了一个json类型资源，但是body为空，它将被设为正常。spring将会以正常方式处理所有逻辑，并且最后返回&lt;code&gt;200&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;但是在4.x中，这样的请求被设视为不正常。spring直接返回&lt;code&gt;400&lt;/code&gt;，根本不会执行我们后面的逻辑。&lt;/p&gt;
+&lt;p&gt;我感觉3.x中的行为更像是一个bug，但是我们却不能贸然的修复，因为到后来这不仅仅是一个简单的修改一下http code的问题，更多的是要搞清楚当前其它系统到底是怎么使用的，以及最初的需求是什么。&lt;/p&gt;
+&lt;p&gt;经过几天的讨论以及尝试之后，我们发现这个测试实际上没有反应真实的情况。因为当用户&lt;code&gt;put&lt;/code&gt;过来的body为空时，我们的会把这个请求转给上游系统，并且得到一个&lt;code&gt;500&lt;/code&gt;错误转发给用户。&lt;/p&gt;
+&lt;p&gt;在这种情况下，我们判断其它系统不会发送一个空请求，最后删了这个测试用例。&lt;/p&gt;
+&lt;p&gt;从这里可以看出，最始时写下的一个看起来无害的，但没有反应真实需求的测试用例，会给后来的维护带来多大的麻烦。&lt;/p&gt;
+&lt;h3&gt;-noverify加还是不加&lt;/h3&gt;
+&lt;p&gt;最开始我们发现，当升级到jdk1.8.05时，测试不能正常执行，总会报一些奇怪的错误。后来在&lt;code&gt;build.gradle&lt;/code&gt;中的&lt;code&gt;test&lt;/code&gt;任务中，加入了针对JVM的选项&lt;code&gt;-noverify&lt;/code&gt;才能执行。&lt;/p&gt;
+&lt;p&gt;不过后来同事说，这似乎是一个jdk1.8中某些小版本的bug，使用其它的版本，就不需要加&lt;code&gt;-noverify&lt;/code&gt;了。&lt;/p&gt;
+&lt;p&gt;我们最后选择了合适的jdk1.8小版本，去掉了这个选项。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;h2&gt;修改打出来的rpm包，让它加上&lt;code&gt;_java8&lt;/code&gt;后缀&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;为了区分使用jdk1.8还是1.6编译的，我们将在jdk1.8下，打出来的包后面加上&lt;code&gt;_java8&lt;/code&gt;后缀，方便维护。&lt;/p&gt;
+&lt;p&gt;在这里遇到了一个开始没有考虑到的问题：我们以前正常运行的build pipeline，已经打出来很多包了，比如：&lt;code&gt;mylib-2-110.rpm&lt;/code&gt;, &lt;code&gt;mylib-2-111.rpm&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;而我们为了保证当前pipeline正常运行，所以新开了一条pipeline，结果build number从0开始了，很快我们就发现它打出来的包形如：&lt;code&gt;mylib-2-3_java8.rpm&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这给我们带来了很多麻烦，因为在服务器上安装时，比如使用：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;yum install mylib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它会默认对包名进行排序，找最新的包，所以我们的&lt;code&gt;mylib-2-3_java8.rpm&lt;/code&gt;永远都找不到。当然我们可以手动调大这个build number，但这就意味着我需要时刻关注这两条pipeline，保证它们每一次产生的rpm包都是“最新的”&lt;/p&gt;
+&lt;p&gt;还有一种方案，我们可以在jdk1.8这边，把base version改成3，这样我们的包就变成&lt;code&gt;mylib-3-3_java8.rpm&lt;/code&gt;。虽然现在可以找到了，但这意味着jdk1.6那边，永远拿不到最新的包了，因为它的base version是&lt;code&gt;2&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;通过各种权衡，因为我们现在的修改已经比较稳定了，没有必要再维护两个pipeline，所以我们最终决定把这两个pipeline合并在一起，通过开启或者关闭某些任务，来控制使用jdk1.6还是1.8。而它们生成的版本号总是变大的，就可以完美的解决这个问题。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;h2&gt;修改rpm包依赖，让它使用jdk1.8&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这里要涉及到部署了。有一件事非常重要，但一开始我们没有注意到：我们生成的rpm包，也必须依赖于正确的jdk版本&lt;/p&gt;
+&lt;p&gt;通过检查&lt;code&gt;build.gradle&lt;/code&gt;，发现我们已经处理好了，在打rpm包时，会选择正确的jdk版本传进去。&lt;/p&gt;
+&lt;p&gt;最开始依赖的是&lt;code&gt;java-1.8.0-openjdk&lt;/code&gt;，后来改成了&lt;code&gt;java-1.8.0-oracle&lt;/code&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;h2&gt;确保部署后的机器，使用正确的jdk版本来运行&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;部署之后，我们很快又发现一个新的问题：虽然我们依赖的jdk1.8 &lt;code&gt;java-1.8.0-openjdk&lt;/code&gt;正常安装了，但是运行的时候，还是用的java1.6，导致无法启动。&lt;/p&gt;
+&lt;p&gt;后来发现，我们要把它改成&lt;code&gt;java-1.8.0-oracle&lt;/code&gt;，它安装后会自动更新系统的&lt;code&gt;java&lt;/code&gt;命令，指向新版本，从而解决了这个问题。&lt;/p&gt;
+]]></description>
+            </item>
+        
+            <item>
+                <title>Spring autowire的行为探究</title>
+                <link>http://freewind.in/posts/2827-find-the-behavior-of-spring-autowire</link>
+                <pubDate>Wed, 14 Jan 2015 20:39:22 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2827</guid>
+                <description><![CDATA[&lt;p&gt;这几天在做卡时，需要将一个java6程序升级到java8，其中spring的版本也必须跟着升级。在这个过程中，发现了spring的autowire的某些行为，跟我之前的认知不同，所以与同事一起专门研究了一下，记录下来。&lt;/p&gt;
+&lt;h2&gt;autowire=&amp;ldquo;byType&quot;是针对谁&lt;/h2&gt;
+&lt;p&gt;首先在同事的提醒下，发现了自己长期以来的一个误解。&lt;/p&gt;
+&lt;p&gt;在Spring的xml中，我们在定义&lt;code&gt;bean&lt;/code&gt;的时候，可以给它指定一个&lt;code&gt;autowire&lt;/code&gt;的属性，其值有多种：&lt;code&gt;default&lt;/code&gt;, &lt;code&gt;byType&lt;/code&gt;, &lt;code&gt;byName&lt;/code&gt;等&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;bean id=&quot;userService&quot; class=&quot;my.UserService&quot; autowire=&quot;byName&quot;&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;问题：这个&lt;code&gt;autowire&lt;/code&gt;与这个&lt;code&gt;userService&lt;/code&gt; bean之间到底是什么关系？&lt;/p&gt;
+&lt;p&gt;我一直以为，在&lt;code&gt;userService&lt;/code&gt;这里加了&lt;code&gt;autowire=&quot;byName&quot;&lt;/code&gt;后，所以其它需要使用&lt;code&gt;userService&lt;/code&gt;的bean，都会以&lt;code&gt;byName&lt;/code&gt;的方式来使用它。&lt;/p&gt;
+&lt;p&gt;然后今天才知道，它是说，如果这个&lt;code&gt;userService&lt;/code&gt;里引用了别的bean，将会以&lt;code&gt;byName&lt;/code&gt;的方式去寻找它们！跟我之前理解的正好相反。&lt;/p&gt;
+&lt;p&gt;可参考&lt;a href=&quot;http://docs.spring.io/spring/docs/4.0.0.M1/spring-framework-reference/html/beans.html#beans-standard-annotations&quot;&gt;http://docs.spring.io/spring/docs/4.0.0.M1/spring-framework-reference/html/beans.html#beans-standard-annotations&lt;/a&gt;里的一段话：&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;byName
+&lt;br  /&gt;Autowiring by property name. Spring looks for a bean with the same name as the property that needs to be autowired. For example, if a bean definition is set to autowire by name, and it contains a master property (that is, it has a setMaster(..) method), Spring looks for a bean definition named master, and uses it to set the property.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;注意最后一句话。&lt;/p&gt;
+&lt;h2&gt;一个让我无法理解的例子&lt;/h2&gt;
+&lt;p&gt;下面是代码中一段让我无法理解的例子，为了方便解释，特别简化了一下。&lt;/p&gt;
+&lt;p&gt;首先看一段java代码，它们都位于&lt;code&gt;my&lt;/code&gt;包下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;public class User {
+    private String name;
+    public User(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+}
+
+@Component
+public class UserService {
+
+    @Autowired
+    private User user1;
+    @Autowired
+    private User user2;
+
+    public String getNames() {
+        return user1.getName() + &quot; &amp;amp; &quot; + user2.getName();
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再看xml：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+       xmlns:util=&quot;http://www.springframework.org/schema/util&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd&quot;&amp;gt;
+
+    &amp;lt;context:component-scan base-package=&quot;my&quot;/&amp;gt;
+
+    &amp;lt;context:annotation-config/&amp;gt;
+
+    &amp;lt;bean id=&quot;user1&quot; class=&quot;my.User&quot;&amp;gt;
+        &amp;lt;constructor-arg value=&quot;Freewind&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+    &amp;lt;bean id=&quot;user2&quot; class=&quot;my.User&quot;&amp;gt;
+        &amp;lt;constructor-arg value=&quot;Lily&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后执行：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Main {
+
+    public static void main(String[] args) {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+        UserService service = context.getBean(UserService.class);
+        System.out.println(service.getNames());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我以为会报错的，因为在&lt;code&gt;UserService&lt;/code&gt;里同时&lt;code&gt;@Autowired&lt;/code&gt;了两个相同类型的bean，而没有指定名字。按照前面文档中的说法，我觉得它是会报错的。&lt;/p&gt;
+&lt;p&gt;但是它居然正常执行了，并且成功地打印出：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Freewind &amp;amp; Lily
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;为什么？&lt;/p&gt;
+&lt;h2&gt;xml中的autowire&lt;/h2&gt;
+&lt;p&gt;当我看到&lt;code&gt;@Autowired&lt;/code&gt;的时候，我把它跟xml中的bean属性&lt;code&gt;autowire&lt;/code&gt;当成了一回事，再加上我以为xml中的&lt;code&gt;autowire&lt;/code&gt;默认值是&lt;code&gt;byType&lt;/code&gt;(实际上是&lt;code&gt;no&lt;/code&gt;，即不自动注入)，所以我觉得它应该会报如“找到多个同类型的bean不知道如何选择”这样的错。&lt;/p&gt;
+&lt;p&gt;然后后来发现，这两个autowire之间没多大关系。为了方便后面的理解，这这里要先把xml中的&lt;code&gt;autowire&lt;/code&gt;的行为搞清楚。&lt;/p&gt;
+&lt;p&gt;由于早期Java不支持注解，所以一开始Spring不支持&lt;code&gt;@Autowired&lt;/code&gt;，只提供了xml中的写法，并且很完善。前面说的&lt;code&gt;no/byName/byType/constructor&lt;/code&gt;这样的值，实际上只针对xml中的&lt;code&gt;autowire&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;如果我们去掉&lt;code&gt;UserService&lt;/code&gt;类中的&lt;code&gt;@Autowired&lt;/code&gt;，则这个程序的行为将跟文档中写的一模一样：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果在xml中不提供autowire，即&lt;code&gt;autowire=&quot;no&quot;&lt;/code&gt;，会则抛NullPointerException&lt;/li&gt;
+&lt;li&gt;如果写成&lt;code&gt;autowire=&quot;byType&quot;&lt;/code&gt;，会报&quot;符合User类型的bean太多，我不知道如何选择&quot;这样的错&lt;/li&gt;
+&lt;li&gt;如果写成&lt;code&gt;autowire=&quot;byName&quot;&lt;/code&gt;，会正常运行&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;所以要清楚，这些值仅针对xml中的定义生效。&lt;/p&gt;
+&lt;h2&gt;@Autowired&lt;/h2&gt;
+&lt;p&gt;然而我们在&lt;code&gt;UserService&lt;/code&gt;里还使用了&lt;code&gt;@Autowired&lt;/code&gt;，这样Spring在启动时，将会同时根据xml与代码中的注解信息来组装bean。对于&lt;code&gt;UserService&lt;/code&gt;中的&lt;code&gt;user1&lt;/code&gt;和&lt;code&gt;user2&lt;/code&gt;，它实际上使用了与前面xml中&lt;code&gt;autowire&lt;/code&gt;不同的行为。&lt;/p&gt;
+&lt;p&gt;针对前面的例子，它实际上这么做的：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果某个字段是&lt;code&gt;@Autowired&lt;/code&gt;，将会去寻找有没有跟它类型匹配的唯一bean。如果有，直接用它&lt;/li&gt;
+&lt;li&gt;如果发现多个满足条件的，则要看该字段是有没有使用&lt;code&gt;@Qualifier(&quot;user1&quot;)&lt;/code&gt;这样的注解说明到底使用哪个名字的bean。如果有，则使用它&lt;/li&gt;
+&lt;li&gt;如果没有&lt;code&gt;@Qualifier&lt;/code&gt;，则以字段名为bean的&lt;code&gt;id&lt;/code&gt;，去寻找合适的bean。这是最后一种尝试的手段，也叫&lt;code&gt;fallback&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这个答案来自于&lt;a href=&quot;http://stackoverflow.com/a/27937875/342235&quot;&gt;stackoverflow上网友的回答&lt;/a&gt;，经过我对spring源代码的单步调试，发现基本上是正确的，只是实际过程要比这里写的更复杂一些，多了几个步骤。&lt;/p&gt;
+&lt;p&gt;这样的话，就可以解释前面的代码为什么可以正常运行了。我想spring为注解提供较为复杂的行为，可能是因为这样使用起来更简单一些，我可不想在Java代码的注解中，写太多东西。&lt;/p&gt;
+&lt;h2&gt;使用@Qualifier&lt;/h2&gt;
+&lt;p&gt;我觉得对于例子中的情况，我们应该显式使用&lt;code&gt;@qualifier&lt;/code&gt;来减少可能会误会，让这种引用关系更加明显一些，毕竟这些没有在文档中显式说明的东西，在版本升级时很容易出问题。&lt;/p&gt;
+&lt;p&gt;所以我最后在项目中，把上面的代码改成：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    @Autowired
+    @Qualifier(&quot;user1&quot;)
+    private User user1;
+
+    @Autowired
+    @Qualifier(&quot;user2&quot;)
+    private User user2;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;使用@Resource&lt;/h2&gt;
+&lt;p&gt;同事提醒，还可以使用&lt;code&gt;@Resource&lt;/code&gt;，更加简化一些。&lt;code&gt;javax.annotation.Resource&lt;/code&gt;注解是java标准化后提供的注解，让我们不必依赖于spring。它同时拥有&lt;code&gt;@Autowired&lt;/code&gt;和&lt;code&gt;@Qualifier&lt;/code&gt;的作用。&lt;/p&gt;
+&lt;p&gt;所以上面的代码还可以写成：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    @Resource(name = &quot;user1&quot;)
+    private User user1;
+
+    @Resource(name = &quot;user2&quot;)
+    private User user2;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;仅有@Autowired，在不同版本中的不确定行为&lt;/h2&gt;
+&lt;p&gt;在前面的例子中，如果我们既没有加&lt;code&gt;@Qualifier&lt;/code&gt;也没有用&lt;code&gt;Resource&lt;/code&gt;，则在不同的spring版本或者同一个版本但用法不同时，也会有不确定的行为。&lt;/p&gt;
+&lt;p&gt;比如，按照上面的分析，按说只有&lt;code&gt;@Autowired&lt;/code&gt;，在我们将spring从3.x升级到4.x后，应该不会报错，实际上某个测试在spring 4.x下报错了，而在3.x下正常。&lt;/p&gt;
+&lt;p&gt;经过我两个小时的调试，我依然不清楚问题到底在哪儿。只是发现，在那个失败的测试中，&lt;code&gt;UserService&lt;/code&gt;这个类被初始化了两次，第一次生成找到了内部的两个&lt;code&gt;user&lt;/code&gt;，第二次就报“一个User也找不到”的错。最后只好放弃，加上&lt;code&gt;@Qualifier&lt;/code&gt;解决了问题。&lt;/p&gt;
+&lt;h2&gt;小结&lt;/h2&gt;
+&lt;p&gt;通过这次做卡，以及力所能及的深钻，发现了自己长期以来的一些误解，对spring的注入行为也有了更深入的了解。&lt;/p&gt;
+]]></description>
+            </item>
         
             <item>
                 <title>徐大师关于p2p，产品化交付，BA新要求的session</title>
@@ -12566,7 +12856,7 @@ object Hanoi extends App {
 &lt;p&gt;pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;name: web_ui
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#108;&amp;#116;&amp;#111;&amp;#58;&amp;#119;&amp;#101;&amp;#x62;&amp;#x2d;&amp;#x75;&amp;#x69;&amp;#x2d;&amp;#x64;&amp;#101;&amp;#118;&amp;#x40;&amp;#100;&amp;#x61;&amp;#x72;&amp;#x74;&amp;#108;&amp;#97;&amp;#110;&amp;#x67;&amp;#x2e;&amp;#x6f;&amp;#x72;&amp;#103;&quot;&gt;w&amp;#101;&amp;#98;&amp;#x2d;&amp;#117;&amp;#105;&amp;#x2d;&amp;#100;&amp;#101;&amp;#118;&amp;#x40;&amp;#100;&amp;#x61;&amp;#x72;&amp;#116;&amp;#x6c;&amp;#97;&amp;#x6e;&amp;#x67;&amp;#46;&amp;#111;&amp;#x72;&amp;#103;&lt;/a&gt;&amp;rdquo;
+&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#58;&amp;#119;&amp;#x65;&amp;#x62;&amp;#45;&amp;#x75;&amp;#105;&amp;#x2d;d&amp;#101;&amp;#118;&amp;#x40;&amp;#x64;&amp;#97;&amp;#x72;&amp;#x74;&amp;#x6c;&amp;#x61;&amp;#110;&amp;#x67;.&amp;#111;&amp;#x72;&amp;#x67;&quot;&gt;&amp;#x77;&amp;#101;&amp;#x62;&amp;#45;&amp;#117;&amp;#x69;&amp;#45;&amp;#100;&amp;#101;&amp;#x76;&amp;#64;&amp;#100;&amp;#x61;&amp;#114;&amp;#x74;&amp;#x6c;&amp;#x61;&amp;#x6e;&amp;#x67;&amp;#46;&amp;#x6f;&amp;#x72;&amp;#103;&lt;/a&gt;&amp;rdquo;
 &lt;br  /&gt;homepage: https://github.com/dart-lang/web-ui
 &lt;br  /&gt;description: An easy way to build web apps in Dart.
 &lt;br  /&gt;version: 0.4.9
