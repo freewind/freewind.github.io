@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Fri, 16 Jan 2015 00:26:15 CST</lastBuildDate>
+        <lastBuildDate>Fri, 16 Jan 2015 00:36:37 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -26,7 +26,7 @@
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">2829</guid>
                 <description><![CDATA[&lt;p&gt;最近在做一个功能，需要把一个使用jdk1.6的系统升级为jdk1.8。该系统已经在产品环境上运行了很久，并且作为上游数据源为其它几个系统提供服务，所以我们在升级时非常小心。&lt;/p&gt;
-&lt;p&gt;虽然在中途遇到了一些问题，不过基本上都解决了，直到最后发现了一个测试用例升级后总是失败。&lt;/p&gt;
+&lt;p&gt;虽然在中途遇到了一些问题，不过基本上都解决了，直到最后发现了一个测试用例，在升级后总是失败。&lt;/p&gt;
 &lt;p&gt;这是一个很简单的测试，简单到几乎没有测任何业务逻辑。&lt;/p&gt;
 &lt;h1&gt;测试用例&lt;/h1&gt;
 &lt;p&gt;下面的测试用例经过了改写，去掉了项目相关的信息：&lt;/p&gt;
@@ -42,33 +42,34 @@ public void infoSyncShouldSucceedEvenWithEmptyRequestBody() throws Exception {
     assertThat(response.getStatus(), is(200));
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;可以看到，这个测试是希望系统提供的某个url，可以接受body为空的PUT请求。我们期望返回的http code是&lt;code&gt;200&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;这个用例在spring 3.x下是正常的，然而我们因为升级jdk导致spring升级到了4.x，结果就失败了。在4.x下返回值的http code是&lt;code&gt;400&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;可以看到，这个测试是希望系统提供的某个url，可以接受body为空的PUT请求，并且返回值为&lt;code&gt;200&lt;/code&gt;的http code&lt;/p&gt;
+&lt;p&gt;这个用例在spring 3.x下是正常的。然而我们升级jdk时，发现原来的spring版本不能正常工作，就把它升级到4.x，结果测试失败了。&lt;/p&gt;
+&lt;p&gt;在4.x下返回值的http code是&lt;code&gt;400&lt;/code&gt;，而不是&lt;code&gt;200&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;同时经过我们的尝试，发现如果写成：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;request.setContent(&quot;{}&quot;.getBytes());
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;即提供一个&lt;code&gt;{}&lt;/code&gt;来代表&quot;空&quot;json，这个测试就可以通过。&lt;/p&gt;
 &lt;h1&gt;测试分析&lt;/h1&gt;
-&lt;p&gt;如果先不看业务，只看测试本身，我觉得返回&lt;code&gt;400&lt;/code&gt;，把它当作一个不合法的请求，更有意义一些。因为&lt;code&gt;put&lt;/code&gt;通常是用来改变一些东西，如果请求里没有body，作为服务器，我会觉得有点难以理解，你到底想干什么?!&lt;/p&gt;
+&lt;p&gt;如果先不看业务，只看测试本身，我觉得把它当作一个不合法的请求，返回&lt;code&gt;400&lt;/code&gt;，更有意义一些。因为&lt;code&gt;put&lt;/code&gt;通常是用来改变一些东西，如果请求里没有body，作为服务器，我会觉得有点难以理解，你到底想干什么?!&lt;/p&gt;
 &lt;p&gt;而且，指定了资源类型是&lt;code&gt;application/json&lt;/code&gt;，那么给一个&lt;code&gt;{}&lt;/code&gt;作为空json，似乎更说得过去。&lt;/p&gt;
-&lt;p&gt;不过结合业务，我觉得空body也可以理解。因为这里所测试的那个url，对应的功能是把用户发送的数据，原本地转发给另一个系统，它可能觉得这种判断自己就不需要多做了。&lt;/p&gt;
+&lt;p&gt;不过结合业务，我觉得空body也可以理解。因为这里所测试的那个url对应的功能，是把用户发送的数据，原本地转发给另一个系统，它可能觉得这种判断自己就不需要多做了。&lt;/p&gt;
 &lt;p&gt;但是这么想来，这个测试本身又有矛盾了，因为它判断的是返回的http code是&lt;code&gt;200&lt;/code&gt;，并没有说明这个&lt;code&gt;200&lt;/code&gt;是后端系统给的，还是直接自己处理的。通过这个测试本身，实在是很难判断它到底想测什么。&lt;/p&gt;
 &lt;p&gt;所以我想这个测试的问题在于：它没有反映出真实的需求&lt;/p&gt;
-&lt;p&gt;有可能当时并没有这样的需求，只是作者觉得自己应该测试一些边缘情况，就顺手写了一个测试。也可能有这样的需求，但是在这个测试中，并没有很好的展现出来，导致我们现在已经无法知道它到底想测什么了。&lt;/p&gt;
+&lt;p&gt;有可能当时并没有这样的需求，只是作者觉得自己应该测试一些边缘情况，就顺手写了一个测试。也可能有这样的需求，但是在这个测试中，并没有很好的展现出来，导致现在已经无法知道它到底想测什么了。&lt;/p&gt;
 &lt;h1&gt;与作者及相关人员的讨论&lt;/h1&gt;
 &lt;p&gt;为了清楚作者当时的意图，我们尝试与作者联系，可惜他当前正在休假，委托给其他人帮我们解决。但是其他人也不清楚当时的需求是什么，最后经过讨论，有了这样两个建议：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;我们可以去检查当前所有使用到该系统的项目，是否会发送空body，再来决定如何处理&lt;/li&gt;
 &lt;li&gt;如果只从测试角度看，似乎是希望对于空body也会返回&lt;code&gt;200&lt;/code&gt;，我们最好还继续保持这个行为&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;似乎没有人清楚需求到底是什么，我们只能根据实际情况或者保险的方式来处理这个问题。同时，我们发现在版本系统中，看到这段代码是一年半以前写的，所以就算是作者在，他也很可能不清楚当时为什么要写这个测试了。&lt;/p&gt;
-&lt;p&gt;对于方案1，我们需要检查当前所有的使用了该服务的下游系统，仔细分析它们的代码来确定行为。这是多大的工作量，而且仅仅通过代码可能还不能保证正确，还要找到熟悉那个系统的人，问问他们的意见。&lt;/p&gt;
-&lt;p&gt;对于方案2，初看似乎简单一些，但在我们阅读了spring 3.x和4.x相关源代码以确定它们在内部到底做了什么后，发现比预想中的复杂。因为在3.x，这样的请求会被当作正确请求，继续执行后面的业务逻辑，而4.x中spring直接就返回&lt;code&gt;400&lt;/code&gt;了，不会执行后续逻辑。这个行为并没有在测试中反映出来，我们到底要不要保证完全一致？&lt;/p&gt;
+&lt;p&gt;似乎没有人清楚需求到底是什么，我们只能根据实际情况或者保险的方式来处理这个问题。同时，我们发现在版本系统中，看到这段代码是一年半以前写的，所以就算是作者在，他也很可能不清楚，当时为什么要写这个测试了。&lt;/p&gt;
+&lt;p&gt;对于方案1，我们需要检查当前所有使用了该服务的下游系统，仔细分析它们的代码来确定行为。这是巨大的工作量，而且仅仅通过代码可能还不能保证正确，还要找到熟悉那个系统的人，问问他们的意见。&lt;/p&gt;
+&lt;p&gt;对于方案2，初看似乎简单一些，但在我们阅读了spring 3.x和4.x相关源代码，以确定它们在内部到底做了什么后，发现比预想中的复杂。因为在3.x，这样的请求会被当作正确请求，继续执行后续逻辑，而4.x中spring直接就返回&lt;code&gt;400&lt;/code&gt;了，不会执行后续逻辑。这个行为并没有在测试中反映出来，我们要不要保证？&lt;/p&gt;
 &lt;h1&gt;准备尝试的方案&lt;/h1&gt;
-&lt;p&gt;为了搞清楚相关的问题，以及阅读代码，与客户交流，已经花了我们的两天的时间。最后我们为了保险起见，决定采用下面的方式：&lt;/p&gt;
+&lt;p&gt;为了搞清楚相关的问题，以及阅读代码，与客户交流，已经花了我们的两天的时间。最后为了保险起见，我们决定采用下面的方式：&lt;/p&gt;
 &lt;p&gt;首先保证行为不变，然后在入口处增加一些log，看看有没有下游系统发送空的body。等过一段时间再来分析，如果有，还保持不变；如果没有，则把这个测试及新增的代码删除。&lt;/p&gt;
-&lt;p&gt;这是一位很有经验的客户给出来的建议，我们觉得这也许是最后的方案了。&lt;/p&gt;
-&lt;p&gt;我们已经感觉到这个测试本身不可信，所以只能通过已经存在的产品行为来决定。&lt;/p&gt;
+&lt;p&gt;这是一位很有经验的客户给出来的建议，我们觉得这也许是最好的方案了。&lt;/p&gt;
+&lt;p&gt;我们已经感觉到那个测试本身不可信，所以只能通过分析已经存在的产品的行为来决定。&lt;/p&gt;
 &lt;h1&gt;峰回路转&lt;/h1&gt;
 &lt;p&gt;就在我们准备动手的时候，事情又有了新的进展。&lt;/p&gt;
 &lt;p&gt;客户通过对产品系统中相应的url发送了一个空body的请求，结果发现返回的http code居然是&lt;code&gt;500&lt;/code&gt;。原来这个系统的上游系统，不能处理空body。&lt;/p&gt;
@@ -12906,7 +12907,7 @@ object Hanoi extends App {
 &lt;p&gt;pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;name: web_ui
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#109;&amp;#97;&amp;#105;&amp;#x6c;&amp;#x74;&amp;#x6f;&amp;#x3a;&amp;#119;&amp;#101;&amp;#98;&amp;#45;&amp;#x75;&amp;#105;&amp;#x2d;&amp;#x64;&amp;#101;&amp;#x76;&amp;#x40;&amp;#x64;&amp;#97;&amp;#x72;&amp;#x74;&amp;#x6c;&amp;#x61;&amp;#x6e;&amp;#x67;&amp;#46;&amp;#x6f;&amp;#x72;&amp;#103;&quot;&gt;&amp;#x77;&amp;#x65;&amp;#x62;&amp;#x2d;&amp;#117;&amp;#105;&amp;#x2d;&amp;#100;&amp;#101;&amp;#x76;&amp;#x40;&amp;#100;&amp;#97;&amp;#x72;&amp;#116;&amp;#x6c;&amp;#x61;&amp;#110;&amp;#x67;&amp;#46;&amp;#x6f;&amp;#114;&amp;#x67;&lt;/a&gt;&amp;rdquo;
+&lt;p&gt;author: &amp;ldquo;Web UI Authors &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#x74;&amp;#111;&amp;#x3a;&amp;#x77;e&amp;#98;&amp;#45;&amp;#117;&amp;#x69;&amp;#45;&amp;#100;&amp;#x65;&amp;#118;&amp;#x40;&amp;#100;&amp;#97;&amp;#114;&amp;#116;&amp;#x6c;&amp;#x61;&amp;#110;&amp;#103;&amp;#46;&amp;#x6f;&amp;#x72;&amp;#103;&quot;&gt;&amp;#119;&amp;#101;&amp;#x62;&amp;#x2d;&amp;#117;&amp;#x69;&amp;#x2d;&amp;#100;&amp;#x65;&amp;#118;&amp;#64;&amp;#x64;&amp;#x61;&amp;#114;&amp;#x74;&amp;#x6c;&amp;#x61;&amp;#x6e;&amp;#x67;&amp;#46;&amp;#111;&amp;#114;&amp;#x67;&lt;/a&gt;&amp;rdquo;
 &lt;br  /&gt;homepage: https://github.com/dart-lang/web-ui
 &lt;br  /&gt;description: An easy way to build web apps in Dart.
 &lt;br  /&gt;version: 0.4.9
