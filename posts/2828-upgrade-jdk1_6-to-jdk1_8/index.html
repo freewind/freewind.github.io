@@ -75,6 +75,8 @@
 <li>修改打出来的rpm包，让它加上<code>_java8</code>后缀</li>
 <li>修改rpm包依赖，让它使用jdk1.8</li>
 <li>确保部署后的机器，使用正确的jdk版本来运行</li>
+<li>升级部署机上的相关库</li>
+<li>修正spring4.x导致的warning</li>
 </ol>
 <p>下面依次详述各部分的做法，以及遇到的问题。</p>
 <h2>1.提供一个开关<code>java8</code>，将jdk1.6和1.8完全分离</h2>
@@ -183,6 +185,20 @@ private User user2;
 <h2>7.确保部署后的机器，使用正确的jdk版本来运行</h2>
 <p>部署之后，我们很快又发现一个新的问题：虽然我们依赖的jdk1.8 <code>java-1.8.0-openjdk</code>正常安装了，但是运行的时候，还是用的java1.6，导致无法启动。</p>
 <p>后来发现，我们要把它改成<code>java-1.8.0-oracle</code>，它安装后会自动更新系统的<code>java</code>命令，指向新版本，从而解决了这个问题。</p>
+<h2>8.升级部署机上的相关库</h2>
+<p>把程序部署到产品后，又发现了一个问题：我们当前使用的newrelic版本为</p>
+<pre><code>NEWRELIC = 'com.newrelic.agent.java:newrelic-agent:3.9.0'
+</code></pre>
+<p>该版本不支持jdk1.8，运行时出错。升级为：</p>
+<pre><code>NEWRELIC = 'com.newrelic.agent.java:newrelic-agent:3.12.1'
+</code></pre>
+<p>后正常。</p>
+<h2>9.修正spring4.x导致的warning</h2>
+<p>最后还发现了一个warning，在程序启动的时候，会报</p>
+<blockquote><p>Requested bean is currently in creation: Is there an unresolvable circular reference?</p>
+</blockquote>
+<p>这样的warning。经过反复排查后，发现这是一个非常奇怪的问题，最后的解决办法是使用spring4中提供的一些更推荐的类<code>MethodInvokingBean</code>替换掉spring3.x中的<code>MethodInvokingFactoryBean</code></p>
+<p>相关代码参看这里： <a href="https://github.com/freewind/spring-circle-reference">https://github.com/freewind/spring-circle-reference</a></p>
 
 </div>
 
