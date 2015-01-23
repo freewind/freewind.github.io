@@ -186,7 +186,11 @@ private User user2;
 <p>部署之后，我们很快又发现一个新的问题：虽然我们依赖的jdk1.8 <code>java-1.8.0-openjdk</code>正常安装了，但是运行的时候，还是用的java1.6，导致无法启动。</p>
 <p>后来发现，我们要把它改成<code>java-1.8.0-oracle</code>，它安装后会自动更新系统的<code>java</code>命令，指向新版本，从而解决了这个问题。</p>
 <h2>8.升级部署机上的相关库</h2>
-<p>把程序部署到产品后，又发现了一个问题：我们当前使用的newrelic版本为</p>
+<p>把程序部署到产品后，又发现了一个问题，newrelic无法正常启动，报了一个错：</p>
+<pre><code>Java 8 JRE detected but not enabled. Not starting the New Relic Agent.
+</code></pre>
+<p>错误原因及解决方法在这里：<a href="https://discuss.newrelic.com/t/enable-java-se-8-compatibility/3574">https://discuss.newrelic.com/t/enable-java-se-8-compatibility/3574</a>，只要升级一下版本即可。</p>
+<p>我们当前使用的newrelic版本为</p>
 <pre><code>NEWRELIC = 'com.newrelic.agent.java:newrelic-agent:3.9.0'
 </code></pre>
 <p>该版本不支持jdk1.8，运行时出错。升级为：</p>

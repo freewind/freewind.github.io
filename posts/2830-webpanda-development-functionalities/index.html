@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>开发webpanda插件(0) - 功能介绍</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-01-23) 开发webpanda插件(0) - 功能介绍
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>这次客户举行了新一届的hack day，给大家三天的时间，鼓励大家把平时想到的一些没有机会实现的点子在这几天实现出来。</p>
+<p>大家都踊跃参加，有的是帮助客户进行业务上的改进，有的是自己感兴趣的东西。我和一位同事娟一起，打算做一个桌面版的web开发工具：Web Panda.</p>
+<p>简单的说，它是桌面版的<a href="http://jsbin.com">jsbin</a>/<a href="http://jsfiddle.net/">jsfiddle</a>/<a href="http://plnkr.co/">Plunker</a>，另外还有一个收费的<a href="http://flammy.net/triplety/">triplety</a>。既然有这么多的产品可用，我们为什么还要做一个自己的呢？</p>
+<p>主要是这几个原因：</p>
+<ol>
+<li>在线版的几个，在国内很容易被墙。有时候自己被墙，有时候它们引用的资源被墙</li>
+<li>有时候访问很慢，半天打不开页面</li>
+<li>有时候没有网络</li>
+<li>它们提供的js文件列表，我们不能编辑，不能添加自己常用的</li>
+<li>我们不能使用自己喜欢的编辑器，只能用它提供的在线的</li>
+<li>它们保存的项目，没有经过很好的组织和展示，找起来特别不方便</li>
+</ol>
+<p>而triplety，用起来还不错，但是它是收费的，导致很多人用不了。</p>
+<p>我们打算做一个自己的，它除了能提供上面的功能外，还能在这几个方面进行改进：</p>
+<ol>
+<li>内置一大堆保存在磁盘上的资源文件，没有网络也可以用</li>
+<li>可以方便的把自己的资源文件也加入到列表中</li>
+<li>可以在磁盘上生成项目，让我们用自己常用的编辑器打开</li>
+<li>对于保存的文件可以方便的组织（如分类等）</li>
+<li>方便的搜索已经保存的项目</li>
+</ol>
+<p>由于我们没有开发桌面程序的经验，所以想到了使用Chrome的App打包功能，可以使用html/css/js来开发程序，然后打包成一个基于Chrome的桌面程序。</p>
+<p>根据我们在开发Js类项目时的经验，觉得这样的一个工具，对于Js的学习与项目开发都很有帮助。希望这个工具，可以给大家的工作带来方便。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2830';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

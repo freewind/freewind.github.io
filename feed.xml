@@ -12,11 +12,88 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Mon, 19 Jan 2015 21:23:05 CST</lastBuildDate>
+        <lastBuildDate>Fri, 23 Jan 2015 18:01:27 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>开发webpanda插件(1) - 创建最简单的Chrome app</title>
+                <link>http://freewind.in/posts/2831-webpanda-dev-create-simplest-chrome-app</link>
+                <pubDate>Fri, 23 Jan 2015 16:29:48 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2831</guid>
+                <description><![CDATA[<p>我们的插件是一个桌面程序，为了快速实现它，我们打算使用Chrome的App打包功能。</p>
+<h1>观察Postman的效果</h1>
+<p>它到底能不能实现我们想要的效果呢？我们查看了一个已有的Chrome App: <a href="https://chrome.google.com/webstore/detail/postman-rest-client-packa/fhbjgbiflinjbdggehcddcbncdddomop">Postman Packaged App</a></p>
+<p>它的效果让我们很满意：</p>
+<ol>
+<li>看起来像是一个桌面程序，而不是网站</li>
+<li>安装后，在桌面的Dock上，会有一个google提供的应用程序图标，点开后可以找到运行postman</li>
+<li>可以通过Spotlight Search功能找到它</li>
+<li>它拥有本地程序的各种权限，比如操作文件等</li>
+</ol>
+<h1>需要什么</h1>
+<p>由于我们从来没有做过Chrome App，所以第一个任务是做一个最简单的Chrome App：显示一个Html页面，上面有<code>Hello world</code>两字。</p>
+<p>这里是官方的教程：<a href="https://developer.chrome.com/apps/first_app">https://developer.chrome.com/apps/first_app</a></p>
+<p>看起来很简单，我们只需要一个manifest描述文件，一个background script文件，和一些图标即可。</p>
+<ul>
+<li>Manifest格式：<a href="https://developer.chrome.com/apps/manifest">https://developer.chrome.com/apps/manifest</a></li>
+</ul>
+<h1>创建必需文件</h1>
+<p>按照上面的教程，只要创建以下文件，并且贴上内容，就可以了。</p>
+<pre><code>|-- background.js
+|-- icons
+|   |-- calculator-128.png
+|   `-- calculator-16.png
+|-- manifest.json
+`-- window.html
+</code></pre>
+<p>比预想中的简单太多。</p>
+<h1>在本地安装</h1>
+<p>安装也很方便，直接在Settings -> Extensions -> Load unpacked extension，选择文件所在的目录即可。</p>
+<p>提示成功后，不需要重启，就可以在Dock上的google apps中看到，点击后，马上出现一个看起来非常像桌面程序的窗口出现，上书<code>Hello World</code>，太酷了。</p>
+<h1>改成web panda的信息</h1>
+<p>然后我们在它的基础上，修改了一些文字和图标，变成我们需要的Web Panda信息。</p>
+<h1>上传到Chrome web store失败</h1>
+<p>本想上传到Chrome web store上，但是那边没有开通中国的付款，无法交$5的注册费。搜了一下，感觉还挺麻烦的，所以先不上传，等弄得差不多了再上传。</p>
+]]></description>
+            </item>
+        
+            <item>
+                <title>开发webpanda插件(0) - 功能介绍</title>
+                <link>http://freewind.in/posts/2830-webpanda-development-functionalities</link>
+                <pubDate>Fri, 23 Jan 2015 16:28:56 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2830</guid>
+                <description><![CDATA[<p>这次客户举行了新一届的hack day，给大家三天的时间，鼓励大家把平时想到的一些没有机会实现的点子在这几天实现出来。</p>
+<p>大家都踊跃参加，有的是帮助客户进行业务上的改进，有的是自己感兴趣的东西。我和一位同事娟一起，打算做一个桌面版的web开发工具：Web Panda.</p>
+<p>简单的说，它是桌面版的<a href="http://jsbin.com">jsbin</a>/<a href="http://jsfiddle.net/">jsfiddle</a>/<a href="http://plnkr.co/">Plunker</a>，另外还有一个收费的<a href="http://flammy.net/triplety/">triplety</a>。既然有这么多的产品可用，我们为什么还要做一个自己的呢？</p>
+<p>主要是这几个原因：</p>
+<ol>
+<li>在线版的几个，在国内很容易被墙。有时候自己被墙，有时候它们引用的资源被墙</li>
+<li>有时候访问很慢，半天打不开页面</li>
+<li>有时候没有网络</li>
+<li>它们提供的js文件列表，我们不能编辑，不能添加自己常用的</li>
+<li>我们不能使用自己喜欢的编辑器，只能用它提供的在线的</li>
+<li>它们保存的项目，没有经过很好的组织和展示，找起来特别不方便</li>
+</ol>
+<p>而triplety，用起来还不错，但是它是收费的，导致很多人用不了。</p>
+<p>我们打算做一个自己的，它除了能提供上面的功能外，还能在这几个方面进行改进：</p>
+<ol>
+<li>内置一大堆保存在磁盘上的资源文件，没有网络也可以用</li>
+<li>可以方便的把自己的资源文件也加入到列表中</li>
+<li>可以在磁盘上生成项目，让我们用自己常用的编辑器打开</li>
+<li>对于保存的文件可以方便的组织（如分类等）</li>
+<li>方便的搜索已经保存的项目</li>
+</ol>
+<p>由于我们没有开发桌面程序的经验，所以想到了使用Chrome的App打包功能，可以使用html/css/js来开发程序，然后打包成一个基于Chrome的桌面程序。</p>
+<p>根据我们在开发Js类项目时的经验，觉得这样的一个工具，对于Js的学习与项目开发都很有帮助。希望这个工具，可以给大家的工作带来方便。</p>
+]]></description>
+            </item>
         
             <item>
                 <title>一个起初看起来无害的测试为什么最后产生了一堆麻烦</title>
@@ -219,7 +296,11 @@ private User user2;
 <p>部署之后，我们很快又发现一个新的问题：虽然我们依赖的jdk1.8 <code>java-1.8.0-openjdk</code>正常安装了，但是运行的时候，还是用的java1.6，导致无法启动。</p>
 <p>后来发现，我们要把它改成<code>java-1.8.0-oracle</code>，它安装后会自动更新系统的<code>java</code>命令，指向新版本，从而解决了这个问题。</p>
 <h2>8.升级部署机上的相关库</h2>
-<p>把程序部署到产品后，又发现了一个问题：我们当前使用的newrelic版本为</p>
+<p>把程序部署到产品后，又发现了一个问题，newrelic无法正常启动，报了一个错：</p>
+<pre><code>Java 8 JRE detected but not enabled. Not starting the New Relic Agent.
+</code></pre>
+<p>错误原因及解决方法在这里：<a href="https://discuss.newrelic.com/t/enable-java-se-8-compatibility/3574">https://discuss.newrelic.com/t/enable-java-se-8-compatibility/3574</a>，只要升级一下版本即可。</p>
+<p>我们当前使用的newrelic版本为</p>
 <pre><code>NEWRELIC = 'com.newrelic.agent.java:newrelic-agent:3.9.0'
 </code></pre>
 <p>该版本不支持jdk1.8，运行时出错。升级为：</p>
@@ -12923,7 +13004,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#119;&#x65;&#x62;&#x2d;u&#x69;&#45;&#100;&#101;&#x76;&#64;&#x64;&#97;&#x72;&#x74;&#x6c;&#97;&#x6e;&#103;&#x2e;&#111;&#x72;&#103;">&#119;&#101;&#x62;&#45;&#x75;&#105;&#x2d;d&#x65;&#118;&#64;&#x64;&#x61;&#x72;&#x74;&#x6c;&#x61;&#110;&#103;&#x2e;&#x6f;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#119;&#101;&#98;&#45;&#x75;&#x69;&#45;&#x64;&#x65;&#118;&#x40;&#100;&#97;&#114;&#116;&#x6c;&#97;&#110;&#103;&#x2e;&#x6f;&#114;&#103;">&#119;&#x65;&#x62;&#45;&#x75;&#x69;&#45;&#100;&#101;&#118;&#64;&#x64;&#x61;&#114;&#x74;&#x6c;&#97;&#x6e;&#103;&#x2e;&#111;&#114;&#x67;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
