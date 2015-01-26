@@ -77,6 +77,7 @@
 <li>确保部署后的机器，使用正确的jdk版本来运行</li>
 <li>升级部署机上的相关库</li>
 <li>修正spring4.x导致的warning</li>
+<li>升级到jetty 9.x</li>
 </ol>
 <p>下面依次详述各部分的做法，以及遇到的问题。</p>
 <h2>1.提供一个开关<code>java8</code>，将jdk1.6和1.8完全分离</h2>
@@ -167,7 +168,8 @@ private User user2;
 <h3>-noverify加还是不加</h3>
 <p>最开始我们发现，当升级到jdk1.8.05时，测试不能正常执行，总会报一些奇怪的错误。后来在<code>build.gradle</code>中的<code>test</code>任务中，加入了针对JVM的选项<code>-noverify</code>才能执行。</p>
 <p>不过后来同事说，这似乎是一个jdk1.8中某些小版本的bug，使用其它的版本，就不需要加<code>-noverify</code>了。</p>
-<p>我们最后选择了合适的jdk1.8小版本，去掉了这个选项。</p>
+<p>我们尝试使用某些声明已经解决了这个bug的jdk小版本，但是发现还是报错。经过反复排查，还是找不到原因，可能是gradle或者依赖的某些库有问题，但无法定位。</p>
+<p>所以我们还是暂时加上了这个参数，等以后弄清楚了再去掉它。</p>
 <h2>5.修改打出来的rpm包，让它加上<code>_java8</code>后缀</h2>
 <p>为了区分使用jdk1.8还是1.6编译的，我们将在jdk1.8下，打出来的包后面加上<code>_java8</code>后缀，方便维护。</p>
 <p>在这里遇到了一个开始没有考虑到的问题：我们以前正常运行的build pipeline，已经打出来很多包了，比如：<code>mylib-2-110.rpm</code>, <code>mylib-2-111.rpm</code></p>
@@ -203,6 +205,27 @@ private User user2;
 </blockquote>
 <p>这样的warning。经过反复排查后，发现这是一个非常奇怪的问题，最后的解决办法是使用spring4中提供的一些更推荐的类<code>MethodInvokingBean</code>替换掉spring3.x中的<code>MethodInvokingFactoryBean</code></p>
 <p>相关代码参看这里： <a href="https://github.com/freewind/spring-circle-reference">https://github.com/freewind/spring-circle-reference</a></p>
+<ol>
+<li><h2>升级到jetty 9.x</h2>
+</li>
+</ol>
+<h3>ASM依赖</h3>
+<p>与其他组同事讨论之后，发现我们项目中使用的某些库，还依赖于旧版本的ASM。经过检查，我们项目中一共依赖了三种不同版本的ASM:</p>
+<ul>
+<li>Jetty 8.x 依赖于 ASM 3.x (optional)</li>
+<li>reset-assured 依赖于 ASM 4.x</li>
+<li>spring 4.x 依赖于 ASM 5.x</li>
+</ul>
+<p>由于我们显式地声明了ASM <code>5.x</code>，所以其它的库都使用了ASM 5.x。但是由于不同的ASM之间并不是完全兼容，所以这是一个潜在的风险。</p>
+<p>所以我们打算把它们都升级到支持5.x的版本：</p>
+<ul>
+<li><code>org.eclipse.jetty.aggregate:jetty-all-server:8.1.7.v20120910@jar</code> => <code>org.eclipse.jetty.aggregate:jetty-all:9.2.7.v20150116</code></li>
+<li><code>com.jayway.restassured:rest-assured:1.8.1</code> => <code>com.jayway.restassured:rest-assured:2.4.0</code></li>
+</ul>
+<h3>Jetty-All</h3>
+<p>后来又发现一个问题，我们使用jetty时，直接使用了组合版，如<code>jetty-all-server</code>或者<code>jetty-all</code></p>
+<p>我在stackoverflow上提了一个问题，Jetty的Committer建议我们不要使用这种组合包，而是需要哪个就用哪个。</p>
+<p>所以我们最后去掉了<code>jetty-all</code>的依赖，而是使用实际依赖的小包: <a href="http://stackoverflow.com/questions/28101846/where-is-jetty-all-server-for-9-x">http://stackoverflow.com/questions/28101846/where-is-jetty-all-server-for-9-x</a></p>
 
 </div>
 
