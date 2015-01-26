@@ -12,11 +12,196 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Mon, 26 Jan 2015 17:53:10 CST</lastBuildDate>
+        <lastBuildDate>Tue, 27 Jan 2015 00:00:00 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>Pair神器 - Remote Pair Tool</title>
+                <link>http://freewind.in/posts/2834-remote-pair-tool</link>
+                <pubDate>Mon, 26 Jan 2015 19:50:58 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2834</guid>
+                <description><![CDATA[<h1>Pair神器 - Remote Pair Tool</h1>
+<hr />
+<h2>什么是结对编程</h2>
+<p>“结对编程”是我司每天都会进行的一项实践，通常由两个人坐在一起，在同一台电脑上，一起开发某个功能或者解决某个问题。</p>
+<p>在结对的过程中，两个人会进行强烈的交互。比如一个人写测试，另一个人写实现让这个测试通过。</p>
+<p>在每一个时刻，只会有一个人在敲键盘。</p>
+<hr />
+<h2>结对时可能会遇到的一些困难</h2>
+<p>由于两个人要坐在一起，且共用一台电脑，难免会有一些不方便的地方。</p>
+<p>比如：</p>
+<hr />
+<h3>快捷键和配色</h3>
+<ol>
+<li>我想用Idea默认快捷键，而我的同伴想用Vim快捷键（通过Idea Vim插件）</li>
+<li>我有一些常用的快捷键，但同伴的电脑没有设置（并且也不想设置）</li>
+<li>我想用黑色背景，而同伴习惯白色背景</li>
+</ol>
+<p>两人共用一台电脑，就意味着一个人或者两个人的妥协，而顺手的快捷键设置和配色对开发效率大有帮助。</p>
+<hr />
+<h3>隐私与个人事务</h3>
+<ol>
+<li>我不想看同伴电脑上的隐私</li>
+<li>我们在同伴的电脑上工作，但我需要随时关注我自己的邮件或者IM上的信息</li>
+</ol>
+<hr />
+<h3>距离</h3>
+<ol>
+<li>我需要与客户一起解决一个问题，但是我在中国，客户在澳洲</li>
+<li>我们团队的人员分散在不同办公室，我在西安，同事在北京</li>
+</ol>
+<p>只能通过视频交流问题，而编码工作将会交给某一个人或者同一个地方的人完成。</p>
+<hr />
+<h2>我们需要远程Pair工具</h2>
+<p>我们需要一个远程Pair工具，它拥有以下特性：</p>
+<ol>
+<li>每个人可以使用他自己电脑上的编辑器（自己的快捷键、配色、设置等，不需要妥协）</li>
+<li>每个人输入的内容可以实时更新到对方的编辑器中（保证内容一致）</li>
+<li>两个人可以同时输入，互不影响（更加自由）</li>
+<li>不同国家的人一起使用时，同步速度足够快</li>
+</ol>
+<hr />
+<h2>当前市场上已有产品及问题</h2>
+<ol>
+<li><a href="https://floobits.com/">floobits</a><ul>
+<li>优势：1. 可使用多种不同的编辑器(Vim, Emacs, Idea, Sublime)合作 2. 成熟，商业性</li>
+<li>遗憾：1. 私有项目需要收费 2. 代码需要保存在floobits服务器上（外泄风险）</li>
+</ul>
+</li>
+<li><a href="http://etherpad.org/">etherpad</a><ul>
+<li>优势：1. 开源免费 2. 支持线上及桌面编辑器（跨平台）</li>
+<li>遗憾：只能使用它提供的编辑器，而不是使用你习惯的编辑器</li>
+</ul>
+</li>
+</ol>
+<hr />
+<ol>
+<li><a href="http://pivotallabs.com/how-we-use-tmux-for-remote-pair-programming/">vim/emacs + tmux</a><ul>
+<li>优势：简单，方便，很多人使用</li>
+<li>遗憾：只能使用Vim/Emacs</li>
+</ul>
+</li>
+<li><a href="http://en.wikipedia.org/wiki/Collaborative_real-time_editor">其它很多</a><ul>
+<li>遗憾：多数都只能使用基于浏览器的编辑器，或者一个特制的编辑器</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>我们的特色</h2>
+<ol>
+<li>免费开源</li>
+<li>服务器可位于内网（或者自己的电脑上)，代码不外泄</li>
+<li>支持不同的编辑器（Idea/Sublime/Eclipse等），你可以使用自己顺手的编辑器</li>
+<li>支持两人或更多人协作（可结对，可code-review，可培训）</li>
+<li>多种模式（光标跟随，或者并行编辑）</li>
+<li>支持发送消息</li>
+</ol>
+<hr />
+<h2>哪些是我们不做的</h2>
+<ol>
+<li>语音</li>
+<li>视频</li>
+<li>屏幕共享</li>
+</ol>
+<p>请与相关专业工具配合使用</p>
+<hr />
+<h2>目前已经完成的部分</h2>
+<ol>
+<li>服务器（独立运行，或者内嵌于Idea插件中）</li>
+<li>基于Idea的插件（支持Idea、RubyMine、Webstorm等全系列）</li>
+<li>多人协作，内容同步</li>
+<li>多种模式（光标跟随，或者并行编辑）</li>
+</ol>
+<p>更多功能还在开发中</p>
+<hr />
+<h2>技术栈</h2>
+<ol>
+<li>Scala</li>
+<li>Netty (NIO)</li>
+<li>Idea Plugin API</li>
+</ol>
+<hr />
+<h2>工作流程: 单服务器 + 多客户端（编辑器）</h2>
+<ul>
+<li>首先要启动一个服务器（独立部署的，或者插件内嵌的），绑定某端口</li>
+<li>每个人下载好代码（可放置于不同目录），尽量保证文件内容一致</li>
+<li>在编辑顺中打开项目，通过Pair插件以ip:port方式连接到服务器</li>
+<li>通过插件在服务器创建或者加入一个项目（一个服务器支持多个项目，供更多人同时使用）</li>
+</ul>
+<hr />
+<ul>
+<li>一个项目中第一个加入的人为master，当文件冲突时，以他的内容为准（也可指定其它人为master）</li>
+<li>设置“忽略的文件”，如项目配置文件，二进制文件，日志文件等不应该同步给其他人的文件</li>
+<li>可要求master将自己的文件内容同步给其他人，保证大家文件内容完全一致（除了忽略的文件）</li>
+<li>打开某个文件，开始工作（每个人修改的内容都会实时同步到其他人编辑器中）</li>
+</ul>
+<hr />
+<ul>
+<li>项目默认为“光标跟随”模式，即一个人打开或者关闭某个文件、移动光标等，都会在其他人的编辑器中触发相同的操作（适合一个人写其他人看的场景，如同在共用同一台电脑同一个键盘）</li>
+<li>也可更改为“并行编辑”模式，多人可同时编辑，可各自打开不同的文件（适合各自探索）</li>
+<li>可通过插件直接向其他人发送文本消息</li>
+</ul>
+<hr />
+<h1>下面将以图片方式演示各功能</h1>
+<hr />
+<h2>在一个插件中启动服务器</h2>
+<p><img src="/user_images/2834-1.png" alt="1" /></p>
+<hr />
+<h2>启动成功，默认绑定8888端口</h2>
+<p><img src="/user_images/2834-2.png" alt="2" /></p>
+<hr />
+<h2>连接到服务器</h2>
+<p><img src="/user_images/2834-3.png" alt="3" /></p>
+<hr />
+<p><img src="/user_images/2834-4.png" alt="4" /></p>
+<hr />
+<h2>创建一个项目，并指定一个名字</h2>
+<p><img src="/user_images/2834-5.png" alt="5" /></p>
+<hr />
+<h2>选择应该忽略的文件（如配置文件，.git目录等）</h2>
+<p><img src="/user_images/2834-6.png" alt="6" /></p>
+<hr />
+<h2>打开另一个编辑器，并打开另一个项目目录</h2>
+<p><img src="/user_images/2834-7.png" alt="7" /></p>
+<hr />
+<h2>连接到相同服务器</h2>
+<p><img src="/user_images/2834-8.png" alt="8" /></p>
+<hr />
+<h2>加入之前创建的项目</h2>
+<p><img src="/user_images/2834-9.png" alt="9" /></p>
+<hr />
+<h2>同步文件</h2>
+<p><img src="/user_images/2834-10.png" alt="10" /></p>
+<hr />
+<p><img src="/user_images/2834-11.png" alt="11" /></p>
+<hr />
+<h2>在一个编辑器中修改内容后，会实时更新到另一个编辑器</h2>
+<p><img src="/user_images/2834-12.png" alt="12" /></p>
+<hr />
+<p><img src="/user_images/2834-13.png" alt="13" /></p>
+<hr />
+<h2>一个编辑器中的光标，在另一个编辑器中会以红色竖线显示</h2>
+<p><img src="/user_images/2834-14.png" alt="14" /></p>
+<hr />
+<h2>在一个编辑器选中的内容，会在另一个编辑器中显示为绿色背景</h2>
+<p><img src="/user_images/2834-15.png" alt="15" /></p>
+<hr />
+<h2>将模式改为“并行编辑”</h2>
+<p><img src="/user_images/2834-16.png" alt="16" /></p>
+<hr />
+<h2>两个编辑器可打开不同的文件进行编辑</h2>
+<p><img src="/user_images/2834-17.png" alt="17" /></p>
+<hr />
+<h1>实物演示！</h1>
+<hr />
+<h1>A &amp; Q</h1>
+]]></description>
+            </item>
         
             <item>
                 <title>Scala与Java代码的区别(2)</title>
@@ -13251,7 +13436,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#58;&#x77;&#x65;&#98;&#45;&#117;&#x69;&#45;&#x64;&#101;&#118;&#64;&#x64;&#x61;&#x72;&#x74;&#x6c;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#x67;">&#119;&#x65;&#98;&#45;&#x75;&#x69;&#45;&#x64;&#101;&#x76;&#x40;&#100;&#x61;&#114;&#116;&#108;&#x61;&#110;&#103;&#46;&#x6f;&#114;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#58;&#x77;&#101;b&#x2d;&#117;&#x69;&#45;d&#101;&#118;&#x40;&#x64;&#x61;&#114;&#116;&#108;&#97;&#110;&#103;&#46;&#x6f;&#114;&#x67;">&#119;&#x65;&#x62;&#x2d;&#117;&#105;&#45;d&#x65;v&#64;&#x64;&#x61;&#x72;&#116;&#108;&#97;&#110;&#103;&#x2e;&#111;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
