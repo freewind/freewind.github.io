@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Tue, 27 Jan 2015 00:00:00 CST</lastBuildDate>
+        <lastBuildDate>Tue, 27 Jan 2015 00:04:36 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -199,7 +199,7 @@
 <hr />
 <h1>实物演示！</h1>
 <hr />
-<h1>A &amp; Q</h1>
+<h1>Q &amp; A</h1>
 ]]></description>
             </item>
         
@@ -13436,7 +13436,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#58;&#x77;&#101;b&#x2d;&#117;&#x69;&#45;d&#101;&#118;&#x40;&#x64;&#x61;&#114;&#116;&#108;&#97;&#110;&#103;&#46;&#x6f;&#114;&#x67;">&#119;&#x65;&#x62;&#x2d;&#117;&#105;&#45;d&#x65;v&#64;&#x64;&#x61;&#x72;&#116;&#108;&#97;&#110;&#103;&#x2e;&#111;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;:&#x77;&#101;&#x62;&#x2d;u&#x69;&#45;&#100;&#x65;&#118;&#64;&#100;&#x61;&#x72;&#x74;&#x6c;&#97;&#110;&#x67;&#46;&#x6f;&#114;&#x67;">&#119;&#101;&#98;-&#x75;&#105;&#x2d;&#100;&#101;&#118;&#x40;&#100;&#x61;&#x72;&#x74;&#108;&#97;&#110;&#103;.&#x6f;&#114;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
