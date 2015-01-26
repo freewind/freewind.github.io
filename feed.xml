@@ -12,11 +12,235 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Fri, 23 Jan 2015 18:01:27 CST</lastBuildDate>
+        <lastBuildDate>Mon, 26 Jan 2015 17:38:12 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>Scala与Java代码的区别(2)</title>
+                <link>http://freewind.in/posts/2833-scala-java-difference-2-null-or-non-null</link>
+                <pubDate>Mon, 26 Jan 2015 10:40:35 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2833</guid>
+                <description><![CDATA[<h1>Scala与Java代码的区别(2)</h1>
+<p>用Null还是不用，这是个问题</p>
+<hr />
+<h2>习以为常的null</h2>
+<ul>
+<li>我们对null和NullPointerException已经习以为常</li>
+<li>因为我们在Java/Ruby/Python/JavaScript/… 都会面对它</li>
+<li>无论你怎么努力，都不敢保证你的代码一定不会抛出NullPointerException</li>
+<li>它的存在似乎是理所当然</li>
+<li>我们不能想像：居然有一些语言不允许null ?!</li>
+</ul>
+<hr />
+<h2>价值千万的错误</h2>
+<blockquote><p>Tony Hoare introduced Null references in ALGOL W back in 1965 “simply because it was so easy to implement”, says Mr. Hoare. He talks about that decision considering it “my billion-dollar mistake”.</p>
+</blockquote>
+<p><a href="http://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare">http://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare</a></p>
+<hr />
+<h2>它的存在基于一些看似合理的假设</h2>
+<ul>
+<li>面向对象的代码中，由于状态是可变的，用于操作这些状态的方法，多数会有一定的依赖关系（理想的顺序）</li>
+<li>我们的代码中，虽然有一些变量可能为null，但是为null的时间比较短暂（仅在初始化之前）</li>
+<li>虽然有一些方法的返回值可能为null，但是我们只要注意调用时机，就可以避免</li>
+<li>某些情况下我们用null表示没有找到或不存在（如map.get），已经形成了一种共识或者pattern</li>
+<li>剩下的情况，只需要在使用前判断一下!=null即可</li>
+</ul>
+<hr />
+<h2>如果我们接受了这种设定，类型系统似乎也可以变得简单</h2>
+<ul>
+<li><p>用一种类型<code>String</code>表示两种情况：它的确是个String，或者是个<code>null</code>，使用前请自行判断</p>
+</li>
+<li><p>否则，需要用新类型来表达：<code>Option[String]</code>, <code>String a =&gt; Maybe a</code>, <code>String?</code></p>
+</li>
+</ul>
+<hr />
+<h2>总之</h2>
+<p>我们在尝试以“通过自己小心谨慎的努力避免出错”来换取“代码的简单”</p>
+<hr />
+<h2>一段Java代码</h2>
+<pre><code class="java">class Team {
+    private List&lt;String&gt; members = null;
+
+    public Team(List&lt;String&gt; members) {
+        this.members = members;
+    }
+
+    public int getTeamSize() {
+        return members.size();
+    }
+
+    public String getFirstMember() {
+        return members.get(0);
+    }
+}
+</code></pre>
+<hr />
+<h2>如何不抛NullPointerException</h2>
+<pre><code class="java">List&lt;String&gt; members = new ArrayList&lt;String&gt;();
+members.add("Juan");
+members.add("Chen");
+members.add("...");
+
+Team team = new Team(members);
+
+System.out.println(team.getTeamSize());
+System.out.println(team.getFirstMember());
+</code></pre>
+<p>如果我们的代码可以保证，构造这个<code>Team</code>对象时，一定传入一个非空的列表，则不会抛异常。</p>
+<hr />
+<h2>不可靠的保证</h2>
+<ul>
+<li>如果你自己忘了</li>
+<li>如果别人不知道</li>
+<li>如果别人向你的方法中传入了一个<code>team</code>对象，而你不知道它拥有的<code>members</code>到底是什么样的</li>
+</ul>
+<p>所以我们在使用这些允许null的语言写代码时，每次使用一个变量或者一个方法的返回值时，都会在心里纠结一下：</p>
+<p>它到底会不会是null?</p>
+<hr />
+<h2>Workgrounds</h2>
+<ol>
+<li><code>NullObject</code> pattern</li>
+<li>编辑器的提示 (Idea)</li>
+<li><code>@NotNull</code> Annotation (Idea)</li>
+<li>语法层面：<code>a?.b?.c</code> (<a href="http://groovy.codehaus.org/">Groovy</a>)</li>
+<li>小幅改进的类型系统：<code>var name: String? = null</code>，使用前要<code>if(name!=null)</code>，否则编译不过 (<a href="http://kotlinlang.org/">Kotlin</a>)</li>
+</ol>
+<hr />
+<h2>完善彻底的解决方案</h2>
+<ol>
+<li>Scala: <code>Option[T]</code>, <code>Some[T]</code>, <code>None</code></li>
+</ol>
+<p>对于所有可能为<code>null</code>的变量，或者返回值为<code>null</code>的方法/函数，都要声明为<code>Option</code></p>
+<p>当一个类型声明不是<code>Option</code>，我们可以放心的认为它不会为<code>null</code></p>
+<p>(Haskell: <code>Maybe a</code>, <code>Just a</code>, <code>Nothing</code>)</p>
+<hr />
+<h2>再强调一遍</h2>
+<p>对于所有可能为<code>null</code>的变量，或者返回值为<code>null</code>的方法/函数，都要声明为<code>Option</code></p>
+<p>如果一个类型不是<code>Option</code>，我们可以放心的认为它不会为<code>null</code></p>
+<p>这不是由编译器保证的，只能靠我们自己在写代码时注意。</p>
+<p>（由于Scala需要跟Java互通，所以还要兼容<code>null</code>，Haskell里没有<code>null</code>）</p>
+<hr />
+<h2>Scala版</h2>
+<pre><code class="scala">class Team(members: List[String]) {
+    def getTeamSize: Int = members.size()
+
+    def getFirstMember: Option[String] = members.get(0)
+}
+</code></pre>
+<p>为什么：</p>
+<ol>
+<li><code>members</code>的类型不是<code>Option[List[String]]</code>，而是<code>List[String]</code>?</li>
+<li><code>getTeamSize</code>的返回类型是<code>Int</code>，不是<code>Option[Int]</code>?</li>
+<li><code>getFirstMember</code>的返回类型是<code>Option[String]</code>，而不是<code>String</code>?</li>
+</ol>
+<hr />
+<h2>Option的简化定义</h2>
+<pre><code class="scala">sealed trait Option[+T]
+case class Some[T](t:T) extends Option[T]
+case object None extends Option[Nothing]
+</code></pre>
+<hr />
+<h2>如何判断一个Option是Some还是None</h2>
+<p>(1) 命令式风格（通常不推荐）：</p>
+<pre><code class="scala">val name: Option[String] = getNameFromSomeWhere()
+if(name.isDefined) {
+    println("The name is: " + name.get()) 
+}
+if(name.isEmpty) {
+    println("The name is None")
+}
+</code></pre>
+<p>因为其中的<code>name.get()</code>有可能抛出<code>Exception in thread "main" java.util.NoSuchElementException: None.get</code>，需要小心检查在它之前是否确保它肯定是<code>Some</code>，在函数式风格的代码中，我们不应该这么做</p>
+<hr />
+<h2>(2) 使用Patten match</h2>
+<p>这是一种比较推荐的方式，特别是需要针对不同的情况进行不同的处理的时候：</p>
+<pre><code class="scala">val name: Option[String] = getNameFromSomeWhere()
+name match {
+    case Some(n) =&gt; // do something with `n`
+    case None =&gt;  // do some other things
+}
+</code></pre>
+<p>不方便之处，在于有点长。如果我们仅仅需要取值的话，这么写太累了：</p>
+<pre><code class="scala">name match {
+    case Some(n) =&gt; n + "!!!"
+    case None =&gt; "&lt;empty name&gt;"
+}
+</code></pre>
+<hr />
+<h2>如果只会这两种方式，你可能会痛恨Option</h2>
+<pre><code class="scala">val name: Option[String] = getNameWhichShouldBeSome()
+
+name match {
+    case Some(n) =&gt; doSomethingWith(n)
+    case None =&gt; shouldNotHappen()
+}
+</code></pre>
+<p>哪怕我已经确定<code>name</code>的类型是<code>Option[String]</code>，但为了得到其真实的值，我还要写三行代码！哪怕有两行我都不需要！</p>
+<p>虽然我也可以使用<code>option.get()</code>直接获取值，写成<code>doSomethingWith(name.get())</code>，但前面说了，我们应该尽量避免使用它。</p>
+<p>这是让人非常纠结的一件事。好痛恨<code>Option</code>。</p>
+<hr />
+<h2>(3) 善用Option提供的方法</h2>
+<p>不要老想着先把东西从<code>option</code>里取出来再用，而要善用它提供的方法，在一个安全的环境中使用它里面的值：</p>
+<pre><code class="scala">val name: Option[String] = getNameFromSomeWhere()
+
+name.map(_ + "!!!").getOrElse("&lt;empty name&gt;")
+
+name.filter(_.length&gt;10).getOrElse("&lt;a short name&gt;")
+
+name.foreach(println)
+
+name orElse Some("another name")
+</code></pre>
+<p>你不需要判断，不需要取值，只需要在合适的方法中，就可以安全而方便的使用它的值。</p>
+<hr />
+<h2>Option在整个scala库中都大量使用</h2>
+<pre><code class="scala">list.headOption
+list.lastOption
+list.find
+map.get
+...
+</code></pre>
+<hr />
+<h2>for语法的支持</h2>
+<p>因为<code>Option</code>中有<code>map</code>，所以我们可以用<code>for yield</code></p>
+<pre><code class="scala">val name: Option[String] = getNameFromSomeWhere()
+
+val newName: Option[String]= for {
+    n &lt;- name
+} yield n + "!!!"
+</code></pre>
+<p>因为<code>Option</code>中有<code>foreach</code>，所以可以用<code>for</code></p>
+<pre><code class="scala">for {
+    n &lt;- name
+} println(n + "!!!")
+</code></pre>
+<hr />
+<h2>但是如果Option太多。。。</h2>
+<p>就算我们使用上面的技巧，还是要写很长的代码：</p>
+<pre><code class="scala">class User(name: Option[String], age: Option[Int], phone: Option[String]) {
+    def getProfile(): Option[String] = {
+        for {
+            n &lt;- name
+            a &lt;- age
+            p &lt;- phone
+        } yield n + " " + a + " " + p
+    }
+    def getProfile2(): String = (name, age, phone) match {
+        case (Some(n), Some(a), Some(p)) =&gt; n + " " + a + " " + p
+        case _ =&gt; "some information is missing"
+    }
+}
+</code></pre>
+<hr />
+<h2>怎么办？</h2>
+<p>将在以后Manod那里详细说明，敬请期待</p>
+]]></description>
+            </item>
         
             <item>
                 <title>开发webpanda插件(1) - 创建最简单的Chrome app</title>
@@ -13004,7 +13228,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#119;&#101;&#98;&#45;&#x75;&#x69;&#45;&#x64;&#x65;&#118;&#x40;&#100;&#97;&#114;&#116;&#x6c;&#97;&#110;&#103;&#x2e;&#x6f;&#114;&#103;">&#119;&#x65;&#x62;&#45;&#x75;&#x69;&#45;&#100;&#101;&#118;&#64;&#x64;&#x61;&#114;&#x74;&#x6c;&#97;&#x6e;&#103;&#x2e;&#111;&#114;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="m&#x61;&#105;&#108;&#116;&#x6f;&#58;&#x77;&#x65;&#x62;&#45;&#117;&#105;&#45;&#100;&#101;&#x76;&#64;&#x64;&#97;&#114;&#116;&#x6c;&#97;&#110;&#103;&#46;&#x6f;&#114;&#x67;">&#119;&#x65;&#98;&#45;&#117;&#105;&#45;&#x64;&#101;&#118;&#x40;&#100;&#97;&#x72;&#x74;&#108;&#x61;&#110;&#x67;&#x2e;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
