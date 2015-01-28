@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Tue, 27 Jan 2015 00:04:36 CST</lastBuildDate>
+        <lastBuildDate>Wed, 28 Jan 2015 21:38:20 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -65,6 +65,29 @@
 <li>两个人可以同时输入，互不影响（更加自由）</li>
 <li>不同国家的人一起使用时，同步速度足够快</li>
 </ol>
+<hr />
+<h2>可能带给我们的变化</h2>
+<p><strong>提高工作效率</strong></p>
+<ul>
+<li>坐在一起结对的两个人，由于使用各自电脑上更顺手的开发工具，可提高编码效率</li>
+<li>相比共用一台电脑，两人可更加方便的并行探索</li>
+</ul>
+<p><strong>异地团队</strong></p>
+<ul>
+<li>同一个团队的人，既使不在同一个地方，也可以方便的结对</li>
+<li>借助其它语音、视频工具，可做到足够好的交流，不需要再共处一地</li>
+</ul>
+<hr />
+<p><strong>在家办公</strong></p>
+<ul>
+<li>既然团队可异地，何不全都在家办公，只要网络够好</li>
+<li>可节省上下班时间，不用挤公交，不用吸雾霾</li>
+</ul>
+<p><strong>与客户结对做卡</strong></p>
+<ul>
+<li>由于结对不方便，所以一张卡要么交给我们，要么由客户来做</li>
+<li>现在可以与客户结对做卡，极大增强与客户的交流</li>
+</ul>
 <hr />
 <h2>当前市场上已有产品及问题</h2>
 <ol>
@@ -126,7 +149,10 @@
 <li>Idea Plugin API</li>
 </ol>
 <hr />
-<h2>工作流程: 单服务器 + 多客户端（编辑器）</h2>
+<h2>架构：单服务器 + 多客户端（编辑器）</h2>
+<p><img src="/user_images/2834-0.png" alt="0" /></p>
+<hr />
+<h2>使用流程</h2>
 <ul>
 <li>首先要启动一个服务器（独立部署的，或者插件内嵌的），绑定某端口</li>
 <li>每个人下载好代码（可放置于不同目录），尽量保证文件内容一致</li>
@@ -226,6 +252,9 @@
 <blockquote><p>Tony Hoare introduced Null references in ALGOL W back in 1965 “simply because it was so easy to implement”, says Mr. Hoare. He talks about that decision considering it “my billion-dollar mistake”.</p>
 </blockquote>
 <p><a href="http://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare">http://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare</a></p>
+<hr />
+<h2>为什么是个错误</h2>
+<p>TODO: 另开session</p>
 <hr />
 <h2>它的存在基于一些看似合理的假设</h2>
 <ul>
@@ -599,7 +628,7 @@ public void infoSyncShouldSucceedEvenWithEmptyRequestBody() throws Exception {
 <li>升级到jetty 9.x</li>
 </ol>
 <p>下面依次详述各部分的做法，以及遇到的问题。</p>
-<h2>1.提供一个开关<code>java8</code>，将jdk1.6和1.8完全分离</h2>
+<h2>(1). 提供一个开关<code>java8</code>，将jdk1.6和1.8完全分离</h2>
 <p>我们的项目使用gradle来构建，我们在<code>build.gradle</code>中，使用这样的方式来支持<code>java8</code>开关</p>
 <pre><code class="groovy">ext.javaPackageName = "java-1.6.0-sun"
 ext.JAVA_VERSION = "1.6"
@@ -621,7 +650,7 @@ if (hasProperty("java8")) {
 </code></pre>
 <p>当然此时也要保证当前使用的java版本为jdk1.8。</p>
 <p>在做这一步时，要确定把所有需要变化的值抽出来，然后针对两个jdk版本提供两个值。</p>
-<h2>2.升级jdk版本，以及其它必须升级的库</h2>
+<h2>(2). 升级jdk版本，以及其它必须升级的库</h2>
 <p>从上面可以看到我们升级了哪些库。其中jdk的升级是必须的，其它的库有很多是因为使用了<code>ASM</code>这样的字节码工具（如gradle, spring等），必须升级成新的ASM版本才能支持jdk1.8。</p>
 <p>还有一些是运行时报一些奇怪的错，可能对Java8支持不好，比如Apache http client。</p>
 <p>另外，gradle本身也升级了，我们修改了<code>build.gradle</code>中的<code>wrapper</code>任务：</p>
@@ -630,9 +659,9 @@ if (hasProperty("java8")) {
     }
 </code></pre>
 <p>将它从<code>1.9</code>升级到<code>1.10</code>，之后不要忘了运行<code>./gradlew wrapper</code>命令，生成新的<code>gradle-wrapper.jar</code>和<code>gradle-wrapper.properties</code>文件。</p>
-<h2>3.升级<code>sourceCompatibility</code>和<code>targetCompatibility</code></h2>
+<h2>(3). 升级<code>sourceCompatibility</code>和<code>targetCompatibility</code></h2>
 <p>之前这两个值都是<code>1.6</code>，现在在<code>java8</code>开关打开的情况下，应该改成<code>1.8</code>。这样以后才好使用jdk1.8中提供的新特性。</p>
-<h2>4.修复Java代码中的编译错误，以及失败的测试</h2>
+<h2>(4). 修复Java代码中的编译错误，以及失败的测试</h2>
 <p>升级完版本后，很快发现了一些编译和测试错误。</p>
 <h3>新版本中的接口增加了方法</h3>
 <p>升级Spring后（由3.x到4.x），发现有一些类编译不过了，比如我们在代码中实现了接口<code>org.springframework.cache.Cache</code>，而它在4.x中增加了两个方法。</p>
@@ -689,7 +718,7 @@ private User user2;
 <p>不过后来同事说，这似乎是一个jdk1.8中某些小版本的bug，使用其它的版本，就不需要加<code>-noverify</code>了。</p>
 <p>我们尝试使用某些声明已经解决了这个bug的jdk小版本，但是发现还是报错。经过反复排查，还是找不到原因，可能是gradle或者依赖的某些库有问题，但无法定位。</p>
 <p>所以我们还是暂时加上了这个参数，等以后弄清楚了再去掉它。</p>
-<h2>5.修改打出来的rpm包，让它加上<code>_java8</code>后缀</h2>
+<h2>(5). 修改打出来的rpm包，让它加上<code>_java8</code>后缀</h2>
 <p>为了区分使用jdk1.8还是1.6编译的，我们将在jdk1.8下，打出来的包后面加上<code>_java8</code>后缀，方便维护。</p>
 <p>在这里遇到了一个开始没有考虑到的问题：我们以前正常运行的build pipeline，已经打出来很多包了，比如：<code>mylib-2-110.rpm</code>, <code>mylib-2-111.rpm</code></p>
 <p>而我们为了保证当前pipeline正常运行，所以新开了一条pipeline，结果build number从0开始了，很快我们就发现它打出来的包形如：<code>mylib-2-3_java8.rpm</code></p>
@@ -699,14 +728,14 @@ private User user2;
 <p>它会默认对包名进行排序，找最新的包，所以我们的<code>mylib-2-3_java8.rpm</code>永远都找不到。当然我们可以手动调大这个build number，但这就意味着我需要时刻关注这两条pipeline，保证它们每一次产生的rpm包都是“最新的”</p>
 <p>还有一种方案，我们可以在jdk1.8这边，把base version改成3，这样我们的包就变成<code>mylib-3-3_java8.rpm</code>。虽然现在可以找到了，但这意味着jdk1.6那边，永远拿不到最新的包了，因为它的base version是<code>2</code></p>
 <p>通过各种权衡，因为我们现在的修改已经比较稳定了，没有必要再维护两个pipeline，所以我们最终决定把这两个pipeline合并在一起，通过开启或者关闭某些任务，来控制使用jdk1.6还是1.8。而它们生成的版本号总是变大的，就可以完美的解决这个问题。</p>
-<h2>6.修改rpm包依赖，让它使用jdk1.8</h2>
+<h2>(6). 修改rpm包依赖，让它使用jdk1.8</h2>
 <p>这里要涉及到部署了。有一件事非常重要，但一开始我们没有注意到：我们生成的rpm包，也必须依赖于正确的jdk版本</p>
 <p>通过检查<code>build.gradle</code>，发现我们已经处理好了，在打rpm包时，会选择正确的jdk版本传进去。</p>
 <p>最开始依赖的是<code>java-1.8.0-openjdk</code>，后来改成了<code>java-1.8.0-oracle</code></p>
-<h2>7.确保部署后的机器，使用正确的jdk版本来运行</h2>
+<h2>(7). 确保部署后的机器，使用正确的jdk版本来运行</h2>
 <p>部署之后，我们很快又发现一个新的问题：虽然我们依赖的jdk1.8 <code>java-1.8.0-openjdk</code>正常安装了，但是运行的时候，还是用的java1.6，导致无法启动。</p>
 <p>后来发现，我们要把它改成<code>java-1.8.0-oracle</code>，它安装后会自动更新系统的<code>java</code>命令，指向新版本，从而解决了这个问题。</p>
-<h2>8.升级部署机上的相关库</h2>
+<h2>(8). 升级部署机上的相关库</h2>
 <p>把程序部署到产品后，又发现了一个问题，newrelic无法正常启动，报了一个错：</p>
 <pre><code>Java 8 JRE detected but not enabled. Not starting the New Relic Agent.
 </code></pre>
@@ -718,16 +747,13 @@ private User user2;
 <pre><code>NEWRELIC = 'com.newrelic.agent.java:newrelic-agent:3.12.1'
 </code></pre>
 <p>后正常。</p>
-<h2>9.修正spring4.x导致的warning</h2>
+<h2>(9). 修正spring4.x导致的warning</h2>
 <p>最后还发现了一个warning，在程序启动的时候，会报</p>
 <blockquote><p>Requested bean is currently in creation: Is there an unresolvable circular reference?</p>
 </blockquote>
 <p>这样的warning。经过反复排查后，发现这是一个非常奇怪的问题，最后的解决办法是使用spring4中提供的一些更推荐的类<code>MethodInvokingBean</code>替换掉spring3.x中的<code>MethodInvokingFactoryBean</code></p>
 <p>相关代码参看这里： <a href="https://github.com/freewind/spring-circle-reference">https://github.com/freewind/spring-circle-reference</a></p>
-<ol>
-<li><h2>升级到jetty 9.x</h2>
-</li>
-</ol>
+<h2>(10). 升级到jetty 9.x</h2>
 <h3>ASM依赖</h3>
 <p>与其他组同事讨论之后，发现我们项目中使用的某些库，还依赖于旧版本的ASM。经过检查，我们项目中一共依赖了三种不同版本的ASM:</p>
 <ul>
@@ -13436,7 +13462,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;:&#x77;&#101;&#x62;&#x2d;u&#x69;&#45;&#100;&#x65;&#118;&#64;&#100;&#x61;&#x72;&#x74;&#x6c;&#97;&#110;&#x67;&#46;&#x6f;&#114;&#x67;">&#119;&#101;&#98;-&#x75;&#105;&#x2d;&#100;&#101;&#118;&#x40;&#100;&#x61;&#x72;&#x74;&#108;&#97;&#110;&#103;.&#x6f;&#114;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#x77;&#x65;&#x62;&#x2d;&#x75;&#105;&#x2d;&#100;&#101;&#118;&#64;&#x64;&#x61;&#x72;&#x74;l&#x61;&#110;&#x67;&#x2e;&#x6f;&#114;&#103;">&#x77;&#x65;&#98;&#45;&#117;&#105;&#45;&#x64;&#101;&#118;&#64;&#100;&#x61;&#x72;&#x74;&#x6c;&#97;&#110;&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
