@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Thu, 05 Feb 2015 23:40:33 CST</lastBuildDate>
+        <lastBuildDate>Thu, 02 Apr 2015 09:32:06 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -4973,7 +4973,8 @@ sbtVersion := "0.13.5"
 resolvers ++= Seq(
   "ibiblio" at "http://mirrors.ibiblio.org/pub/mirrors/maven2",
   "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases"
+  "Sonatype releases" at "http://oss.sonatype.org/content/repositories/releases",
+  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 )
 
 libraryDependencies ++= Seq(
@@ -13631,7 +13632,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="m&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#119;&#101;&#98;&#45;&#117;&#x69;&#x2d;&#x64;&#101;&#118;&#x40;&#100;&#97;&#114;&#116;&#108;&#x61;&#x6e;&#103;&#x2e;&#111;&#x72;&#103;">&#x77;&#101;&#x62;&#45;&#x75;&#x69;&#45;&#x64;&#x65;&#x76;&#64;&#x64;&#x61;r&#116;&#108;&#97;&#110;&#x67;&#46;&#111;&#x72;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x77;&#x65;&#x62;&#x2d;&#117;&#105;&#45;&#100;&#101;&#x76;&#64;&#100;&#97;&#x72;&#116;&#x6c;&#x61;&#110;&#x67;&#x2e;&#x6f;&#114;&#103;">&#119;&#101;&#x62;&#45;&#x75;&#105;&#x2d;&#100;&#101;&#118;&#x40;&#x64;&#97;r&#x74;&#x6c;&#x61;&#110;&#103;&#x2e;&#x6f;&#x72;&#x67;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -14952,11 +14953,11 @@ JsRoutes.Directives.getGridOptions.get({
 <h2>题目</h2>
 <p>计算出从1到100之间所有奇数的平方之和</p>
 <h2>提示</h2>
-<p>即1<em>1+3</em>3+5<em>5+ &hellip; + 99</em>99，结果为166650</p>
+<p>即<code>1*1+3*3+5*5+ ... + 99*99</code>，结果为<code>166650</code></p>
 <h3>要求</h3>
 <ol>
-<li>scala代码的长度<font color="#ff0000">不超过50个字符</font>，代码越简洁易读越好</li>
-<li>在群内应该严格遵守<a href="/posts/scala-group-rule">scala群规</a>，警告无效者T</li>
+<li>scala代码的长度<strong>不超过50个字符</strong>，代码越简洁易读越好</li>
+<li>在群内应该严格遵守scala群规，警告无效者T</li>
 <li>本群努力营造出一个良好的scala交流环境，需要你的支持</li>
 </ol>
 ]]></description>
