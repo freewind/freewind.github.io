@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>如何读懂gradle dependencies的输出</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-04-29) 如何读懂gradle dependencies的输出
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>第三方依赖的管理与冲突解决，是每一个项目和构建工具都需要考虑的事情。</p>
+<p>在gradle项目中，我们可以声明所使用的依赖，还可以使用它提供的<code>dependencies</code>命令查看依赖。这里我们主要关注如何读懂它的输出。</p>
+<p>需要注意的是，直接使用<code>dependencies</code>只会显式根目录的依赖。如果有多个子目录，则需要加上项目名，如<code>:core:dependencies</code>。</p>
+<h1>示例文件</h1>
+<p>假设我们创建了一个gradle项目，它只有一个<code>build.gradle</code>文件，内容如下：</p>
+<pre><code>apply plugin: 'java'
+
+repositories.jcenter()
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE"
+    compile 'org.slf4j:slf4j-api:1.7.1'
+}
+</code></pre>
+<h1>gradle dependencies</h1>
+<p>我们运行<code>gradle dependencies</code>后，则显示如下：</p>
+<pre><code>➜  gradle-dependency-insight git:(master) ✗ gradle dependencies
+:dependencies
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+archives - Configuration for archive artifacts.
+No dependencies
+
+compile - Compile classpath for source set 'main'.
++--- org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.1.5.RELEASE
+|    |    +--- org.springframework.boot:spring-boot:1.1.5.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.0.6.RELEASE
+|    |    |    |    \--- commons-logging:commons-logging:1.1.3
+|    |    |    \--- org.springframework:spring-context:4.0.6.RELEASE
+|    |    |         +--- org.springframework:spring-aop:4.0.6.RELEASE
+|    |    |         |    +--- aopalliance:aopalliance:1.0
+|    |    |         |    +--- org.springframework:spring-beans:4.0.6.RELEASE
+|    |    |         |    |    \--- org.springframework:spring-core:4.0.6.RELEAS (*)
+|    |    |         |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         \--- org.springframework:spring-expression:4.0.6.RELEASE
+|    |    |              \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure:1.1.5.RELEASE
+|    |    |    \--- org.springframework.boot:spring-boot:1.1.5.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-starter-logging:1.1.5.RELEASE
+|    |    |    +--- org.slf4j:jcl-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:jul-to-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:log4j-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    \--- ch.qos.logback:logback-classic:1.1.2
+|    |    |         +--- ch.qos.logback:logback-core:1.1.2
+|    |    |         \--- org.slf4j:slf4j-api:1.7.6 -&gt; 1.7.7
+|    |    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    \--- org.yaml:snakeyaml:1.13
+|    +--- org.springframework.boot:spring-boot-starter-tomcat:1.1.5.RELEASE
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-core:7.0.54
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-el:7.0.54
+|    |    \--- org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.54
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.3.3
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.3.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.3.3
+|    +--- org.hibernate:hibernate-validator:5.0.3.Final
+|    |    +--- javax.validation:validation-api:1.1.0.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.1.1.GA
+|    |    \--- com.fasterxml:classmate:1.0.0
+|    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    +--- org.springframework:spring-web:4.0.6.RELEASE
+|    |    +--- org.springframework:spring-aop:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    \--- org.springframework:spring-webmvc:4.0.6.RELEASE
+|         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.0.6.RELEASE (*)
+|         \--- org.springframework:spring-web:4.0.6.RELEASE (*)
+\--- org.slf4j:slf4j-api:1.7.1 -&gt; 1.7.7
+
+default - Configuration for default artifacts.
++--- org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.1.5.RELEASE
+|    |    +--- org.springframework.boot:spring-boot:1.1.5.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.0.6.RELEASE
+|    |    |    |    \--- commons-logging:commons-logging:1.1.3
+|    |    |    \--- org.springframework:spring-context:4.0.6.RELEASE
+|    |    |         +--- org.springframework:spring-aop:4.0.6.RELEASE
+|    |    |         |    +--- aopalliance:aopalliance:1.0
+|    |    |         |    +--- org.springframework:spring-beans:4.0.6.RELEASE
+|    |    |         |    |    \--- org.springframework:spring-core:4.0.6.RELEAS (*)
+|    |    |         |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         \--- org.springframework:spring-expression:4.0.6.RELEASE
+|    |    |              \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure:1.1.5.RELEASE
+|    |    |    \--- org.springframework.boot:spring-boot:1.1.5.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-starter-logging:1.1.5.RELEASE
+|    |    |    +--- org.slf4j:jcl-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:jul-to-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:log4j-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    \--- ch.qos.logback:logback-classic:1.1.2
+|    |    |         +--- ch.qos.logback:logback-core:1.1.2
+|    |    |         \--- org.slf4j:slf4j-api:1.7.6 -&gt; 1.7.7
+|    |    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    \--- org.yaml:snakeyaml:1.13
+|    +--- org.springframework.boot:spring-boot-starter-tomcat:1.1.5.RELEASE
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-core:7.0.54
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-el:7.0.54
+|    |    \--- org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.54
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.3.3
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.3.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.3.3
+|    +--- org.hibernate:hibernate-validator:5.0.3.Final
+|    |    +--- javax.validation:validation-api:1.1.0.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.1.1.GA
+|    |    \--- com.fasterxml:classmate:1.0.0
+|    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    +--- org.springframework:spring-web:4.0.6.RELEASE
+|    |    +--- org.springframework:spring-aop:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    \--- org.springframework:spring-webmvc:4.0.6.RELEASE
+|         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.0.6.RELEASE (*)
+|         \--- org.springframework:spring-web:4.0.6.RELEASE (*)
+\--- org.slf4j:slf4j-api:1.7.1 -&gt; 1.7.7
+
+runtime - Runtime classpath for source set 'main'.
++--- org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.1.5.RELEASE
+|    |    +--- org.springframework.boot:spring-boot:1.1.5.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.0.6.RELEASE
+|    |    |    |    \--- commons-logging:commons-logging:1.1.3
+|    |    |    \--- org.springframework:spring-context:4.0.6.RELEASE
+|    |    |         +--- org.springframework:spring-aop:4.0.6.RELEASE
+|    |    |         |    +--- aopalliance:aopalliance:1.0
+|    |    |         |    +--- org.springframework:spring-beans:4.0.6.RELEASE
+|    |    |         |    |    \--- org.springframework:spring-core:4.0.6.RELEAS (*)
+|    |    |         |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         \--- org.springframework:spring-expression:4.0.6.RELEASE
+|    |    |              \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure:1.1.5.RELEASE
+|    |    |    \--- org.springframework.boot:spring-boot:1.1.5.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-starter-logging:1.1.5.RELEASE
+|    |    |    +--- org.slf4j:jcl-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:jul-to-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:log4j-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    \--- ch.qos.logback:logback-classic:1.1.2
+|    |    |         +--- ch.qos.logback:logback-core:1.1.2
+|    |    |         \--- org.slf4j:slf4j-api:1.7.6 -&gt; 1.7.7
+|    |    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    \--- org.yaml:snakeyaml:1.13
+|    +--- org.springframework.boot:spring-boot-starter-tomcat:1.1.5.RELEASE
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-core:7.0.54
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-el:7.0.54
+|    |    \--- org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.54
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.3.3
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.3.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.3.3
+|    +--- org.hibernate:hibernate-validator:5.0.3.Final
+|    |    +--- javax.validation:validation-api:1.1.0.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.1.1.GA
+|    |    \--- com.fasterxml:classmate:1.0.0
+|    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    +--- org.springframework:spring-web:4.0.6.RELEASE
+|    |    +--- org.springframework:spring-aop:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    \--- org.springframework:spring-webmvc:4.0.6.RELEASE
+|         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.0.6.RELEASE (*)
+|         \--- org.springframework:spring-web:4.0.6.RELEASE (*)
+\--- org.slf4j:slf4j-api:1.7.1 -&gt; 1.7.7
+
+testCompile - Compile classpath for source set 'test'.
++--- org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.1.5.RELEASE
+|    |    +--- org.springframework.boot:spring-boot:1.1.5.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.0.6.RELEASE
+|    |    |    |    \--- commons-logging:commons-logging:1.1.3
+|    |    |    \--- org.springframework:spring-context:4.0.6.RELEASE
+|    |    |         +--- org.springframework:spring-aop:4.0.6.RELEASE
+|    |    |         |    +--- aopalliance:aopalliance:1.0
+|    |    |         |    +--- org.springframework:spring-beans:4.0.6.RELEASE
+|    |    |         |    |    \--- org.springframework:spring-core:4.0.6.RELEAS (*)
+|    |    |         |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         \--- org.springframework:spring-expression:4.0.6.RELEASE
+|    |    |              \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure:1.1.5.RELEASE
+|    |    |    \--- org.springframework.boot:spring-boot:1.1.5.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-starter-logging:1.1.5.RELEASE
+|    |    |    +--- org.slf4j:jcl-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:jul-to-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:log4j-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    \--- ch.qos.logback:logback-classic:1.1.2
+|    |    |         +--- ch.qos.logback:logback-core:1.1.2
+|    |    |         \--- org.slf4j:slf4j-api:1.7.6 -&gt; 1.7.7
+|    |    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    \--- org.yaml:snakeyaml:1.13
+|    +--- org.springframework.boot:spring-boot-starter-tomcat:1.1.5.RELEASE
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-core:7.0.54
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-el:7.0.54
+|    |    \--- org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.54
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.3.3
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.3.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.3.3
+|    +--- org.hibernate:hibernate-validator:5.0.3.Final
+|    |    +--- javax.validation:validation-api:1.1.0.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.1.1.GA
+|    |    \--- com.fasterxml:classmate:1.0.0
+|    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    +--- org.springframework:spring-web:4.0.6.RELEASE
+|    |    +--- org.springframework:spring-aop:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    \--- org.springframework:spring-webmvc:4.0.6.RELEASE
+|         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.0.6.RELEASE (*)
+|         \--- org.springframework:spring-web:4.0.6.RELEASE (*)
+\--- org.slf4j:slf4j-api:1.7.1 -&gt; 1.7.7
+
+testRuntime - Runtime classpath for source set 'test'.
++--- org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.1.5.RELEASE
+|    |    +--- org.springframework.boot:spring-boot:1.1.5.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.0.6.RELEASE
+|    |    |    |    \--- commons-logging:commons-logging:1.1.3
+|    |    |    \--- org.springframework:spring-context:4.0.6.RELEASE
+|    |    |         +--- org.springframework:spring-aop:4.0.6.RELEASE
+|    |    |         |    +--- aopalliance:aopalliance:1.0
+|    |    |         |    +--- org.springframework:spring-beans:4.0.6.RELEASE
+|    |    |         |    |    \--- org.springframework:spring-core:4.0.6.RELEAS (*)
+|    |    |         |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         \--- org.springframework:spring-expression:4.0.6.RELEASE
+|    |    |              \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure:1.1.5.RELEASE
+|    |    |    \--- org.springframework.boot:spring-boot:1.1.5.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-starter-logging:1.1.5.RELEASE
+|    |    |    +--- org.slf4j:jcl-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:jul-to-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:log4j-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    \--- ch.qos.logback:logback-classic:1.1.2
+|    |    |         +--- ch.qos.logback:logback-core:1.1.2
+|    |    |         \--- org.slf4j:slf4j-api:1.7.6 -&gt; 1.7.7
+|    |    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    \--- org.yaml:snakeyaml:1.13
+|    +--- org.springframework.boot:spring-boot-starter-tomcat:1.1.5.RELEASE
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-core:7.0.54
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-el:7.0.54
+|    |    \--- org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.54
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.3.3
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.3.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.3.3
+|    +--- org.hibernate:hibernate-validator:5.0.3.Final
+|    |    +--- javax.validation:validation-api:1.1.0.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.1.1.GA
+|    |    \--- com.fasterxml:classmate:1.0.0
+|    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    +--- org.springframework:spring-web:4.0.6.RELEASE
+|    |    +--- org.springframework:spring-aop:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    \--- org.springframework:spring-webmvc:4.0.6.RELEASE
+|         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.0.6.RELEASE (*)
+|         \--- org.springframework:spring-web:4.0.6.RELEASE (*)
+\--- org.slf4j:slf4j-api:1.7.1 -&gt; 1.7.7
+
+(*) - dependencies omitted (listed previously)
+
+BUILD SUCCESSFUL
+
+Total time: 3.622 secs
+➜  gradle-dependency-insight git:(master) ✗
+</code></pre>
+<p>可以看到，虽然我们仅仅声明了两个依赖，但打印出了远超我们预期的内容。如何才能理解它？</p>
+<h2>按configuration分组</h2>
+<p>如果我们仔细观察上面的输出，它其实分成了几个组：</p>
+<pre><code>archives - Configuration for archive artifacts.
+compile - Compile classpath for source set 'main'.
+default - Configuration for default artifacts.
+runtime - Runtime classpath for source set 'main'.
+testCompile - Compile classpath for source set 'test'.
+testRuntime - Runtime classpath for source set 'test'.
+</code></pre>
+<p>这里的组，实际上是当前<code>build.gradle</code>文件中，所使用的所有gradle plugin中定义的configuration。由于此处我们只使用了java plugin，所以只列出了上面这几个，如果用到其它的plugin，还会显示更多。</p>
+<p>因为我们可以为不同的configuration设置依赖，所以保险起见，gradle把全部的组都列了出来。我们可以根据每个组的描述，只关注自己感兴趣的组。</p>
+<h2>树型结构</h2>
+<p>每一个项目都可以引用多个依赖，而每一个依赖还可以有它自己的依赖，所以依赖之间是一个树形关系。</p>
+<p>这里以<code>compile</code>组为例：</p>
+<pre><code>compile - Compile classpath for source set 'main'.
++--- org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.1.5.RELEASE
+|    |    +--- org.springframework.boot:spring-boot:1.1.5.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.0.6.RELEASE
+|    |    |    |    \--- commons-logging:commons-logging:1.1.3
+|    |    |    \--- org.springframework:spring-context:4.0.6.RELEASE
+|    |    |         +--- org.springframework:spring-aop:4.0.6.RELEASE
+|    |    |         |    +--- aopalliance:aopalliance:1.0
+|    |    |         |    +--- org.springframework:spring-beans:4.0.6.RELEASE
+|    |    |         |    |    \--- org.springframework:spring-core:4.0.6.RELEAS (*)
+|    |    |         |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    |         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    |         \--- org.springframework:spring-expression:4.0.6.RELEASE
+|    |    |              \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure:1.1.5.RELEASE
+|    |    |    \--- org.springframework.boot:spring-boot:1.1.5.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-starter-logging:1.1.5.RELEASE
+|    |    |    +--- org.slf4j:jcl-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:jul-to-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    +--- org.slf4j:log4j-over-slf4j:1.7.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.7
+|    |    |    \--- ch.qos.logback:logback-classic:1.1.2
+|    |    |         +--- ch.qos.logback:logback-core:1.1.2
+|    |    |         \--- org.slf4j:slf4j-api:1.7.6 -&gt; 1.7.7
+|    |    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    |    \--- org.yaml:snakeyaml:1.13
+|    +--- org.springframework.boot:spring-boot-starter-tomcat:1.1.5.RELEASE
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-core:7.0.54
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-el:7.0.54
+|    |    \--- org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.54
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.3.3
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.3.0
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.3.3
+|    +--- org.hibernate:hibernate-validator:5.0.3.Final
+|    |    +--- javax.validation:validation-api:1.1.0.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.1.1.GA
+|    |    \--- com.fasterxml:classmate:1.0.0
+|    +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    +--- org.springframework:spring-web:4.0.6.RELEASE
+|    |    +--- org.springframework:spring-aop:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|    \--- org.springframework:spring-webmvc:4.0.6.RELEASE
+|         +--- org.springframework:spring-beans:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-context:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-core:4.0.6.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.0.6.RELEASE (*)
+|         \--- org.springframework:spring-web:4.0.6.RELEASE (*)
+\--- org.slf4j:slf4j-api:1.7.1 -&gt; 1.7.7
+</code></pre>
+<p>可以看到，其结构就是一个树，跟我们用<code>tree somedir</code>时显示的内容差不多。</p>
+<p>其中第一级的各节点，是我们显式在<code>build.gradle</code>中声明的，只有两个：</p>
+<pre><code>org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE
+org.slf4j:slf4j-api:1.7.1
+</code></pre>
+<p>其它的都依次是它们的依赖，以及依赖的依赖。</p>
+<h2><code>1.7.1 -&gt; 1.7.7</code></h2>
+<p>我们可以注意到，某些依赖的后面有以<code>-&gt;</code>连接的两个版本号，比如：</p>
+<pre><code>org.slf4j:slf4j-api:1.7.1 -&gt; 1.7.7
+</code></pre>
+<p>左边的版本号，是我们在<code>build.gradle</code>中声明的，或者是某个依赖在它自己的描述文件中显式声明的。而右边的版本号，是gradle根据所有的依赖信息进行冲突处理之后决定采用的版本号。</p>
+<p>以这里为例，我们在<code>build.gradle</code>中，显式声明了<code>org.slf4j:slf4j-api:1.7.1</code>。但是在gradle处理<code>org.springframework.boot:spring-boot-starter-web:1.1.5.RELEASE</code>时，发现它经过层层依赖以后，使用了<code>org.slf4j:slf4j-api:1.7.7</code>。</p>
+<p>对于gradle来说，当发现引用了同一个库的两个不同版本时，它会采用较新的版本，即<code>1.7</code>，同时在被抛弃的依赖旁边加上如<code>1.7.1 -&gt; 1.7.7</code>的标记。</p>
+<h2><code>(*)</code></h2>
+<p>还有一些依赖在后面加上了<code>(*)</code>，如<code>org.springframework:spring-core:4.0.6.RELEASE (*)</code>。</p>
+<p>它们的意思是说，该依赖在前面的解析中已经遇到并处理了，所以在这一步就直接忽略它了。</p>
+<h1>总结</h1>
+<p>通过这些标记，gradle清楚的告诉我们两个信息：</p>
+<ol>
+<li>当前真正使用的依赖（包括版本）是哪些</li>
+<li>依赖冲突是如何解决的</li>
+</ol>
+<p>这对于我们了解项目依赖的真实情况很有帮助</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2844';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>
