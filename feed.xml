@@ -12,11 +12,105 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Wed, 29 Apr 2015 15:07:44 CST</lastBuildDate>
+        <lastBuildDate>Thu, 30 Apr 2015 19:20:53 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>Maven的依赖管理</title>
+                <link>http://freewind.in/posts/2846-the-dependency-management-in-maven</link>
+                <pubDate>Thu, 30 Apr 2015 10:09:33 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2846</guid>
+                <description><![CDATA[<p>因为项目需要，需要研究清楚Maven中的依赖管理是怎么工作的，今天花了一天时间看了相关的文档，一些以前一直没搞清楚的问题，这次终于弄清楚了。</p>
+<p>在继续写之前，让我先吐一会儿。前两天看了Gradle，今天再看Maven，只能感叹，人们不选Gradle真是没有天理。(下面总结时会跟gradle进行对比，方便理解)</p>
+<h2>文档的对比</h2>
+<ol>
+<li>Gradle的文档非常美观，内容详细、清楚，示例很多，而且都是精心挑选的，让一个不熟悉的人也可以快速看懂 https://gradle.org/docs/current/userguide/dependency_management.html</li>
+<li>Maven的文档丑，内容简陋，例子少，经常遇到一些看不懂的术语，但没有或者只有极少的解释
+<br  />https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html (这还算是maven中写得比较好的一篇)</li>
+</ol>
+<h2>声明依赖的语法对比</h2>
+<h3>Gradle</h3>
+<pre><code>dependencies {
+    compile("group-a:artifact-a:1.0") {
+        exclude group: 'group-c', module: 'excluded-artifact'
+    }
+    runtime "group-a:artifact-b:1.0@bar"
+}
+</code></pre>
+<p>(注：当<code>exclude</code>一个由maven生成的依赖时，<code>module</code>对应<code>artifactId</code>)</p>
+<h3>Maven</h3>
+<pre><code>&lt;project&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;group-a&lt;/groupId&gt;
+      &lt;artifactId&gt;artifact-a&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;exclusions&gt;
+        &lt;exclusion&gt;
+          &lt;groupId&gt;group-c&lt;/groupId&gt;
+          &lt;artifactId&gt;excluded-artifact&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+      &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;group-a&lt;/groupId&gt;
+      &lt;artifactId&gt;artifact-b&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;type&gt;bar&lt;/type&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;
+</code></pre>
+<p>两者的内容是一样的，但是Maven这边，如果不借助编辑器的高亮，基本上没法看啊，眼都瞎了。</p>
+<h2>版本冲突如何解决</h2>
+<p>假设在项目中，不论是自己声明的，或者是使用的某个第三方库依赖的，如果有同名但不同版本的情况出现，就会产生版本冲突。</p>
+<p>比如，自己声明使用<code>log4j 1.4</code>，但某个依赖使用了<code>log4j 1.5</code>，另一个使用了<code>log4j 1.3</code>，我们不能同时把这三个包都加到classpath里，否则就会出现无法预料的情况，因为你很难搞清楚jvm到底用的是哪个。</p>
+<p>各种构建工具都有自己的确定最终使用版本的方式。Gradle默认采用最大值，不论是谁声明的，直接取最大值作为最终采用的版本。</p>
+<p>而Maven使用了一种叫<code>nearest definition</code>的方式。Maven把我们自己显式声明的依赖称为第一层依赖，它们自己的依赖叫第二层，还有第三层，更多层。当发现版本冲突的时候，优先采用层数小的，忽略后面的。</p>
+<p>比如项目中有依赖<code>A -&gt; B -&gt; C 1.8</code>和<code>A -&gt; C 1.7</code>，那么maven就会采用<code>C 1.7</code>，因为它比较近，层数小。</p>
+<p>但是如果冲突出现在同一层，比如<code>A -&gt; C 1.8</code>和<code>B -&gt; C 1.7</code>，那么在<code>maven 2.0.8</code>之前，它是没有办法决定使用哪一个（报错还是随便选不清楚），直到在<code>2.0.9</code>时才确定会使用它先遇到的那个。</p>
+<p>个人还是比较喜欢gradle的方式，符合直觉，更好理解。</p>
+<p>maven中这种还需要数层，还可能造成麻烦：一旦升级了某个依赖后发现它必须使用一个更加新的版本比如<code>C 1.7</code>时，发现比它层数小的某个依赖，使用了<code>C 1.6</code>，那么最后maven就会采用<code>C 1.6</code>，这样就可能出错。这时我们就必须显式声明对<code>C 1.7</code>的依赖。但这会造成理解上的误会，因为通常我们声明的依赖只应该是我们代码中直接依赖的库。</p>
+<p>有一篇很有意思的文章来讲解这个主题：http://mrhaki.blogspot.jp/2014/08/gradle-goodness-getting-more-dependency.html</p>
+<h2>Dependency Scope</h2>
+<p>在maven中预先定义了几种scope，规定了它们的含义，之间的依赖关系和使用场景。</p>
+<ul>
+<li>compile</li>
+<li>provided</li>
+<li>runtime</li>
+<li>test</li>
+<li>system</li>
+<li>import</li>
+</ul>
+<p>这些名字和使用场景是写死的，我们不能自行扩展。与之相对的是，在另一个依赖管理工具<code>Ivy</code>中，允许人们自定义这些scope(Ivy中的叫法是<code>configuration</code>)，Gradle中更倾向于Ivy的做法。</p>
+<p>有一些scope我们经常使用，比如<code>compile</code>, <code>runtime</code>, <code>test</code>, <code>provided</code>，而<code>system</code>和<code>import</code>见得比较少。</p>
+<h3>system</h3>
+<p>这个好像是说必须由你自己提供或者指明位置的依赖，通常用来指明JDK或者虚拟机提供的依赖，比如<code>rt.jar</code>, <code>tools.jar</code>等。</p>
+<p>对于这种依赖，maven不会到仓库上去找</p>
+<h3>import</h3>
+<p><code>import</code>是在maven 2.0.9之后提供的功能，主要是方便我们可以先把常用的或者需要共享的一些依赖信息先写在某个文件，然后在其它的POM文件中，直接引用它们，少写点版本之类的信息，增强一致性。</p>
+<p>在之前的版本中，这个功能可以通过parent标签来实现，即提供一个parent POM包含这些信息，然后在其它的POM中继承它。但是这种方式有一个严重的问题，即每个POM只能有一个parent POM，对于复杂的情况，不能强迫所有的POM都继承于同一个parent吧。</p>
+<p>现在有了<code>import</code>，就可以让我们随意导入另一个POM中定义的依赖，不需要继承。</p>
+<p>如果有版本冲突，是按全部导入后的情况来计算的。</p>
+<h2>依赖的type</h2>
+<p>每个依赖有多种<code>type</code>可选，比如默认的<code>jar</code>，还可以有<code>war</code>, <code>zip</code>, <code>pom</code>或者自定义的类型。</p>
+<p>在gradle中，可以使用<code>group-a:artifact-b:1.0@zip</code>的方式，而在maven中：</p>
+<pre><code>&lt;dependency&gt;
+      &lt;groupId&gt;group-a&lt;/groupId&gt;
+      &lt;artifactId&gt;artifact-b&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;type&gt;zip&lt;/type&gt;
+    &lt;/dependency&gt;
+</code></pre>
+<p>https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html</p>
+]]></description>
+            </item>
         
             <item>
                 <title>如何在gradle项目中显示所有项目的依赖</title>
@@ -458,6 +552,67 @@ org.slf4j:slf4j-api:1.7.1
 <li>依赖冲突是如何解决的</li>
 </ol>
 <p>这对于我们了解项目依赖的真实情况很有帮助</p>
+]]></description>
+            </item>
+        
+            <item>
+                <title>理解Gradle中的依赖</title>
+                <link>http://freewind.in/posts/2843-understand-the-dependency-management-of-gradle</link>
+                <pubDate>Wed, 29 Apr 2015 11:08:39 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2843</guid>
+                <description><![CDATA[<p>因为项目需要，这两天我对Gradle的依赖管理进行了一些了解，感觉收获很多，解决了我很多困惑已久的疑问。</p>
+<p>Gradle的文档写得太好了，非常详细，尤其难得的是在过程中由浅入深，常常恰到好处的点到了读者的疑惑，例子也多，只要用心读一遍，各种疑惑都解决了。对比maven那简陋的文档，Gradle对用户太友好了。</p>
+<ul>
+<li>快速了解Gradle的依赖管理：https://gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html</li>
+<li>详细了解Gradle的依赖管理：https://gradle.org/docs/current/userguide/dependency_management.html</li>
+<li>理解gradle的<code>dependencies</code>的输出：https://github.com/gradle/gradle/blob/9a94ed7396103eb9062041e4e66acd15b88334d3/design-docs/dependency-resolution-reporting.md</li>
+<li>很有意思的对比maven/gradle解决版本冲突的文章：http://rafael.cordones.me/2013/05/06/transitive-dependency-mediation-in-maven-and-gradle/</li>
+<li>对<code>dependencyInsight</code>的介绍：http://mrhaki.blogspot.jp/2014/08/gradle-goodness-getting-more-dependency.html</li>
+</ul>
+<p>花一天时间读完这几篇（有的有点长），基本上可以理解gradle的依赖管理了。这里记录一下曾经困扰我多时的问题。</p>
+<h2>为什么可以用<code>compile</code>, <code>test</code>来设置依赖</h2>
+<p>一个最简单的声明依赖的例子</p>
+<pre><code class="groovy">apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '3.6.7.Final'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+</code></pre>
+<p>问题：为什么我们可以使用<code>compile</code>和<code>testCompile</code>，而不能写成别的？它们是两个方法吗？</p>
+<p>答案是，这两个是gradle的java plugin中定义的configuration。除了它们以外，另外还有<code>runtime</code>, <code>testRuntime</code>, <code>archives</code>, <code>default</code>。（参考：https://gradle.org/docs/current/userguide/java_plugin.html#sec:java_plugin_and_dependency_management）</p>
+<p>一个configuration可以看作是一堆依赖的集合，一个插件可以定义多个configuration，用于不同的功能，比如<code>compile</code>用于编译，<code>runtime</code>用于执行，<code>testCompile</code>用于编译测试。当插件定义他们以后，它们就像是一个个占位符，等着我们在自己的项目中，以上面例子的形式，给它们添加不同的依赖。</p>
+<p>configuration之间是可以有继承关系的，比如<code>runtime</code>继承了<code>compile</code>，所以当我们给<code>compile</code>中添加了一些依赖后，<code>runtime</code>就可以自动获取它们，当然也可以添加额外的依赖。</p>
+<p>其中的<code>default</code>略有特殊，会在后面提到。</p>
+<p>所以，<code>comiple</code>, <code>testCompile</code>并不是已经定义好的方法，而是预定义的configuration名。每个插件所定义的configuration是不同的，所以当我们不知道该写什么时，应该去查看该插件的说明，而不是查看gradle自身。</p>
+<p>而之所以用<code>compile</code>和<code>compileTest</code>这些名字，是因为它们是一些惯例（参考了maven时的<code>dependency scope</code>），每个插件还可以自己定义各种不同的名字。所以可以先猜测一下，但为了准确起见，还是要查看文档。</p>
+<h2>configuration: 'someConf'是什么意思</h2>
+<p>看到一个依赖的声明，里面包含了一个奇怪的<code>configuration: 'someConf'</code>：</p>
+<pre><code>compile configuration: 'someConf', group: 'org.someOrg', name: 'someModule', version: '1.0'
+</code></pre>
+<p>不太理解它有什么用，直到理解了<code>Ivy</code>与<code>Maven</code>的区别，以及<code>Gradle</code>自己的处理以后，才知道是怎么回事。</p>
+<p>要先从最老的Maven说起。Maven预定义了几个scope，比如<code>compile/runtime/test</code>等，用来管理不同的依赖集，供不同的操作使用。这些scope是定死的，不能修改。另外，maven一个模块只能发布一个成品文件(artifact，通常是jar)，所以当我们使用一个由maven发布的依赖时，我们可以准确的拿到该成品文件，并且使用它的<code>runtime</code> scope中声明的依赖。</p>
+<p>后来<code>Ivy</code>出现了，它认为Maven的做法太死板，进行了改进。Ivy提出了<code>configuration</code>的概念，跟Maven的dependency scope类似，但更加纯粹一些，仅用来表示一些依赖集合。Ivy没有预定义configuration，而是让用户自己定义并管理，同时还支持一个模块生成多个不同的成品文件，每个成品文件可以使用不同的configuration来获取依赖。这样做的好处是，可以通过细分configuration每个依赖集更加精减，这样用户在使用时可以指定某个特定的configuration来依赖真正需要的库。</p>
+<p>所以在gradle中，当我们声明使用一个来自maven的依赖时，我们不需要指定任何<code>configuration</code>。只有当声明来自ivy的依赖时，我们才有必要在需要的时候，指定某个configuration，如果没有指定，则默认使用<code>default</code> confiuration.</p>
+<p>那么问题来了，如果我对一个来自maven的依赖使用了<code>configuration</code>，会出现什么情况？会忽略？会报错？还是可以使用maven预设的<code>dependency scope</code>作为configuration?</p>
+<p>经过尝试，发现这个规则其实是Gradle确定的。在<a href="https://github.com/gradle/gradle/blob/master/subprojects/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/parser/GradlePomModuleDescriptorBuilder.java">https://github.com/gradle/gradle/blob/master/subprojects/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/parser/GradlePomModuleDescriptorBuilder.java</a>这个文件中，Gradle给来自maven的依赖预设了一堆configuration。如果我们指定它们，就不会报错，甚至还能取得不同的依赖，如果不在列表中，则会报错。需要注意的是，<code>test</code>的<code>Visibility</code>是<code>PRIVATE</code>，我们可以使用它，但是并不会使用<code>test scope</code>中的依赖。</p>
+<h2>如何查看依赖，理解它的输出</h2>
+<p>参看博客：如何读懂gradle dependencies的输出</p>
+<h2>如何查看全部项目的依赖</h2>
+<p>如何在gradle项目中显示所有项目的依赖</p>
+<h2>如何查看某个版本的依赖是否有冲突</h2>
+<p>看这个文章就可以了，写得非常好：http://mrhaki.blogspot.jp/2014/08/gradle-goodness-getting-more-dependency.html</p>
+<h2>gradle是怎么解决依赖版本冲突的</h2>
+<p>当项目的依赖（不论是显式声明的，还是某个依赖声明的）有冲突时，gradle会以最大的版本号为准。</p>
+<p>注意这里的做法跟maven不同，maven中是按显式声明的为准。比如我们在<code>pom.xml</code>中声明了使用<code>abc 1.1</code>，但某个依赖中使用了<code>abc 1.2</code>，maven会坚持使用我们声明的较老的版本<code>abc 1.1</code></p>
+<p>这两种做法，感觉gradle的更合理一些。因为maven的做法，会产生强迫某个依赖使用我们声明的较旧版本的某个库，导致一些奇怪的错误。</p>
+<p>在下面的文章中，有一个很有趣的段子来调侃这件事：http://rafael.cordones.me/2013/05/06/transitive-dependency-mediation-in-maven-and-gradle/</p>
 ]]></description>
             </item>
         
@@ -14075,7 +14230,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x77;&#x65;&#98;&#45;&#117;&#x69;&#45;&#100;e&#118;&#64;&#100;&#97;&#114;&#x74;&#x6c;&#x61;&#x6e;&#103;&#x2e;&#111;&#x72;&#x67;">&#x77;&#x65;&#x62;&#45;&#x75;&#x69;&#45;&#x64;&#x65;v&#64;d&#97;&#x72;&#x74;&#x6c;&#x61;&#x6e;&#103;&#x2e;&#111;&#114;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#119;&#x65;&#x62;&#x2d;&#117;&#x69;-&#100;&#101;&#118;&#64;&#100;&#x61;&#x72;&#116;&#x6c;&#x61;&#x6e;&#x67;&#46;&#x6f;&#114;&#103;">&#119;&#x65;&#x62;&#x2d;u&#105;&#45;&#x64;&#101;&#118;&#64;&#x64;&#x61;&#114;&#116;&#108;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9

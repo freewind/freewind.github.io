@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Maven的依赖管理</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-04-30) Maven的依赖管理
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>因为项目需要，需要研究清楚Maven中的依赖管理是怎么工作的，今天花了一天时间看了相关的文档，一些以前一直没搞清楚的问题，这次终于弄清楚了。</p>
+<p>在继续写之前，让我先吐一会儿。前两天看了Gradle，今天再看Maven，只能感叹，人们不选Gradle真是没有天理。(下面总结时会跟gradle进行对比，方便理解)</p>
+<h2>文档的对比</h2>
+<ol>
+<li>Gradle的文档非常美观，内容详细、清楚，示例很多，而且都是精心挑选的，让一个不熟悉的人也可以快速看懂 https://gradle.org/docs/current/userguide/dependency_management.html</li>
+<li>Maven的文档丑，内容简陋，例子少，经常遇到一些看不懂的术语，但没有或者只有极少的解释
+<br  />https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html (这还算是maven中写得比较好的一篇)</li>
+</ol>
+<h2>声明依赖的语法对比</h2>
+<h3>Gradle</h3>
+<pre><code>dependencies {
+    compile("group-a:artifact-a:1.0") {
+        exclude group: 'group-c', module: 'excluded-artifact'
+    }
+    runtime "group-a:artifact-b:1.0@bar"
+}
+</code></pre>
+<p>(注：当<code>exclude</code>一个由maven生成的依赖时，<code>module</code>对应<code>artifactId</code>)</p>
+<h3>Maven</h3>
+<pre><code>&lt;project&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;group-a&lt;/groupId&gt;
+      &lt;artifactId&gt;artifact-a&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;exclusions&gt;
+        &lt;exclusion&gt;
+          &lt;groupId&gt;group-c&lt;/groupId&gt;
+          &lt;artifactId&gt;excluded-artifact&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+      &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;group-a&lt;/groupId&gt;
+      &lt;artifactId&gt;artifact-b&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;type&gt;bar&lt;/type&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;
+</code></pre>
+<p>两者的内容是一样的，但是Maven这边，如果不借助编辑器的高亮，基本上没法看啊，眼都瞎了。</p>
+<h2>版本冲突如何解决</h2>
+<p>假设在项目中，不论是自己声明的，或者是使用的某个第三方库依赖的，如果有同名但不同版本的情况出现，就会产生版本冲突。</p>
+<p>比如，自己声明使用<code>log4j 1.4</code>，但某个依赖使用了<code>log4j 1.5</code>，另一个使用了<code>log4j 1.3</code>，我们不能同时把这三个包都加到classpath里，否则就会出现无法预料的情况，因为你很难搞清楚jvm到底用的是哪个。</p>
+<p>各种构建工具都有自己的确定最终使用版本的方式。Gradle默认采用最大值，不论是谁声明的，直接取最大值作为最终采用的版本。</p>
+<p>而Maven使用了一种叫<code>nearest definition</code>的方式。Maven把我们自己显式声明的依赖称为第一层依赖，它们自己的依赖叫第二层，还有第三层，更多层。当发现版本冲突的时候，优先采用层数小的，忽略后面的。</p>
+<p>比如项目中有依赖<code>A -&gt; B -&gt; C 1.8</code>和<code>A -&gt; C 1.7</code>，那么maven就会采用<code>C 1.7</code>，因为它比较近，层数小。</p>
+<p>但是如果冲突出现在同一层，比如<code>A -&gt; C 1.8</code>和<code>B -&gt; C 1.7</code>，那么在<code>maven 2.0.8</code>之前，它是没有办法决定使用哪一个（报错还是随便选不清楚），直到在<code>2.0.9</code>时才确定会使用它先遇到的那个。</p>
+<p>个人还是比较喜欢gradle的方式，符合直觉，更好理解。</p>
+<p>maven中这种还需要数层，还可能造成麻烦：一旦升级了某个依赖后发现它必须使用一个更加新的版本比如<code>C 1.7</code>时，发现比它层数小的某个依赖，使用了<code>C 1.6</code>，那么最后maven就会采用<code>C 1.6</code>，这样就可能出错。这时我们就必须显式声明对<code>C 1.7</code>的依赖。但这会造成理解上的误会，因为通常我们声明的依赖只应该是我们代码中直接依赖的库。</p>
+<p>有一篇很有意思的文章来讲解这个主题：http://mrhaki.blogspot.jp/2014/08/gradle-goodness-getting-more-dependency.html</p>
+<h2>Dependency Scope</h2>
+<p>在maven中预先定义了几种scope，规定了它们的含义，之间的依赖关系和使用场景。</p>
+<ul>
+<li>compile</li>
+<li>provided</li>
+<li>runtime</li>
+<li>test</li>
+<li>system</li>
+<li>import</li>
+</ul>
+<p>这些名字和使用场景是写死的，我们不能自行扩展。与之相对的是，在另一个依赖管理工具<code>Ivy</code>中，允许人们自定义这些scope(Ivy中的叫法是<code>configuration</code>)，Gradle中更倾向于Ivy的做法。</p>
+<p>有一些scope我们经常使用，比如<code>compile</code>, <code>runtime</code>, <code>test</code>, <code>provided</code>，而<code>system</code>和<code>import</code>见得比较少。</p>
+<h3>system</h3>
+<p>这个好像是说必须由你自己提供或者指明位置的依赖，通常用来指明JDK或者虚拟机提供的依赖，比如<code>rt.jar</code>, <code>tools.jar</code>等。</p>
+<p>对于这种依赖，maven不会到仓库上去找</p>
+<h3>import</h3>
+<p><code>import</code>是在maven 2.0.9之后提供的功能，主要是方便我们可以先把常用的或者需要共享的一些依赖信息先写在某个文件，然后在其它的POM文件中，直接引用它们，少写点版本之类的信息，增强一致性。</p>
+<p>在之前的版本中，这个功能可以通过parent标签来实现，即提供一个parent POM包含这些信息，然后在其它的POM中继承它。但是这种方式有一个严重的问题，即每个POM只能有一个parent POM，对于复杂的情况，不能强迫所有的POM都继承于同一个parent吧。</p>
+<p>现在有了<code>import</code>，就可以让我们随意导入另一个POM中定义的依赖，不需要继承。</p>
+<p>如果有版本冲突，是按全部导入后的情况来计算的。</p>
+<h2>依赖的type</h2>
+<p>每个依赖有多种<code>type</code>可选，比如默认的<code>jar</code>，还可以有<code>war</code>, <code>zip</code>, <code>pom</code>或者自定义的类型。</p>
+<p>在gradle中，可以使用<code>group-a:artifact-b:1.0@zip</code>的方式，而在maven中：</p>
+<pre><code>&lt;dependency&gt;
+      &lt;groupId&gt;group-a&lt;/groupId&gt;
+      &lt;artifactId&gt;artifact-b&lt;/artifactId&gt;
+      &lt;version&gt;1.0&lt;/version&gt;
+      &lt;type&gt;zip&lt;/type&gt;
+    &lt;/dependency&gt;
+</code></pre>
+<p>https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2846';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

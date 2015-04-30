@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>理解Gradle中的依赖</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-04-29) 理解Gradle中的依赖
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>因为项目需要，这两天我对Gradle的依赖管理进行了一些了解，感觉收获很多，解决了我很多困惑已久的疑问。</p>
+<p>Gradle的文档写得太好了，非常详细，尤其难得的是在过程中由浅入深，常常恰到好处的点到了读者的疑惑，例子也多，只要用心读一遍，各种疑惑都解决了。对比maven那简陋的文档，Gradle对用户太友好了。</p>
+<ul>
+<li>快速了解Gradle的依赖管理：https://gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html</li>
+<li>详细了解Gradle的依赖管理：https://gradle.org/docs/current/userguide/dependency_management.html</li>
+<li>理解gradle的<code>dependencies</code>的输出：https://github.com/gradle/gradle/blob/9a94ed7396103eb9062041e4e66acd15b88334d3/design-docs/dependency-resolution-reporting.md</li>
+<li>很有意思的对比maven/gradle解决版本冲突的文章：http://rafael.cordones.me/2013/05/06/transitive-dependency-mediation-in-maven-and-gradle/</li>
+<li>对<code>dependencyInsight</code>的介绍：http://mrhaki.blogspot.jp/2014/08/gradle-goodness-getting-more-dependency.html</li>
+</ul>
+<p>花一天时间读完这几篇（有的有点长），基本上可以理解gradle的依赖管理了。这里记录一下曾经困扰我多时的问题。</p>
+<h2>为什么可以用<code>compile</code>, <code>test</code>来设置依赖</h2>
+<p>一个最简单的声明依赖的例子</p>
+<pre><code class="groovy">apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '3.6.7.Final'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+</code></pre>
+<p>问题：为什么我们可以使用<code>compile</code>和<code>testCompile</code>，而不能写成别的？它们是两个方法吗？</p>
+<p>答案是，这两个是gradle的java plugin中定义的configuration。除了它们以外，另外还有<code>runtime</code>, <code>testRuntime</code>, <code>archives</code>, <code>default</code>。（参考：https://gradle.org/docs/current/userguide/java_plugin.html#sec:java_plugin_and_dependency_management）</p>
+<p>一个configuration可以看作是一堆依赖的集合，一个插件可以定义多个configuration，用于不同的功能，比如<code>compile</code>用于编译，<code>runtime</code>用于执行，<code>testCompile</code>用于编译测试。当插件定义他们以后，它们就像是一个个占位符，等着我们在自己的项目中，以上面例子的形式，给它们添加不同的依赖。</p>
+<p>configuration之间是可以有继承关系的，比如<code>runtime</code>继承了<code>compile</code>，所以当我们给<code>compile</code>中添加了一些依赖后，<code>runtime</code>就可以自动获取它们，当然也可以添加额外的依赖。</p>
+<p>其中的<code>default</code>略有特殊，会在后面提到。</p>
+<p>所以，<code>comiple</code>, <code>testCompile</code>并不是已经定义好的方法，而是预定义的configuration名。每个插件所定义的configuration是不同的，所以当我们不知道该写什么时，应该去查看该插件的说明，而不是查看gradle自身。</p>
+<p>而之所以用<code>compile</code>和<code>compileTest</code>这些名字，是因为它们是一些惯例（参考了maven时的<code>dependency scope</code>），每个插件还可以自己定义各种不同的名字。所以可以先猜测一下，但为了准确起见，还是要查看文档。</p>
+<h2>configuration: 'someConf'是什么意思</h2>
+<p>看到一个依赖的声明，里面包含了一个奇怪的<code>configuration: 'someConf'</code>：</p>
+<pre><code>compile configuration: 'someConf', group: 'org.someOrg', name: 'someModule', version: '1.0'
+</code></pre>
+<p>不太理解它有什么用，直到理解了<code>Ivy</code>与<code>Maven</code>的区别，以及<code>Gradle</code>自己的处理以后，才知道是怎么回事。</p>
+<p>要先从最老的Maven说起。Maven预定义了几个scope，比如<code>compile/runtime/test</code>等，用来管理不同的依赖集，供不同的操作使用。这些scope是定死的，不能修改。另外，maven一个模块只能发布一个成品文件(artifact，通常是jar)，所以当我们使用一个由maven发布的依赖时，我们可以准确的拿到该成品文件，并且使用它的<code>runtime</code> scope中声明的依赖。</p>
+<p>后来<code>Ivy</code>出现了，它认为Maven的做法太死板，进行了改进。Ivy提出了<code>configuration</code>的概念，跟Maven的dependency scope类似，但更加纯粹一些，仅用来表示一些依赖集合。Ivy没有预定义configuration，而是让用户自己定义并管理，同时还支持一个模块生成多个不同的成品文件，每个成品文件可以使用不同的configuration来获取依赖。这样做的好处是，可以通过细分configuration每个依赖集更加精减，这样用户在使用时可以指定某个特定的configuration来依赖真正需要的库。</p>
+<p>所以在gradle中，当我们声明使用一个来自maven的依赖时，我们不需要指定任何<code>configuration</code>。只有当声明来自ivy的依赖时，我们才有必要在需要的时候，指定某个configuration，如果没有指定，则默认使用<code>default</code> confiuration.</p>
+<p>那么问题来了，如果我对一个来自maven的依赖使用了<code>configuration</code>，会出现什么情况？会忽略？会报错？还是可以使用maven预设的<code>dependency scope</code>作为configuration?</p>
+<p>经过尝试，发现这个规则其实是Gradle确定的。在<a href="https://github.com/gradle/gradle/blob/master/subprojects/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/parser/GradlePomModuleDescriptorBuilder.java">https://github.com/gradle/gradle/blob/master/subprojects/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/parser/GradlePomModuleDescriptorBuilder.java</a>这个文件中，Gradle给来自maven的依赖预设了一堆configuration。如果我们指定它们，就不会报错，甚至还能取得不同的依赖，如果不在列表中，则会报错。需要注意的是，<code>test</code>的<code>Visibility</code>是<code>PRIVATE</code>，我们可以使用它，但是并不会使用<code>test scope</code>中的依赖。</p>
+<h2>如何查看依赖，理解它的输出</h2>
+<p>参看博客：如何读懂gradle dependencies的输出</p>
+<h2>如何查看全部项目的依赖</h2>
+<p>如何在gradle项目中显示所有项目的依赖</p>
+<h2>如何查看某个版本的依赖是否有冲突</h2>
+<p>看这个文章就可以了，写得非常好：http://mrhaki.blogspot.jp/2014/08/gradle-goodness-getting-more-dependency.html</p>
+<h2>gradle是怎么解决依赖版本冲突的</h2>
+<p>当项目的依赖（不论是显式声明的，还是某个依赖声明的）有冲突时，gradle会以最大的版本号为准。</p>
+<p>注意这里的做法跟maven不同，maven中是按显式声明的为准。比如我们在<code>pom.xml</code>中声明了使用<code>abc 1.1</code>，但某个依赖中使用了<code>abc 1.2</code>，maven会坚持使用我们声明的较老的版本<code>abc 1.1</code></p>
+<p>这两种做法，感觉gradle的更合理一些。因为maven的做法，会产生强迫某个依赖使用我们声明的较旧版本的某个库，导致一些奇怪的错误。</p>
+<p>在下面的文章中，有一个很有趣的段子来调侃这件事：http://rafael.cordones.me/2013/05/06/transitive-dependency-mediation-in-maven-and-gradle/</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2843';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>
