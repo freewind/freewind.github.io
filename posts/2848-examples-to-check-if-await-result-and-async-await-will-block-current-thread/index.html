@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Await.result与async/await是否阻塞当前线程的示例</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-05-01) Await.result与async/await是否阻塞当前线程的示例
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>在另一篇文章中提到，<code>Await.result</code>会阻塞当前线程，而<code>async/await</code>不会。虽然我们从实现原理上有一些解释，但是没有可运行的实例代码，还是觉得不够放心。这里将会以一些代码实例来说明。</p>
+<h2>Await.result</h2>
+<h3>线程数为1的线程池</h3>
+<p><code>Await.result(future, ...)</code>会阻塞当前线程。下面我将设计一段代码来证明它：</p>
+<pre><code class="scala">package myawait
+
+import java.util.concurrent.Executors
+
+import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.language.postfixOps
+import scala.util.{Failure, Success}
+
+object MyAwaitResult extends App {
+
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+
+  val allStart = System.currentTimeMillis()
+
+  log("start")
+
+  val future = Future {
+    val f1 = Future {log("f1 running"); true}
+    val f2 = Future {log("f2 running: "); 42}
+    if (Await.result(f1, 3 seconds)) {
+      Await.result(f2, 3 seconds)
+    } else {
+      log("oh, no")
+    }
+  }
+
+  log("started future")
+
+  future.onComplete {
+    case Success(v) =&gt; log("value: " + v)
+    case Failure(e) =&gt; log(e.toString)
+  }
+
+  def log(str: String) = {
+    println("### " + str + ", " + (System.currentTimeMillis() - allStart) + "ms, " + Thread.currentThread().getName)
+  }
+
+}
+</code></pre>
+<p>运行结果如下：</p>
+<pre><code>### start, 81ms, main
+### started future, 125ms, main
+### f1 running, 3151ms, pool-1-thread-1
+### f2 running: , 3152ms, pool-1-thread-1
+### java.util.concurrent.TimeoutException: Futures timed out after [3 seconds], 3152ms, pool-1-thread-1
+</code></pre>
+<p>可见它并没有打印出<code>value: 42</code>，而是抛出了一个<code>Futures timed out after [3 seconds]</code>的异常。</p>
+<p>原因是，当我们创建了一个线程数为1的ExecutionContext并设为<code>implicit</code>后，后面的<code>Future {}</code>都会把新建的任务追加到这唯一的线程中。当创建<code>future</code>后，里面的代码就占据了第一个任务中。在这个任务中创建的<code>f1</code>和<code>f2</code>，都会追加到这个线程中，变成第2个和第3个任务。如果第1个任务不执行完，它们是没有机会执行的。</p>
+<p>但是在第一个任务中，有<code>Await.result(f1, 3 seconds)</code>，它在等待这个没有机会执行的<code>f1</code>完成，所以只会超时抛出异常。之后<code>f1</code>和<code>f2</code>才有机会得到执行（可以看到它们的执行时间都在3秒以后），但期待中的<code>future</code>的值<code>42</code>就再也没有机会打印出来了。</p>
+<h3>线程数为2的线程池</h3>
+<p>如果我们仅仅把上面代码的线程数变成<code>2</code>，它的结果就不一样了。</p>
+<pre><code class="scala">implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(2))
+</code></pre>
+<p>将打印出结果：</p>
+<pre><code>### start, 79ms, main
+### started future, 117ms, main
+### f1 running, 118ms, pool-1-thread-2
+### f2 running: , 120ms, pool-1-thread-2
+### value: 42, 134ms, pool-1-thread-1
+</code></pre>
+<p>可见由于多了一条线程，<code>f1</code>和<code>f2</code>有机会快速执行，所以<code>Await.result(f1, 3 seconds)</code>就可以及时的拿到值，打印出最终结果。</p>
+<p>由些可以证明，<code>Await.result</code>的确会阻塞当前线程。如果我们在生产代码中使用了它，很有可能很快把我们的线程池占光，导致其它任务没有机会执行。</p>
+<h2>async/await</h2>
+<p>如果我们用<code>async/await</code>改写之后，看看会怎么样。依然保持池子的线程数为1：</p>
+<pre><code class="scala">package myawait
+
+import java.util.concurrent.Executors
+
+import scala.async.Async.{async, await}
+import scala.concurrent.ExecutionContext
+import scala.language.postfixOps
+import scala.util.{Failure, Success}
+
+object MyAsyncAwait extends App {
+
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+
+  val allStart = System.currentTimeMillis()
+
+  log("start")
+
+  val future = async {
+    val f1 = async {log("f1 running"); true}
+    val f2 = async {log("f2 running: "); 42}
+    if (await(f1)) {
+      await(f2)
+    } else {
+      log("oh, no")
+    }
+  }
+
+  log("started future")
+
+  future.onComplete {
+    case Success(v) =&gt; log("value: " + v)
+    case Failure(e) =&gt; log(e.toString)
+  }
+
+  def log(str: String) = {
+    println("### " + str + ", " + (System.currentTimeMillis() - allStart) + "ms, " + Thread.currentThread().getName)
+  }
+
+}
+</code></pre>
+<p>执行后打印结果：</p>
+<pre><code>### start, 83ms, main
+### started future, 123ms, main
+### f1 running, 125ms, pool-1-thread-1
+### f2 running: , 125ms, pool-1-thread-1
+### value: 42, 125ms, pool-1-thread-1
+</code></pre>
+<p>可以看到，就算只有一个线程，依然很快的打印出了结果，并没有阻塞。由此可以证明，<code>Await.result</code>的确会阻塞线程，而<code>async/await</code>不会，这样我们就可以放心大胆的使用<code>async/await</code>了。</p>
+<h2>Await.result的实现原理</h2>
+<p><code>Await.result</code>方法的实现如下：</p>
+<pre><code class="scala">def result[T](awaitable: Awaitable[T], atMost: Duration): T =
+      blocking(awaitable.result(atMost)(AwaitPermission))
+</code></pre>
+<p>它里面实际上有两个地方，可以用来等待结果及阻塞当前线程：</p>
+<ol>
+<li><code>awaitable.result(...)</code></li>
+<li><code>blocking(...)</code></li>
+</ol>
+<p>对于前面使用的例子来说，实际上起作用的是<code>awaitable.result(...)</code></p>
+<h3><code>awaitable.result(future, atMost)</code></h3>
+<p>大致作法是创建了一个<code>CompletionLatch</code>锁，这个锁默认是锁上的，直到<code>future</code>完成时，才给它解锁。而当前线程，就会在<code>atMost</code>时间内，尝试拿锁，因为拿不到，所以就阻塞起来，直到超时或者拿到锁。</p>
+<p>在阻塞前，其实也进行了几种不同的尝试。首先尝试拿一下；如果拿不到，则看看等待的剩余时间是否极短（小于1000纳秒），如果是的话，则用<code>while(true)</code>轮询，会消耗cpu的；否则使用<code>LockSupport.park</code>方法阻塞当前线程（类似于<code>obj.wait()</code>），不消耗CPU，等待其它线程调用<code>LockSupport.unpark</code>（类似于<code>obj.notify()</code>）把它唤醒。</p>
+<h3><code>blocking(...)</code></h3>
+<p><code>blocking</code>的实现如下：</p>
+<pre><code class="scala">def blocking[T](body: =&gt;T): T = BlockContext.current.blockOn(body)(scala.concurrent.AwaitPermission)
+</code></pre>
+<p><code>BlockContext.current</code>实现如下：</p>
+<pre><code class="scala">def current: BlockContext = contextLocal.get match {
+    case null =&gt; Thread.currentThread match {
+      case ctx: BlockContext =&gt; ctx
+      case _ =&gt; DefaultBlockContext
+    }
+    case some =&gt; some
+  }
+</code></pre>
+<p>而<code>DefaultBlockContext</code>实现如下：</p>
+<pre><code class="scala">private object DefaultBlockContext extends BlockContext {
+    override def blockOn[T](thunk: =&gt;T)(implicit permission: CanAwait): T = thunk
+  }
+</code></pre>
+<p>也就是说，默认情况下，如果某个任务在普通的线程中执行，这个<code>blocking</code>将走到<code>DefaultBlockContext.blockOn</code>，而它实际上什么也没做。在前面的例子中，就是这么走的，所以对于此例来说，真正起作用的还是<code>awaitable.result(...)</code>.</p>
+<p>但是，如果我们的任务是运行在一个实现了<code>BlockContext</code>的特殊线程中，那么这个<code>blocking</code>就会起作用。比如在Scala中的某处，就有一个用<code>ForkJoinPool</code>实现的<code>blocking</code>。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2848';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>

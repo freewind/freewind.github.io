@@ -12,11 +12,418 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Thu, 30 Apr 2015 19:20:53 CST</lastBuildDate>
+        <lastBuildDate>Fri, 01 May 2015 22:30:56 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>Await.result与async/await是否阻塞当前线程的示例</title>
+                <link>http://freewind.in/posts/2848-examples-to-check-if-await-result-and-async-await-will-block-current-thread</link>
+                <pubDate>Fri, 01 May 2015 19:01:01 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2848</guid>
+                <description><![CDATA[<p>在另一篇文章中提到，<code>Await.result</code>会阻塞当前线程，而<code>async/await</code>不会。虽然我们从实现原理上有一些解释，但是没有可运行的实例代码，还是觉得不够放心。这里将会以一些代码实例来说明。</p>
+<h2>Await.result</h2>
+<h3>线程数为1的线程池</h3>
+<p><code>Await.result(future, ...)</code>会阻塞当前线程。下面我将设计一段代码来证明它：</p>
+<pre><code class="scala">package myawait
+
+import java.util.concurrent.Executors
+
+import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.language.postfixOps
+import scala.util.{Failure, Success}
+
+object MyAwaitResult extends App {
+
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+
+  val allStart = System.currentTimeMillis()
+
+  log("start")
+
+  val future = Future {
+    val f1 = Future {log("f1 running"); true}
+    val f2 = Future {log("f2 running: "); 42}
+    if (Await.result(f1, 3 seconds)) {
+      Await.result(f2, 3 seconds)
+    } else {
+      log("oh, no")
+    }
+  }
+
+  log("started future")
+
+  future.onComplete {
+    case Success(v) =&gt; log("value: " + v)
+    case Failure(e) =&gt; log(e.toString)
+  }
+
+  def log(str: String) = {
+    println("### " + str + ", " + (System.currentTimeMillis() - allStart) + "ms, " + Thread.currentThread().getName)
+  }
+
+}
+</code></pre>
+<p>运行结果如下：</p>
+<pre><code>### start, 81ms, main
+### started future, 125ms, main
+### f1 running, 3151ms, pool-1-thread-1
+### f2 running: , 3152ms, pool-1-thread-1
+### java.util.concurrent.TimeoutException: Futures timed out after [3 seconds], 3152ms, pool-1-thread-1
+</code></pre>
+<p>可见它并没有打印出<code>value: 42</code>，而是抛出了一个<code>Futures timed out after [3 seconds]</code>的异常。</p>
+<p>原因是，当我们创建了一个线程数为1的ExecutionContext并设为<code>implicit</code>后，后面的<code>Future {}</code>都会把新建的任务追加到这唯一的线程中。当创建<code>future</code>后，里面的代码就占据了第一个任务中。在这个任务中创建的<code>f1</code>和<code>f2</code>，都会追加到这个线程中，变成第2个和第3个任务。如果第1个任务不执行完，它们是没有机会执行的。</p>
+<p>但是在第一个任务中，有<code>Await.result(f1, 3 seconds)</code>，它在等待这个没有机会执行的<code>f1</code>完成，所以只会超时抛出异常。之后<code>f1</code>和<code>f2</code>才有机会得到执行（可以看到它们的执行时间都在3秒以后），但期待中的<code>future</code>的值<code>42</code>就再也没有机会打印出来了。</p>
+<h3>线程数为2的线程池</h3>
+<p>如果我们仅仅把上面代码的线程数变成<code>2</code>，它的结果就不一样了。</p>
+<pre><code class="scala">implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(2))
+</code></pre>
+<p>将打印出结果：</p>
+<pre><code>### start, 79ms, main
+### started future, 117ms, main
+### f1 running, 118ms, pool-1-thread-2
+### f2 running: , 120ms, pool-1-thread-2
+### value: 42, 134ms, pool-1-thread-1
+</code></pre>
+<p>可见由于多了一条线程，<code>f1</code>和<code>f2</code>有机会快速执行，所以<code>Await.result(f1, 3 seconds)</code>就可以及时的拿到值，打印出最终结果。</p>
+<p>由些可以证明，<code>Await.result</code>的确会阻塞当前线程。如果我们在生产代码中使用了它，很有可能很快把我们的线程池占光，导致其它任务没有机会执行。</p>
+<h2>async/await</h2>
+<p>如果我们用<code>async/await</code>改写之后，看看会怎么样。依然保持池子的线程数为1：</p>
+<pre><code class="scala">package myawait
+
+import java.util.concurrent.Executors
+
+import scala.async.Async.{async, await}
+import scala.concurrent.ExecutionContext
+import scala.language.postfixOps
+import scala.util.{Failure, Success}
+
+object MyAsyncAwait extends App {
+
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+
+  val allStart = System.currentTimeMillis()
+
+  log("start")
+
+  val future = async {
+    val f1 = async {log("f1 running"); true}
+    val f2 = async {log("f2 running: "); 42}
+    if (await(f1)) {
+      await(f2)
+    } else {
+      log("oh, no")
+    }
+  }
+
+  log("started future")
+
+  future.onComplete {
+    case Success(v) =&gt; log("value: " + v)
+    case Failure(e) =&gt; log(e.toString)
+  }
+
+  def log(str: String) = {
+    println("### " + str + ", " + (System.currentTimeMillis() - allStart) + "ms, " + Thread.currentThread().getName)
+  }
+
+}
+</code></pre>
+<p>执行后打印结果：</p>
+<pre><code>### start, 83ms, main
+### started future, 123ms, main
+### f1 running, 125ms, pool-1-thread-1
+### f2 running: , 125ms, pool-1-thread-1
+### value: 42, 125ms, pool-1-thread-1
+</code></pre>
+<p>可以看到，就算只有一个线程，依然很快的打印出了结果，并没有阻塞。由此可以证明，<code>Await.result</code>的确会阻塞线程，而<code>async/await</code>不会，这样我们就可以放心大胆的使用<code>async/await</code>了。</p>
+<h2>Await.result的实现原理</h2>
+<p><code>Await.result</code>方法的实现如下：</p>
+<pre><code class="scala">def result[T](awaitable: Awaitable[T], atMost: Duration): T =
+      blocking(awaitable.result(atMost)(AwaitPermission))
+</code></pre>
+<p>它里面实际上有两个地方，可以用来等待结果及阻塞当前线程：</p>
+<ol>
+<li><code>awaitable.result(...)</code></li>
+<li><code>blocking(...)</code></li>
+</ol>
+<p>对于前面使用的例子来说，实际上起作用的是<code>awaitable.result(...)</code></p>
+<h3><code>awaitable.result(future, atMost)</code></h3>
+<p>大致作法是创建了一个<code>CompletionLatch</code>锁，这个锁默认是锁上的，直到<code>future</code>完成时，才给它解锁。而当前线程，就会在<code>atMost</code>时间内，尝试拿锁，因为拿不到，所以就阻塞起来，直到超时或者拿到锁。</p>
+<p>在阻塞前，其实也进行了几种不同的尝试。首先尝试拿一下；如果拿不到，则看看等待的剩余时间是否极短（小于1000纳秒），如果是的话，则用<code>while(true)</code>轮询，会消耗cpu的；否则使用<code>LockSupport.park</code>方法阻塞当前线程（类似于<code>obj.wait()</code>），不消耗CPU，等待其它线程调用<code>LockSupport.unpark</code>（类似于<code>obj.notify()</code>）把它唤醒。</p>
+<h3><code>blocking(...)</code></h3>
+<p><code>blocking</code>的实现如下：</p>
+<pre><code class="scala">def blocking[T](body: =&gt;T): T = BlockContext.current.blockOn(body)(scala.concurrent.AwaitPermission)
+</code></pre>
+<p><code>BlockContext.current</code>实现如下：</p>
+<pre><code class="scala">def current: BlockContext = contextLocal.get match {
+    case null =&gt; Thread.currentThread match {
+      case ctx: BlockContext =&gt; ctx
+      case _ =&gt; DefaultBlockContext
+    }
+    case some =&gt; some
+  }
+</code></pre>
+<p>而<code>DefaultBlockContext</code>实现如下：</p>
+<pre><code class="scala">private object DefaultBlockContext extends BlockContext {
+    override def blockOn[T](thunk: =&gt;T)(implicit permission: CanAwait): T = thunk
+  }
+</code></pre>
+<p>也就是说，默认情况下，如果某个任务在普通的线程中执行，这个<code>blocking</code>将走到<code>DefaultBlockContext.blockOn</code>，而它实际上什么也没做。在前面的例子中，就是这么走的，所以对于此例来说，真正起作用的还是<code>awaitable.result(...)</code>.</p>
+<p>但是，如果我们的任务是运行在一个实现了<code>BlockContext</code>的特殊线程中，那么这个<code>blocking</code>就会起作用。比如在Scala中的某处，就有一个用<code>ForkJoinPool</code>实现的<code>blocking</code>。</p>
+]]></description>
+            </item>
+        
+            <item>
+                <title>解读Scala中的async/await</title>
+                <link>http://freewind.in/posts/2847-understand-scala-future-async-await</link>
+                <pubDate>Fri, 01 May 2015 11:46:29 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2847</guid>
+                <description><![CDATA[<p>最近在学习Coursera上的&laquo;Principles of reactive programming&raquo;，在第三周的课程里，我们需要理解Scala中的Future和Promise，因为它们是reactive programming的基础。</p>
+<p>里面提到了一对很有趣的方法，叫<code>async</code>和<code>await</code>，实现了类似C#中的<code>async/await</code>关键字（在Javascript的ES7中也将会实现），可以让我们以类似写同步代码的方式写出实际上是异步执行的代码。</p>
+<p>这种方式可以大幅提高可读性，减少不必要的代码嵌套和callback，感觉很酷，但又不知道它背后有什么魔术，不敢轻易使用。</p>
+<p>在这里将会一步步介绍它产生的原因，以及基本的实现原理。</p>
+<h2>Future</h2>
+<p>在Scala中，我们可以使用<code>Future.apply</code>，将一段耗时的代码放到一个线程池中异步执行，不会阻塞当前线程。</p>
+<p><code>Future.apply</code>除了接收我们传入的耗时代码，还需要一个implicit的<code>ExecutionContext</code>（相当于一个线程池）用来执行异步代码。这里我们使用了scala提供的一个global context: <code>scala.concurrent.ExecutionContext.Implicits.global</code></p>
+<pre><code>import scala.concurrent.ExecutionContext.Implicits.global
+
+println("### start in main thread: " + Thread.currentThread().getName)
+
+Future {
+  println("### enter future in pool: " + Thread.currentThread().getName)
+  Thread.sleep(2000)
+  println("### exit future in pool: " + Thread.currentThread().getName)
+}
+
+println("### end in main thread: " + Thread.currentThread().getName)
+</code></pre>
+<p>执行这段代码，会得到以下的输出:</p>
+<pre><code>### start in main thread: main
+### end in main thread: main
+### enter future in pool: ForkJoinPool-1-worker-5
+</code></pre>
+<p>可以看到<code>### end</code>在<code>### enter future</code>前打印出来（也许不是绝对，但也能说明问题），说明<code>Future</code>中的那段耗时代码并不会阻塞当前线程。</p>
+<p>通过这样的方式，我们就可以方便地在多个线程中同时执行操作，互不干扰，也不会阻塞当前线程，提高了执行效率。</p>
+<p>但显然这样会带来一个问题：我怎么取Future中在未来某个时间点计算出来的值？</p>
+<h2>通过回调操作Future产生的值</h2>
+<p>对于异步代码，通常我们会传入一个回调，让异步代码在未来某个时间计算出值后调用它。</p>
+<p><code>Future</code>也提供了类似的方法，比如<code>onComplete</code>, <code>onSuccess</code>, <code>onFailure</code>等。</p>
+<pre><code class="scala">val pageFuture = Future { getPageFromUrl(...) }
+pageFuture.onSuccess { page =&gt; 
+    println("Got page: " + page)
+}
+</code></pre>
+<p>对于简单的情况，这样是很方便的。但是如果我们需要对产生的结果再进行一些操作，又得到一些Future，那么很容易产生大量的回调嵌套，导致代码的可读性变差：</p>
+<pre><code class="scala">val pageFuture = Future { getPageFromUrl(...) }
+pageFuture.onSuccess { page =&gt; 
+    val tree = parsePage(page)
+    tree.onSuccess { tree =&gt; 
+        val images = findImages(tree)
+        images.onSuccess { images =&gt;
+            println("Found images: " + images)
+        }
+    }
+}
+</code></pre>
+<p>所以<code>Future</code>又提供了很多用来组合的方法，让我们不用（或尽量少用）嵌套，比如<code>map</code>, <code>flatMap</code>, <code>foreach</code>等方法。比如上面的代码使用<code>flatMap</code>，可以改写为：</p>
+<pre><code class="scala">val pageFuture = Future { getPageFromUrl(...) }
+pageFuture.flatMap ( page =&gt;  parsePage(page) )
+          .flatMap ( tree =&gt; findImages(tree) )
+          .foreach { images =&gt;
+            println("Found images: " + images)
+          }
+</code></pre>
+<p>可以看到，之前的嵌套回调变成了顺序回调，功能未变，但代码的可读性得到了极大提高。</p>
+<h2>Await.ready/result</h2>
+<p>通过上面的方式，虽然我们可以方便的操作Future产生的值，但可能会出现这种情况：一旦使用了Future，并需要对它在产生的值进行操作，就会发现几乎所有后续代码都会写成异步的形式。</p>
+<p>如果想在当前线程中拿到异步的值，该怎么办？</p>
+<p>比如测试中，我们需要在主线程中拿到某个Future的值进行判断，虽然可以让测试框架模仿js中的jasmine/mocha那样通过调用一个特别的<code>done</code>回调来通知完成，但是如果能直接在主线程中拿到值，代码会更简洁一些。</p>
+<p>为了解决这个问题，Scala提供了一个<code>scala.concurrent.Await</code>类，可以让我们调用其<code>ready/result</code>等方法，阻塞当前线程，直到传入的future完成。<code>ready</code>与<code>result</code>很像，只是前者不关心返回值只等待，而后者还要返回future中产生的值。</p>
+<p>其调用方法如下：</p>
+<pre><code class="scala">import scala.concurrent.duration._
+import scala.language.postfixOps
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+
+val future = Future { doSomething(); 42; }
+val value = Await.result(future, 2 seconds)
+println(value) // 42
+</code></pre>
+<p>其中前两句导入，是为了支持下面<code>2 seconds</code>这种方便的写法。</p>
+<p><code>Await.result</code>那一句，是说我将在当前线程等待<code>future</code>的执行，最多只执行<code>2</code>秒。如果2秒内执行结束，便马上返回它产生的值<code>42</code>；否则会抛出<code>java.util.concurrent.TimeoutException</code>。</p>
+<p>在等待的过程中，当前线程是阻塞的，后面的代码只能等到<code>future</code>成功执行完，才有机会执行。</p>
+<p>这种方式可以满足我们的需求，但是不推荐在生产代码中使用。因为一旦使用，就会阻塞当前线程，会让我们在前面辛苦实现的Future的工作白做了。</p>
+<h2>同时操作多个Future时的代码可读性</h2>
+<p>虽然Future提供了各种<code>map</code>, <code>flatMap</code>，让我们在对同一个Future的值进行多次后续操作时变得简单，但是当我们需要同时操作多个Future时，代码依然比较难看：</p>
+<pre><code class="scala">val f1 = Future {false}
+val f2 = Future {2}
+val f3 = Future {3}
+
+f1.foreach { r1 =&gt;
+  if (r1) {
+    f2.foreach { r2 =&gt;
+      println("### " + r2)
+    }
+  } else {
+    f3.foreach { r3 =&gt;
+      println("### " + r3)
+    }
+  }
+}
+</code></pre>
+<p>如果我们不考虑前面的<code>Await.result</code>带来的负面影响，使用它可以极大的简化代码：</p>
+<pre><code class="scala">val f1 = Future {false}
+val f2 = Future {2}
+val f3 = Future {3}
+
+def await[T](future: Future[T]): T = Await.result(future, 1000 seconds)
+
+if (await(f1)) {
+  println("### " + await(f2))
+} else {
+  println("### " + await(f3))
+}
+</code></pre>
+<p>我们能否找到一种鱼与熊掌兼得的方式？</p>
+<h2>async/await</h2>
+<p>自从scala提供了宏的功能以后，我们就可以实现各种奇葩的功能，包括这里要介绍的<code>async/await</code>:https://github.com/scala/async</p>
+<p>这个库实现了C#中引入的<code>async/await</code>关键字（类似的还有Javascript将在ES7中提供的<code>async/await</code>），让我们可以写出看起来非常简洁的同步形式的代码，但实际执行却是异步的。</p>
+<p>我们只需要在项目中添加这个依赖：</p>
+<pre><code>"org.scala-lang.modules" %% "scala-async" % "0.9.2"
+</code></pre>
+<p>就可以将上面的代码写成这样：</p>
+<pre><code class="scala">import ExecutionContext.Implicits.global
+import scala.async.Async.{async, await}
+
+async {
+  val f1 = async {false}
+  val f2 = async {2}
+  val f3 = async {3}
+
+  if (await(f1)) {
+    println("### " + await(f2))
+  } else {
+    println("### " + await(f3))
+  }
+}
+</code></pre>
+<p>看起来跟前面的<code>Await.result</code>的版本非常像，只是用<code>async</code>替换了<code>Future</code>，然后使用了它提供了<code>await</code>函数。</p>
+<p>但是神奇之处在于，这段代码中的<code>await</code>是不会阻塞当前线程的！这段代码在编译期，会被转换成异步形式，依然是非阻塞的。（实际代码是用状态机，但可以按前面<code>future.foreach</code>那种多重嵌套的代码来理解）</p>
+<p>使用这种方式，会有一些条件限制，详情可见其主页。但是对于多数情况，只要能使用就应该尽量使用，因为它可以大大提高代码的可读性。</p>
+<h2>基本实现原理</h2>
+<p>在这份文档中，详细描述了它的实现原理：http://docs.scala-lang.org/sips/pending/async.html</p>
+<p>文档在最后展示了下面这段代码：</p>
+<pre><code class="scala">val future = async {                                     
+  val f1 = async { true }                                 
+  val x = 1                                               
+  def inc(t: Int) = t + x                                 
+  val t = 0                                               
+  val f2 = async { 42 }                                   
+  if (await(f1)) await(f2) else { val z = 1; inc(t + z) }
+}
+</code></pre>
+<p>在编译器转换为scala代码后会是什么样子。因为里面的命名和结构有点乱，难以阅读，所以我对它进行了一些重构，如下：</p>
+<pre><code class="scala">object AsyncAwaitImpl {
+  abstract class StateMachine[T, K]
+  class MyStateMachine extends StateMachine[Promise[Int], ExecutionContext] {
+    val f1 = Future {true}
+    val x = 1
+    def inc(t: Int) = t + x
+    val t = 0
+    var f2 = Future {42}
+
+    var state = 0
+    val resultPromise = Promise[Int]()
+    var result: Int = 0
+
+    var f1Result: Boolean = false
+    var f2Result: Int = 0
+
+    def resumeAsync(): Unit = try {
+      state match {
+        case 0 =&gt; {
+          f1.onComplete(this.apply)
+        }
+        case 1 =&gt; {
+          result = 0
+          if (f1Result) {
+            state = 2
+            resumeAsync()
+          } else {
+            state = 3
+            resumeAsync()
+          }
+        }
+        case 2 =&gt; {
+          f2.onComplete(this.apply)
+        }
+        case 5 =&gt; {
+          result = f2Result
+          state = 4
+          resumeAsync()
+        }
+        case 3 =&gt; {
+          result = {
+            val z = 1
+            inc(t + z)
+          }
+          state = 4
+          resumeAsync()
+        }
+        case 4 =&gt; resultPromise.complete(Success(result))
+      }
+    } catch {
+      case NonFatal(tr) =&gt; resultPromise.complete(Failure(tr))
+    }
+
+    def apply(result: Try[Any]): Unit = state match {
+      case 0 =&gt; {
+        if (result.isFailure) {
+          resultPromise.complete(result.asInstanceOf[Try[Int]])
+        } else {
+          f1Result = result.get.asInstanceOf[Boolean]
+          state = 1
+          resumeAsync()
+        }
+      }
+      case 2 =&gt; {
+        if (result.isFailure) {
+          resultPromise.complete(result.asInstanceOf[Try[Int]])
+        } else {
+          f2Result = result.get.asInstanceOf[Int]
+          state = 5
+          resumeAsync()
+        }
+      }
+    }
+
+    def apply(): Unit = resumeAsync()
+  }
+
+  val myStateMachine = new MyStateMachine()
+  Future(myStateMachine())
+  myStateMachine.resultPromise.future
+
+}
+</code></pre>
+<p>这段代码的可读性已经比较好了，只需要细细阅读一遍就能清楚，这里只说一些重点：</p>
+<ol>
+<li>实现了一个状态机，对于不同的分支将进入不同的状态，这些状态在从开始到结束期间，将可能跨多个future</li>
+<li>对于<code>await(future)</code>，将会收集出哪些代码要使用<code>future</code>的值，然后把它们加到<code>future.onComplete</code>中，实现异步</li>
+</ol>
+<p>在看<code>async/await</code>相关的文档时，虽然它们有各种各样详细的说明和介绍，但都没有明确的告诉读者，使用<code>async/await</code>后的代码，会不会阻塞当前线程。可能在一些地方隐约的透露了，但对于一个初学者来说，没有明确的说明，总让人不放心，不敢用。</p>
+<p>好在后来我在<a href="http://stackoverflow.com/a/20339774/342235">这个回答</a>中看到有人明确提到了，并且我自己也做了一些试验，这才放下心来。</p>
+<p>关于Future中的<code>Await.result</code>以及<code>async/await</code>是否会阻塞当前代码的例子，我将会在另一篇文章中详细说明。</p>
+]]></description>
+            </item>
         
             <item>
                 <title>Maven的依赖管理</title>
@@ -14230,7 +14637,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#119;&#x65;&#x62;&#x2d;&#117;&#x69;-&#100;&#101;&#118;&#64;&#100;&#x61;&#x72;&#116;&#x6c;&#x61;&#x6e;&#x67;&#46;&#x6f;&#114;&#103;">&#119;&#x65;&#x62;&#x2d;u&#105;&#45;&#x64;&#101;&#118;&#64;&#x64;&#x61;&#114;&#116;&#108;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;w&#x65;&#98;&#x2d;&#117;&#105;&#x2d;&#x64;&#x65;&#118;&#64;&#x64;&#x61;&#x72;&#x74;&#108;&#97;&#x6e;&#103;&#46;&#x6f;&#114;&#103;">&#x77;&#x65;&#98;&#x2d;&#117;&#x69;&#x2d;&#100;&#101;&#118;&#x40;&#100;&#x61;&#114;&#116;&#x6c;&#x61;&#x6e;&#x67;&#x2e;&#x6f;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
