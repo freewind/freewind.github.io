@@ -66,7 +66,7 @@
 <div>
     <p>最近在学习Coursera上的&laquo;Principles of reactive programming&raquo;，在第三周的课程里，我们需要理解Scala中的Future和Promise，因为它们是reactive programming的基础。</p>
 <p>里面提到了一对很有趣的方法，叫<code>async</code>和<code>await</code>，实现了类似C#中的<code>async/await</code>关键字（在Javascript的ES7中也将会实现），可以让我们以类似写同步代码的方式写出实际上是异步执行的代码。</p>
-<p>这种方式可以大幅提高可读性，减少不必要的代码嵌套和callback，感觉很酷，但又不知道它背后有什么魔术，不敢轻易使用。</p>
+<p>这种方式可以大幅提高可读性，减少不必要的代码嵌套和callback，感觉很酷，但是如果不知道它背后是什么原理的话，可能不敢放心使用。</p>
 <p>在这里将会一步步介绍它产生的原因，以及基本的实现原理。</p>
 <h2>Future</h2>
 <p>在Scala中，我们可以使用<code>Future.apply</code>，将一段耗时的代码放到一个线程池中异步执行，不会阻塞当前线程。</p>
