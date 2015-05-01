@@ -215,6 +215,12 @@ object MyAsyncAwait extends App {
 </code></pre>
 <p>也就是说，默认情况下，如果某个任务在普通的线程中执行，这个<code>blocking</code>将走到<code>DefaultBlockContext.blockOn</code>，而它实际上什么也没做。在前面的例子中，就是这么走的，所以对于此例来说，真正起作用的还是<code>awaitable.result(...)</code>.</p>
 <p>但是，如果我们的任务是运行在一个实现了<code>BlockContext</code>的特殊线程中，那么这个<code>blocking</code>就会起作用。比如在Scala中的某处，就有一个用<code>ForkJoinPool</code>实现的<code>blocking</code>。</p>
+<h2>ForkJoinPool</h2>
+<p>这个东西也值得一看：</p>
+<ol>
+<li><a href="http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/">http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/</a></li>
+<li><a href="http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883">http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883</a></li>
+</ol>
 
 </div>
 

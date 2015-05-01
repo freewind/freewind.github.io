@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Fri, 01 May 2015 22:49:05 CST</lastBuildDate>
+        <lastBuildDate>Fri, 01 May 2015 23:15:38 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -176,6 +176,12 @@ object MyAsyncAwait extends App {
 </code></pre>
 <p>也就是说，默认情况下，如果某个任务在普通的线程中执行，这个<code>blocking</code>将走到<code>DefaultBlockContext.blockOn</code>，而它实际上什么也没做。在前面的例子中，就是这么走的，所以对于此例来说，真正起作用的还是<code>awaitable.result(...)</code>.</p>
 <p>但是，如果我们的任务是运行在一个实现了<code>BlockContext</code>的特殊线程中，那么这个<code>blocking</code>就会起作用。比如在Scala中的某处，就有一个用<code>ForkJoinPool</code>实现的<code>blocking</code>。</p>
+<h2>ForkJoinPool</h2>
+<p>这个东西也值得一看：</p>
+<ol>
+<li><a href="http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/">http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/</a></li>
+<li><a href="http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883">http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883</a></li>
+</ol>
 ]]></description>
             </item>
         
@@ -210,7 +216,7 @@ println("### end in main thread: " + Thread.currentThread().getName)
 ### end in main thread: main
 ### enter future in pool: ForkJoinPool-1-worker-5
 </code></pre>
-<p>可以看到<code>### end</code>在<code>### enter future</code>前打印出来（也许不是绝对，但也能说明问题），说明<code>Future</code>中的那段耗时代码并不会阻塞当前线程。</p>
+<p>可以看到<code>### end</code>在<code>### enter future</code>前打印出来（<a href="http://stackoverflow.com/questions/29982452/does-the-code-inside-a-future-have-chances-to-run-before-the-code-in-main-thread/29982526">不是绝对，也有可能在后面，但也能说明问题</a>），说明<code>Future</code>中的那段耗时代码并不会阻塞当前线程。</p>
 <p>通过这样的方式，我们就可以方便地在多个线程中同时执行操作，互不干扰，也不会阻塞当前线程，提高了执行效率。</p>
 <p>但显然这样会带来一个问题：我怎么取Future中在未来某个时间点计算出来的值？</p>
 <h2>通过回调操作Future产生的值</h2>
@@ -242,6 +248,14 @@ pageFuture.flatMap ( page =&gt;  parsePage(page) )
           }
 </code></pre>
 <p>可以看到，之前的嵌套回调变成了顺序回调，功能未变，但代码的可读性得到了极大提高。</p>
+<p>当然还可以使用<code>for</code>表达式，再次提高可读性：</p>
+<pre><code class="scala">val pageFuture = Future { getPageFromUrl(...) }
+for {
+    page &lt;- pageFuture
+    tree &lt;- parsePage(page)
+    images &lt;- findImages(tree)
+} println("Found images: " + images)
+</code></pre>
 <h2>Await.ready/result</h2>
 <p>通过上面的方式，虽然我们可以方便的操作Future产生的值，但可能会出现这种情况：一旦使用了Future，并需要对它在产生的值进行操作，就会发现几乎所有后续代码都会写成异步的形式。</p>
 <p>如果想在当前线程中拿到异步的值，该怎么办？</p>
@@ -294,7 +308,7 @@ if (await(f1)) {
 </code></pre>
 <p>我们能否找到一种鱼与熊掌兼得的方式？</p>
 <h2>async/await</h2>
-<p>自从scala提供了宏的功能以后，我们就可以实现各种奇葩的功能，包括这里要介绍的<code>async/await</code>:https://github.com/scala/async</p>
+<p>自从scala提供了宏的功能以后，我们就可以实现各种奇葩的功能，包括这里要介绍的<code>async/await</code>:<a href="https://github.com/scala/async">https://github.com/scala/async</a></p>
 <p>这个库实现了C#中引入的<code>async/await</code>关键字（类似的还有Javascript将在ES7中提供的<code>async/await</code>），让我们可以写出看起来非常简洁的同步形式的代码，但实际执行却是异步的。</p>
 <p>我们只需要在项目中添加这个依赖：</p>
 <pre><code>"org.scala-lang.modules" %% "scala-async" % "0.9.2"
@@ -316,10 +330,12 @@ async {
 }
 </code></pre>
 <p>看起来跟前面的<code>Await.result</code>的版本非常像，只是用<code>async</code>替换了<code>Future</code>，然后使用了它提供了<code>await</code>函数。</p>
-<p>但是神奇之处在于，这段代码中的<code>await</code>是不会阻塞当前线程的！这段代码在编译期，会被转换成异步形式，依然是非阻塞的。（实际代码是用状态机，但可以按前面<code>future.foreach</code>那种多重嵌套的代码来理解）</p>
-<p>使用这种方式，会有一些条件限制，详情可见其主页。但是对于多数情况，只要能使用就应该尽量使用，因为它可以大大提高代码的可读性。</p>
+<p>但是神奇之处在于，这段代码中的<code>await</code>是不会阻塞当前线程的！这段代码在编译期，会被转换成异步形式，依然是非阻塞的。（实际代码是用状态机，见后面解释，但可以按前面<code>future.foreach</code>那种多重嵌套的代码来理解）</p>
+<p>使用这种方式，会有一些条件限制，详情可见其主页。</p>
+<p>如果对一个future进行连续操作，或者用到了多个future但它们之间没什么关系时，尽量使用<code>flatMap/map</code>或者<code>for表达式</code>。但是对于同时操作多个有关系的future时，如果使用<code>async/await</code>可以大幅提高代码可读性的时候，可以考虑使用它们。</p>
+<p>(另外根据经验，使用宏实现的功能时，很容易出现诡异的问题，难以定位，难以调试)</p>
 <h2>基本实现原理</h2>
-<p>在这份文档中，详细描述了它的实现原理：http://docs.scala-lang.org/sips/pending/async.html</p>
+<p>在这份文档中，详细描述了它的实现原理：<a href="http://docs.scala-lang.org/sips/pending/async.html">http://docs.scala-lang.org/sips/pending/async.html</a></p>
 <p>文档在最后展示了下面这段代码：</p>
 <pre><code class="scala">val future = async {                                     
   val f1 = async { true }                                 
@@ -14637,7 +14653,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#105;l&#116;&#x6f;:&#119;&#101;&#x62;&#x2d;&#x75;i&#45;&#100;e&#x76;&#64;&#x64;&#x61;&#114;&#116;&#x6c;&#x61;&#110;&#x67;&#x2e;&#x6f;&#x72;&#103;">&#x77;&#101;&#98;&#x2d;&#x75;&#105;&#x2d;&#100;&#x65;&#x76;&#64;&#100;&#x61;&#x72;&#116;&#108;&#97;&#x6e;&#x67;&#x2e;o&#114;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x77;&#x65;&#x62;&#45;&#117;&#105;&#45;&#x64;&#x65;&#x76;&#x40;&#x64;&#x61;&#114;&#116;&#x6c;&#x61;&#110;&#103;&#x2e;&#111;&#x72;&#103;">&#x77;&#101;&#98;&#45;&#x75;&#x69;&#45;&#100;&#x65;&#x76;&#x40;&#x64;&#x61;&#114;&#116;&#108;&#97;&#x6e;&#103;&#x2e;&#111;&#114;&#x67;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
