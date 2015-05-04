@@ -12,11 +12,291 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Fri, 01 May 2015 23:15:38 CST</lastBuildDate>
+        <lastBuildDate>Mon, 04 May 2015 22:55:19 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>怎么显示一个maven项目中的第三方依赖</title>
+                <link>http://freewind.in/posts/2849-how-to-show-dependencies-of-a-maven-project</link>
+                <pubDate>Mon, 04 May 2015 17:51:05 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2849</guid>
+                <description><![CDATA[<p>Maven内置了<code>maven-dependency-plugin:2.8</code>（对于 <code>maven 3.2.5</code>来说），提供了如<code>dependency:tree</code>, <code>dependency:list</code>等命令，可以让我们显示所有项目的第三方依赖</p>
+<h2>插件地址</h2>
+<ol>
+<li>如何配置maven的插件：<a href="http://maven.apache.org/guides/mini/guide-configuring-plugins.html">http://maven.apache.org/guides/mini/guide-configuring-plugins.html</a></li>
+<li>dependency-plugin: <a href="http://maven.apache.org/plugins/maven-dependency-plugin/usage.html">http://maven.apache.org/plugins/maven-dependency-plugin/usage.html</a></li>
+</ol>
+<h2>基本POM</h2>
+<p>下面是一个用于演示的基本<code>pom.xml</code>，可以把它保存在某个目录下的<code>pom.xml</code>中，再运行<code>mvn dependency:tree</code>即可。</p>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;in.freewind&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-dependency-insight&lt;/artifactId&gt;
+    &lt;version&gt;0.1.1&lt;/version&gt;
+    &lt;packaging&gt;pom&lt;/packaging&gt;
+
+    &lt;name&gt;maven-dependency-insight&lt;/name&gt;
+
+    &lt;properties&gt;
+        &lt;maven-dependency-plugin.version&gt;2.10&lt;/maven-dependency-plugin.version&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+            &lt;version&gt;1.1.5.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+            &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+            &lt;version&gt;1.7.1&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.11&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/build&gt;
+&lt;/project&gt;
+</code></pre>
+<p>这里精心选择了几个库，其中<code>org.springframework.boot:spring-boot-starter-web:jar:1.1.5.RELEASE</code>依赖于<code>org.slf4j:slf4j-api:jar:1.7.7</code>，但我这里又显式声明了<code>org.slf4j:slf4j-api:1.7.1</code>，目的是为了展示maven是如何处理版本冲突的。</p>
+<p>另外前两个依赖没有指定<code>scope</code>，则默认为<code>compile</code>，第三个声明为<code>test</code></p>
+<h2>mvn clean install</h2>
+<p>为保险起见，最好先<code>mvn clean install</code>一下。这样做是因为如果这个项目中有子项目，而且项目之间有未发布到仓库的<code>SNAPSHOT</code>的引用，不先把它们<code>install</code>到本地，执行其它的命令有可能报找不到依赖的错误。</p>
+<p>执行完以后，会把项目发布到本地<code>~/.m2</code>目录下的合适位置，方便后来的查看</p>
+<h2>mvn dependency:resolve</h2>
+<p>运行这个命令，maven将会下载所需依赖并解决版本冲突。完成后会列出最终所用的依赖的版本，内容跟后面介绍的<code>dependency:list</code>相似。</p>
+<p>不过我们通常还是用后面介绍的<code>dependency:tree</code>或者<code>dependency:list</code>来查看依赖</p>
+<h2>mvn dependency:tree</h2>
+<p>将以树形结构打印出所有依赖，如下：</p>
+<pre><code>[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building maven-dependency-insight 0.1.1
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ maven-dependency-insight ---
+[INFO] in.freewind:maven-dependency-insight:pom:0.1.1
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:1.1.5.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:1.1.5.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot:jar:1.1.5.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-autoconfigure:jar:1.1.5.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:1.1.5.RELEASE:compile
+[INFO] |  |  |  +- org.slf4j:jcl-over-slf4j:jar:1.7.7:compile
+[INFO] |  |  |  +- org.slf4j:jul-to-slf4j:jar:1.7.7:compile
+[INFO] |  |  |  +- org.slf4j:log4j-over-slf4j:jar:1.7.7:compile
+[INFO] |  |  |  \- ch.qos.logback:logback-classic:jar:1.1.2:compile
+[INFO] |  |  |     \- ch.qos.logback:logback-core:jar:1.1.2:compile
+[INFO] |  |  \- org.yaml:snakeyaml:jar:1.13:runtime
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:1.1.5.RELEASE:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:7.0.54:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:7.0.54:compile
+[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-logging-juli:jar:7.0.54:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.3.3:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.3.0:compile
+[INFO] |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.3.3:compile
+[INFO] |  +- org.hibernate:hibernate-validator:jar:5.0.3.Final:compile
+[INFO] |  |  +- javax.validation:validation-api:jar:1.1.0.Final:compile
+[INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.1.1.GA:compile
+[INFO] |  |  \- com.fasterxml:classmate:jar:1.0.0:compile
+[INFO] |  +- org.springframework:spring-core:jar:4.0.6.RELEASE:compile
+[INFO] |  +- org.springframework:spring-web:jar:4.0.6.RELEASE:compile
+[INFO] |  |  +- org.springframework:spring-aop:jar:4.0.6.RELEASE:compile
+[INFO] |  |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  |  +- org.springframework:spring-beans:jar:4.0.6.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-context:jar:4.0.6.RELEASE:compile
+[INFO] |  \- org.springframework:spring-webmvc:jar:4.0.6.RELEASE:compile
+[INFO] |     \- org.springframework:spring-expression:jar:4.0.6.RELEASE:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.1:compile
+[INFO] \- junit:junit:jar:4.11:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.270 s
+[INFO] Finished at: 2015-05-04T18:07:48+08:00
+[INFO] Final Memory: 14M/309M
+[INFO] ------------------------------------------------------------------------
+</code></pre>
+<p>可以看到，它将以树型结构显示我们声明的依赖，以及依赖自己的依赖。</p>
+<pre><code>org.slf4j:slf4j-api:jar:1.7.1:compile
+</code></pre>
+<p>对应了</p>
+<pre><code>groupId:artifactId:type:version:scope
+</code></pre>
+<p>注意这里只显示解决了版本冲突之后确定的版本，而不像<code>gradle dependencies</code>那样还会打印出重复的或者被跳过的版本。</p>
+<p>例如搜索<code>slf4j-api:jar</code>只能搜到一个，版本冲突中失败的那个没有显示。</p>
+<h3>nearest definition</h3>
+<p>maven对于依赖的版本冲突，采用的是<code>nearst definition</code>，即从树的最上层向下，如果遇到有冲突的版本（即名字相同但版号本不同），则采用上层指定的版本。</p>
+<p>比如这里我们自己声明的<code>org.slf4j:slf4j-api:jar:1.7.1</code>处于第一层，<code>org.springframework.boot:spring-boot-starter-web:jar:1.1.5.RELEASE</code>依赖的<code>org.slf4j:slf4j-api:jar:1.7.7</code>，虽然版本号较高，但由于层数较低，将被抛弃。</p>
+<p>这种解决版本冲突的做法跟gradle不一样，gradle默认采用版本号较大的那个，而不管它们处于哪一层。</p>
+<h2>mvn dependency:list</h2>
+<p>有时候我们只关心有哪些依赖，而不关心它们的依赖关系，可以使用<code>dependency:tree</code>这个命令，显示的结果更容易读一些：</p>
+<pre><code>[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building maven-dependency-insight 0.1.1
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] --- maven-dependency-plugin:2.10:list (default-cli) @ maven-dependency-insight ---
+[INFO]
+[INFO] The following files have been resolved:
+[INFO]    com.fasterxml.jackson.core:jackson-databind:jar:2.3.3:compile
+[INFO]    org.springframework.boot:spring-boot-starter-tomcat:jar:1.1.5.RELEASE:compile
+[INFO]    com.fasterxml:classmate:jar:1.0.0:compile
+[INFO]    org.slf4j:log4j-over-slf4j:jar:1.7.7:compile
+[INFO]    aopalliance:aopalliance:jar:1.0:compile
+[INFO]    org.springframework:spring-web:jar:4.0.6.RELEASE:compile
+[INFO]    org.springframework:spring-aop:jar:4.0.6.RELEASE:compile
+[INFO]    com.fasterxml.jackson.core:jackson-annotations:jar:2.3.0:compile
+[INFO]    junit:junit:jar:4.11:test
+[INFO]    org.apache.tomcat.embed:tomcat-embed-logging-juli:jar:7.0.54:compile
+[INFO]    org.springframework:spring-context:jar:4.0.6.RELEASE:compile
+[INFO]    org.slf4j:slf4j-api:jar:1.7.1:compile
+[INFO]    org.springframework.boot:spring-boot-starter-logging:jar:1.1.5.RELEASE:compile
+[INFO]    ch.qos.logback:logback-core:jar:1.1.2:compile
+[INFO]    org.springframework:spring-webmvc:jar:4.0.6.RELEASE:compile
+[INFO]    org.apache.tomcat.embed:tomcat-embed-core:jar:7.0.54:compile
+[INFO]    org.springframework:spring-beans:jar:4.0.6.RELEASE:compile
+[INFO]    org.apache.tomcat.embed:tomcat-embed-el:jar:7.0.54:compile
+[INFO]    com.fasterxml.jackson.core:jackson-core:jar:2.3.3:compile
+[INFO]    org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO]    org.hibernate:hibernate-validator:jar:5.0.3.Final:compile
+[INFO]    org.springframework.boot:spring-boot-starter-web:jar:1.1.5.RELEASE:compile
+[INFO]    org.slf4j:jcl-over-slf4j:jar:1.7.7:compile
+[INFO]    org.jboss.logging:jboss-logging:jar:3.1.1.GA:compile
+[INFO]    org.slf4j:jul-to-slf4j:jar:1.7.7:compile
+[INFO]    org.springframework.boot:spring-boot-starter:jar:1.1.5.RELEASE:compile
+[INFO]    org.yaml:snakeyaml:jar:1.13:runtime
+[INFO]    org.springframework.boot:spring-boot:jar:1.1.5.RELEASE:compile
+[INFO]    org.springframework.boot:spring-boot-autoconfigure:jar:1.1.5.RELEASE:compile
+[INFO]    ch.qos.logback:logback-classic:jar:1.1.2:compile
+[INFO]    javax.validation:validation-api:jar:1.1.0.Final:compile
+[INFO]    org.springframework:spring-core:jar:4.0.6.RELEASE:compile
+[INFO]    org.springframework:spring-expression:jar:4.0.6.RELEASE:compile
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.381 s
+[INFO] Finished at: 2015-05-04T19:36:47+08:00
+[INFO] Final Memory: 14M/309M
+[INFO] ------------------------------------------------------------------------
+</code></pre>
+<p>我们可以根据需求使用不同的命令。</p>
+<h2>mvn dependency:tree -Dverbose</h2>
+<p>有时候我们希望它能像gradle那样，把版本冲突中被抛弃的、以及重复的都显示出来，以便追踪，这时可以加上<code>verbose</code>参数：<code>mvn dependency:tree -Dverbose</code></p>
+<p>结果如下：</p>
+<pre><code>[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building maven-dependency-insight 0.1.1
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ maven-dependency-insight ---
+[WARNING] Using Maven 2 dependency tree to get verbose output, which may be inconsistent with actual Maven 3 resolution
+[INFO] in.freewind:maven-dependency-insight:pom:0.1.1
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:1.1.5.RELEASE:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:1.1.5.RELEASE:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot:jar:1.1.5.RELEASE:compile
+[INFO] |  |  |  +- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  |  \- (org.springframework:spring-context:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  +- org.springframework.boot:spring-boot-autoconfigure:jar:1.1.5.RELEASE:compile
+[INFO] |  |  |  \- (org.springframework.boot:spring-boot:jar:1.1.5.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:1.1.5.RELEASE:compile
+[INFO] |  |  |  +- org.slf4j:jcl-over-slf4j:jar:1.7.7:compile
+[INFO] |  |  |  |  \- (org.slf4j:slf4j-api:jar:1.7.7:compile - omitted for conflict with 1.7.1)
+[INFO] |  |  |  +- org.slf4j:jul-to-slf4j:jar:1.7.7:compile
+[INFO] |  |  |  |  \- (org.slf4j:slf4j-api:jar:1.7.7:compile - omitted for duplicate)
+[INFO] |  |  |  +- org.slf4j:log4j-over-slf4j:jar:1.7.7:compile
+[INFO] |  |  |  |  \- (org.slf4j:slf4j-api:jar:1.7.7:compile - omitted for duplicate)
+[INFO] |  |  |  \- ch.qos.logback:logback-classic:jar:1.1.2:compile
+[INFO] |  |  |     +- ch.qos.logback:logback-core:jar:1.1.2:compile
+[INFO] |  |  |     \- (org.slf4j:slf4j-api:jar:1.7.6:compile - omitted for conflict with 1.7.7)
+[INFO] |  |  +- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  \- org.yaml:snakeyaml:jar:1.13:runtime
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:1.1.5.RELEASE:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:7.0.54:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:7.0.54:compile
+[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-logging-juli:jar:7.0.54:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.3.3:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.3.0:compile
+[INFO] |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.3.3:compile
+[INFO] |  +- org.hibernate:hibernate-validator:jar:5.0.3.Final:compile
+[INFO] |  |  +- javax.validation:validation-api:jar:1.1.0.Final:compile
+[INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.1.1.GA:compile
+[INFO] |  |  \- com.fasterxml:classmate:jar:1.0.0:compile
+[INFO] |  +- org.springframework:spring-core:jar:4.0.6.RELEASE:compile
+[INFO] |  +- org.springframework:spring-web:jar:4.0.6.RELEASE:compile
+[INFO] |  |  +- org.springframework:spring-aop:jar:4.0.6.RELEASE:compile
+[INFO] |  |  |  +- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  |  |  +- (org.springframework:spring-beans:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  |  \- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  +- org.springframework:spring-beans:jar:4.0.6.RELEASE:compile
+[INFO] |  |  |  \- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  +- org.springframework:spring-context:jar:4.0.6.RELEASE:compile
+[INFO] |  |  |  +- (org.springframework:spring-aop:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  |  +- (org.springframework:spring-beans:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  |  +- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  |  \- (org.springframework:spring-expression:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  |  \- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |  \- org.springframework:spring-webmvc:jar:4.0.6.RELEASE:compile
+[INFO] |     +- (org.springframework:spring-beans:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |     +- (org.springframework:spring-context:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |     +- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |     +- org.springframework:spring-expression:jar:4.0.6.RELEASE:compile
+[INFO] |     |  \- (org.springframework:spring-core:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] |     \- (org.springframework:spring-web:jar:4.0.6.RELEASE:compile - omitted for duplicate)
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.1:compile
+[INFO] \- junit:junit:jar:4.11:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.750 s
+[INFO] Finished at: 2015-05-04T19:37:32+08:00
+[INFO] Final Memory: 15M/437M
+[INFO] ------------------------------------------------------------------------
+</code></pre>
+<p>可以看到结果多了一些东西：</p>
+<h4><code>(org.slf4j:slf4j-api:jar:1.7.7:compile - omitted for conflict with 1.7.1)</code></h4>
+<p>表示虽然声明的依赖是<code>1.7.7</code>，但由于maven决定采用<code>1.7.1</code>，所以这里将被忽略</p>
+<h3><code>(org.springframework:spring-web:jar:4.0.6.RELEASE:compile - omitted for duplicate)</code></h3>
+<p>该声明在前面已经出现过，这里将被忽略</p>
+<h2>如何把输出保存到文件</h2>
+<p>加上<code>outputFile</code>参数即可，比如<code>mvn dependency:list -DoutputFile=/myfile.txt</code>，将会把干净的输出写入过去。</p>
+<h2>如果包含多个模块</h2>
+<p>如果该项目有多个模块，运行该<code>mvn dependency:tree</code>将会显示所有模块的依赖，这跟<code>gradle dependencies</code>不一样，后者只显示当前依赖。</p>
+<h2>如何不下载SNAPSHOT包，加快显示</h2>
+<p>如果项目中引用了某个SNAPSHOT包，当我们执行上面的命令时，它会尝试重新下载，可能会比较慢。这时我们可以加上<code>-o</code>或者<code>--offline</code>参数，禁止下载。</p>
+<p>如<code>mvn -o dependency:tree</code></p>
+<h2>如何使用2.10版的dependency-plugin</h2>
+<p>在<code>pom.xml</code>中显式声明，则可以覆盖默认版本。</p>
+<p>在<code>pom.xml</code>中添加以下内容即可：</p>
+<pre><code class="xml">&lt;build&gt;
+  &lt;plugins&gt;
+    &lt;plugin&gt;
+      &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+      &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt;
+      &lt;version&gt;2.10&lt;/version&gt;
+    &lt;/plugin&gt;
+  &lt;/plugins&gt;
+&lt;/build&gt;
+</code></pre>
+<h2>把声明的依赖拷贝出来</h2>
+<p>运行<code>mvn dependency:copy-dependencies</code>，将会把所有采用的依赖（包括依赖的依赖），拷贝到<code>target/dependency</code>目录下。</p>
+<p>如果加上<code>-Dclassifier=sources</code>，则会尝试下载并拷贝源代码包。</p>
+<p>如果加上<code>-DoutputDirectory=/mypath</code>，则把拷贝到指定的目录<code>/mypath</code>下</p>
+]]></description>
+            </item>
         
             <item>
                 <title>Await.result与async/await是否阻塞当前线程的示例</title>
@@ -176,8 +456,19 @@ object MyAsyncAwait extends App {
 </code></pre>
 <p>也就是说，默认情况下，如果某个任务在普通的线程中执行，这个<code>blocking</code>将走到<code>DefaultBlockContext.blockOn</code>，而它实际上什么也没做。在前面的例子中，就是这么走的，所以对于此例来说，真正起作用的还是<code>awaitable.result(...)</code>.</p>
 <p>但是，如果我们的任务是运行在一个实现了<code>BlockContext</code>的特殊线程中，那么这个<code>blocking</code>就会起作用。比如在Scala中的某处，就有一个用<code>ForkJoinPool</code>实现的<code>blocking</code>。</p>
-<h2>ForkJoinPool</h2>
-<p>这个东西也值得一看：</p>
+<h2>blocking</h2>
+<p>据说在一个任务中，如果有一段很耗时的代码，最好放在<code>blocking</code>中，如：</p>
+<pre><code class="scala">blocking {
+  Thread.sleep(100000)
+}
+</code></pre>
+<p>开始不太明白为什么要这么做，后来发现，它其实是为了规避一个问题。</p>
+<p>考虑一下这种情况：开了一个线程池，里面有若干个线程，然后提交了一些任务，这些任务中有一些耗时代码。</p>
+<p>第一种情况：线程池中的线程个数是固定的。那么如果我们提交了多个含有耗时代码的任务，把所有的线程都占住了，后面提交的任务就会卡住，等待空闲线程。这样程序的运行效率就下来了。</p>
+<p>第二种情况：线程池中的线程个数是无限的，自动增长的。那么我们提交了多个含有耗时代码的任务后，就会占住一批线程，后面新提交的任务就会创建新线程，当线程太多的时候，程序效率也下来了。</p>
+<p>所以对于<code>blocking</code>，有一种实现是避开当前的线程池，而另开一个<code>ForkJoinPool</code>，专门处理它。这样原有线程池的线程就不会被阻塞，可以很快被其它任务使用。而在<code>ForkJoinPool</code>中，会另开线程来处理<code>blocking</code>中的代码。粗看起来，这跟“无限的线程池”似乎没什么区别，不同之处在于，<code>ForkJoinPool</code>通过特殊的机制，让线程间可以互相取出其它任务的子任务，从而可以利用较少的线程处理较多的任务，节省了线程的创建。</p>
+<p>参看：<a href="http://stackoverflow.com/a/13099594/342235">http://stackoverflow.com/a/13099594/342235</a></p>
+<p>另：关于ForkJoinPool的资料：</p>
 <ol>
 <li><a href="http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/">http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/</a></li>
 <li><a href="http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883">http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883</a></li>
@@ -14653,7 +14944,7 @@ object Hanoi extends App {
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x77;&#x65;&#x62;&#45;&#117;&#105;&#45;&#x64;&#x65;&#x76;&#x40;&#x64;&#x61;&#114;&#116;&#x6c;&#x61;&#110;&#103;&#x2e;&#111;&#x72;&#103;">&#x77;&#101;&#98;&#45;&#x75;&#x69;&#45;&#100;&#x65;&#x76;&#x40;&#x64;&#x61;&#114;&#116;&#108;&#97;&#x6e;&#103;&#x2e;&#111;&#114;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="m&#97;&#x69;&#x6c;&#x74;o&#58;&#119;&#x65;&#98;&#45;&#x75;&#105;&#x2d;&#100;&#101;&#118;&#64;&#x64;&#97;&#x72;&#x74;&#x6c;&#x61;&#110;&#103;&#46;&#x6f;&#114;&#103;">&#119;&#x65;&#x62;&#45;&#x75;&#x69;&#x2d;&#100;&#101;&#x76;&#64;&#x64;&#x61;&#x72;&#116;&#x6c;&#97;&#110;&#103;&#x2e;&#111;&#114;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9

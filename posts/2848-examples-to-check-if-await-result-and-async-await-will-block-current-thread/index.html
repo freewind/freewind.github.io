@@ -215,8 +215,19 @@ object MyAsyncAwait extends App {
 </code></pre>
 <p>也就是说，默认情况下，如果某个任务在普通的线程中执行，这个<code>blocking</code>将走到<code>DefaultBlockContext.blockOn</code>，而它实际上什么也没做。在前面的例子中，就是这么走的，所以对于此例来说，真正起作用的还是<code>awaitable.result(...)</code>.</p>
 <p>但是，如果我们的任务是运行在一个实现了<code>BlockContext</code>的特殊线程中，那么这个<code>blocking</code>就会起作用。比如在Scala中的某处，就有一个用<code>ForkJoinPool</code>实现的<code>blocking</code>。</p>
-<h2>ForkJoinPool</h2>
-<p>这个东西也值得一看：</p>
+<h2>blocking</h2>
+<p>据说在一个任务中，如果有一段很耗时的代码，最好放在<code>blocking</code>中，如：</p>
+<pre><code class="scala">blocking {
+  Thread.sleep(100000)
+}
+</code></pre>
+<p>开始不太明白为什么要这么做，后来发现，它其实是为了规避一个问题。</p>
+<p>考虑一下这种情况：开了一个线程池，里面有若干个线程，然后提交了一些任务，这些任务中有一些耗时代码。</p>
+<p>第一种情况：线程池中的线程个数是固定的。那么如果我们提交了多个含有耗时代码的任务，把所有的线程都占住了，后面提交的任务就会卡住，等待空闲线程。这样程序的运行效率就下来了。</p>
+<p>第二种情况：线程池中的线程个数是无限的，自动增长的。那么我们提交了多个含有耗时代码的任务后，就会占住一批线程，后面新提交的任务就会创建新线程，当线程太多的时候，程序效率也下来了。</p>
+<p>所以对于<code>blocking</code>，有一种实现是避开当前的线程池，而另开一个<code>ForkJoinPool</code>，专门处理它。这样原有线程池的线程就不会被阻塞，可以很快被其它任务使用。而在<code>ForkJoinPool</code>中，会另开线程来处理<code>blocking</code>中的代码。粗看起来，这跟“无限的线程池”似乎没什么区别，不同之处在于，<code>ForkJoinPool</code>通过特殊的机制，让线程间可以互相取出其它任务的子任务，从而可以利用较少的线程处理较多的任务，节省了线程的创建。</p>
+<p>参看：<a href="http://stackoverflow.com/a/13099594/342235">http://stackoverflow.com/a/13099594/342235</a></p>
+<p>另：关于ForkJoinPool的资料：</p>
 <ol>
 <li><a href="http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/">http://www.javabeat.net/simple-introduction-to-fork-join-framework-in-java-7/</a></li>
 <li><a href="http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883">http://stackoverflow.com/questions/29988713/difference-between-forkjoinpool-and-normal-executionservice/29988883</a></li>
