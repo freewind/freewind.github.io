@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2015-05 月结</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-07-12) 2015-05 月结
+</h1>
+
+    <div>
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>这个月很忙，项目上要解决的问题太多了。</p>
+<ol>
+<li>&ldquo;依赖导出项目"第一里程牌的任务完成了</li>
+<li>第二里程牌的方案也稳定下来，开始开发</li>
+<li>“打乱座位”的方案开始实施</li>
+</ol>
+<h2>1. &ldquo;依赖导出项目"第一里程牌的任务完成了</h2>
+<p>&ldquo;依赖导出项目"第一里程牌的任务完成了，我和新宇经过一段时间的摸索，写出了几篇“如何在不同的构建工具下手动查询依赖”。</p>
+<h2>2. 第二里程牌的方案也稳定下来，开始开发</h2>
+<p>第二里程牌的方案也稳定下来，我们将会为<code>sbt/gradle/maven/bundler/npm/bower</code>分别写6个插件。最开始两种不同的方案供讨论，一种是为每个build tool写一个插件，通过调用它们的api拿到依赖数据，再整理并输出为我们自定义的格式；第二种是写一个普通的程序，以命令行的形式调用每种插件提供的命令，然后分析输出反向解析出数据，最后输出为自定义的格式。经过反复讨论，最后通过我的坚持，确定为第一种方案。因为通过对插件的分析，我觉得第二种方案有太多不确定的地方，很可能会遇到很多坑。而第一种方案的技术难点在于要熟悉多种工具的插件写法，而这些难度在前一段时间我基本上都解决了。</p>
+<p>（不过最后，<code>sbt/gradle/maven/bundler</code>采用了调api的方案，而<code>npm/bower</code>采用了调命令的方案)</p>
+<p>目前完成了三个插件(<code>sbt/gradle/bundler</code>)，还算顺利，给了我多一些的信心</p>
+<h2>3. “打乱座位”的方案开始实施</h2>
+<p>我们的位置基本上都是固定的。但某一天我临时坐到另一个组里的时候，我发现跟他们的交流多起来了，他们遇到一些问题时，会直接扭过头来向我求教，我也知道他们在做什么。这让我感觉“打乱位置”这件事不错，因为他们组里新人比较多，但是遇到问题时需要离开位置去向人求教总是让人觉得是一件挺麻烦的事情，但是如果能坐在旁边，就不一样了。</p>
+<p>所以我在Retro的时候提了一个方案：大家每天换位置</p>
+<p>大家表示了支持，但是不知道按什么方案来换，每天来得早的人自己挑吗？这样的话，他们很可能还是会挑昨天的位置。后来我设计了一种方案，给每个人的位置上编个号，但是编号的时候是故意打乱的，比如一个桌子上的三个位置，编号分别是<code>1</code>, <code>4</code>, <code>8</code>，另一个是<code>3</code>, <code>9</code>, <code>5</code>。每天早上来了以后，你找编号比你昨天坐的那个大<code>1</code>的位置。</p>
+<p>这种方案非常容易实施，居然很容易的一直保持了下去，可能是我这一年来的各种尝试中，最成功的一个。现在的情况是，每个人每天的位置真的都变了，而且两边的人基本上都跟昨天不一样。每天都可以跟不同组的人说说话。过了一段时间后，我感觉我们整体成了一个大组，因为我不细想已经分不清到底谁是哪个stream了，大家的关系更加亲密了。</p>
+<p>还发现了一个额外的好外：因为每天都要换位置，所以自己的东西都要跟着人走，每个人都自己准备了一个盒子来装自己的东西，桌子上不用的东西都被清理走了，变得干净了很多。而之前，我们已经想了各种办法来让人们清理桌面，却没人执行。</p>
+<p>这件事情让我觉得，一些问题长期得不到解决，可能只是因为没有找到一个好的方案。</p>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2854';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>
