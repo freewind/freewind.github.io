@@ -57,29 +57,34 @@
 </h1>
 
     <div>
-    <a href="http://findti.com/?r=0379029af20eda86" target="_blank">广告：从今天开始用云梯翻墙</a>
+    广告：
+    
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank"> 云梯：翻墙利器 (省10元)</a>
+    
+    &nbsp;&nbsp;
+
+    <a href="http://honx.in/_VcbgQbT2Mwm6lK8B" target="_blank">红杏：程序员专用，不限流量 (加10天)</a>
 </div>
 
 
 <hr/>
 
 <div>
-    <p><a href="http://www.op4j.org/">http://www.op4j.org/</a>
-<br  /><p>这是一个在Java中模似出函数式风格的库，示例代码如下：</p>
-<p><pre class="csharpcode">Calendar now = Calendar.getInstance();
-<br  />Set<Calendar> set =</p>
-<pre><code>  Op.on(list).toSet().map(FnString.toCalendar(&lt;span class="str"&gt;"dd/MM/yyyy"&lt;/span&gt;)).removeAllNullOrTrue(FnCalendar.after(now)).get();```
+    <p>主页：<a href="http://www.op4j.org/">http://www.op4j.org/</a></p>
+<p>这是一个在Java中模似出函数式风格的库，示例代码如下：</p>
+<pre><code class="java">Calendar now = Calendar.getInstance();
+Set&lt;Calendar&gt; set =
+    Op.on(list).toSet().map(FnString.toCalendar("dd/MM/yyyy")).removeAllNullOrTrue(FnCalendar.after(now)).get();
 </code></pre>
 <p>这一行代码，做了很多事情：</p>
-<p><span id="more-99"></span></p>
 <ol>
 <li>将list变为set，可去掉重复</li>
 <li>对每个元素进行转换为Date的操作</li>
 <li>去掉所有null</li>
 <li>如果某个某个元素的值在当前时间之后，选用</li>
-<li>取出符合条件的Date，得到一个Set
-<br  /><p>看起来挺酷的，但其实我不太推荐在Java中使用这种伪函数式风格。毕竟是模拟出来的，用起来总觉得手脚僵硬。有时候一些很自然的需求，却无法用这种方式实现，比如：取成一个Person列表中每个人的名字，组成一个新list，不知道怎么用这个实现。</li>
+<li>取出符合条件的Date，得到一个Set</li>
 </ol>
+<p>看起来挺酷的，但其实我不太推荐在Java中使用这种伪函数式风格。毕竟是模拟出来的，用起来总觉得手脚僵硬。有时候一些很自然的需求，却无法用这种方式实现，比如：取成一个Person列表中每个人的名字，组成一个新list，不知道怎么用这个实现。</p>
 <p>看到这些，又不自然地去想到如scala, groovy这样的语言了。</p>
 
 </div>
