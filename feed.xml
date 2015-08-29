@@ -12,11 +12,51 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Fri, 21 Aug 2015 23:31:49 CST</lastBuildDate>
+        <lastBuildDate>Sat, 29 Aug 2015 21:08:09 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
 
+        
+            <item>
+                <title>在Scala中调用Java中定义的泛型方法</title>
+                <link>http://freewind.in/posts/2872-scala-java-class-of-t</link>
+                <pubDate>Thu, 16 Jul 2015 16:28:43 CST</pubDate>
+                <dc:creator><![CDATA[Freewind]]></dc:creator>
+                <category><![CDATA[未分类]]></category>
+                <guid isPermaLink="false">2872</guid>
+                <description><![CDATA[<p>Java代码：</p>
+<pre><code class="scala">public class JavaJsonParser {
+    public static &lt;T&gt; T asObject(String json, Class&lt;T&gt; cls) {
+        System.out.println("# in java: " + json + ", cls: " + cls);
+        throw new RuntimeException("To be implemented");
+    }
+}
+</code></pre>
+<p>Scala代码：</p>
+<pre><code class="scala">object ScalaJsonParser extends App {
+
+  def asObject[T: Manifest](json: String): Option[T] = {
+    Try(JavaJsonParser.asObject[T](json, classOf[T]).toOption
+  }
+}
+</code></pre>
+<p>这样会报错：</p>
+<p>正确写法是：</p>
+<pre><code class="scala">object ScalaJsonParser {
+  def asObject[T: Manifest](json: String): Option[T] = {
+    Try(JavaJsonParser.asObject[T](json, implicitly[Manifest[T]].runtimeClass.asInstanceOf[Class[T]])).toOption
+  }
+}
+</code></pre>
+<p>跑一个：</p>
+<pre><code class="scala">ScalaJsonParser.asObject[String]("{}")
+</code></pre>
+<p>将会打印出：</p>
+<pre><code># in java: {}, cls: class java.lang.String
+</code></pre>
+]]></description>
+            </item>
         
             <item>
                 <title>2015-06 月结</title>
@@ -15181,7 +15221,7 @@ Move from Left to Right
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#119;&#101;&#x62;-&#117;&#x69;&#45;&#100;&#x65;&#x76;&#x40;&#100;&#x61;&#x72;&#116;&#x6c;&#97;n&#103;&#x2e;&#x6f;&#114;&#103;">&#119;&#x65;&#98;&#45;&#x75;&#x69;&#x2d;&#x64;&#x65;&#118;&#x40;&#100;&#x61;&#x72;&#x74;&#108;&#x61;&#x6e;&#x67;&#x2e;&#x6f;&#114;&#103;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#101;&#98;&#45;&#x75;&#105;&#45;&#100;&#x65;&#x76;&#64;&#x64;&#x61;&#x72;&#x74;&#108;&#x61;&#x6e;&#103;&#46;&#x6f;&#x72;&#103;">&#x77;&#101;&#98;&#45;&#117;&#105;&#x2d;&#x64;&#x65;&#x76;&#x40;&#100;&#97;&#x72;&#116;&#108;&#97;n&#x67;&#46;&#111;&#x72;&#103;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9

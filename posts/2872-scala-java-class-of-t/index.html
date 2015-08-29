@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在Scala中调用Java中定义的泛型方法</title>
+    
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="alternate" type="application/rss+xml" title="Freewind @ Thoughtworks ~ Feed" href="/feed.xml" />
+
+<link href="/assets/rainbow/themes/github.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' href='/assets/css/main.css' type='text/css' media='all' />
+
+<script src="/assets/rainbow/js/rainbow.js"></script>
+<script src="/assets/rainbow/js/language/generic.js"></script>
+<script src="/assets/rainbow/js/language/python.js"></script>
+<script src="/assets/rainbow/js/language/java.js"></script>
+<script src="/assets/rainbow/js/language/javascript.js"></script>
+<script src="/assets/rainbow/js/language/html.js"></script>
+<script src="/assets/rainbow/js/language/css.js"></script>
+<script src="/assets/rainbow/js/language/scala.js"></script>
+<script src="/assets/rainbow/js/language/shell.js"></script>
+
+</head>
+<body>
+    
+<div>
+    <span>Freewind @ Thoughtworks</span>
+    
+        <span><a href="/category/scala">scala</a></span>
+    
+        <span><a href="/category/java">java</a></span>
+    
+        <span><a href="/category/javascript">javascript</a></span>
+    
+        <span><a href="/category/dart">dart</a></span>
+    
+        <span><a href="/category/tools">工具</a></span>
+    
+        <span><a href="/category/dev">编程实践</a></span>
+    
+        <span><a href="/category/months">月结</a></span>
+    
+        <span><a href="/category/math">math</a></span>
+    
+        <span><a href="/category/python">python</a></span>
+    
+        <span><a href="/category/english">english</a></span>
+    
+    <span><a href="https://freewind.disqus.com/admin/moderate">[comments admin]</a></span>
+    <span><a href="/feed.xml">[feed]</a></span>
+</div>
+
+
+<h1>
+    (2015-07-16) 在Scala中调用Java中定义的泛型方法
+</h1>
+
+    <div>
+    广告：
+    <a href="http://findti.com/?r=0379029af20eda86" target="_blank"> 云梯：翻墙利器 (省10元)</a>
+</div>
+
+
+<hr/>
+
+<div>
+    <p>Java代码：</p>
+<pre><code class="scala">public class JavaJsonParser {
+    public static &lt;T&gt; T asObject(String json, Class&lt;T&gt; cls) {
+        System.out.println("# in java: " + json + ", cls: " + cls);
+        throw new RuntimeException("To be implemented");
+    }
+}
+</code></pre>
+<p>Scala代码：</p>
+<pre><code class="scala">object ScalaJsonParser extends App {
+
+  def asObject[T: Manifest](json: String): Option[T] = {
+    Try(JavaJsonParser.asObject[T](json, classOf[T]).toOption
+  }
+}
+</code></pre>
+<p>这样会报错：</p>
+<p>正确写法是：</p>
+<pre><code class="scala">object ScalaJsonParser {
+  def asObject[T: Manifest](json: String): Option[T] = {
+    Try(JavaJsonParser.asObject[T](json, implicitly[Manifest[T]].runtimeClass.asInstanceOf[Class[T]])).toOption
+  }
+}
+</code></pre>
+<p>跑一个：</p>
+<pre><code class="scala">ScalaJsonParser.asObject[String]("{}")
+</code></pre>
+<p>将会打印出：</p>
+<pre><code># in java: {}, cls: class java.lang.String
+</code></pre>
+
+</div>
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'freewind'; // required: replace example with your forum shortname
+    var disqus_identifier = '2872';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</body>
+    
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-54316895-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+</html>
