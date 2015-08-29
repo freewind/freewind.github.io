@@ -81,7 +81,11 @@
   }
 }
 </code></pre>
-<p>这样会报错：</p>
+<p>这样编译会报错：</p>
+<pre><code>Error:(8, 50) class type required but T found
+    Try(JavaJsonParser.asObject[T](json, classOf[T])).toOption
+                                                 ^
+</code></pre>
 <p>正确写法是：</p>
 <pre><code class="scala">object ScalaJsonParser {
   def asObject[T: Manifest](json: String): Option[T] = {
