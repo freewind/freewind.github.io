@@ -12,7 +12,7 @@
         <atom:link href="http://freewind.in/feed.xml" rel="self" type="application/rss+xml" />
         <link>http://freewind.in</link>
         <description>Freewind's programming life</description>
-        <lastBuildDate>Sun, 30 Aug 2015 10:42:43 CST</lastBuildDate>
+        <lastBuildDate>Tue, 06 Oct 2015 14:17:25 CST</lastBuildDate>
         <language>zh-CN</language>
         <sy:updatePeriod>hourly</sy:updatePeriod>
         <sy:updateFrequency>1</sy:updateFrequency>
@@ -15225,7 +15225,7 @@ Move from Left to Right
 <p>pub是dart自带的包管理程序。一般需要在项目目录下提供一个pubspec.yaml的文件，里面写上一些内容，比如项目名，依赖项等，示例如下（web-ui提供的）：</p>
 <pre><code>name: web_ui
 </code></pre>
-<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#x69;&#x6c;&#116;&#x6f;:&#119;&#x65;&#98;&#45;&#117;&#x69;-&#x64;&#101;&#x76;&#64;&#x64;&#97;&#114;&#116;&#108;&#97;&#x6e;&#103;.&#x6f;&#x72;&#x67;">&#x77;e&#98;&#x2d;&#117;&#x69;&#x2d;&#100;&#x65;&#x76;&#64;&#100;&#x61;&#114;&#116;&#108;&#x61;&#x6e;&#103;&#x2e;&#111;&#x72;&#x67;</a>&rdquo;
+<p>author: &ldquo;Web UI Authors <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x77;&#x65;&#x62;&#x2d;&#117;&#105;-&#x64;&#101;&#118;&#x40;&#100;&#97;&#114;&#x74;&#108;&#x61;&#x6e;&#103;&#46;&#111;&#x72;&#103;">&#119;&#101;&#x62;&#x2d;&#117;&#x69;&#x2d;&#100;&#x65;&#118;&#64;&#100;&#97;&#114;&#116;&#108;&#x61;&#110;&#103;&#46;&#111;&#114;&#x67;</a>&rdquo;
 <br  />homepage: https://github.com/dart-lang/web-ui
 <br  />description: An easy way to build web apps in Dart.
 <br  />version: 0.4.9
@@ -17108,60 +17108,48 @@ head.ready(function () {
                 <category><![CDATA[未分类]]></category>
                 <guid isPermaLink="false">2027</guid>
                 <description><![CDATA[<p>作为一个Java程序员，做的是Java项目，为什么需要了解Nodejs，并且还要拥抱它？</p>
-<p>这里的Java项目，特指java web项目。如果是纯java项目，并不是很需要它，但如果是有很js/css/coffeescript/typescript/less/sass这样的文件的项目时，也许你就需要Nodejs了。</p>
-<p>Nodejs是一个平台，可以让我们写服务器端的代码，它内部使用了google开发的v8引擎，执行js代码速度很快。我们学习它并不是为了写js代码，而是为了把它当工具使用，更好地处理我们的js/css等文件。</p>
+<p>这里的Java项目，特指java web项目。如果是纯java项目，并不是很需要它，但如果是有很<code>js/css/coffeescript/typescript/less/sass</code>这样的文件的项目时，也许你就需要Nodejs了。</p>
+<p>Nodejs是一个平台，可以让我们写服务器端的代码，它内部使用了google开发的<code>v8</code>引擎，执行js代码速度很快。我们学习它并不是为了写js代码，而是为了把它当工具使用，更好地处理我们的js/css等文件。</p>
 <p>Nodejs的启动速度很快，并且第三方模块很多，而这些模块很多都跟js相关。其中有一些很好用的工具，可以简化我们的工作。虽然学习它需要花一些时间，但是带来的回报更大。</p>
 <p>这里我将使用它来管理我的js代码，要求实现以下功能：</p>
 <ol>
-<li>将我的typescript编译为js代码2.  将多个js文件合并为一个3.  将合并后的js文件进行精简操作(min)，减少文件体积4.  当我修改了typescript/js代码，自动重复以上操作</li>
+<li>将我的<code>typescript</code>编译为js代码</li>
+<li>将多个js文件合并为一个</li>
+<li>将合并后的js文件进行精简操作(min)，减少文件体积</li>
+<li>当我修改了<code>typescript/js</code>代码，自动重复以上操作</li>
 </ol>
-<p>在Playframework中，可以内置或通过插件，将coffeescript自动转为javascript并精简压缩。但是当我们需要更多更灵活的功能时，就比较麻烦，因为play的插件不是那么好写的。我今天在play1中，编写java代码来处理typescript的编译操作，但是发现效率很低，当文件多的时候，修改typescript文件刷新后，需要好几秒才能编译成新的，难以接受。另外，由于typescript现在不支持将多个ts文件合并为一个js文件，我想去合并、精简时生成的多个js文件时，觉得太麻烦没做，只好将就着。</p>
-<p>后来实在受不了了，发现了gruntjs这个工具，它是基于nodejs的。原来用它实现这些任务竟然如此简单，只需要简单的配置即可，编译速度还很快。另外，除了这些任务，我还发现了nodejs上的livereload插件，这样就可以替代以前使用的那个python的livereload了。</p>
+<p>在Playframework中，可以内置或通过插件，将<code>coffeescript</code>自动转为<code>javascript</code>并精简压缩。但是当我们需要更多更灵活的功能时，就比较麻烦，因为play的插件不是那么好写的。我今天在play1中，编写java代码来处理<code>typescript</code>的编译操作，但是发现效率很低，当文件多的时候，修改<code>typescript</code>文件刷新后，需要好几秒才能编译成新的，难以接受。另外，由于<code>typescript</code>现在不支持将多个<code>ts</code>文件合并为一个<code>js</code>文件，我想去合并、精简时生成的多个<code>js</code>文件时，觉得太麻烦没做，只好将就着。</p>
+<p>后来实在受不了了，发现了<code>gruntjs</code>这个工具，它是基于<code>nodejs</code>的。原来用它实现这些任务竟然如此简单，只需要简单的配置即可，编译速度还很快。另外，除了这些任务，我还发现了<code>nodejs</code>上的<code>livereload</code>插件，这样就可以替代以前使用的那个python的livereload了。</p>
 <p>这些经验不仅仅对现在的项目有用，以后做其它涉及到js的项目时，也同样可用。所以学习它很值得。</p>
 <h2>Nodejs</h2>
 <p>Nodejs现在发展势头良好，正在紧张开发之中，每隔几天就看到一个新版本，让人眼花缭乱，当前最新版是v0.8.18。它的官方地址是<a href="http://nodejs.org/">http://nodejs.org/</a>，可以在windows/linux/unix上安装。</p>
-<p>打开主页后，网站会根据操作系统自动提供相应的安装包，下载后安装即可。我是win7 x64，安装完成后，在cmd中输入：</p>
+<p>打开主页后，网站会根据操作系统自动提供相应的安装包，下载后安装即可。我是win7 x64，安装完成后，在<code>cmd</code>中输入：</p>
 <pre><code>node -v
-
-
-会提示
-
-C:\Users\Freewind&gt;node -v
+</code></pre>
+<p>会提示:</p>
+<pre><code>C:\Users\Freewind&gt;node -v
 v0.8.11
-
-
-我是之前安装的，那时候的版本还是0.8.11
-
-来个hello world。直接输入node，就会出现交互运行环境：
-
-C:\Users\Freewind&gt;node
+</code></pre>
+<p>我是之前安装的，那时候的版本还是<code>0.8.11</code></p>
+<p>来个<code>hello world</code>。直接输入<code>node</code>，就会出现交互运行环境：</p>
+<pre><code>C:\Users\Freewind&gt;node
 &gt; console.log('hello, world')
 hello, world
 undefined
 &gt;
-
-
-如果想执行某个js文件，可以输入：
-
-node test.js
-
-
-## npm
-
-npm是nodejs中内置的包管理系统，类似于ubuntu上的apt-get，或者centos上的yum，或者ruby上的gem。
-
-我们安装完nodejs后，它就可以使用了。我们可在命令行中输入：
-
-npm
-
-
-就可以看到一些提示信息。它提供的命令很多，可用来安装、卸载某些第三方的库。npm中的库有很多，可到这里查看：[https://npmjs.org/](https://npmjs.org/)，当前显示有20000多个。
-
-### package.json
-
-npm的配置放在名为package.json的文件中，它的内容是一个json字符串，基本内容如下：
-
-{
+</code></pre>
+<p>如果想执行某个js文件，可以输入：</p>
+<pre><code>node test.js
+</code></pre>
+<h2>npm</h2>
+<p><code>npm</code>是nodejs中内置的包管理系统，类似于ubuntu上的<code>apt-get</code>，或者centos上的<code>yum</code>，或者ruby上的<code>gem</code>。</p>
+<p>我们安装完nodejs后，它就可以使用了。我们可在命令行中输入：</p>
+<pre><code>npm
+</code></pre>
+<p>就可以看到一些提示信息。它提供的命令很多，可用来安装、卸载某些第三方的库。npm中的库有很多，可到这里查看：<a href="https://npmjs.org">https://npmjs.org</a>，当前显示有20000多个。</p>
+<h3>package.json</h3>
+<p>npm的配置放在名为<code>package.json</code>的文件中，它的内容是一个<code>json</code>字符串，基本内容如下：</p>
+<pre><code>{
   "author": {
     "name": "Freewind"
   },
@@ -17172,190 +17160,66 @@ npm的配置放在名为package.json的文件中，它的内容是一个json字�
     "grunt-typescript": "0.0.8"
   }
 }
-
-
-其中name和version是基本信息，必须有。不过通常比较关注的是"dependencies"信息，它表示所在项目依赖于哪些第三方库。
-
-首先要讲一下npm是怎么来查找路径的。当我们执行一个npm命令时，比如`npm install typescript`，它会首先查当前目录下有没有`package.json`文件或者`node_modules`目录。如果有则直接使用，没有的话，到上级目录中寻找，直到根目录。这个特性可以让我们在一个项目的子目录中执行npm命令，十分方便。如果所有的上级目录都没有的话，则会以当前目录作为工作目录，创建一个node_modules目录，把安装的库放到里面。
-
-如果在当前或者上级某个目录中，有package.json文件，并且里面已经定义了一些依赖，我们可以直接使用这个命令，自动安装：
-
-npm install
-
-
-后面没有加参数，表示按package.json的要求来安装。
-
-还有一个参数比较重要:
-
-npm install somelib --save
-
-
-后面的`--save`可用来告诉nodejs，安装完指定库后，把该依赖信息写到package.json文件中（如果有的话）。
-
-更多的常用命令：
-
-&lt;table border="1" cellspacing="0" cellpadding="2" width="800"&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="201"&gt;
-        npm install somelib
-      &lt;/td&gt;
-&lt;td valign="top" width="599"&gt;
-        将somelib这个库安装在当前或上级某目录下
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="201"&gt;
-        npm install somelib -g
-      &lt;/td&gt;
-&lt;td valign="top" width="599"&gt;
-        将somelib这个库安装为全局库，一些工具通常使用这种方式安装，比如typescript。安装完后就可以在命令行中直接使用库中的命令了，比如tsc（typescript的编译命令）
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="201"&gt;
-        npm remove somelib
-      &lt;/td&gt;
-&lt;td valign="top" width="599"&gt;
-        从当前或上级目录下移除somelib
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="201"&gt;
-        npm remove somelib -g
-      &lt;/td&gt;
-&lt;td valign="top" width="599"&gt;
-        从全局库中移除somelib
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="201"&gt;
-        npm install somelib -save
-      &lt;/td&gt;
-&lt;td valign="top" width="599"&gt;
-        在当前或上级目录中安装somelib，并将它添加到package.json中的依赖项里，十分方便
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="201"&gt;
-        npm install
-      &lt;/td&gt;
-&lt;td valign="top" width="599"&gt;
-        根据当前或上级目录中的package.json，自动安装缺失库
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="201"&gt;
-        npm list
-      &lt;/td&gt;
-&lt;td valign="top" width="599"&gt;
-        显示当前或上级目录中已经安装的nodejs库
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-## Typescript
-
-实际上此时并不需要安装typescript的编译器，但是由于肯定会用到，所以一起装了。
-
-Typescript的编译器是以nodejs库的方式发布的。我们只需要使用该命令：
-
-npm install typescript -g
-
-
-即可。安装成功后，在命令行中输入：
-
-tsc
-
-
-它就会提示一些帮助信息。
-
-常用用法如下
-
-&lt;table border="1" cellspacing="0" cellpadding="2" width="800"&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="249"&gt;
-        tsc test.ts
-      &lt;/td&gt;
-&lt;td valign="top" width="551"&gt;
-        编译一个test.ts文件
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="249"&gt;
-        tsc -declaration test.ts
-      &lt;/td&gt;
-&lt;td valign="top" width="551"&gt;
-        为test.ts生成它对应的声明文件，产生的文件为test.d.ts
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="249"&gt;
-        tsc -out dist.js test.ts 
-      &lt;/td&gt;
-&lt;td valign="top" width="551"&gt;
-        将test.ts编译为dist.js文件
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="249"&gt;
-        tsc -out dist test.js
-      &lt;/td&gt;
-&lt;td valign="top" width="551"&gt;
-        将test.ts编译成dist目录下，如果test.ts依赖其它文件，则把它们也编译到dist目录中
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td valign="top" width="249"&gt;
-        tsc -module commonjs
-      &lt;/td&gt;
-&lt;td valign="top" width="551"&gt;
-        使用commonjs方式生成js（默认），还可以使用amd
-      &lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-关于typescript的更多内容，参看我另一篇博文。
-
-## gruntjs
-
-gruntjs是一个构建系统，有点像java中的ant，但是感觉要简单很多，而且很多任务都是跟js相关的。它现在有380个插件，可在其主页[http://gruntjs.com/](http://gruntjs.com/)上查询。
-
-安装：
-
-npm install -g grunt-cli
-
-
-这里安装的是`grunt-cli`，它是一个全局的命令行工具，可以让不同的项目使用不同版本的grunt来编译，解决兼容问题。而`grunt`，则要以本地方式安装到我们的某个工作目录中。
-
-进入某个工作目录，输入以下命令：
-
-npm install grunt
-
-
-则会在本地安装grunt，之后我们才能使用grunt命令来进行一些操作。
-
-如果你是windows系统，一定要注意，安装完后，你有两个grunt命令可用，一个是grunt，一个是grunt.cmd，它们是两个不同的文件。其中前者是grunt库本身的命令，后者是用来执行你定义的任务的命令。请记住必须要用`grunt.cmd`，否则你会奇怪，为什么我的任务没执行等等。这个坑爹的问题花了我很多时间才解决。
-
-要生成它的配置文件，需要安装`grunt-init`工具：
-
-npm install grunt-init -g
+</code></pre>
+<p>其中<code>name</code>和<code>version</code>是基本信息，必须有。不过通常比较关注的是<code>dependencies</code>信息，它表示所在项目依赖于哪些第三方库。</p>
+<p>首先要讲一下npm是怎么来查找路径的。当我们执行一个npm命令时，比如<code>npm install typescript</code>，它会首先查当前目录下有没有<code>package.json</code>文件或者<code>node_modules</code>目录。如果有则直接使用，没有的话，到上级目录中寻找，直到根目录。这个特性可以让我们在一个项目的子目录中执行npm命令，十分方便。如果所有的上级目录都没有的话，则会以当前目录作为工作目录，创建一个<code>node_modules</code>目录，把安装的库放到里面。</p>
+<p>如果在当前或者上级某个目录中，有<code>package.json</code>文件，并且里面已经定义了一些依赖，我们可以直接使用这个命令，自动安装：</p>
+<pre><code>npm install
+</code></pre>
+<p>后面没有加参数，表示按<code>package.json</code>的要求来安装。</p>
+<p>还有一个参数比较重要:</p>
+<pre><code>npm install somelib --save
+</code></pre>
+<p>后面的<code>--save</code>可用来告诉nodejs，安装完指定库后，把该依赖信息写到package.json文件中（如果有的话）。</p>
+<p>更多的常用命令：</p>
+<ul>
+<li><code>npm install somelib</code>: 将somelib这个库安装在当前或上级某目录下</li>
+<li><code>npm install somelib -g</code>: 将somelib这个库安装为全局库，一些工具通常使用这种方式安装，比如typescript。安装完后就可以在命令行中直接使用库中的命令了，比如tsc（typescript的编译命令）</li>
+<li><code>npm remove somelib</code>: 从当前或上级目录下移除somelib</li>
+<li><code>npm remove somelib -g</code>: 从全局库中移除somelib</li>
+<li><code>npm install somelib -save</code>: 在当前或上级目录中安装somelib，并将它添加到package.json中的依赖项里，十分方便</li>
+<li><code>npm install</code>: 根据当前或上级目录中的package.json，自动安装缺失库</li>
+<li><code>npm list</code>: 显示当前或上级目录中已经安装的nodejs库</li>
+</ul>
+<h2>Typescript</h2>
+<p>实际上此时并不需要安装typescript的编译器，但是由于肯定会用到，所以一起装了。</p>
+<p>Typescript的编译器是以nodejs库的方式发布的。我们只需要使用该命令：</p>
+<pre><code>npm install typescript -g
+</code></pre>
+<p>即可。安装成功后，在命令行中输入：</p>
+<pre><code>tsc
+</code></pre>
+<p>它就会提示一些帮助信息。</p>
+<p>常用用法如下:</p>
+<ul>
+<li><code>tsc test.ts</code>: 编译一个<code>test.ts</code>文件</li>
+<li><code>tsc -declaration test.ts</code>: 为<code>test.ts</code>生成它对应的声明文件，产生的文件为<code>test.d.ts</code></li>
+<li><code>tsc -out dist.js test.ts</code>: 将<code>test.ts</code>编译为<code>dist.js</code>文件</li>
+<li><code>tsc -out dist test.js</code>: 将<code>test.ts</code>编译成<code>dist</code>目录下，如果<code>test.ts</code>依赖其它文件，则把它们也编译到<code>dist</code>目录中</li>
+<li><code>tsc -module commonjs</code>: 使用<code>commonjs</code>方式生成<code>js</code>（默认），还可以使用<code>amd</code></li>
+</ul>
+<p>关于typescript的更多内容，参看我另一篇博文。</p>
+<h2>gruntjs</h2>
+<p><code>gruntjs</code>是一个构建系统，有点像java中的<code>ant</code>，但是感觉要简单很多，而且很多任务都是跟js相关的。它现在有380个插件，可在其主页<a href="http://gruntjs.com">http://gruntjs.com</a>上查询。</p>
+<p>安装：</p>
+<pre><code>npm install -g grunt-cli
+</code></pre>
+<p>这里安装的是<code>grunt-cli</code>，它是一个全局的命令行工具，可以让不同的项目使用不同版本的grunt来编译，解决兼容问题。而<code>grunt</code>，则要以本地方式安装到我们的某个工作目录中。</p>
+<p>进入某个工作目录，输入以下命令：</p>
+<pre><code>npm install grunt
+</code></pre>
+<p>则会在本地安装<code>grunt</code>，之后我们才能使用grunt命令来进行一些操作。</p>
+<p>如果你是windows系统，一定要注意，安装完后，你有两个grunt命令可用，一个是<code>grunt</code>，一个是<code>grunt.cmd</code>，它们是两个不同的文件。其中前者是grunt库本身的命令，后者是用来执行你定义的任务的命令。请记住必须要用<code>grunt.cmd</code>，否则你会奇怪，为什么我的任务没执行等等。这个坑爹的问题花了我很多时间才解决。</p>
+<p>要生成它的配置文件，需要安装<code>grunt-init</code>工具：</p>
+<pre><code>npm install grunt-init -g
 git clone https://github.com/gruntjs/grunt-init-gruntfile.git ~/.grunt-init/gruntfile
-
-
-然后运行：
-
-grunt-init gruntfile
-
-
-它会问一些配置方面的问题，然后生成一个默认的`Gruntfile.js`文件。
-
-将会在当前或上级目录（按nodejs的方式来定位工作目录），产生一个grunt.js文件，里面的内容如下：
-
-/*global module:false*/
+</code></pre>
+<p>然后运行：</p>
+<pre><code>grunt-init gruntfile
+</code></pre>
+<p>它会问一些配置方面的问题，然后生成一个默认的<code>Gruntfile.js</code>文件。</p>
+<p>将会在当前或上级目录（按nodejs的方式来定位工作目录），产生一个<code>grunt.js</code>文件，里面的内容如下：</p>
+<pre><code>/*global module:false*/
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -17437,41 +17301,26 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['jshint', 'nodeunit', 'concat', 'uglify']);
 
 };
-
-
-可以看到它里面定义了很多任务，比如使用jslint检查js文件，合并，压缩，执行单元测试，监视文件变化等。注意里面的文件路径都是空的，需要根据自己的情况添加。
-
-要执行某个任务，可在命令行中输入：
-
-grunt.cmd qunit
-
-
-如果只输入：
-
-grunt.cmd
-
-
-则表示执行默认任务。此时表示'lint qunit concat min'。
-
-其中的`watch`任务非常有用，它可以监视某些文件和目录，当它们发现变化时，自动执行指定的某些任务。我们将可以使用该功能监视typescript文件，当修改后，自动把它编译为js，浏览器那边就能看到最新的代码了。
-
-注意，使用此任务时，最好在后面加上-force参数，即：
-
-grunt.cmd watch --force
-
-
-这样当构建过程中出现错误时，它会跳过并继续监视，否则就直接退出了。
-
-## grunt-typescript
-
-最后是安装grunt-typescript插件，它可以在grunt中增加编译typescript的任务：
-
-npm install grunt-typescript --save
-
-
-然后[按照其文档](https://npmjs.org/package/grunt-typescript)往grunt.js里添加一些配置即可。我这里的成品是这样的：
-
-/*global module:false*/
+</code></pre>
+<p>可以看到它里面定义了很多任务，比如使用<code>jslint</code>检查js文件，合并，压缩，执行单元测试，监视文件变化等。注意里面的文件路径都是空的，需要根据自己的情况添加。</p>
+<p>要执行某个任务，可在命令行中输入：</p>
+<pre><code>grunt.cmd qunit
+</code></pre>
+<p>如果只输入：</p>
+<pre><code>grunt.cmd
+</code></pre>
+<p>则表示执行默认任务。此时表示<code>lint qunit concat min</code>。</p>
+<p>其中的<code>watch</code>任务非常有用，它可以监视某些文件和目录，当它们发现变化时，自动执行指定的某些任务。我们将可以使用该功能监视typescript文件，当修改后，自动把它编译为js，浏览器那边就能看到最新的代码了。</p>
+<p>注意，使用此任务时，最好在后面加上<code>-force</code>参数，即：</p>
+<pre><code>grunt.cmd watch --force
+</code></pre>
+<p>这样当构建过程中出现错误时，它会跳过并继续监视，否则就直接退出了。</p>
+<h2>grunt-typescript</h2>
+<p>最后是安装<code>grunt-typescript</code>插件，它可以在grunt中增加编译typescript的任务：</p>
+<pre><code>npm install grunt-typescript --save
+</code></pre>
+<p>然后<a href="https://npmjs.org/package/grunt-typescript">按照其文档</a>往grunt.js里添加一些配置即可。我这里的成品是这样的：</p>
+<pre><code>/*global module:false*/
 module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-typescript');
@@ -17533,13 +17382,10 @@ module.exports = function (grunt) {
     grunt.registerTask('default', 'typescript concat min');
 
 };
-
-
-注意其中的"typescript"和"concat"任务，可以设置多个子任务，名字（这里是WindBase和wind_articles）任选，只要里面的配置写对即可。你可以参照它修改。
-
-另外把package.json也贴上：
-
-{
+</code></pre>
+<p>注意其中的"typescript"和"concat"任务，可以设置多个子任务，名字（这里是<code>WindBase</code>和<code>wind_articles</code>）任选，只要里面的配置写对即可。你可以参照它修改。</p>
+<p>另外把<code>package.json</code>也贴上：</p>
+<pre><code>{
   "name": "mytest",
   "version": "0.0.1",
   "dependencies": {
@@ -17548,7 +17394,7 @@ module.exports = function (grunt) {
 }
 </code></pre>
 <h2>完成效果</h2>
-<p><a href="/user_images/2027-1.gif"><img src="/user_images/2027-1.gif" alt="image" title="image" /></a></p>
+<p><img src="/user_images/2027-1.gif" alt="image" /></p>
 ]]></description>
             </item>
         
